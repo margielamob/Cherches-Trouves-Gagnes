@@ -1,0 +1,2 @@
+export const DEFAULT_IMAGE_HEIGHT = 480;
+export const DEFAULT_IMAGE_WIDTH = 640;

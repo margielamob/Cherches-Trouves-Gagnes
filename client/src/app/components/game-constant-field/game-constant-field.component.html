@@ -1,0 +1,6 @@
+<h4 class="timer-label">{{ label }}</h4>
+<div class="stepper">
+    <button mat-fab color="primary" class="minus-button control-button" [disabled]="isAtMin()" (click)="toggleMinus()"><mat-icon class="button-icon">remove</mat-icon></button>
+    <span class="timer-value-text">{{ value }}</span>
+    <button mat-fab color="primary" class="plus-button control-button" [disabled]="isAtMax()" (click)="togglePlus()"><mat-icon class="button-icon">add</mat-icon></button>
+</div>

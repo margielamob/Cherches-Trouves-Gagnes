@@ -1,0 +1,38 @@
+.highscores-content {
+    justify-content: center;
+}
+
+.game-name-title {
+    text-align: center;
+    margin-bottom: 2vh;
+}
+
+.card-container {
+    margin-left: 1vw;
+    margin-right: 1vw;
+    width: 18vw;
+    min-height: fit-content;
+}
+
+img {
+    border: 2px black solid;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.highscore-title {
+    text-align: center;
+    margin: 0;
+}
+
+.scores {
+    display: flex;
+    justify-content: space-between;
+}
+
+.empty-solo-scores, .empty-multi-scores{
+    color: gray;
+}

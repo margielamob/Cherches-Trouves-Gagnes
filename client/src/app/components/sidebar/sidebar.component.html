@@ -1,0 +1,28 @@
+<div class="container">
+    <mat-grid-list cols="3" rowHeight="15vh">
+        <mat-grid-tile>
+            <section class="game-infos">
+                <p class="title"><strong> INFOS DU JEU</strong></p>
+                <p>
+                    Nom du jeu : <b>{{ gameName }}</b>
+                </p>
+                <p>
+                    Mode de jeu : <b>{{ gameMode }}</b>
+                </p>
+                <p *ngIf="isSoloMode()">Temps de pénalité ajouté : <b>{{penaltyTime}} secondes</b></p>
+                <p *ngIf="isLimitedTimeMode()">Temps gagné par différence trouvé : <b>{{differenceTime}} secondes</b></p>
+            </section>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <div class="middle-col">
+                <app-clues-area *ngIf="!isMulti()"></app-clues-area>
+                <app-timer-stopwatch></app-timer-stopwatch>
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <div class="differences-area">
+                <app-differences-area> </app-differences-area>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

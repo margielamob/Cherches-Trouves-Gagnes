@@ -1,0 +1,15 @@
+<div class="canvas-container">
+    <canvas id="noContentCanvas" #noContentCanvas hidden [width]="this.width" [height]="this.height"></canvas>
+    <canvas id="img" #background [width]="this.width" [height]="this.height"></canvas>
+    <canvas
+        id="canvas"
+        #foreground
+        (mouseout)="leaveCanvas($event)"
+        (mouseenter)="enterCanvas($event)"
+        (mousedown)="startDrawing($event)"
+        (mousemove)="draw($event)"
+        (mouseup)="stopDrawing($event)"
+        [width]="this.width"
+        [height]="this.height"
+    ></canvas>
+</div>

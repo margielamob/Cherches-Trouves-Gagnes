@@ -1,0 +1,6 @@
+<section class="clue-area">
+    <button mat-flat-button [disabled]="isButtonDisabled()" class="clue-button" color="primary" (click)="getClue()">Demander un <u>i</u>ndice</button>
+    <mat-icon [ngStyle]="{ color: clueAskedCounter > 0 ? 'grey' : 'orange' }" aria-hidden="true" class="lightbulb">lightbulb</mat-icon>
+    <mat-icon [ngStyle]="{ color: clueAskedCounter > 1 ? 'grey' : 'orange' }" aria-hidden="true" class="lightbulb">lightbulb</mat-icon>
+    <mat-icon [ngStyle]="{ color: clueAskedCounter > 2 ? 'grey' : 'orange' }" aria-hidden="true" class="lightbulb">lightbulb</mat-icon>
+</section>

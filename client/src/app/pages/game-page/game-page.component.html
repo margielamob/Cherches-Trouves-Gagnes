@@ -1,0 +1,14 @@
+<main [ngClass]="favoriteTheme">
+    <app-page-header [headerMessage]="this.title" [isHomeButtonEnabled]="false" [isExitButtonEnabled]="true"> </app-page-header>
+    <div class="main-wrapper">
+        <div class="game-section">
+            <app-sidebar></app-sidebar>
+            <section class="container">
+                <app-play-area class="play-area" tabindex="0" [gameId]="this.gameInfoHandlerService.roomId"></app-play-area>
+            </section>
+        </div>
+        <div class="chat-section">
+            <app-chat-box></app-chat-box>
+        </div>
+    </div>
+</main>

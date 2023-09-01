@@ -1,0 +1,45 @@
+<mat-card class="card-adjustment">
+    <div class="common-section">
+        <button mat-mini-fab [color]="this.colorButton.eraser" type="button" (click)="this.changePencilState(this.tool.Eraser)" name="eraser">
+            <mat-icon matTooltip="Effacer">
+                <img class="icon" src="assets/eraser-icon-white.png" *ngIf="this.colorButton.eraser === 'primary'" />
+                <img class="icon" src="assets/eraser-icon-black.png" *ngIf="this.colorButton.eraser === 'accent'" />
+            </mat-icon>
+        </button>
+        <button mat-mini-fab type="button" (click)="changePencilState(this.tool.Pencil)" [color]="this.colorButton.pencil" name="pencil">
+            <mat-icon matTooltip="Dessiner">edit</mat-icon>
+        </button>
+        <input type="color" (input)="changePencilColor(colorSelector.value)" name="colorSelector" #colorSelector />
+        <div class="width-container" *ngIf="this.pencil.state === this.tool.Pencil">
+            <mat-slider
+                min="1"
+                max="5"
+                step="0.5"
+                [value]="this.pencil.width"
+                thumbLabel
+                (change)="changePencilWidth($event)"
+                [displayWith]="formatLabel"
+            ></mat-slider>
+            <p class="pencil-width">{{ this.pencil.width }} px</p>
+        </div>
+        <div class="width-container" *ngIf="this.pencil.state === this.tool.Eraser">
+            <mat-slider
+                min="2"
+                max="10"
+                step="1"
+                [value]="this.pencil.width"
+                thumbLabel
+                (change)="changePencilWidth($event)"
+                [displayWith]="formatLabel"
+            ></mat-slider>
+            <p>{{ this.pencil.width }} px</p>
+        </div>
+
+        <button mat-mini-fab color="primary" type="button" (click)="openUploadDialog()">
+            <mat-icon matTooltip="Ajouter tous les arrière-plans">image</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" type="button" (click)="this.drawService.resetBackground(this.canvasType)">
+            <mat-icon matTooltip="Réinitialiser tous les arrière-plans">image_not_supported</mat-icon>
+        </button>
+    </div>
+</mat-card>

@@ -1,0 +1,14 @@
+<div class="tool-container">
+    <button mat-mini-fab color="primary" type="button" (click)="this.drawService.resetForeground(this.canvasType)">
+        <mat-icon matTooltip="Réinitialiser avant-plan" class="icon"> layers_clear </mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" type="button" (click)="this.drawService.pasteExternalForegroundOn(this.canvasType)">
+        <mat-icon matTooltip="Coller l'avant-plan externe" class="icon"> copy_all </mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" type="button" (click)="openUploadDialog()">
+        <mat-icon matTooltip="Ajouter arrière-plan">image</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" type="button" (click)="this.drawService.resetBackground(this.canvasType)">
+        <mat-icon matTooltip="Réinitialiser arrière-plan">image_not_supported</mat-icon>
+    </button>
+</div>

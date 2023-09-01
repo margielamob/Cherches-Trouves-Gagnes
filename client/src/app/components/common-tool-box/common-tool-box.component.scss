@@ -1,0 +1,62 @@
+.card-adjustment {
+    padding: 0px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.common-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon {
+    width: 24px;
+}
+
+input[type='color'] {
+    margin: 0px;
+    padding: 0px;
+    border-width: 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 1px 3px, rgba(0, 0, 0, 0.4) 0px 1px 2px;
+}
+
+input[type='color']:hover {
+    transform: scale(1.1);
+}
+
+.drawTool {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 20vw;
+}
+
+.commonTool {
+    width: 5vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+.width-container {
+    display: flex;
+}
+
+.width-container > p {
+    min-width: 5ch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+}
+
+.colorSelector {
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+}

@@ -1,0 +1,49 @@
+.game-cards-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2vh;
+}
+
+.carousel-actions-container {
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-actions-container > button {
+    margin-right: 1vw;
+    margin-left: 1vw;
+    margin-bottom: 2vh;
+}
+
+.game-number-container {
+    display: flex;
+    justify-content: right;
+}
+
+.game-number {
+    margin-bottom: 2.5vh;
+    margin-right: 1vw;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.no-game-container {
+    justify-content: center;
+    margin-bottom: 2vh;
+    margin-top: 10vh;
+    display: flex;
+    min-width: 300px;
+}
+
+.no-game-card{
+    min-width: 50vh;
+}
+
+.no-game-center{
+    display: flex;
+    justify-content: center;
+}
+
+.loading-screen-container {
+    margin-top: 15vh;
+}

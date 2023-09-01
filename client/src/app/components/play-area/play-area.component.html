@@ -1,0 +1,14 @@
+<div class="third-clue" *ngIf='isThirdClue'><strong>La différence se trouve à la position {{clue}}</strong> </div>
+
+<div class="grid-container">
+    <div class="wrapper">
+        <canvas #imgOriginal class="img" [width]="width" [height]="height"></canvas>
+        <canvas #actionsGameOriginal class="canvas" (click)="onClick($event, 'original')" click [width]="width" [height]="height"></canvas>
+    </div>
+    <div class="wrapper">
+        <canvas #imgModifiedWODifference class="img" [width]="width" [height]="height"></canvas>
+        <canvas #imgModified class="img" [width]="width" [height]="height"></canvas>
+
+        <canvas #actionsGameModified class="canvas" (click)="onClick($event, 'modified')" [width]="width" [height]="height"></canvas>
+    </div>
+</div>

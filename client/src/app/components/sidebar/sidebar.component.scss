@@ -1,0 +1,30 @@
+.container {
+    min-height: 15vh;
+    padding: 10px 15px 10px 15px;
+}
+
+.game-infos {
+    font-size: small;
+    margin-right: auto;
+    line-height: 40%;
+}
+
+.title {
+    font-size: medium;
+    line-height: normal;
+}
+
+.middle-col {
+    display: flex;
+    flex-direction: column;
+    // bottom: 10px;
+    // align-content: space-between;
+    gap: 3vh;
+}
+
+.differences-area {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1vh;
+    gap: 3vh;
+}

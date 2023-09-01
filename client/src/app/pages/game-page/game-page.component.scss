@@ -1,0 +1,29 @@
+.page {
+    min-height: 100vh;
+    height: auto;
+}
+
+.play-area-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
+.play-area {
+    display: grid;
+    width: min-content;
+    outline: none;
+}
+.container {
+    justify-content: center;
+    display: flex;
+}
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+}
+.chat-section {
+    margin-top: 35vh;
+    width: 380px;
+}

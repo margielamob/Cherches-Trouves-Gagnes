@@ -1,0 +1,13 @@
+<section [ngClass]="favoriteTheme">
+    <div class="dialog-content">
+       
+        <h1 mat-dialog-title>En quel mode de jeu voulez-vous jouer ?</h1>
+
+    </div>
+
+    <div mat-dialog-actions align="end">
+        <button mat-flat-button color="primary" mat-dialog-close (click)="onClickSolo()">Solo</button>
+        <button mat-flat-button color="primary" mat-dialog-close (click)="onClickCoop()">Coop</button>
+    </div>
+</section>
+

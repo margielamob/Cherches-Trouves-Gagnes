@@ -1,0 +1,18 @@
+.timer-value-text {
+    font-size: 2rem;
+    padding-left: 1vw;
+    padding-right: 2vw;
+    width: 1vw;
+}
+
+mat-icon {
+    margin: 0;
+    padding: 0;
+}
+
+.stepper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}

@@ -1,0 +1,37 @@
+<div class="main" [ngClass]="theme.ClassName">
+    <app-page-header [isExitButtonEnabled]="true" [headerMessage]="'Création de partie'"></app-page-header>
+    <div class="space-under-title-bar"></div>
+    <form [formGroup]="this.form" (ngSubmit)="isGameValid()">
+        <div class="img-container">
+            <div class="drawImg">
+                <label for="imgDiff">Tableau à dessin #1</label>
+                <app-draw-canvas [canvasType]="canvasType.Left" id="imgDiff"></app-draw-canvas>
+                <app-tool-box [canvasType]="canvasType.Left" class="toolbox-specific" [ngStyle]="{ 'width.vw': 30 }"></app-tool-box>
+            </div>
+            <app-central-tool-box></app-central-tool-box>
+            <div class="drawImg">
+                <label for="imgSource">Tableau à dessin #2</label>
+                <app-draw-canvas [canvasType]="canvasType.Right" id="imgSource"></app-draw-canvas>
+                <app-tool-box [canvasType]="canvasType.Right" class="toolbox-specific" [ngStyle]="{ 'width.vw': 30 }"></app-tool-box>
+            </div>
+        </div>
+        <div class="space-between-canvas-and-tools"></div>
+        <div class="common-toolbox-container">
+            <app-common-tool-box [canvasType]="canvasType.Both"></app-common-tool-box>
+        </div>
+        <div class="submission-container">
+            <div class="submission-box">
+                <mat-form-field>
+                    <mat-label>Choisir le rayon d'élargissement</mat-label>
+                    <select matNativeControl id="expansionRadius" formControlName="expansionRadius">
+                        <option value="0">0px rayon d'élargissement</option>
+                        <option value="3" selected>3px rayon d'élargissement</option>
+                        <option value="9">9px rayon d'élargissement</option>
+                        <option value="15">15px rayon d'élargissement</option>
+                    </select>
+                </mat-form-field>
+                <button mat-flat-button color="primary" (click)="this.isGameValid()" #onSubmit type="button">Valider</button>
+            </div>
+        </div>
+    </form>
+</div>

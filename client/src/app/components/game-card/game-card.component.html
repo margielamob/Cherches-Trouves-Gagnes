@@ -1,0 +1,13 @@
+<mat-card [ngClass]="favoriteTheme" class="card-container">
+    <mat-card-title class="game-name-title">{{ getGameName() }}</mat-card-title>
+    <img class="game-image" mat-card-lg-image [src]="imageSrc" />
+
+    <mat-card-content class="highscores-content">
+        <h3 class="highscore-title"><b>Meilleurs scores</b></h3>
+        <div class="scores">
+            <app-game-score [title]="'Solo'" [scores]="getSinglePlayerScores()" [isMultiplayer]="false"></app-game-score>
+            <app-game-score [title]="'1 vs 1'" [scores]="getMultiplayerScores()" [isMultiplayer]="true"></app-game-score>
+        </div>
+    </mat-card-content>
+    <app-game-card-buttons [gameCard]="gameCard"></app-game-card-buttons>
+</mat-card>

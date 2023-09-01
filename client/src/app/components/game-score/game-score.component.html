@@ -1,0 +1,12 @@
+<ul class="highscores">
+    <li class="title-{{ isMultiplayer }}">
+        <b>{{ title }}</b>
+    </li>
+    <div class="score-content">
+        <li *ngFor="let score of scores" class="{{ score.type === 'default' ? 'empty-scores' : 'game-score' }}">
+            <span class="player-name">{{ score.playerName.substring(0, 8) }}</span>
+            <span class="separation-score">&nbsp;&nbsp;</span>
+            <span class="score-time">{{ formatScoreTime(score.time) }}</span>
+        </li>
+    </div>
+</ul>

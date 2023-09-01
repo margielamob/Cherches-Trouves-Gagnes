@@ -1,0 +1,8 @@
+<main [ngClass]="favoriteTheme">
+    <h2 *ngIf="isClassic()">Retour sur la page de séléction...</h2>
+    <h2 *ngIf="!isClassic()">Retour à l'accueil</h2>
+    <div mat-dialog-content>Vous avez été redirigés car {{reason}} </div>
+    <div mat-dialog-actions align="end">
+        <button  mat-raised-button mat-dialog-close cdkFocusInitial color="primary">OK</button>
+    </div>
+</main>

@@ -1,0 +1,66 @@
+label {
+    font-size: large;
+    padding: 5px;
+}
+
+.main {
+    width: 100vw;
+    height: 100vh;
+}
+.drawImg {
+    display: flex;
+    flex-direction: column;
+    width: 640px;
+}
+
+.img {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px, rgba(0, 0, 0, 0.45) 0px 1px 3px;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vw;
+}
+
+.toolbox-container {
+    display: flex;
+    justify-content: center;
+    align-self: end;
+    margin-top: 4vh;
+}
+
+.submission-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 3vw;
+}
+
+.submission-box {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px, rgba(0, 0, 0, 0.45) 0px 1px 3px;
+}
+
+.space-under-title-bar {
+    height: 2vh;
+}
+
+.toolbox-specific {
+    margin-top: 0.5em;
+    justify-self: center;
+    align-self: center;
+    min-width: 500px;
+}
+
+.common-toolbox-container {
+    display: flex;
+    justify-content: center;
+}
+
+.space-between-canvas-and-tools {
+    height: 2vh;
+}
