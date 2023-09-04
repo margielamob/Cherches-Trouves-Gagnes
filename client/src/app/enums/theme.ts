@@ -1,3 +1,3 @@
 export enum Theme {
-    ClassName = 'deeppurple-amber-theme',
+  ClassName = "deeppurple-amber-theme",
 }

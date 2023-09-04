@@ -1,0 +1,79 @@
+
+<div class="grid-container">
+<div class="form-container">
+
+
+  <div class="login-container">
+
+    <div class="connect">
+      <h2>Connecte toi </h2>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <mat-form-field>
+        <mat-label>Email ou nom d'utilisateur</mat-label>
+        <input
+          matInput
+          placeholder="pat@example.com"
+          formControlName="emailAdress"
+          required
+        />
+        <mat-error *ngIf="emailAdress?.errors?.['required']">
+          Information de connexion requise
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Mot de passe</mat-label>
+        <input
+          matInput
+          placeholder="*******"
+          formControlName="password"
+          required
+        />
+        <mat-error *ngIf="password?.errors?.['required']">
+          Mot de passe requis
+        </mat-error>
+      </mat-form-field>
+
+        <button class="form-btn" mat-raised-button color="primary" type="submit">Connexion</button>
+        <button class="form-btn" mat-raised-button color="primary" type="submit">Enregistre un nouveau compte</button>
+
+    
+    </form>
+    
+  </div>
+ 
+</div>
+    
+  <div class="grid-item">
+      <img src="assets/quote.png" alt="photo pour jeu de différences" />
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
