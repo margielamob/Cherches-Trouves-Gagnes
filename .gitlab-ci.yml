@@ -1,6 +1,5 @@
 image: node:14
 
-
 .only-angular_client: &only-angular_client
     only:
         refs:
@@ -18,7 +17,6 @@ image: node:14
         changes:
             - server/**/*
             - common/**/*
-
 
 stages:
     - build_angular_client
