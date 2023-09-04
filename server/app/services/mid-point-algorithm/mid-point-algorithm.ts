@@ -1,14 +1,9 @@
 import { BmpCoordinate } from '@app/classes/bmp-coordinate/bmp-coordinate';
-import { EnlargementAlgorithm } from '@app/interface/enlargement-algorithm';
 import { Coordinate } from '@common/coordinate';
 import { Service } from 'typedi';
 
 @Service()
-export class MidpointAlgorithm implements EnlargementAlgorithm {
-    applyEnlargement(): void {
-        throw new Error('Method not implemented.');
-    }
-
+export class MidpointAlgorithm {
     findEnlargementArea(center: BmpCoordinate, radius: number) {
         return this.findInsideAreaEnlargement(center, radius, this.findContourEnlargement(center, radius));
     }
