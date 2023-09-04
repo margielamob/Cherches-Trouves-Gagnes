@@ -45,7 +45,6 @@ build_angular_client:
 
 test_angular_client:
   stage: test_angular_client
-  <<: *only-angular_client
   script:
     - echo "building the angular client..."
     - cd client
@@ -56,7 +55,6 @@ test_angular_client:
 
 test_backend:
   stage: test_backend
-  <<: *only-backend
 
   script:
     - echo "building the server..."
