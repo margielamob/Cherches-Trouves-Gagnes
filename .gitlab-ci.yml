@@ -19,7 +19,6 @@ image: node:14
             - server/**/*
             - common/**/*
 
-
 stages:
     - build_angular_client
     - build_backend
