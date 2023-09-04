@@ -33,7 +33,7 @@ build_backend:
         - echo "building the server..."
         - cd server
         - npm ci
-        - npm start
+        - npm run build
 
 build_angular_client:
     stage: build_angular_client
@@ -42,7 +42,8 @@ build_angular_client:
         - echo "building the angular client..."
         - cd client
         - npm ci
-        - ng serve
+        - npm install -g @angular/cli
+        - ng build
 
 test_angular_client:
   stage: test_angular_client
