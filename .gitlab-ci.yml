@@ -26,10 +26,6 @@ stages:
     - test_angular_client
     - test_backend
 
-before_script:
-    - npm install -g @angular/cli
-    - npm ci
-
 build_backend:
     stage: build_backend
     <<: *only-backend
