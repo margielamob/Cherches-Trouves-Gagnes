@@ -45,13 +45,15 @@
   width: 100%;
 }
 
-.create-account {
-  font-size: 14px;
-  color: #8e8e8e;
-  margin-top: 20px;
+.error{
+   margin-top: 20px;
 }
 
-.create-account a {
-  color: #1877f2;
-  text-decoration: none;
+.error p {
+  color: red
 }
+
+.error mat-icon {
+  margin-top: 4px;
+}
+

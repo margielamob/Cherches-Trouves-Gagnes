@@ -14,11 +14,11 @@
         <mat-label>Email ou nom d'utilisateur</mat-label>
         <input
           matInput
-          placeholder="pat@example.com"
-          formControlName="emailAdress"
+          placeholder="pat@example.com / Trump1234"
+          formControlName="credential"
           required
         />
-        <mat-error *ngIf="emailAdress?.errors?.['required']">
+        <mat-error *ngIf="credential?.errors?.['required']">
           Information de connexion requise
         </mat-error>
       </mat-form-field>
@@ -36,11 +36,16 @@
       </mat-form-field>
 
         <button class="form-btn" mat-raised-button color="primary" type="submit">Connexion</button>
-        <button class="form-btn" mat-raised-button color="primary" type="submit">Enregistre un nouveau compte</button>
 
-    
+      
     </form>
-    
+    <button class="form-btn" mat-raised-button color="primary">Enregistre un nouveau compte</button>
+
+    <div class="error" *ngIf="errorMessage">
+      <p> <mat-icon>error</mat-icon>
+        {{errorMessage}}</p>
+    </div>
+
   </div>
  
 </div>

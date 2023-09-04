@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { AuthenticationService } from "../../services/authentication-service/authentication.service";
+import { Router } from "@angular/router";
+import { catchError, take } from "rxjs";
 
 @Component({
   selector: "app-login-page",
@@ -8,16 +11,17 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 })
 export class LoginPageComponent implements OnInit {
   loginForm: FormGroup;
-  constructor() {
+  errorMessage: string = "";
+  constructor(private auth: AuthenticationService, private router: Router) {
     this.loginForm = new FormGroup({
-      emailAdress: new FormControl("", Validators.required),
+      credential: new FormControl("", Validators.required),
       password: new FormControl("", Validators.required),
     });
   }
 
   ngOnInit() {}
-  get emailAdress() {
-    return this.loginForm.get("emailAdress");
+  get credential() {
+    return this.loginForm.get("credential");
   }
 
   get password() {
@@ -25,14 +29,29 @@ export class LoginPageComponent implements OnInit {
   }
 
   submit() {
-    // if (!this.loginForm.valid) {
-    //   return;
-    // }
-    // const { emailAdress, password } = this.loginForm.value;
-    // console.log(this.loginForm.value);
-    // this.auth.login(emailAdress, password).subscribe(() => {
-    //   console.log("home");
-    //   this.route.navigate(["/home"]);
-    // });
+    if (!this.loginForm.valid) {
+      return;
+    }
+
+    const { credential, password } = this.loginForm.value;
+    const credentialValue: string = this.credential?.value;
+    const isEmail: boolean = credentialValue.includes("@");
+
+    console.log("isEmail", isEmail);
+
+    this.auth
+      .login(credential, password)
+      .pipe(
+        take(1),
+        catchError(() => {
+          // Message d'erreur à afficher
+          this.errorMessage =
+            "Une erreur s'est produite lors de la connexion. Verifier vos informations de connexion";
+          throw new Error("Erreur de connexion");
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(["/home"]);
+      });
   }
 }
