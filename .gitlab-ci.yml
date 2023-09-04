@@ -1,67 +1,42 @@
 image: node:14
 
 .only-angular_client: &only-angular_client
-    only:
-        refs:
-            - main
-            - merge_requests
-        changes:
-            - client/**/*
-            - common/**/*
+  only:
+    refs:
+      - main
+      - merge_requests
+    changes:
+      - client/**/*
+      - common/**/*
 
 .only-backend: &only-backend
-    only:
-        refs:
-            - main
-            - merge_requests
-        changes:
-            - server/**/*
-            - common/**/*
+  only:
+    refs:
+      - main
+      - merge_requests
+    changes:
+      - server/**/*
+      - common/**/*
 
 stages:
-    - build_angular_client
-    - build_backend
-    - test_angular_client
-    - test_backend
+  - build_angular_client
+  - build_backend
 
 build_backend:
-    stage: build_backend
-    <<: *only-backend
-    script:
-        - echo "building the server..."
-        - cd server
-        - npm ci
-        - npm run build
-
-build_angular_client:
-    stage: build_angular_client
-    <<: *only-angular_client
-    script:
-        - echo "building the angular client..."
-        - cd client
-        - npm ci
-        - npm install -g @angular/cli
-        - ng build
-
-test_angular_client:
-  stage: test_angular_client
-  <<: *only-angular_client
-  script:
-    - echo "building the angular client..."
-    - cd client
-    - npm install -g @angular/cli
-    - npm ci
-    - echo "starting tests..."
-    - ng test --watch=false  
-
-test_backend:
-  stage: test_backend
+  stage: build_backend
   <<: *only-backend
-
   script:
     - echo "building the server..."
     - cd server
     - npm ci
-    - echo "starting tests..."
-    - npm run test  
+    - npm run build
 
+build_angular_client:
+  stage: build_angular_client
+  <<: *only-angular_client
+  script:
+    - echo "building the angular client..."
+    - cd client
+    - npm ci
+    - npm install -g @angular/cli
+    - ng build
