@@ -63,7 +63,7 @@ test_backend:
   script:
     - echo "building the server..."
     - cd server
-    - npm install
+    - npm ci
     - echo "starting tests..."
     - npm run test  
 
