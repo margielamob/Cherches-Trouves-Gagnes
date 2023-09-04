@@ -46,6 +46,12 @@ import { MongodbErrorPageComponent } from "./pages/mongodb-error-page/mongodb-er
 import { NoGameSnackbarComponent } from "./components/no-game-snackbar/no-game-snackbar.component";
 import { ConfirmDeleteDialogComponent } from "./components/confirm-delete-dialog/confirm-delete-dialog.component";
 import { LoginPageComponent } from "./pages/login-page/login-page.component";
+import { environment } from "../environments/environment";
+import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { AngularFireDatabaseModule } from "@angular/fire/compat/database"; // Importez ce module
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -107,6 +113,10 @@ import { LoginPageComponent } from "./pages/login-page/login-page.component";
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireDatabaseModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
