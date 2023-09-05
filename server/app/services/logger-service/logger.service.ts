@@ -3,6 +3,10 @@ import * as winston from 'winston';
 import { LOG_COLORS } from './log-colors';
 @Service()
 export class LoggerService {
+    private static logFormat = winston.format.printf(({ level, message, stack, timestamp }) => {
+        return `[${level}] ${timestamp} : ${message || stack}`;
+    });
+
     private logger;
 
     constructor() {
@@ -33,8 +37,4 @@ export class LoggerService {
     logDebug(message: string) {
         this.logger.debug(message);
     }
-
-    private static logFormat = winston.format.printf(({ level, message, stack, timestamp }) => {
-        return `[${level}] ${timestamp} : ${message || stack}`;
-    });
 }
