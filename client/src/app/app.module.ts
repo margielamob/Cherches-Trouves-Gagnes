@@ -51,6 +51,7 @@ import { AngularFireModule } from "@angular/fire/compat";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
 import { AngularFireDatabaseModule } from "@angular/fire/compat/database"; // Importez ce module
+import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component";
 
 /**
  * Main module that is used in main.ts.
@@ -102,6 +103,7 @@ import { AngularFireDatabaseModule } from "@angular/fire/compat/database"; // Im
     NoGameSnackbarComponent,
     ConfirmDeleteDialogComponent,
     LoginPageComponent,
+    SignUpPageComponent,
   ],
   imports: [
     AppMaterialModule,

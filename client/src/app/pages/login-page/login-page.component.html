@@ -39,7 +39,7 @@
 
       
     </form>
-    <button class="form-btn" mat-raised-button color="primary">Enregistre un nouveau compte</button>
+    <button class="form-btn" mat-raised-button color="primary" (click)="goToSignUpPage()">Enregistre un nouveau compte</button>
 
     <div class="error" *ngIf="errorMessage">
       <p> <mat-icon>error</mat-icon>

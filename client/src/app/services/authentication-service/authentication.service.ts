@@ -13,6 +13,10 @@ export class AuthenticationService {
     return from(this.afAuth.signInWithEmailAndPassword(email, password));
   }
 
+  signUp(email: string, password: string) {
+    return from(this.afAuth.createUserWithEmailAndPassword(email, password));
+  }
+
   logout() {
     //logout currunt user . A utuliser plus tard
     return from(this.afAuth.signOut());

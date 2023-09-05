@@ -54,4 +54,8 @@ export class LoginPageComponent implements OnInit {
         this.router.navigate(["/home"]);
       });
   }
+
+  goToSignUpPage() {
+    this.router.navigate(["/sign-up"]);
+  }
 }

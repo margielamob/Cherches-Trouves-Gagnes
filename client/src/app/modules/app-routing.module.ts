@@ -8,11 +8,13 @@ import { GameSelectionPageComponent } from "@app/pages/game-selection-page/game-
 import { LoginPageComponent } from "@app/pages/login-page/login-page.component";
 import { MainPageComponent } from "@app/pages/main-page/main-page.component";
 import { MongodbErrorPageComponent } from "@app/pages/mongodb-error-page/mongodb-error-page.component";
+import { SignUpPageComponent } from "@app/pages/sign-up-page/sign-up-page.component";
 import { WaitingRoomComponent } from "@app/pages/waiting-room/waiting-room.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
   { path: "login", component: LoginPageComponent },
+  { path: "sign-up", component: SignUpPageComponent },
   { path: "home", component: MainPageComponent },
   { path: "game", component: GamePageComponent },
   { path: "create", component: CreateGamePageComponent },
