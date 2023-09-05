@@ -1,13 +1,13 @@
 import { DB_GAME_COLLECTION, DB_NAME, DB_URL } from '@app/constants/database';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import { Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
-import { LoggerService } from '../logger-service/logger.service';
 @Service()
 export class DatabaseService {
     private client: MongoClient;
     private db: Db;
 
-    constructor(private readonly logger: LoggerService){}
+    constructor(private readonly logger: LoggerService) {}
     get database(): Db {
         return this.db;
     }

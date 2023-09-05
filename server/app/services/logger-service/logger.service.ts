@@ -8,35 +8,33 @@ export class LoggerService {
     constructor() {
         winston.addColors(LOG_COLORS);
         this.logger = winston.createLogger({
-          transports: [
-            new winston.transports.Console(),
-          ],
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),
-            winston.format.errors({stack: true}),
-            LoggerService.logFormat
-          ),
+            transports: [new winston.transports.Console()],
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                winston.format.errors({ stack: true }),
+                LoggerService.logFormat,
+            ),
         });
     }
 
-    public logInfo(message: string) {
+    logInfo(message: string) {
         this.logger.info(message);
     }
 
-    public logError(error: Error) {
+    logError(error: Error) {
         this.logger.error(error.stack);
     }
 
-    public logWarning(message: string) {
+    logWarning(message: string) {
         this.logger.warn(message);
     }
 
-    public logDebug(message: string) {
+    logDebug(message: string) {
         this.logger.debug(message);
     }
 
     private static logFormat = winston.format.printf(({ level, message, stack, timestamp }) => {
-      return `[${level}] ${ timestamp } : ${ message || stack }`;
+        return `[${level}] ${timestamp} : ${message || stack}`;
     });
-};
+}
