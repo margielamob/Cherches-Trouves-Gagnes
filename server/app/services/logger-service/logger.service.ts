@@ -1,10 +1,12 @@
 import { Service } from 'typedi';
 import * as winston from 'winston';
 import { LOG_COLORS } from './log-colors';
+
 @Service()
 export class LoggerService {
-    private static logFormat = winston.format.printf(({ level, message, stack, timestamp }) => {
-        return `[${level}] ${timestamp} : ${message || stack}`;
+    private static logFormat = winston.format.printf(({ level, message, stack, timestamp, objectToLog }) => {
+        const logMessage = objectToLog ? `${message} - ${JSON.stringify(objectToLog)}` : message;
+        return `[${level}] ${timestamp} : ${logMessage || stack}`;
     });
 
     private logger;
@@ -22,19 +24,25 @@ export class LoggerService {
         });
     }
 
-    logInfo(message: string) {
-        this.logger.info(message);
+    logInfo(message: string, objectToLog?: object) {
+        this.log('info', message, objectToLog);
     }
 
-    logError(error: Error) {
-        this.logger.error(error.stack);
+    logError(error: Error, objectToLog?: object) {
+        const errorMessage = error.message;
+        const errorStack = error.stack;
+        this.log('error', errorStack ? `${errorMessage}\n${errorStack}` : errorMessage, objectToLog);
     }
 
-    logWarning(message: string) {
-        this.logger.warn(message);
+    logWarning(message: string, objectToLog?: object) {
+        this.log('warn', message, objectToLog);
     }
 
-    logDebug(message: string) {
-        this.logger.debug(message);
+    logDebug(message: string, objectToLog?: object) {
+        this.log('debug', message, objectToLog);
+    }
+
+    private log(level: string, message: string, objectToLog?: object) {
+        this.logger.log({ level, message, objectToLog });
     }
 }
