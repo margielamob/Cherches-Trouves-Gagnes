@@ -1,6 +1,7 @@
 <div class="grid-container">
   <div class="form-container">
     <div class="login-container">
+      <div class="connect">
         <h2>Inscription</h2>
       </div>
       <div class="avatar">
@@ -8,9 +9,6 @@
           width="100px"
           height="100px" 
           src="assets/default-user-icon.jpg" alt="avatar" />
-        <button mat-mini-fab >
-          <mat-icon>edit</mat-icon>
-        </button>
       </div>
 
       <form [formGroup]="signUpForm" (ngSubmit)="submit()">

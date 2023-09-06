@@ -47,4 +47,14 @@ export class UserService {
     );
   }
 
+  uploadUserAvatar(uid: string, avatar: File) {
+    console.log("uid: ", uid);
+    return this.storage.upload(`avatars/${uid}/`, avatar).snapshotChanges().pipe(
+      catchError((error) => {
+        console.error("upload image error ", error);
+        throw error;
+      })
+    );
+  }
+
 }

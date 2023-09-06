@@ -19,7 +19,7 @@ export class SignUpPageComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
-    private auth: AuthenticationService
+    private auth: AuthenticationService,
   ) {
     this.signUpForm = new FormGroup({
       username: new FormControl(
@@ -71,7 +71,7 @@ export class SignUpPageComponent implements OnInit {
             displayName: username as string,
             email: credential.user?.email as string,
             emailVerified: credential.user?.emailVerified,
-            photoURL: "",
+            photoURL: "avatars/" + credential.user?.uid as string,
             uid: credential.user?.uid as string,
             phoneNumber: "",
             // Set default user configurations

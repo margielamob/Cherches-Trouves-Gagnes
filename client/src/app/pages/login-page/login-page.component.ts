@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthenticationService } from "../../services/authentication-service/authentication.service";
 import { Router } from "@angular/router";
-import { take } from "rxjs";
+import { catchError, take } from "rxjs";
 
 @Component({
   selector: "app-login-page",
@@ -41,14 +41,17 @@ export class LoginPageComponent implements OnInit {
 
     this.auth
       .login(credential, password)
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this.router.navigate(["home"]);
-        },
-        error: (error: Error) => {
-          this.errorMessage = error.message;
-        },
+      .pipe(
+        take(1),
+        catchError(() => {
+          // Message d'erreur à afficher
+          this.errorMessage =
+            "Une erreur s'est produite lors de la connexion. Verifier vos informations de connexion";
+          throw new Error("Erreur de connexion");
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(["/home"]);
       });
   }
 
