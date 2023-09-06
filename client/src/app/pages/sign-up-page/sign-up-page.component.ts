@@ -3,9 +3,10 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationService } from "@app/services/authentication-service/authentication.service";
 import { UserService } from "@app/services/user-service/user.service";
-import { take, tap } from "rxjs";
+import { switchMap, take } from "rxjs";
 import { User } from "@app/interfaces/user";
 import { Theme } from "@app/enums/theme";
+import { userNameValidator } from "utils/custom-validators";
 
 @Component({
   selector: "app-sign-up-page",
@@ -21,16 +22,22 @@ export class SignUpPageComponent implements OnInit {
     private auth: AuthenticationService
   ) {
     this.signUpForm = new FormGroup({
-      username: new FormControl("", [
-        Validators.required,
-        Validators.pattern("^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$"),
-      ]),
+      username: new FormControl(
+        "",
+        [
+          Validators.required,
+          Validators.pattern("^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$"),
+        ],
+        [userNameValidator(this.userService)]
+      ),
       email: new FormControl("", [Validators.required, Validators.email]),
       password: new FormControl("", Validators.required),
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.username?.hasError("userNameValidator"));
+  }
 
   get email() {
     return this.signUpForm.get("email");
@@ -50,14 +57,16 @@ export class SignUpPageComponent implements OnInit {
 
   submit() {
     if (!this.signUpForm.valid) {
+      console.log("form", this.signUpForm);
+
       return;
     }
+
     const { username, email, password } = this.signUpForm.value;
-    console.log();
     this.auth
       .signUp(email, password)
       .pipe(
-        tap((credential) => {
+        switchMap((credential) => {
           const user: User = {
             displayName: username as string,
             email: credential.user?.email as string,
@@ -73,10 +82,17 @@ export class SignUpPageComponent implements OnInit {
             game_played: 0,
             average_time: "0:0",
           };
-          this.userService.adduser(user);
+          return this.userService.adduser(user);
         })
       )
       .pipe(take(1))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/login"]);
+        },
+        error: (error: Error) => {
+          console.log(error.message);
+        },
+      });
   }
 }

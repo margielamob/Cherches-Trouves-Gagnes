@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { User } from "@app/interfaces/user";
-import { catchError, from } from "rxjs";
+import { Observable, catchError, from, map } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -11,13 +11,22 @@ export class UserService {
   constructor(private afs: AngularFirestore, private storage: AngularFireStorage) {}
 
   adduser(user: User) {
-    console.log("here");
-    return from(this.afs.collection("users").doc(user.uid).set(user)).pipe(
-      catchError((error) => {
-        console.error("sign-up error ", error);
-        throw error;
-      })
-    );
+    return from(this.afs.collection("users").doc(user.uid).set(user));
+  }
+
+  isUserNameAvailable(userName: string): Observable<boolean> {
+    return this.afs
+      .collection("users", (ref) => ref.where("displayName", "==", userName))
+      .get()
+      .pipe(
+        map((resut) => {
+          if (!resut.empty) {
+            return false;
+          } else {
+            return true;
+          }
+        })
+      );
   }
 
   updateUser(user: User) {
