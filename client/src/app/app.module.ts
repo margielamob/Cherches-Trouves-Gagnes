@@ -51,6 +51,7 @@ import { AngularFireModule } from "@angular/fire/compat";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
 import { AngularFireDatabaseModule } from "@angular/fire/compat/database"; // Importez ce module
+import { AngularFireStorageModule } from "@angular/fire/compat/storage"; // Importez ce module
 import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component";
 
 /**
@@ -119,6 +120,7 @@ import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireDatabaseModule,
+    AngularFireStorageModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
