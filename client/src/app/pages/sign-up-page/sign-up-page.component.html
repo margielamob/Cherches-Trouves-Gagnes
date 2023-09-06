@@ -1,9 +1,7 @@
 <div class="grid-container">
   <div class="form-container">
     <div class="login-container">
-      <div class="connect">
         <h2>Inscription</h2>
-      </div>
 
       <form [formGroup]="signUpForm" (ngSubmit)="submit()">
         <mat-form-field>
@@ -25,6 +23,11 @@
             <p>
               Le nom d'utilisateur doit contenir au moins une lettre et ne peut
               comprendre que des lettres, des chiffres et des underscores.
+            </p>
+          </mat-error>
+          <mat-error *ngIf="username?.hasError('userNameTaken')">
+            <p>
+              Le nom d'utilisateur n'est pas disponible. Veuillez choisir un autre nom
             </p>
           </mat-error>
         </mat-form-field>
@@ -68,6 +71,15 @@
           S'inscrire
         </button>
       </form>
+      <button
+      class="form-btn"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      (click)="goToLoginPage()"
+    >
+      Vous avez deja un compte? Connectez-vous 
+    </button>
       <p class="obligation">Les champs du formulaire avec * sont obligatoire</p>
     </div>
   </div>
