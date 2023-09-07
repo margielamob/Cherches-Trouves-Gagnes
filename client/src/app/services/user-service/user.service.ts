@@ -13,6 +13,14 @@ export class UserService {
     return from(this.afs.collection("users").doc(user.uid).set(user));
   }
 
+  updateUser(user: User) {
+    return from(this.afs.collection("users").doc(user.uid).update(user));
+  }
+
+  deleteUser(user: User) {
+    return from(this.afs.collection("users").doc(user.uid).delete());
+  }
+
   isUserNameAvailable(userName: string): Observable<boolean> {
     return this.afs
       .collection("users", (ref) => ref.where("displayName", "==", userName))
@@ -23,6 +31,21 @@ export class UserService {
             return false;
           } else {
             return true;
+          }
+        })
+      );
+  }
+
+  getUserByUserName(userName: string) {
+    return this.afs
+      .collection("users", (ref) => ref.where("displayName", "==", userName))
+      .get()
+      .pipe(
+        map((resut) => {
+          if (!resut.empty) {
+            return resut.docs[0].data() as User;
+          } else {
+            return null;
           }
         })
       );

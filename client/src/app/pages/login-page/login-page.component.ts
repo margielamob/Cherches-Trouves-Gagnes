@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthenticationService } from "../../services/authentication-service/authentication.service";
 import { Router } from "@angular/router";
 import { take } from "rxjs";
+import { UserService } from "../../services/user-service/user.service";
 
 @Component({
   selector: "app-login-page",
@@ -12,14 +13,24 @@ import { take } from "rxjs";
 export class LoginPageComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string = "";
-  constructor(private auth: AuthenticationService, private router: Router) {
+  constructor(
+    private auth: AuthenticationService,
+    private router: Router,
+    private userService: UserService
+  ) {
     this.loginForm = new FormGroup({
       credential: new FormControl("", Validators.required),
       password: new FormControl("", Validators.required),
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.userService.getUserByUserName("kevin").subscribe({
+      next: (user) => {
+        console.log("user", user);
+      },
+    });
+  }
   get credential() {
     return this.loginForm.get("credential");
   }
@@ -40,7 +51,7 @@ export class LoginPageComponent implements OnInit {
     console.log("isEmail", isEmail);
 
     this.auth
-      .login(credential, password)
+      .loginWithUserName(credential, password, isEmail)
       .pipe(take(1))
       .subscribe({
         next: () => {

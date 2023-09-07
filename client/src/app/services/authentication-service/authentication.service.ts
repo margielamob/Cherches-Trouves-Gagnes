@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
 import { FirebaseError } from "@angular/fire/app";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { catchError, from, throwError } from "rxjs";
+import { catchError, from, switchMap, throwError } from "rxjs";
+import { UserService } from "../user-service/user.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthenticationService {
-  constructor(private afAuth: AngularFireAuth) {}
+  constructor(
+    private afAuth: AngularFireAuth,
+    private userService: UserService
+  ) {}
 
   login(email: string, password: string) {
     // login user with email and password
@@ -66,15 +70,18 @@ export class AuthenticationService {
     return from(this.afAuth.signOut());
   }
 
-  loginWithUserName(
-    username: string,
-    isEmail: boolean,
-    email: string,
-    password: string
-  ) {
+  loginWithUserName(credential: string, password: string, isEmail: boolean) {
     if (isEmail) {
-      this.login(email, password);
-    } else {
+      return this.login(credential, password);
     }
+    return this.userService.getUserByUserName(credential).pipe(
+      switchMap((user) => {
+        if (user) {
+          return this.login(user?.email, password);
+        }
+        // l'utilisateur n'existe pas
+        return throwError(() => new Error("Nom d'utilisateur introuvable."));
+      })
+    );
   }
 }
