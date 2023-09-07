@@ -10,6 +10,7 @@ import { MainPageComponent } from "@app/pages/main-page/main-page.component";
 import { MongodbErrorPageComponent } from "@app/pages/mongodb-error-page/mongodb-error-page.component";
 import { SignUpPageComponent } from "@app/pages/sign-up-page/sign-up-page.component";
 import { WaitingRoomComponent } from "@app/pages/waiting-room/waiting-room.component";
+import { SettingsPageComponent } from "@app/pages/settings-page/settings-page.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: "admin", component: AdminPageComponent },
   { path: "waiting", component: WaitingRoomComponent },
   { path: "error", component: MongodbErrorPageComponent },
+  { path: "settings", component: SettingsPageComponent },
   { path: "**", redirectTo: "/home" },
 ];
 

@@ -14,6 +14,14 @@ export class UserService {
     return from(this.afs.collection("users").doc(user.uid).set(user));
   }
 
+  getUser(userId: string): Observable<any> {
+    return this.afs.collection('users').doc(userId).valueChanges();
+  }
+
+  getUsers(): Observable<any> {
+    return this.afs.collection('users').doc().valueChanges();
+  }
+
   isUserNameAvailable(userName: string): Observable<boolean> {
     return this.afs
       .collection("users", (ref) => ref.where("displayName", "==", userName))
@@ -39,7 +47,7 @@ export class UserService {
   }
 
   getImageOfSignedUser(uid: string) {
-    return this.storage.ref(`avatars/${uid}`).getDownloadURL().pipe(
+    return this.storage.ref(`avatars/${uid}/avatar.jpg`).getDownloadURL().pipe(
       catchError((error) => {
         console.error("get image error ", error);
         throw error;

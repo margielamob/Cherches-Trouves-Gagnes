@@ -53,6 +53,8 @@ import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
 import { AngularFireDatabaseModule } from "@angular/fire/compat/database"; // Importez ce module
 import { AngularFireStorageModule } from "@angular/fire/compat/storage"; // Importez ce module
 import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component";
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
 
 /**
  * Main module that is used in main.ts.
@@ -105,6 +107,8 @@ import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component
     ConfirmDeleteDialogComponent,
     LoginPageComponent,
     SignUpPageComponent,
+    SettingsPageComponent,
+    UserProfilInformationComponent,
   ],
   imports: [
     AppMaterialModule,
