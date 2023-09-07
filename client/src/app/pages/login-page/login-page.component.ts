@@ -2,8 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthenticationService } from "../../services/authentication-service/authentication.service";
 import { Router } from "@angular/router";
+<<<<<<< HEAD
 import { take } from "rxjs";
 import { UserService } from "../../services/user-service/user.service";
+=======
+import { catchError, take } from "rxjs";
+>>>>>>> 6f85f1e16d126be7f14f55d1bc0c173b47d28185
 
 @Component({
   selector: "app-login-page",
@@ -51,6 +55,7 @@ export class LoginPageComponent implements OnInit {
     console.log("isEmail", isEmail);
 
     this.auth
+<<<<<<< HEAD
       .loginWithUserName(credential, password, isEmail)
       .pipe(take(1))
       .subscribe({
@@ -60,6 +65,20 @@ export class LoginPageComponent implements OnInit {
         error: (error: Error) => {
           this.errorMessage = error.message;
         },
+=======
+      .login(credential, password)
+      .pipe(
+        take(1),
+        catchError(() => {
+          // Message d'erreur à afficher
+          this.errorMessage =
+            "Une erreur s'est produite lors de la connexion. Verifier vos informations de connexion";
+          throw new Error("Erreur de connexion");
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(["/home"]);
+>>>>>>> 6f85f1e16d126be7f14f55d1bc0c173b47d28185
       });
   }
 
