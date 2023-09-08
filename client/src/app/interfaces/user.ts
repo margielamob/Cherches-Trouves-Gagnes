@@ -1,4 +1,4 @@
-export interface User {
+export interface UserData {
   // from AngularFireAuth
   displayName: string;
   email: string;

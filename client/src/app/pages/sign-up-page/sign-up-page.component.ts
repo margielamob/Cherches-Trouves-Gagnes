@@ -4,9 +4,9 @@ import { Router } from "@angular/router";
 import { AuthenticationService } from "@app/services/authentication-service/authentication.service";
 import { UserService } from "@app/services/user-service/user.service";
 import { switchMap, take } from "rxjs";
-import { User } from "@app/interfaces/user";
 import { Theme } from "@app/enums/theme";
 import { userNameValidator } from "utils/custom-validators";
+import { UserData } from "@app/interfaces/user";
 
 @Component({
   selector: "app-sign-up-page",
@@ -19,7 +19,7 @@ export class SignUpPageComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
-    private auth: AuthenticationService,
+    private auth: AuthenticationService
   ) {
     this.signUpForm = new FormGroup({
       username: new FormControl(
@@ -67,11 +67,11 @@ export class SignUpPageComponent implements OnInit {
       .signUp(email, password)
       .pipe(
         switchMap((credential) => {
-          const user: User = {
+          const user: UserData = {
             displayName: username as string,
             email: credential.user?.email as string,
             emailVerified: credential.user?.emailVerified,
-            photoURL: "avatars/" + credential.user?.uid as string,
+            photoURL: ("avatars/" + credential.user?.uid) as string,
             uid: credential.user?.uid as string,
             phoneNumber: "",
             // Set default user configurations

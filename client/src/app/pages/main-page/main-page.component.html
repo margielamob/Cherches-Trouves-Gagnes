@@ -1,6 +1,9 @@
 
 <div class="grid-container">
     <div class="grid-item">
+        <div *ngIf="user$ | async as user">
+            Welcome, {{ user.displayName }}!
+          </div>
         <h1 class="game-title">
             {{ title }}
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
