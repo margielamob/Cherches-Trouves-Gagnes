@@ -3,14 +3,14 @@ import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
-import { GameTimeConstantService } from '@app/services/game-time-constant/game-time-constants.service';
 import { GameValidation } from '@app/services/game-validation-service/game-validation.service';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
-import * as supertest from 'supertest';
 import { Container } from 'typedi';
+import * as supertest from 'supertest';
 import { GameController } from './game.controller';
+import { GameTimeConstantService } from '@app/services/game-time-constant/game-time-constants.service';
 
 describe('GameController', () => {
     let gameController: GameController;
@@ -75,7 +75,7 @@ describe('GameController', () => {
 
     it('should return Not Found if a problem in the attribute is detected', async () => {
         gameValidation.isNbDifferenceValid.rejects();
-        gameValidation.getNumberDifference.rejects();
+        gameValidation.numberDifference.rejects();
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
@@ -86,7 +86,7 @@ describe('GameController', () => {
 
     it('should return Not Found if a problem in the attribute is detected', async () => {
         gameValidation.isNbDifferenceValid.rejects();
-        gameValidation.getNumberDifference.resolves();
+        gameValidation.numberDifference.resolves();
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
@@ -99,7 +99,7 @@ describe('GameController', () => {
         const expectedIsValid = true;
         const expectedNumberDifference = 4;
         gameValidation.isNbDifferenceValid.resolves(expectedIsValid);
-        gameValidation.getNumberDifference.resolves(expectedNumberDifference);
+        gameValidation.numberDifference.resolves(expectedNumberDifference);
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
@@ -116,7 +116,7 @@ describe('GameController', () => {
         const expectedNumberDifference = 4;
         const expectedIsValid = false;
         gameValidation.isNbDifferenceValid.resolves(expectedIsValid);
-        gameValidation.getNumberDifference.resolves(expectedNumberDifference);
+        gameValidation.numberDifference.resolves(expectedNumberDifference);
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
