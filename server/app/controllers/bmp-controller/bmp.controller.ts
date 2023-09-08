@@ -1,5 +1,3 @@
-// import { DEFAULT_BMP_ASSET_PATH } from '@app/constants/database';
-// import { BmpService } from '@app/services/bmp-service/bmp.service';
 import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
 import { ImageRef } from '@common/image-ref';
 import { Request, Response, Router } from 'express';
@@ -16,17 +14,6 @@ export class BmpController {
 
     private configureRouter(): void {
         this.router = Router();
-
-        // this.router.get('/:id', async (req: Request, res: Response) => {
-        //     try {
-        //         const bmpRequested = await this.bmpService.getBmpById(req.params.id, DEFAULT_BMP_ASSET_PATH);
-        //         res.status(StatusCodes.OK).send({
-        //             image: bmpRequested,
-        //         });
-        //     } catch (error) {
-        //         res.status(StatusCodes.NOT_FOUND).send();
-        //     }
-        // });
 
         this.router.get('/:id', async (req: Request, res: Response) => {
             try {
