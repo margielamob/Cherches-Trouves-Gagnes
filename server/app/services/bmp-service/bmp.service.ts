@@ -30,6 +30,19 @@ export class BmpService {
         return bmpId;
     }
 
+    async createImageRef(imageData: ImageData) {
+        const bmpData = {
+            data: Buffer.from(await Bmp.convertRGBAToARGB(Array.from(imageData.data))),
+            width: imageData.width,
+            height: imageData.height,
+        };
+        const rawData = bmp.encode(bmpData);
+        return {
+            base64String: rawData.data.toString('base64'),
+            id: this.idGeneratorService.generateNewId(),
+        };
+    }
+
     async deleteGameImages(imageIds: string[], filepath: string): Promise<void> {
         for (const imageId of imageIds) {
             await fs.promises.unlink(path.join(filepath, ID_PREFIX + imageId + BMP_EXTENSION));

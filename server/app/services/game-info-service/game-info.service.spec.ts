@@ -3,13 +3,14 @@ import { DB_URL } from '@app/constants/database';
 import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpreter-service/bmp-difference-interpreter.service';
-import { BmpEncoderService } from '@app/services/bmp-encoder-service/bmp-encoder.service';
 import { BmpService } from '@app/services/bmp-service/bmp.service';
 import { BmpSubtractorService } from '@app/services/bmp-subtractor-service/bmp-subtractor.service';
 import { DatabaseServiceMock } from '@app/services/database-service/database.service.mock';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { DEFAULT_GAMES } from '@app/services/game-info-service/game-info.service.contants.spec';
 import { IdGeneratorService } from '@app/services/id-generator-service/id-generator.service';
+import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import { Coordinate } from '@common/coordinate';
 import { ScoreType } from '@common/score-type';
 import { expect } from 'chai';
@@ -26,15 +27,17 @@ describe('GameInfo Service', async () => {
     let bmpDifferenceService: BmpDifferenceInterpreter;
     let databaseService: DatabaseServiceMock;
     let idGeneratorService: sinon.SinonStubbedInstance<IdGeneratorService>;
-    let bmpEncoderService: BmpEncoderService;
+    let imageRepositoryService: ImageRepositoryService;
+    let logger: LoggerService;
 
     beforeEach(async () => {
         bmpService = Container.get(BmpService);
         databaseService = new DatabaseServiceMock();
-        bmpEncoderService = Container.get(BmpEncoderService);
         bmpSubtractorService = Container.get(BmpSubtractorService);
         bmpDifferenceService = Container.get(BmpDifferenceInterpreter);
         idGeneratorService = sinon.createStubInstance(IdGeneratorService);
+        imageRepositoryService = Container.get(ImageRepositoryService);
+        logger = Container.get(LoggerService);
         idGeneratorService['generateNewId'].callsFake(() => {
             return '5';
         });
@@ -44,7 +47,8 @@ describe('GameInfo Service', async () => {
             bmpService,
             bmpSubtractorService,
             bmpDifferenceService,
-            bmpEncoderService,
+            imageRepositoryService,
+            logger,
         );
         gameInfoService['srcPath'] = tmpdir();
         await databaseService.start(DB_URL);
@@ -128,12 +132,10 @@ describe('GameInfo Service', async () => {
             },
         } as unknown as Bmp);
         const addGameSpy = stub(gameInfoService, 'addGameInfo').resolves();
-        const bmpEncoderSpy = stub(bmpEncoderService, 'base64Encode').resolves();
         await gameInfoService
             // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake toImageData and return {}
             .addGameInfoWrapper({ original: { toImageData: () => {} } as Bmp, modify: { toImageData: () => {} } as Bmp }, '', 0)
             .then(() => {
-                expect(bmpEncoderSpy.called).to.equal(true);
                 expect(addGameSpy.called).to.equal(true);
             });
     });
