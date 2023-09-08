@@ -89,6 +89,10 @@
       Vous avez deja un compte? Connectez-vous 
     </button>
       <p class="obligation">Les champs du formulaire avec * sont obligatoire</p>
+      <div class="error" *ngIf="errorMessage">
+        <p> <mat-icon>error</mat-icon>
+          {{errorMessage}}</p>
+      </div>
     </div>
   </div>
 <app-game-logo></app-game-logo>
