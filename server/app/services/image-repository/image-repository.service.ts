@@ -17,7 +17,6 @@ export class ImageRepositoryService {
     async getImageRefById(id: string) {
         try {
             const image = await this.collection.findOne({ id });
-            this.decompressImage(image as ImageRef);
             return image as ImageRef;
         } catch (error) {
             this.logger.logError(error);
@@ -55,13 +54,5 @@ export class ImageRepositoryService {
 
     private compressImage(imageRef: ImageRef) {
         imageRef.base64String = LZString.compressToUTF16(imageRef.base64String);
-    }
-
-    private decompressImage(imageRef: ImageRef) {
-        try {
-            imageRef.base64String = LZString.decompressFromUTF16(imageRef.base64String) as string;
-        } catch (error) {
-            this.logger.logError(error);
-        }
     }
 }
