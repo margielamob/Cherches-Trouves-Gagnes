@@ -18,7 +18,7 @@ export class ImageRepositoryService {
         try {
             const image = await this.collection.findOne({ id });
             this.decompressImage(image as ImageRef);
-            return image;
+            return image as ImageRef;
         } catch (error) {
             this.logger.logError(error);
             return undefined;

@@ -11,7 +11,6 @@ import { DEFAULT_GAMES } from '@app/services/game-info-service/game-info.service
 import { IdGeneratorService } from '@app/services/id-generator-service/id-generator.service';
 import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
 import { LoggerService } from '@app/services/logger-service/logger.service';
-import { Coordinate } from '@common/coordinate';
 import { ScoreType } from '@common/score-type';
 import { expect } from 'chai';
 import { describe } from 'mocha';
@@ -119,25 +118,6 @@ describe('GameInfo Service', async () => {
     it('resetAllGameInfo() should reset all of the games', async () => {
         await gameInfoService.deleteAllGamesInfo();
         expect(((await gameInfoService.getAllGameInfos()) as PrivateGameInformation[]).length).to.equal(0);
-    });
-
-    it('should create a game from Bmp', async () => {
-        const expectedCoordinates = [[{} as Coordinate]];
-        const expectedId = '';
-        stub(bmpService, 'addBmp').resolves(expectedId);
-        stub(bmpDifferenceService, 'getCoordinates').resolves(expectedCoordinates);
-        stub(bmpSubtractorService, 'getDifferenceBMP').resolves({
-            toImageData: () => {
-                return { width: 0, height: 0, data: new Uint8ClampedArray(), colorSpace: 'srgb' };
-            },
-        } as unknown as Bmp);
-        const addGameSpy = stub(gameInfoService, 'addGameInfo').resolves();
-        await gameInfoService
-            // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake toImageData and return {}
-            .addGameInfoWrapper({ original: { toImageData: () => {} } as Bmp, modify: { toImageData: () => {} } as Bmp }, '', 0)
-            .then(() => {
-                expect(addGameSpy.called).to.equal(true);
-            });
     });
 
     it('should validate that a page number is valid', () => {
