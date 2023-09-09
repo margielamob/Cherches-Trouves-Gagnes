@@ -1,5 +1,5 @@
 import { Bmp } from '@app/classes/bmp/bmp';
-import { DB_GAME_COLLECTION, DEFAULT_BMP_ASSET_PATH } from '@app/constants/database';
+import { DB_GAME_COLLECTION } from '@app/constants/database';
 import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpreter-service/bmp-difference-interpreter.service';
@@ -19,8 +19,6 @@ const NB_TO_RETRIEVE = 4;
 
 @Service()
 export class GameInfoService {
-    private srcPath: string = DEFAULT_BMP_ASSET_PATH;
-
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly databaseService: DatabaseService,
@@ -118,7 +116,9 @@ export class GameInfoService {
 
             if (deletedGame) {
                 const imageIds = [deletedGame.idOriginalBmp, deletedGame.idEditedBmp];
-                await this.bmpService.deleteGameImages(imageIds, this.srcPath);
+                for (const id of imageIds) {
+                    await this.imageRepo.destroyOneDocument(id);
+                }
             }
 
             return deletedGame !== null;
@@ -129,8 +129,7 @@ export class GameInfoService {
 
     async deleteAllGamesInfo(): Promise<void | null> {
         try {
-            await this.bmpService.deleteAllSourceImages(this.srcPath);
-            await this.collection.deleteMany({});
+            await Promise.all([this.collection.deleteMany({}), this.imageRepo.destroyAllDocuments()]);
         } catch (err) {
             return null;
         }

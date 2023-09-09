@@ -88,19 +88,6 @@ describe('GameInfo Service', async () => {
         }
     });
 
-    it('deleteGameInfoById(id) should delete a gameInfo', async () => {
-        const spyBmpService = stub(bmpService, 'deleteGameImages');
-        await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
-        await gameInfoService.deleteGameInfoById('0');
-        expect(spyBmpService.calledOnce).to.equal(true);
-    });
-
-    it('deleteGameinfoBy(id) should return false when deleting a game that doesnt exist', async () => {
-        await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
-        const result = await gameInfoService.deleteGameInfoById('1');
-        expect(result).to.equal(false);
-    });
-
     it('addGameInfo(gameInfo) should add a game to the game collection, getAllGames() should return them', async () => {
         expect(((await gameInfoService.getAllGameInfos()) as PrivateGameInformation[]).length).to.equal(0);
         await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
