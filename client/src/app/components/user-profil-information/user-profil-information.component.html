@@ -13,10 +13,11 @@
           (click)="editAvatar()" >
           Modifier l'avatar
           </button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;">
           <div class="avatar">
             <img
-              width="50px"
-              height="50px" 
+              width="45px"
+              height="45px" 
               [src]="userAvatar" alt="avatar" />
           </div>
         </div>

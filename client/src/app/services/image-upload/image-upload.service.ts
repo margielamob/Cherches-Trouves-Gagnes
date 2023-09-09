@@ -9,7 +9,8 @@ export class ImageUploadService {
   constructor(private storage: AngularFireStorage) { }
 
   uploadImage(image: File, uid: string) {
-    return this.storage.upload(`avatars/${uid}`, image);
+    console.log('upload image');
+    return this.storage.upload(`avatars/${uid}/avatar.jpg`, image);
   }
 
 }
