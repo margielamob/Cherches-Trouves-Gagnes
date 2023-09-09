@@ -85,20 +85,21 @@ export class GameInfoService {
             );
             const compressedThumbnail = LZString.compressToUTF16(editedRef.base64String);
 
-            await this.addGameInfo({
-                id: v4(),
-                name,
-                idOriginalBmp: originalRef.id,
-                idEditedBmp: editedRef.id,
-                thumbnail: compressedThumbnail,
-                differenceRadius: radius,
-                differences,
-                soloScore: [],
-                multiplayerScore: [],
-            });
-
-            await this.imageRepo.insertOne(originalRef);
-            await this.imageRepo.insertOne(editedRef);
+            await Promise.all([
+                this.imageRepo.insertOne(originalRef),
+                this.imageRepo.insertOne(editedRef),
+                this.addGameInfo({
+                    id: v4(),
+                    name,
+                    idOriginalBmp: originalRef.id,
+                    idEditedBmp: editedRef.id,
+                    thumbnail: compressedThumbnail,
+                    differenceRadius: radius,
+                    differences,
+                    soloScore: [],
+                    multiplayerScore: [],
+                }),
+            ]);
             this.logger.logInfo('new game added to database');
         } catch (err) {
             this.logger.logError(err);
