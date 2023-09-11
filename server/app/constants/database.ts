@@ -1,7 +1,7 @@
 export const DB_USERNAME = 'root';
 export const DB_PASSWORD = 'root';
 
-export const DB_URL = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@Cluster0.pwmgav2.mongodb.net/?`;
+export const DB_URL = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.pwmgav2.mongodb.net/?retryWrites=true&w=majority`;
 export const DB_NAME = 'seven-differences';
 
 export const DB_GAME_COLLECTION = 'game-service';
