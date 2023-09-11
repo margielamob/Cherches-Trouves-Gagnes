@@ -1,0 +1,19 @@
+.main-wrapper {
+    padding: 20px;
+    margin: 0px;
+}
+.input-area {
+    width: 100%;
+    padding-top: 10px;
+}
+.chat-area {
+    height: 320px;
+    border-radius: 4px;
+    outline: solid 0.1px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+.chat-area > :first-child {
+    margin-top: auto !important;
+}

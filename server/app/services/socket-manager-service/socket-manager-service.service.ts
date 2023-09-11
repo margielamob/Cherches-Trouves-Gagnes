@@ -7,6 +7,7 @@ import { LimitedTimeGame } from '@app/services/limited-time-game-service/limited
 import { MultiplayerGameManager } from '@app/services/multiplayer-game-manager/multiplayer-game-manager.service';
 import { ScoresHandlerService } from '@app/services/scores-handler-service/scores-handler.service';
 import { BASE_64_HEADER } from '@common/base64';
+import { ChatMessage } from '@common/chat-message';
 import { Coordinate } from '@common/coordinate';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
@@ -41,6 +42,7 @@ export class SocketManagerService {
         this.sio.on(SocketEvent.Connection, (socket: Socket) => {
             // eslint-disable-next-line no-console
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
+            socket.join('allChat');
 
             socket.on(SocketEvent.Disconnect, () => {
                 // eslint-disable-next-line no-console
@@ -266,6 +268,11 @@ export class SocketManagerService {
                         this.sio.to(gameId).emit(SocketEvent.NewGameBoard, gameCardInfo);
                     }
                 }
+            });
+            socket.on(SocketEvent.ChatMessage, (message: ChatMessage) => {
+                this.sio.to(message.room).emit(SocketEvent.ChatMessage, message);
+                // this.sio.sockets.emit(SocketEvent.ChatMessage, message);
+                console.log(`${message.userName} : ${message.body}`);
             });
         });
     }

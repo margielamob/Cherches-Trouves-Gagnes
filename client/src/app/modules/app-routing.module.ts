@@ -7,6 +7,7 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameSelectionPageComponent } from '@app/pages/game-selection-page/game-selection-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MongodbErrorPageComponent } from '@app/pages/mongodb-error-page/mongodb-error-page.component';
+import { PrototypePageComponent } from '@app/pages/prototype-page/prototype-page.component';
 import { WaitingRoomComponent } from '@app/pages/waiting-room/waiting-room.component';
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
     { path: 'admin', component: AdminPageComponent },
     { path: 'waiting', component: WaitingRoomComponent },
     { path: 'error', component: MongodbErrorPageComponent },
+    { path: 'prototype', component: PrototypePageComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

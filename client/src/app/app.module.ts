@@ -21,6 +21,7 @@ import { CentralBoxComponent } from './components/central-tool-box/central-tool-
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
+import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
@@ -34,17 +35,19 @@ import { GameConstantFieldComponent } from './components/game-constant-field/gam
 import { GameConstantsSettingsComponent } from './components/game-constants-settings/game-constants-settings.component';
 import { GameScoreComponent } from './components/game-score/game-score.component';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
+import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
+import { PrototypeChatBoxComponent } from './components/prototype/chat-box/chat-box.component';
+import { MessageComponent } from './components/prototype/message/message.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
-import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
-import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
-import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { PrototypePageComponent } from './pages/prototype-page/prototype-page.component';
+import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -94,6 +97,9 @@ import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog
         CentralBoxComponent,
         NoGameSnackbarComponent,
         ConfirmDeleteDialogComponent,
+        MessageComponent,
+        PrototypePageComponent,
+        PrototypeChatBoxComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],

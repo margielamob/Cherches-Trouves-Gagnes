@@ -1,0 +1,47 @@
+<!-- <div class="chat-box">
+    <ul class="message-box">
+        <li *ngFor="let message of messages" #message>
+            <app-message [message]="message"></app-message>
+        </li>
+        <li *ngFor="let message of messages" #message>({ message })</li> 
+        <app-message [message]="message"></app-message> 
+        ({message})
+        </li> 
+    </ul>
+    <div class="input-container">
+        <input
+            #myinput
+            name="input"
+            type="text"
+            placeholder="Entrez une commande"
+            [(ngModel)]="inputMessage.body"
+            (keydown)="blockEventPropagation($event)"
+            (keydown.enter)="sendMessage()"
+            autocomplete="off"
+        />
+        <button class="submit" (click)="sendMessage()">Entrer</button>
+    </div>
+</div> -->
+
+<mat-card class="main-wrapper">
+    <div class="chat-area" #scroll>
+        <div *ngFor="let message of messages">
+            <app-message [message]="message"></app-message>
+        </div>
+    </div>
+    <mat-form-field appearance="outline" class="input-area">
+        <input
+            #myinput
+            (keydown)="blockEventPropagation($event)"
+            (keydown.enter)="sendMessage()"
+            autocomplete="off"
+            matInput
+            placeholder="Message..."
+            maxlength="200"
+            [(ngModel)]="inputMessage.body"
+        />
+        <button mat-icon-button matSuffix (click)="sendMessage()">
+            <mat-icon>send</mat-icon>
+        </button>
+    </mat-form-field>
+</mat-card>

@@ -1,0 +1,22 @@
+<div class="message-wrapper">
+    <div
+        [ngClass]="{
+            'message-wrapper-opponent': isOpponentMessage(message),
+            'message-wrapper-gameMaster': isEventMessage(message),
+            'message-wrapper-personal': isPersonalMessage(message)
+        }"
+    >
+        <div class="'message-sender">{{ message.userName }}</div>
+        <br />
+        <div
+            class="message-content"
+            [ngClass]="{
+                opponent: isOpponentMessage(message),
+                personal: isPersonalMessage(message),
+                gameMaster: isEventMessage(message)
+            }"
+        >
+            {{ message.body }}
+        </div>
+    </div>
+</div>
