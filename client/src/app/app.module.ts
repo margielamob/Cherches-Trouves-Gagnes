@@ -1,5 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database'; // Importez ce module
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage'; // Importez ce module
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,12 +20,15 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
+import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
+import { AppLogoComponent } from './components/app-logo/app-logo.component';
 import { ApprovalDialogComponent } from './components/approval-dialog/approval-dialog.component';
 import { CentralBoxComponent } from './components/central-tool-box/central-tool-box.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
+import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
@@ -34,6 +42,7 @@ import { GameConstantFieldComponent } from './components/game-constant-field/gam
 import { GameConstantsSettingsComponent } from './components/game-constants-settings/game-constants-settings.component';
 import { GameScoreComponent } from './components/game-score/game-score.component';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
+import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
@@ -41,19 +50,10 @@ import { RejectedDialogComponent } from './components/rejected-dialog/rejected-d
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
-import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
-import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
-import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
-import { environment } from '../environments/environment';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database'; // Importez ce module
-import { AngularFireStorageModule } from '@angular/fire/compat/storage'; // Importez ce module
+import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
-import { AppLogoComponent } from './components/app-logo/app-logo.component';
+import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 
 /**
  * Main module that is used in main.ts.

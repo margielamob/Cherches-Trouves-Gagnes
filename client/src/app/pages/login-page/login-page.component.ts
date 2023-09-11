@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '../../services/authentication-service/authentication.service';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
 import { take } from 'rxjs';
 
 @Component({
@@ -9,17 +9,16 @@ import { take } from 'rxjs';
     templateUrl: './login-page.component.html',
     styleUrls: ['./login-page.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent {
     loginForm: FormGroup;
     errorMessage: string = '';
+
     constructor(private auth: AuthenticationService, private router: Router) {
         this.loginForm = new FormGroup({
             credential: new FormControl('', Validators.required),
             password: new FormControl('', Validators.required),
         });
     }
-
-    ngOnInit() {}
     get credential() {
         return this.loginForm.get('credential');
     }

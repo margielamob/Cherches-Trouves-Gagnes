@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { UserService } from '@app/services/user-service/user.service';
 import { catchError, from, switchMap, throwError } from 'rxjs';
-import { UserService } from '../user-service/user.service';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +28,7 @@ export class AuthenticationService {
     signUp(email: string, password: string) {
         return from(this.afAuth.createUserWithEmailAndPassword(email, password)).pipe(
             catchError((error: FirebaseError) => {
-                // Si l'adresse e-mail est déjà utilisée
+                // if email adress is already used
                 if (error.code === 'auth/email-already-in-use') {
                     return throwError(() => new Error("L'adresse e-mail est déjà utilisée. Connecter vous a votre compte"));
                 } else {
@@ -39,7 +39,7 @@ export class AuthenticationService {
     }
 
     logout() {
-        //logout currunt user . A utuliser plus tard
+        // logout currunt user
         return from(this.afAuth.signOut());
     }
 

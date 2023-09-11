@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Theme } from '@app/enums/theme';
+import { UserData } from '@app/interfaces/user';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { switchMap, take } from 'rxjs';
-import { Theme } from '@app/enums/theme';
 import { userNameValidator } from 'utils/custom-validators';
-import { UserData } from '@app/interfaces/user';
 
 @Component({
     selector: 'app-sign-up-page',
     templateUrl: './sign-up-page.component.html',
     styleUrls: ['./sign-up-page.component.scss'],
 })
-export class SignUpPageComponent implements OnInit {
+export class SignUpPageComponent {
     signUpForm: FormGroup;
     errorMessage: string = '';
+
     constructor(private router: Router, private userService: UserService, private auth: AuthenticationService) {
         this.signUpForm = new FormGroup({
             username: new FormControl(
@@ -26,10 +27,6 @@ export class SignUpPageComponent implements OnInit {
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', Validators.required),
         });
-    }
-
-    ngOnInit() {
-        console.log(this.username?.hasError('userNameValidator'));
     }
 
     get email() {
@@ -50,8 +47,6 @@ export class SignUpPageComponent implements OnInit {
 
     submit() {
         if (!this.signUpForm.valid) {
-            console.log('form', this.signUpForm);
-
             return;
         }
 
@@ -68,12 +63,12 @@ export class SignUpPageComponent implements OnInit {
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations
-                        Theme: Theme.default,
-                        Language: 'Fr',
-                        game_lost: 0,
-                        game_wins: 0,
-                        game_played: 0,
-                        average_time: '0:0',
+                        theme: Theme.ClassName,
+                        language: 'Fr',
+                        gameLost: 0,
+                        gameWins: 0,
+                        gamePlayed: 0,
+                        averageTime: '0:0',
                     };
                     return this.userService.adduser(user);
                 }),

@@ -62,7 +62,6 @@ export class UserService {
     updateUser(user: UserData) {
         return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
             catchError((error) => {
-                console.error('update user error ', error);
                 throw error;
             }),
         );
@@ -74,20 +73,17 @@ export class UserService {
             .getDownloadURL()
             .pipe(
                 catchError((error) => {
-                    console.error('get image error ', error);
                     throw error;
                 }),
             );
     }
 
     uploadUserAvatar(uid: string, avatar: File) {
-        console.log('uid: ', uid);
         return this.storage
             .upload(`avatars/${uid}/`, avatar)
             .snapshotChanges()
             .pipe(
                 catchError((error) => {
-                    console.error('upload image error ', error);
                     throw error;
                 }),
             );
