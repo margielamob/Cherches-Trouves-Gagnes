@@ -87,24 +87,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-  }
-  .grid-container {
+}
+.grid-container {
     display: grid;
     grid-template-columns: auto auto;
     padding: 1em;
-  }
-  .game-logo {
+}
+.game-logo {
     padding-left: 2vw;
     width: 100px;
     font-size: 100px;
     height: 100px;
-  }
-  .grid-item {
+}
+.grid-item {
     text-align: center;
     font-size: 3rem;
-  }
+}
 
-  .team-number {
+.team-number {
     font-weight: 500;
     text-align: right;
-  }
+}

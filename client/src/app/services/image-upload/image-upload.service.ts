@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class ImageUploadService {
+    constructor(private storage: AngularFireStorage) {}
 
-  constructor(private storage: AngularFireStorage) { }
-
-  uploadImage(image: File, uid: string) {
-    return this.storage.upload(`avatars/${uid}`, image);
-  }
-
+    uploadImage(image: File, uid: string) {
+        return this.storage.upload(`avatars/${uid}`, image);
+    }
 }

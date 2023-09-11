@@ -13,18 +13,18 @@
 .pulsate {
     animation: pulsate 1.5s ease-out;
     animation-iteration-count: infinite;
-    animation-delay: .25s; 
+    animation-delay: 0.25s;
     opacity: 0.5;
 }
 
 @keyframes pulsate {
-    0% { 
+    0% {
         opacity: 0.5;
     }
-    50% { 
-        opacity: 1.0;
+    50% {
+        opacity: 1;
     }
-    100% { 
+    100% {
         opacity: 0.5;
     }
 }
@@ -41,14 +41,15 @@
     width: 10px;
     height: 10px;
     border-radius: 5px;
-    background-color: #673AB7;
-    color: #673AB7;
-    box-shadow: 9999px 0 0 -5px #673AB7;
+    background-color: #673ab7;
+    color: #673ab7;
+    box-shadow: 9999px 0 0 -5px #673ab7;
     animation: dotPulse 1.5s infinite linear;
-    animation-delay: .25s;
+    animation-delay: 0.25s;
 }
-  
-.dot-pulse::before, .dot-pulse::after {
+
+.dot-pulse::before,
+.dot-pulse::after {
     content: '';
     display: inline-block;
     position: absolute;
@@ -56,57 +57,57 @@
     width: 10px;
     height: 10px;
     border-radius: 5px;
-    background-color: #673AB7;
-    color: #673AB7;
+    background-color: #673ab7;
+    color: #673ab7;
 }
 
 .dot-pulse::before {
-    box-shadow: 9984px 0 0 -5px #673AB7;
+    box-shadow: 9984px 0 0 -5px #673ab7;
     animation: dotPulseBefore 1.5s infinite linear;
     animation-delay: 0s;
 }
 
 .dot-pulse::after {
-    box-shadow: 10014px 0 0 -5px #673AB7;
+    box-shadow: 10014px 0 0 -5px #673ab7;
     animation: dotPulseAfter 1.5s infinite linear;
-    animation-delay: .5s;
+    animation-delay: 0.5s;
 }
-  
+
 @keyframes dotPulseBefore {
-0% {
-    box-shadow: 9984px 0 0 -5px #673AB7;
-}
-30% {
-    box-shadow: 9984px 0 0 2px #673AB7;
-}
-60%,
-100% {
-    box-shadow: 9984px 0 0 -5px #673AB7;
-}
+    0% {
+        box-shadow: 9984px 0 0 -5px #673ab7;
+    }
+    30% {
+        box-shadow: 9984px 0 0 2px #673ab7;
+    }
+    60%,
+    100% {
+        box-shadow: 9984px 0 0 -5px #673ab7;
+    }
 }
 
 @keyframes dotPulse {
-0% {
-    box-shadow: 9999px 0 0 -5px #673AB7;
+    0% {
+        box-shadow: 9999px 0 0 -5px #673ab7;
+    }
+    30% {
+        box-shadow: 9999px 0 0 2px #673ab7;
+    }
+    60%,
+    100% {
+        box-shadow: 9999px 0 0 -5px #673ab7;
+    }
 }
-30% {
-    box-shadow: 9999px 0 0 2px #673AB7;
-}
-60%,
-100% {
-    box-shadow: 9999px 0 0 -5px #673AB7;
-}
-}
-  
+
 @keyframes dotPulseAfter {
-0% {
-    box-shadow: 10014px 0 0 -5px #673AB7;
-}
-30% {
-    box-shadow: 10014px 0 0 2px #673AB7;
-}
-60%,
-100% {
-    box-shadow: 10014px 0 0 -5px #673AB7;
-}
+    0% {
+        box-shadow: 10014px 0 0 -5px #673ab7;
+    }
+    30% {
+        box-shadow: 10014px 0 0 2px #673ab7;
+    }
+    60%,
+    100% {
+        box-shadow: 10014px 0 0 -5px #673ab7;
+    }
 }

@@ -1,9 +1,6 @@
-
 <div class="grid-container">
     <div class="grid-item">
-        <div *ngIf="user$ | async as user">
-            Bienvenue, {{ user.displayName }}!
-          </div>
+        <div *ngIf="user$ | async as user">Bienvenue, {{ user.displayName }}!</div>
         <h1 class="game-title">
             {{ title }}
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
@@ -24,5 +21,4 @@
         <p><span>Laurie Bédard-Côté, </span> <span>Xavier Jouslin.</span></p>
     </div>
     <app-game-logo></app-game-logo>
-
 </div>

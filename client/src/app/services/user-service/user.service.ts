@@ -1,106 +1,99 @@
-import { Injectable } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { AngularFireStorage } from "@angular/fire/compat/storage";
-import { UserData } from "@app/interfaces/user";
-import { Observable, catchError, from, map, switchMap } from "rxjs";
+import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { UserData } from '@app/interfaces/user';
+import { Observable, catchError, from, map, switchMap } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+    providedIn: 'root',
 })
 export class UserService {
-  user$: Observable<UserData | undefined>;
-  constructor(
-    private afs: AngularFirestore,
-    private storage: AngularFireStorage,
-    private afAuth: AngularFireAuth
-  ) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap((user) => {
-        if (user) {
-          return this.afs
-            .collection("users")
-            .doc<UserData>(user.uid)
-            .valueChanges();
-        } else {
-          return [];
-        }
-      })
-    );
-  }
+    user$: Observable<UserData | undefined>;
+    constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
+        this.user$ = this.afAuth.authState.pipe(
+            switchMap((user) => {
+                if (user) {
+                    return this.afs.collection('users').doc<UserData>(user.uid).valueChanges();
+                } else {
+                    return [];
+                }
+            }),
+        );
+    }
 
-  adduser(user: UserData) {
-    return from(this.afs.collection("users").doc(user.uid).set(user));
-  }
+    adduser(user: UserData) {
+        return from(this.afs.collection('users').doc(user.uid).set(user));
+    }
 
-  deleteUser(user: UserData) {
-    return from(this.afs.collection("users").doc(user.uid).delete());
-  }
+    deleteUser(user: UserData) {
+        return from(this.afs.collection('users').doc(user.uid).delete());
+    }
 
-  isUserNameAvailable(userName: string): Observable<boolean> {
-    return this.afs
-      .collection("users", (ref) => ref.where("displayName", "==", userName))
-      .get()
-      .pipe(
-        map((resut) => {
-          if (!resut.empty) {
-            return false;
-          } else {
-            return true;
-          }
-        })
-      );
-  }
+    isUserNameAvailable(userName: string): Observable<boolean> {
+        return this.afs
+            .collection('users', (ref) => ref.where('displayName', '==', userName))
+            .get()
+            .pipe(
+                map((resut) => {
+                    if (!resut.empty) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }),
+            );
+    }
 
-  getUserByUserName(userName: string) {
-    return this.afs
-      .collection("users", (ref) => ref.where("displayName", "==", userName))
-      .get()
-      .pipe(
-        map((resut) => {
-          if (!resut.empty) {
-            return resut.docs[0].data() as UserData;
-          } else {
-            return null;
-          }
-        })
-      );
-  }
-  updateUser(user: UserData) {
-    return from(this.afs.collection("users").doc(user.uid).update(user)).pipe(
-      catchError((error) => {
-        console.error("update user error ", error);
-        throw error;
-      })
-    );
-  }
+    getUserByUserName(userName: string) {
+        return this.afs
+            .collection('users', (ref) => ref.where('displayName', '==', userName))
+            .get()
+            .pipe(
+                map((resut) => {
+                    if (!resut.empty) {
+                        return resut.docs[0].data() as UserData;
+                    } else {
+                        return null;
+                    }
+                }),
+            );
+    }
+    updateUser(user: UserData) {
+        return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
+            catchError((error) => {
+                console.error('update user error ', error);
+                throw error;
+            }),
+        );
+    }
 
-  getImageOfSignedUser(uid: string) {
-    return this.storage
-      .ref(`avatars/${uid}`)
-      .getDownloadURL()
-      .pipe(
-        catchError((error) => {
-          console.error("get image error ", error);
-          throw error;
-        })
-      );
-  }
+    getImageOfSignedUser(uid: string) {
+        return this.storage
+            .ref(`avatars/${uid}`)
+            .getDownloadURL()
+            .pipe(
+                catchError((error) => {
+                    console.error('get image error ', error);
+                    throw error;
+                }),
+            );
+    }
 
-  uploadUserAvatar(uid: string, avatar: File) {
-    console.log("uid: ", uid);
-    return this.storage
-      .upload(`avatars/${uid}/`, avatar)
-      .snapshotChanges()
-      .pipe(
-        catchError((error) => {
-          console.error("upload image error ", error);
-          throw error;
-        })
-      );
-  }
+    uploadUserAvatar(uid: string, avatar: File) {
+        console.log('uid: ', uid);
+        return this.storage
+            .upload(`avatars/${uid}/`, avatar)
+            .snapshotChanges()
+            .pipe(
+                catchError((error) => {
+                    console.error('upload image error ', error);
+                    throw error;
+                }),
+            );
+    }
 
-  getCurrentUser(): Observable<UserData | undefined> {
-    return this.user$;
-  }
+    getCurrentUser(): Observable<UserData | undefined> {
+        return this.user$;
+    }
 }
