@@ -1,12 +1,13 @@
 import { Bmp } from '@app/classes/bmp/bmp';
-import { BMP_EXTENSION, DB_GAME_COLLECTION, DEFAULT_BMP_ASSET_PATH, ID_PREFIX } from '@app/constants/database';
+import { DB_GAME_COLLECTION } from '@app/constants/database';
 import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpreter-service/bmp-difference-interpreter.service';
-import { BmpEncoderService } from '@app/services/bmp-encoder-service/bmp-encoder.service';
 import { BmpService } from '@app/services/bmp-service/bmp.service';
 import { BmpSubtractorService } from '@app/services/bmp-subtractor-service/bmp-subtractor.service';
 import { DatabaseService } from '@app/services/database-service/database.service';
+import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import { Score } from '@common/score';
 import { Collection } from 'mongodb';
 import { Service } from 'typedi';
@@ -18,15 +19,14 @@ const NB_TO_RETRIEVE = 4;
 
 @Service()
 export class GameInfoService {
-    private srcPath: string = DEFAULT_BMP_ASSET_PATH;
-
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly databaseService: DatabaseService,
         private readonly bmpService: BmpService,
         private readonly bmpSubtractorService: BmpSubtractorService,
         private readonly bmpDifferenceInterpreter: BmpDifferenceInterpreter,
-        private readonly bmpEncoderService: BmpEncoderService,
+        private readonly imageRepo: ImageRepositoryService,
+        private readonly logger: LoggerService,
     ) {}
 
     get collection(): Collection<PrivateGameInformation> {
@@ -76,27 +76,31 @@ export class GameInfoService {
 
     async addGameInfoWrapper(images: { original: Bmp; modify: Bmp }, name: string, radius: number): Promise<void | null> {
         try {
-            const idOriginalBmp = await this.bmpService.addBmp(await images.original.toImageData(), DEFAULT_BMP_ASSET_PATH);
-            const idEditedBmp = await this.bmpService.addBmp(await images.modify.toImageData(), DEFAULT_BMP_ASSET_PATH);
+            const originalRef = await this.bmpService.createImageRef(await images.original.toImageData());
+            const editedRef = await this.bmpService.createImageRef(await images.modify.toImageData());
             const differences = await this.bmpDifferenceInterpreter.getCoordinates(
                 await this.bmpSubtractorService.getDifferenceBMP(images.original, images.modify, radius),
             );
-            const compressedThumbnail = LZString.compressToUTF16(
-                await this.bmpEncoderService.base64Encode(this.srcPath + '/' + ID_PREFIX + idEditedBmp + BMP_EXTENSION),
-            );
+            const compressedThumbnail = LZString.compressToUTF16(editedRef.base64String);
 
-            await this.addGameInfo({
-                id: v4(),
-                name,
-                idOriginalBmp,
-                idEditedBmp,
-                thumbnail: compressedThumbnail,
-                differenceRadius: radius,
-                differences,
-                soloScore: [],
-                multiplayerScore: [],
-            });
+            await Promise.all([
+                this.imageRepo.insertOne(originalRef),
+                this.imageRepo.insertOne(editedRef),
+                this.addGameInfo({
+                    id: v4(),
+                    name,
+                    idOriginalBmp: originalRef.id,
+                    idEditedBmp: editedRef.id,
+                    thumbnail: compressedThumbnail,
+                    differenceRadius: radius,
+                    differences,
+                    soloScore: [],
+                    multiplayerScore: [],
+                }),
+            ]);
+            this.logger.logInfo('new game added to database');
         } catch (err) {
+            this.logger.logError(err);
             return null;
         }
     }
@@ -112,7 +116,9 @@ export class GameInfoService {
 
             if (deletedGame) {
                 const imageIds = [deletedGame.idOriginalBmp, deletedGame.idEditedBmp];
-                await this.bmpService.deleteGameImages(imageIds, this.srcPath);
+                for (const id of imageIds) {
+                    await this.imageRepo.destroyOneDocument(id);
+                }
             }
 
             return deletedGame !== null;
@@ -123,8 +129,7 @@ export class GameInfoService {
 
     async deleteAllGamesInfo(): Promise<void | null> {
         try {
-            await this.bmpService.deleteAllSourceImages(this.srcPath);
-            await this.collection.deleteMany({});
+            await Promise.all([this.collection.deleteMany({}), this.imageRepo.destroyAllDocuments()]);
         } catch (err) {
             return null;
         }

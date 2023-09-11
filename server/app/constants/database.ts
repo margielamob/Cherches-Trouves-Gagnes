@@ -5,6 +5,7 @@ export const DB_URL = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.pwmg
 export const DB_NAME = 'seven-differences';
 
 export const DB_GAME_COLLECTION = 'game-service';
+export const DB_IMAGE_COLLECTION = 'image-service';
 
 export const DEFAULT_BMP_ASSET_PATH = './assets/src-bmp';
 export const DEFAULT_BMP_TEST_PATH = './assets/test-bmp';
