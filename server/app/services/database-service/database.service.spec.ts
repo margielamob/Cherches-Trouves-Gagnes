@@ -1,12 +1,12 @@
 import { DB_NAME } from '@app/constants/database';
 import { DatabaseService } from '@app/services/database-service/database.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
-import { LoggerService } from '../logger-service/logger.service';
 chai.use(chaiAsPromised);
 
 describe('Database service', () => {
@@ -53,7 +53,7 @@ describe('Database service', () => {
     });
 
     it('should log the error when failing to start the server', async () => {
-        const logError = sinon.stub(console, 'error');
+        const logError = sinon.stub(logger, 'logError');
         sinon.stub(Object.getPrototypeOf(databaseService), 'initializeCollection').throws();
         await databaseService.start('invalid uri');
         expect(logError.calledOnce).to.equal(true);

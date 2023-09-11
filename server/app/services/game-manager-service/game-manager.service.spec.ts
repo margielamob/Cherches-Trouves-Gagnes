@@ -6,18 +6,18 @@ import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpret
 import { BmpService } from '@app/services/bmp-service/bmp.service';
 import { BmpSubtractorService } from '@app/services/bmp-subtractor-service/bmp-subtractor.service';
 import { DatabaseService } from '@app/services/database-service/database.service';
+import { DifferenceService } from '@app/services/difference-service/difference.service';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
 import { IdGeneratorService } from '@app/services/id-generator-service/id-generator.service';
-import { Coordinate } from '@common/coordinate';
-import { User } from '@common/user';
-
-import { BmpEncoderService } from '@app/services/bmp-encoder-service/bmp-encoder.service';
-import { DifferenceService } from '@app/services/difference-service/difference.service';
+import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
 import { LimitedTimeGame } from '@app/services/limited-time-game-service/limited-time-game.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import { TimerService } from '@app/services/timer-service/timer.service';
+import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { restore, SinonSpiedInstance, stub, useFakeTimers } from 'sinon';
@@ -31,24 +31,33 @@ describe('GameManagerService', () => {
     let bmpDifferenceService: BmpDifferenceInterpreter;
     let gameManager: GameManagerService;
     let gameInfoSpyObj: SinonSpiedInstance<GameInfoService>;
-    let bmpEncoderService: BmpEncoderService;
     let idGeneratorService: sinon.SinonStubbedInstance<IdGeneratorService>;
     let limitedTimeService: LimitedTimeGame;
     let difference: DifferenceService;
     let timer: TimerService;
+    let imageRepositoryService: ImageRepositoryService;
+    let logger: LoggerService;
 
     beforeEach(() => {
         clock = useFakeTimers();
-        bmpEncoderService = Container.get(BmpEncoderService);
         bmpService = Container.get(BmpService);
         timer = Container.get(TimerService);
         bmpSubtractorService = Container.get(BmpSubtractorService);
         bmpDifferenceService = Container.get(BmpDifferenceInterpreter);
         idGeneratorService = sinon.createStubInstance(IdGeneratorService);
+        imageRepositoryService = Container.get(ImageRepositoryService);
+        logger = Container.get(LoggerService);
         idGeneratorService['generateNewId'].callsFake(() => {
             return '5';
         });
-        const gameInfo = new GameInfoService({} as DatabaseService, bmpService, bmpSubtractorService, bmpDifferenceService, bmpEncoderService);
+        const gameInfo = new GameInfoService(
+            {} as DatabaseService,
+            bmpService,
+            bmpSubtractorService,
+            bmpDifferenceService,
+            imageRepositoryService,
+            logger,
+        );
         difference = new DifferenceService();
         limitedTimeService = new LimitedTimeGame(gameInfo);
         gameInfoSpyObj = stub(gameInfo);
