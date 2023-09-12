@@ -1,5 +1,5 @@
 <section class="carousel" [ngClass]="favoriteTheme">
-    <div class="page-content"  *ngIf="this.isInformationLoaded(); else loadingScreen">
+    <div class="page-content" *ngIf="this.isInformationLoaded(); else loadingScreen">
         <div class="game-number-container" *ngIf="!isAdmin">
             <span class="game-number">{{ getCardsCount() }} jeu<span *ngIf="hasMoreThanOneCard()">x</span></span>
         </div>
@@ -7,16 +7,16 @@
         <div *ngIf="!hasCards()" class="no-game-container">
             <mat-card class="no-game-card">
                 <mat-card-header class="no-game-center">
-                  <mat-card-title><b>Aucun jeu disponible !</b></mat-card-title>
+                    <mat-card-title><b>Aucun jeu disponible !</b></mat-card-title>
                 </mat-card-header>
-                
+
                 <mat-card-actions class="no-game-center">
-                  <button mat-raised-button color="primary" routerLink="/create">Créer un jeu</button>
+                    <button mat-raised-button color="primary" routerLink="/create">Créer un jeu</button>
                 </mat-card-actions>
                 <mat-card-footer>
-                  <mat-progress-bar class="progess-bar" mode="buffer" color="primary"></mat-progress-bar>
+                    <mat-progress-bar class="progess-bar" mode="buffer" color="primary"></mat-progress-bar>
                 </mat-card-footer>
-              </mat-card>
+            </mat-card>
         </div>
 
         <div class="game-cards-container">
@@ -24,7 +24,7 @@
                 <app-game-card [gameCard]="gameCard"></app-game-card>
             </div>
         </div>
-    
+
         <div class="carousel-actions-container" *ngIf="hasCards() && this.isInformationLoaded()">
             <button mat-fab color="primary" [disabled]="!hasCardsBefore()" (click)="onClickPrevious()">
                 <mat-icon><b>chevron_left</b></mat-icon>

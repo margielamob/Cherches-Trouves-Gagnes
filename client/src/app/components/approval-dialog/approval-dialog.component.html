@@ -1,6 +1,8 @@
 <main [ngClass]="favoriteTheme">
     <h2 mat-dialog-title>Joueur Trouvé</h2>
-    <div mat-dialog-content>Voulez-vous jouer contre : <b>{{ opponentsName }}</b> ?</div>
+    <div mat-dialog-content>
+        Voulez-vous jouer contre : <b>{{ opponentsName }}</b> ?
+    </div>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close cdkFocusInitial color="primary" (click)="onClickReject()">Non</button>
         <button mat-button mat-dialog-close color="primary" (click)="onClickApprove()">Oui</button>

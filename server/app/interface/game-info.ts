@@ -5,8 +5,8 @@ export interface PrivateGameInformation {
     id: string;
     name: string;
     idOriginalBmp: string;
-    thumbnail: string;
     idEditedBmp: string;
+    thumbnail: string;
     soloScore: Score[];
     multiplayerScore: Score[];
     differenceRadius: number;

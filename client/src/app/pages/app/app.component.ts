@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { Theme } from "@app/enums/theme";
+import { Component } from '@angular/core';
+import { Theme } from '@app/enums/theme';
 
 @Component({
   selector: "app-root",
@@ -7,5 +7,5 @@ import { Theme } from "@app/enums/theme";
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  favoriteTheme: string = Theme.ClassName;
+    favoriteTheme: string = Theme.ClassName;
 }

@@ -1,77 +1,26 @@
-
 <div class="grid-container">
-<div class="form-container">
-  <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
-      <mat-form-field>
-        <mat-label>Email ou nom d'utilisateur</mat-label>
-        <input
-          matInput
-          placeholder="pat@example.com / Trump1234"
-          formControlName="credential"
-          required
-        />
-        <mat-error *ngIf="credential?.errors?.['required']">
-          Information de connexion requise
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Mot de passe</mat-label>
-        <input
-          matInput
-          placeholder="*******"
-          formControlName="password"
-          required
-        />
-        <mat-error *ngIf="password?.errors?.['required']">
-          Mot de passe requis
-        </mat-error>
-      </mat-form-field>
+    <div class="form-container">
+        <div class="login-container">
+            <form [formGroup]="loginForm" (ngSubmit)="submit()">
+                <mat-form-field>
+                    <mat-label>Email ou nom d'utilisateur</mat-label>
+                    <input matInput placeholder="pat@example.com / Trump1234" formControlName="credential" required />
+                    <mat-error *ngIf="credential?.errors?.['required']"> Information de connexion requise </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput placeholder="*******" formControlName="password" required />
+                    <mat-error *ngIf="password?.errors?.['required']"> Mot de passe requis </mat-error>
+                </mat-form-field>
 
-        <button class="form-btn" mat-raised-button color="primary" type="submit">Connexion</button>
+                <button class="form-btn" mat-raised-button color="primary" type="submit">Connexion</button>
+            </form>
+            <button class="form-btn" mat-raised-button color="primary" (click)="goToSignUpPage()">Enregistre un nouveau compte</button>
 
-      
-    </form>
-    <button class="form-btn" mat-raised-button color="primary" (click)="goToSignUpPage()">Enregistre un nouveau compte</button>
-
-    <div class="error" *ngIf="errorMessage">
-      <p> <mat-icon>error</mat-icon>
-        {{errorMessage}}</p>
+            <div class="error" *ngIf="errorMessage">
+                <p><mat-icon>error</mat-icon> {{ errorMessage }}</p>
+            </div>
+        </div>
     </div>
-
-  </div>
- 
+    <app-game-logo></app-game-logo>
 </div>
-    
-  <div class="grid-item">
-      <img src="assets/quote.png" alt="photo pour jeu de différences" />
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

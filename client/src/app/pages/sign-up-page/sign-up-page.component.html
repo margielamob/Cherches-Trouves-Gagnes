@@ -1,98 +1,58 @@
 <div class="grid-container">
-  <div class="form-container">
-    <div class="login-container">
-      <div class="connect">
-        <h2>Inscription</h2>
-      </div>
-      <div class="avatar">
-        <img
-          width="100px"
-          height="100px" 
-          src="assets/default-user-icon.jpg" alt="avatar" />
-      </div>
+    <div class="form-container">
+        <div class="login-container">
+            <div class="connect">
+                <h2>Inscription</h2>
+            </div>
+            <div class="avatar">
+                <img width="100px" height="100px" src="assets/default-user-icon.jpg" alt="avatar" />
+            </div>
 
-      <form [formGroup]="signUpForm" (ngSubmit)="submit()">
-        <mat-form-field>
-          <mat-label>Nom d'utilisateur</mat-label>
-          <input
-            matInput
-            placeholder="Trump1234"
-            formControlName="username"
-            required
-          />
-          <mat-error *ngIf="username?.errors?.['required']">
-            <p>
-              Votre nom d'utilisateur est requis pour la creation de votre
-              compte
-            </p>
-          </mat-error>
+            <form [formGroup]="signUpForm" (ngSubmit)="submit()">
+                <mat-form-field>
+                    <mat-label>Nom d'utilisateur</mat-label>
+                    <input matInput placeholder="Trump1234" formControlName="username" required />
+                    <mat-error *ngIf="username?.errors?.['required']">
+                        <p>Votre nom d'utilisateur est requis pour la creation de votre compte</p>
+                    </mat-error>
 
-          <mat-error *ngIf="username?.hasError('pattern')">
-            <p>
-              Le nom d'utilisateur doit contenir au moins une lettre et ne peut
-              comprendre que des lettres, des chiffres et des underscores.
-            </p>
-          </mat-error>
-          <mat-error *ngIf="username?.hasError('userNameTaken')">
-            <p>
-              Le nom d'utilisateur n'est pas disponible. Veuillez choisir un autre nom
-            </p>
-          </mat-error>
-        </mat-form-field>
+                    <mat-error *ngIf="username?.hasError('pattern')">
+                        <p>
+                            Le nom d'utilisateur doit contenir au moins une lettre et ne peut comprendre que des lettres, des chiffres et des
+                            underscores.
+                        </p>
+                    </mat-error>
+                    <mat-error *ngIf="username?.hasError('userNameTaken')">
+                        <p>Le nom d'utilisateur n'est pas disponible. Veuillez choisir un autre nom</p>
+                    </mat-error>
+                </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Adresse email </mat-label>
-          <input
-            matInput
-            placeholder="Trump@google.com"
-            formControlName="email"
-            required
-          />
-          <mat-error *ngIf="email?.errors?.['required']">
-            <p>
-              Votre adresse email est requis pour la creation de votre compte
-            </p>
-          </mat-error>
-          <mat-error *ngIf="email?.errors?.['email']">
-            <p>Entrer une adresse email valide</p>
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Mot de passe</mat-label>
-          <input
-            matInput
-            placeholder="*******"
-            formControlName="password"
-            required
-          />
-          <mat-error *ngIf="password?.errors?.['required']">
-            Mot de passe requis
-          </mat-error>
-        </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Adresse email </mat-label>
+                    <input matInput placeholder="Trump@google.com" formControlName="email" required />
+                    <mat-error *ngIf="email?.errors?.['required']">
+                        <p>Votre adresse email est requis pour la creation de votre compte</p>
+                    </mat-error>
+                    <mat-error *ngIf="email?.errors?.['email']">
+                        <p>Entrer une adresse email valide</p>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput placeholder="*******" formControlName="password" required />
+                    <mat-error *ngIf="password?.errors?.['required']"> Mot de passe requis </mat-error>
+                </mat-form-field>
 
-        <button
-          class="form-btn"
-          mat-raised-button
-          color="primary"
-          type="submit"
-        >
-          S'inscrire
-        </button>
-      </form>
-      <button
-      class="form-btn"
-      mat-raised-button
-      color="primary"
-      type="submit"
-      (click)="goToLoginPage()"
-    >
-      Vous avez deja un compte? Connectez-vous 
-    </button>
-      <p class="obligation">Les champs du formulaire avec * sont obligatoire</p>
+                <button class="form-btn" mat-raised-button color="primary" type="submit">S'inscrire</button>
+            </form>
+            <button class="form-btn" mat-raised-button color="primary" type="submit" (click)="goToLoginPage()">
+                Vous avez deja un compte? Connectez-vous
+            </button>
+            <p class="obligation">Les champs du formulaire avec * sont obligatoire</p>
+            <div class="error" *ngIf="errorMessage">
+                <p><mat-icon>error</mat-icon> {{ errorMessage }}</p>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <div class="grid-item">
-    <img src="assets/quote.png" alt="photo pour jeu de différences" />
-  </div>
+    <app-game-logo></app-game-logo>
 </div>
