@@ -6,15 +6,18 @@ import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
+import { LoggerService } from '../logger-service/logger.service';
 chai.use(chaiAsPromised);
 
 describe('Database service', () => {
     let mongoServer: MongoMemoryServer;
     let databaseService: DatabaseService;
     let uri = '';
+    let logger: LoggerService;
 
     beforeEach(async () => {
-        databaseService = new DatabaseService();
+        logger = new LoggerService();
+        databaseService = new DatabaseService(logger);
         mongoServer = await MongoMemoryServer.create();
         uri = mongoServer.getUri();
     });

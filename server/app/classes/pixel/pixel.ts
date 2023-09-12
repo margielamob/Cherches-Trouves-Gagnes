@@ -57,10 +57,6 @@ export class Pixel {
         this.setColor(PIXEL_COLOR.black);
     }
 
-    setWhite() {
-        this.setColor(PIXEL_COLOR.white);
-    }
-
     private isColor(color: number) {
         return this.r === color && this.g === color && this.b === color;
     }

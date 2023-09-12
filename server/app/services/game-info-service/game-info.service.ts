@@ -78,8 +78,9 @@ export class GameInfoService {
         try {
             const idOriginalBmp = await this.bmpService.addBmp(await images.original.toImageData(), DEFAULT_BMP_ASSET_PATH);
             const idEditedBmp = await this.bmpService.addBmp(await images.modify.toImageData(), DEFAULT_BMP_ASSET_PATH);
-            await this.bmpSubtractorService.getDifferenceBMP(images.original, images.modify, radius);
-            const differences = await this.bmpDifferenceInterpreter.getCoordinates(images.original);
+            const differences = await this.bmpDifferenceInterpreter.getCoordinates(
+                await this.bmpSubtractorService.getDifferenceBMP(images.original, images.modify, radius),
+            );
             const compressedThumbnail = LZString.compressToUTF16(
                 await this.bmpEncoderService.base64Encode(this.srcPath + '/' + ID_PREFIX + idEditedBmp + BMP_EXTENSION),
             );

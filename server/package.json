@@ -67,7 +67,8 @@
         "swagger-jsdoc": "6.2.5",
         "swagger-ui-express": "4.5.0",
         "typedi": "0.10.0",
-        "uuidv4": "^6.2.13"
+        "uuidv4": "^6.2.13",
+        "winston": "^3.10.0"
     },
     "devDependencies": {
         "@types/bmp-js": "^0.1.0",

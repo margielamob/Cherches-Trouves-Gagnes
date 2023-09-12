@@ -55,6 +55,7 @@ import { AngularFireStorageModule } from "@angular/fire/compat/storage"; // Impo
 import { SignUpPageComponent } from "./pages/sign-up-page/sign-up-page.component";
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
+import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 
 /**
  * Main module that is used in main.ts.
@@ -109,6 +110,7 @@ import { UserProfilInformationComponent } from './components/user-profil-informa
     SignUpPageComponent,
     SettingsPageComponent,
     UserProfilInformationComponent,
+    DialogUserAvatarComponent,
   ],
   imports: [
     AppMaterialModule,
