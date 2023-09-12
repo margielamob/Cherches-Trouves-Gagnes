@@ -2,7 +2,6 @@ Les images eraser-icon-black.png, eraser-icon-white.png proviennent du site web:
 https://icons8.com/icons/set/eraser
 et sont libre de droits.
 
-
 Les images swap-picture-black.png, swap-picture-white.png proviennent du site web:
 https://icons8.com/icons/set/shuffling
 et sont libre de droits.
@@ -16,4 +15,3 @@ https://www.flaticon.com/free-icon/background_6046087?term=foreground&page=1&pos
 
 L'image copie-foreground.png a été inspiré par l'icône:
 https://icons8.com/icons/set/foregrounds
-

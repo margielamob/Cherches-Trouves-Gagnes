@@ -1,5 +1,6 @@
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +14,7 @@ import { MainPageService } from '@app/services/main-page/main-page.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { GameMode } from '@common/game-mode';
 import { of, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
@@ -32,7 +34,15 @@ describe('MainPageComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [MainPageComponent],
-            imports: [AppMaterialModule, NoopAnimationsModule, RouterTestingModule, BrowserAnimationsModule, ReactiveFormsModule, HttpClientModule],
+            imports: [
+                AppMaterialModule,
+                NoopAnimationsModule,
+                RouterTestingModule,
+                BrowserAnimationsModule,
+                ReactiveFormsModule,
+                HttpClientModule,
+                AngularFireModule.initializeApp(environment.firebase),
+            ],
             providers: [
                 { provide: MatDialog, useValue: spyMatDialog },
                 {
@@ -54,7 +64,9 @@ describe('MainPageComponent', () => {
             ],
         }).compileComponents();
         spyCommunicationService.getGamesInfoByPage.and.callFake(() => {
-            return of({ body: { carouselInfo: {}, games: [{}] } } as HttpResponse<CarouselResponse>);
+            return of({
+                body: { carouselInfo: {}, games: [{}] },
+            } as HttpResponse<CarouselResponse>);
         });
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;

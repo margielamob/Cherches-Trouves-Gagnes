@@ -4,13 +4,21 @@
     <canvas width="640px" height="480px" id="imageDifference" #imageDifference></canvas>
     <form [formGroup]="this.form">
         <mat-form-field>
-            <input matInput type="text" placeholder="Nom du jeu" formControlName="name" maxlength="20"/>
+            <input matInput type="text" placeholder="Nom du jeu" formControlName="name" maxlength="20" />
         </mat-form-field>
         <mat-error *ngIf="!this.form.valid"> Le nom du jeu doit contenir des lettres</mat-error>
     </form>
     <mat-dialog-actions>
-        <button  color="primary" mat-button mat-dialog-close>Cancel</button>
-        <button type="button" mat-raised-button mat-dialog-close color="primary" [disabled]="!this.form.valid" (click)="this.createGame()" type="submit">
+        <button color="primary" mat-button mat-dialog-close>Cancel</button>
+        <button
+            type="button"
+            mat-raised-button
+            mat-dialog-close
+            color="primary"
+            [disabled]="!this.form.valid"
+            (click)="this.createGame()"
+            type="submit"
+        >
             Créer la partie
         </button>
     </mat-dialog-actions>

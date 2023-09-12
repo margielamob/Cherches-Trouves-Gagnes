@@ -1,21 +1,26 @@
 <div [ngClass]="theme">
     <div *ngIf="!this.isClassic">
         <h1 mat-dialog-title>Partie terminée !</h1>
-        <div mat-dialog-content>Félicitations, vous avez trouvé <b>{{nbPoints}}</b> différence(s) ! </div>
+        <div mat-dialog-content>
+            Félicitations, vous avez trouvé <b>{{ nbPoints }}</b> différence(s) !
+        </div>
     </div>
     <div *ngIf="this.isWin && this.isClassic">
         <h1 mat-dialog-title>Partie terminée !</h1>
-        <div mat-dialog-content>Félicitations, tu as <b>gagné</b>. </div>
-        <div *ngIf="isClassic" mat-dialog-content>Tu es le vainqueur ! </div>
-
+        <div mat-dialog-content>Félicitations, tu as <b>gagné</b>.</div>
+        <div *ngIf="isClassic" mat-dialog-content>Tu es le vainqueur !</div>
     </div>
     <div *ngIf="!this.isWin && this.isClassic">
         <h1 mat-dialog-title>Partie terminée !</h1>
         <div mat-dialog-content>Bonne partie, mais tu as <b>perdu </b>.</div>
-        <div *ngIf="isClassic" mat-dialog-content>Le vainqueur est :  {{winner}}.</div>
+        <div *ngIf="isClassic" mat-dialog-content>Le vainqueur est : {{ winner }}.</div>
     </div>
     <div *ngIf="this.index && this.time">
-        <div mat-dialog-content>Vous avez gagné en <b>{{ time }}</b>, vous êtes maintenant à la position <b>{{ index }}</b>.</div>
+        <div mat-dialog-content>
+            Vous avez gagné en <b>{{ time }}</b
+            >, vous êtes maintenant à la position <b>{{ index }}</b
+            >.
+        </div>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>Quitter</button>
