@@ -14,6 +14,7 @@ import { Coordinate } from '@common/coordinate';
 import { DifferenceFound } from '@common/difference';
 import { PublicGameInformation } from '@common/game-information';
 import { SocketEvent } from '@common/socket-event';
+import * as LZString from 'lz-string';
 
 @Component({
     selector: 'app-play-area',
@@ -164,7 +165,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             if (!response || !response.body) {
                 return;
             }
-            const imageBase64 = response.body.image;
+            const imageBase64 = this.decompressImage(response.body.image);
             const image = new Image();
             image.src = BASE_64_HEADER + imageBase64;
             image.onload = () => {
@@ -184,5 +185,9 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
 
     private isMouseDisabled() {
         return this.differencesDetectionHandlerService.mouseIsDisabled;
+    }
+
+    private decompressImage(base64String: string) {
+        return LZString.decompressFromUTF16(base64String) as string;
     }
 }

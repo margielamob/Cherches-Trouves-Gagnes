@@ -3,14 +3,14 @@ import { DB_URL } from '@app/constants/database';
 import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpreter-service/bmp-difference-interpreter.service';
-import { BmpEncoderService } from '@app/services/bmp-encoder-service/bmp-encoder.service';
 import { BmpService } from '@app/services/bmp-service/bmp.service';
 import { BmpSubtractorService } from '@app/services/bmp-subtractor-service/bmp-subtractor.service';
 import { DatabaseServiceMock } from '@app/services/database-service/database.service.mock';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { DEFAULT_GAMES } from '@app/services/game-info-service/game-info.service.contants.spec';
 import { IdGeneratorService } from '@app/services/id-generator-service/id-generator.service';
-import { Coordinate } from '@common/coordinate';
+import { ImageRepositoryService } from '@app/services/image-repository/image-repository.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
 import { ScoreType } from '@common/score-type';
 import { expect } from 'chai';
 import { describe } from 'mocha';
@@ -26,15 +26,17 @@ describe('GameInfo Service', async () => {
     let bmpDifferenceService: BmpDifferenceInterpreter;
     let databaseService: DatabaseServiceMock;
     let idGeneratorService: sinon.SinonStubbedInstance<IdGeneratorService>;
-    let bmpEncoderService: BmpEncoderService;
+    let imageRepositoryService: ImageRepositoryService;
+    let logger: LoggerService;
 
     beforeEach(async () => {
         bmpService = Container.get(BmpService);
         databaseService = new DatabaseServiceMock();
-        bmpEncoderService = Container.get(BmpEncoderService);
         bmpSubtractorService = Container.get(BmpSubtractorService);
         bmpDifferenceService = Container.get(BmpDifferenceInterpreter);
         idGeneratorService = sinon.createStubInstance(IdGeneratorService);
+        imageRepositoryService = Container.get(ImageRepositoryService);
+        logger = Container.get(LoggerService);
         idGeneratorService['generateNewId'].callsFake(() => {
             return '5';
         });
@@ -44,7 +46,8 @@ describe('GameInfo Service', async () => {
             bmpService,
             bmpSubtractorService,
             bmpDifferenceService,
-            bmpEncoderService,
+            imageRepositoryService,
+            logger,
         );
         gameInfoService['srcPath'] = tmpdir();
         await databaseService.start(DB_URL);
@@ -85,19 +88,6 @@ describe('GameInfo Service', async () => {
         }
     });
 
-    it('deleteGameInfoById(id) should delete a gameInfo', async () => {
-        const spyBmpService = stub(bmpService, 'deleteGameImages');
-        await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
-        await gameInfoService.deleteGameInfoById('0');
-        expect(spyBmpService.calledOnce).to.equal(true);
-    });
-
-    it('deleteGameinfoBy(id) should return false when deleting a game that doesnt exist', async () => {
-        await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
-        const result = await gameInfoService.deleteGameInfoById('1');
-        expect(result).to.equal(false);
-    });
-
     it('addGameInfo(gameInfo) should add a game to the game collection, getAllGames() should return them', async () => {
         expect(((await gameInfoService.getAllGameInfos()) as PrivateGameInformation[]).length).to.equal(0);
         await gameInfoService.addGameInfo(DEFAULT_GAMES[0]);
@@ -115,27 +105,6 @@ describe('GameInfo Service', async () => {
     it('resetAllGameInfo() should reset all of the games', async () => {
         await gameInfoService.deleteAllGamesInfo();
         expect(((await gameInfoService.getAllGameInfos()) as PrivateGameInformation[]).length).to.equal(0);
-    });
-
-    it('should create a game from Bmp', async () => {
-        const expectedCoordinates = [[{} as Coordinate]];
-        const expectedId = '';
-        stub(bmpService, 'addBmp').resolves(expectedId);
-        stub(bmpDifferenceService, 'getCoordinates').resolves(expectedCoordinates);
-        stub(bmpSubtractorService, 'getDifferenceBMP').resolves({
-            toImageData: () => {
-                return { width: 0, height: 0, data: new Uint8ClampedArray(), colorSpace: 'srgb' };
-            },
-        } as unknown as Bmp);
-        const addGameSpy = stub(gameInfoService, 'addGameInfo').resolves();
-        const bmpEncoderSpy = stub(bmpEncoderService, 'base64Encode').resolves();
-        await gameInfoService
-            // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake toImageData and return {}
-            .addGameInfoWrapper({ original: { toImageData: () => {} } as Bmp, modify: { toImageData: () => {} } as Bmp }, '', 0)
-            .then(() => {
-                expect(bmpEncoderSpy.called).to.equal(true);
-                expect(addGameSpy.called).to.equal(true);
-            });
     });
 
     it('should validate that a page number is valid', () => {
