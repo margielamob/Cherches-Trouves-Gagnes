@@ -78,3 +78,33 @@ body {
     background-color: transparent !important;
     box-shadow: none;
 }
+
+.game-title {
+    font-size: 40px;
+    margin-bottom: 7rem;
+    margin-top: 2em;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 1em;
+}
+.game-logo {
+    padding-left: 2vw;
+    width: 100px;
+    font-size: 100px;
+    height: 100px;
+}
+.grid-item {
+    text-align: center;
+    font-size: 3rem;
+}
+
+.team-number {
+    font-weight: 500;
+    text-align: right;
+}
