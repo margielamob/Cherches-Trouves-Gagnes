@@ -54,6 +54,8 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
 
 /**
  * Main module that is used in main.ts.
@@ -107,6 +109,8 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        SettingsPageComponent,
+        UserProfilInformationComponent,
     ],
     imports: [
         AppMaterialModule,

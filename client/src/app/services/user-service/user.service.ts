@@ -69,7 +69,7 @@ export class UserService {
 
     getImageOfSignedUser(uid: string) {
         return this.storage
-            .ref(`avatars/${uid}`)
+            .ref(`avatars/${uid}/avatar.jpg`)
             .getDownloadURL()
             .pipe(
                 catchError((error) => {
