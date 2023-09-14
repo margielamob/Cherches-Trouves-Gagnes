@@ -1,1 +1,14 @@
-<p>dialog-user-avatar works!</p>
+<div class="containerSpaceBetween">
+    <div class="header1">{{ title }}</div>
+    <div>
+        <div *ngFor="let avatarImage of avatarImages">
+            <img [src]="avatarImage.imagePath" alt="{{ avatarImage.fileName }}" />
+        </div>
+        <div>
+            <button class="material-icons">add_circle</button>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>
+        </div>
+    </div>
+</div>

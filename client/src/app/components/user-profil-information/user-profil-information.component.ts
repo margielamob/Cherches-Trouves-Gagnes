@@ -27,6 +27,10 @@ export class UserProfilInformationComponent implements OnInit {
 
     setUserAvatar() {
         if (this.currentUserId === undefined) return;
+        if (this.userService.doesUserAvatarExist(this.currentUserId)) {
+            this.userAvatar = 'assets/default-user-icon.jpg';
+            return;
+        }
         this.userService.getImageOfSignedUser(this.currentUserId).subscribe((url) => {
             this.userAvatar = url;
         });

@@ -67,6 +67,24 @@ export class UserService {
         );
     }
 
+    doesUserAvatarExist(uid: string) {
+        return this.storage
+            .ref(`avatars/${uid}/avatar.jpg`)
+            .getMetadata()
+            .pipe(
+                map((metadata) => {
+                    if (metadata) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }),
+                catchError((error) => {
+                    throw error;
+                }),
+            );
+    }
+
     getImageOfSignedUser(uid: string) {
         return this.storage
             .ref(`avatars/${uid}/avatar.jpg`)
