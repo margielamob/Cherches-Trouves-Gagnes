@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
+import { AccountSettingsComponent } from '@app/pages/account-settings/account-settings.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -16,6 +17,8 @@ const routes: Routes = [
     { path: 'login', component: LoginPageComponent },
     { path: 'sign-up', component: SignUpPageComponent },
     { path: 'home', component: MainPageComponent },
+    { path: 'settings', component: AccountSettingsComponent },
+
     { path: 'game', component: GamePageComponent },
     { path: 'create', component: CreateGamePageComponent },
     { path: 'select', component: GameSelectionPageComponent },

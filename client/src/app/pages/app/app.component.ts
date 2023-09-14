@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Theme } from '@app/enums/theme';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-root',
@@ -7,5 +8,9 @@ import { Theme } from '@app/enums/theme';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-    favoriteTheme: string = Theme.ClassName;
+    favoriteTheme: string = Theme.Alternative;
+
+    constructor(private translate: TranslateService) {
+        this.translate.setDefaultLang('en');
+    }
 }

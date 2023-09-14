@@ -22,6 +22,7 @@ export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
 
     readonly title: string = 'Jeu de différences';
+    readonly headerMessage: string = 'Menu principal';
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(

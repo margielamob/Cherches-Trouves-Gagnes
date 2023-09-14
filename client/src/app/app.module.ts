@@ -58,6 +58,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AccountSettingsComponent } from './pages/account-settings/account-settings.component';
 
 /**
  * Main module that is used in main.ts.
@@ -111,6 +112,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        AccountSettingsComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -143,6 +145,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+// ngx-translate and the loader module documentation : http://www.ngx-translate.com/
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions, @typescript-eslint/naming-convention
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {

@@ -1,0 +1,20 @@
+<form [formGroup]="settingsForm">
+    <!-- Pour le username -->
+    <input type="text" formControlName="username" />
+
+    <!-- Pour le language -->
+    <mat-form-field>
+        <mat-label>Language</mat-label>
+        <mat-select formControlName="language">
+            <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Pour le theme -->
+    <!-- <mat-form-field>
+      <mat-label>Theme</mat-label>
+      <mat-select formControlName="theme">
+          <mat-option *ngFor="let th of themes" [value]="th">{{ th }}</mat-option>
+      </mat-select>
+  </mat-form-field> -->
+</form>

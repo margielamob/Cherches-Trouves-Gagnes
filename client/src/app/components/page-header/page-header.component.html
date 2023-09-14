@@ -4,5 +4,8 @@
     </button>
     {{ headerMessage }}
     <span class="filler"></span>
+    <button (click)="logout()" mat-fab color="primary" aria-label="Example icon button with a delete icon">
+        <mat-icon>vpn_key</mat-icon>
+    </button>
     <app-exit-game-button *ngIf="isExitButtonEnabled"></app-exit-game-button>
 </mat-toolbar>

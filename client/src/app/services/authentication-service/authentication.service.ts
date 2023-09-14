@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
 import { UserService } from '@app/services/user-service/user.service';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 
@@ -8,7 +9,7 @@ import { catchError, from, switchMap, throwError } from 'rxjs';
     providedIn: 'root',
 })
 export class AuthenticationService {
-    constructor(private afAuth: AngularFireAuth, private userService: UserService) {}
+    constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router) {}
 
     login(email: string, password: string) {
         // login user with email and password
@@ -40,6 +41,7 @@ export class AuthenticationService {
 
     logout() {
         // logout currunt user
+        this.router.navigate(['/login']);
         return from(this.afAuth.signOut());
     }
 
@@ -52,7 +54,7 @@ export class AuthenticationService {
                 if (user) {
                     return this.login(user?.email, password);
                 }
-                // l'utilisateur n'existe pas
+                // user do not exist
                 return throwError(() => new Error("Nom d'utilisateur introuvable."));
             }),
         );

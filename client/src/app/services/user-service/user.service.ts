@@ -59,6 +59,7 @@ export class UserService {
                 }),
             );
     }
+
     updateUser(user: UserData) {
         return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
             catchError((error) => {
