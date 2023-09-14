@@ -6,7 +6,6 @@
             </div>
             <div class="avatar-container">
                 <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">Modifier l'avatar</button>
-                <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" />
                 <div class="avatar">
                     <img width="45px" height="45px" [src]="userAvatar" alt="avatar" />
                 </div>

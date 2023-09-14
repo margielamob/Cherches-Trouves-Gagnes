@@ -1,14 +1,17 @@
 <div class="containerSpaceBetween">
-    <div class="header1">{{ title }}</div>
+    <div class="header3">{{ title }}</div>
     <div>
-        <div *ngFor="let avatarImage of avatarImages">
-            <img [src]="avatarImage.imagePath" alt="{{ avatarImage.fileName }}" />
+        <div class="avatar-container">
+            <div *ngFor="let avatarImage of avatarImages">
+                <img [src]="avatarImage.imagePath" alt="{{ avatarImage.fileName }}" />
+            </div>
+            <div class="user-avatar">
+                <img width="50px" height="50px" [src]="userAvatar" alt="avatar" (click)="editAvatar()" />
+                <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" />
+            </div>
         </div>
-        <div>
-            <button class="material-icons">add_circle</button>
-        </div>
-        <div>
-            <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>
-        </div>
+    </div>
+    <div>
+        <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>
     </div>
 </div>

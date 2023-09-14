@@ -1,0 +1,28 @@
+.containerSpaceBetween {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header3 {
+    font-size: x-large;
+    font-weight: 400;
+    line-height: 1.5em;
+    text-align: center;
+    margin: 0.5em;
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1rem;
+}
+
+.user-avatar {
+    margin: 5px;
+    padding: 15px;
+    border-radius: 50%;
+    background-color: rgb(229, 229, 229);
+}

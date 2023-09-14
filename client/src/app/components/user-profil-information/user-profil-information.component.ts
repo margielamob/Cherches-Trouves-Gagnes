@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogUserAvatarComponent } from '@app/components/dialog-user-avatar/dialog-user-avatar.component';
-import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
 import { UserService } from '@app/services/user-service/user.service';
 
 @Component({
@@ -11,16 +9,15 @@ import { UserService } from '@app/services/user-service/user.service';
     styleUrls: ['./user-profil-information.component.scss'],
 })
 export class UserProfilInformationComponent implements OnInit {
-    currentUserId: string | undefined;
+    currentUserId: string;
     userAvatar: string;
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-    @ViewChild('fileInput') fileInput: ElementRef;
 
-    constructor(private userService: UserService, private imageUploadService: ImageUploadService, private dialog: MatDialog) {}
+    constructor(private userService: UserService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
         this.userService.getCurrentUser().subscribe((user) => {
-            this.currentUserId = user?.uid;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.currentUserId = user!.uid;
             this.setUserAvatar();
         });
     }
@@ -36,10 +33,6 @@ export class UserProfilInformationComponent implements OnInit {
         });
     }
 
-    editAvatar() {
-        this.fileInput.nativeElement.click();
-    }
-
     openUserAvatarDialog(): void {
         this.dialog.open(DialogUserAvatarComponent, {
             autoFocus: false,
@@ -50,20 +43,5 @@ export class UserProfilInformationComponent implements OnInit {
                 currentUserId: this.currentUserId,
             },
         });
-    }
-
-    onFileSelected(event: any) {
-        const file: File = event.target.files[0];
-        if (file) {
-            // Check if the selected file is a valid image (JPG or PNG)
-            if (file.type === 'image/jpeg' || file.type === 'image/png') {
-                // You can now upload the file to your server or perform any other actions
-                this.imageUploadService.uploadImage(file, 'ZDGkOh1uWxUDhp6q9p3NR8u4Zil2');
-            } else {
-                // Invalid file type
-                // eslint-disable-next-line no-console
-                console.error('Invalid file type. Please select a JPG or PNG file.');
-            }
-        }
     }
 }
