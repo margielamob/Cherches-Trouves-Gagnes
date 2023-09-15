@@ -26,4 +26,12 @@ export class SessionHandlerService {
                 take(1),
             );
     }
+
+    logSessionActivity(userUid: string, activity: string) {
+        const log = {
+            activity,
+            timestamp: new Date(),
+        };
+        return from(this.afs.collection('users').doc(userUid).collection('activityLogs').add(log));
+    }
 }

@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { SessionHandlerService } from '@app/services/session-handler/session-handler.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { catchError, from, of, switchMap, take, throwError } from 'rxjs';
+import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +21,10 @@ export class AuthenticationService {
     login(email: string, password: string) {
         // login user with email and password
         return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
+            tap((response) => {
+                // Ceci est un effet secondaire, il ne modifie pas la sortie de l'observable
+                if (response.user) this.sessionHandlerService.logSessionActivity(response.user.uid, 'conect').subscribe();
+            }),
             catchError((error: FirebaseError) => {
                 if (error.code === 'auth/user-not-found') {
                     return throwError(() => new Error("Votre compte n'existe pas. Veuillez vous inscrire ou verifier vos informations"));
@@ -49,6 +53,10 @@ export class AuthenticationService {
     signOut() {
         this.afAuth.authState
             .pipe(
+                tap((user) => {
+                    // Ceci est un effet secondaire, il ne modifie pas la sortie de l'observable
+                    if (user) this.sessionHandlerService.logSessionActivity(user.uid, 'disconect').subscribe();
+                }),
                 switchMap((user) => {
                     if (user) {
                         return this.sessionHandlerService.deleteSession(user.uid);
