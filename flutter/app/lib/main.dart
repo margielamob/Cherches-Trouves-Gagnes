@@ -188,7 +188,7 @@ class PrototypePage extends StatelessWidget {
                 width: 200.0, // Set the desired width
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Enter your text',
+                    labelText: 'Enter your message',
                     border: OutlineInputBorder(),
                   ),
                 ),
