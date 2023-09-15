@@ -60,7 +60,9 @@ export class AuthenticationService {
             .pipe(take(1))
             .subscribe(() => {
                 // sign out user
-                this.afAuth.signOut();
+                setTimeout(() => {
+                    this.afAuth.signOut();
+                }, 100000);
                 this.router.navigate(['login']);
             });
     }

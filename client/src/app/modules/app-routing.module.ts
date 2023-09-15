@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
+import { AuthGuard } from '@app/guards/auth.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -15,14 +16,14 @@ const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginPageComponent },
     { path: 'sign-up', component: SignUpPageComponent },
-    { path: 'home', component: MainPageComponent },
-    { path: 'game', component: GamePageComponent },
-    { path: 'create', component: CreateGamePageComponent },
-    { path: 'select', component: GameSelectionPageComponent },
-    { path: 'draw', component: DrawCanvasComponent },
-    { path: 'admin', component: AdminPageComponent },
-    { path: 'waiting', component: WaitingRoomComponent },
-    { path: 'error', component: MongodbErrorPageComponent },
+    { path: 'home', component: MainPageComponent, canActivate: [AuthGuard] },
+    { path: 'game', component: GamePageComponent, canActivate: [AuthGuard] },
+    { path: 'create', component: CreateGamePageComponent, canActivate: [AuthGuard] },
+    { path: 'select', component: GameSelectionPageComponent, canActivate: [AuthGuard] },
+    { path: 'draw', component: DrawCanvasComponent, canActivate: [AuthGuard] },
+    { path: 'admin', component: AdminPageComponent, canActivate: [AuthGuard] },
+    { path: 'waiting', component: WaitingRoomComponent, canActivate: [AuthGuard] },
+    { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '/home' },
 ];
 
