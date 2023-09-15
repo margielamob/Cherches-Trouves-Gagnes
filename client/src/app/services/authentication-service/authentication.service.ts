@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
+import { SessionHandlerService } from '@app/services/session-handler/session-handler.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { catchError, from, switchMap, throwError } from 'rxjs';
+import { catchError, from, of, switchMap, take, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthenticationService {
-    constructor(private afAuth: AngularFireAuth, private userService: UserService) {}
+    // eslint-disable-next-line max-params
+    constructor(
+        private afAuth: AngularFireAuth,
+        private userService: UserService,
+        private sessionHandlerService: SessionHandlerService,
+        private router: Router,
+    ) {}
 
     login(email: string, password: string) {
         // login user with email and password
@@ -38,9 +46,23 @@ export class AuthenticationService {
         );
     }
 
-    logout() {
-        // logout currunt user
-        return from(this.afAuth.signOut());
+    signOut() {
+        this.afAuth.authState
+            .pipe(
+                switchMap((user) => {
+                    if (user) {
+                        return this.sessionHandlerService.deleteSession(user.uid);
+                    } else {
+                        return of(null);
+                    }
+                }),
+            )
+            .pipe(take(1))
+            .subscribe(() => {
+                // sign out user
+                this.afAuth.signOut();
+                this.router.navigate(['login']);
+            });
     }
 
     loginWithUserName(credential: string, password: string, isEmail: boolean) {
@@ -52,7 +74,7 @@ export class AuthenticationService {
                 if (user) {
                     return this.login(user?.email, password);
                 }
-                // l'utilisateur n'existe pas
+                // user not found
                 return throwError(() => new Error("Nom d'utilisateur introuvable."));
             }),
         );

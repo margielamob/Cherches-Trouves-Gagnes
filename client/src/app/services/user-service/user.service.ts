@@ -92,4 +92,22 @@ export class UserService {
     getCurrentUser(): Observable<UserData | undefined> {
         return this.user$;
     }
+
+    // logUserConnection(userUid: string) {
+    //     return from(
+    //         this.afs.collection('userActivity').doc(userUid).collection('history').add({
+    //             action: 'connection',
+    //             time: new Date(),
+    //         }),
+    //     );
+    // }
+
+    // logUserDisconnection(userUid: string) {
+    //     return from(
+    //         this.afs.collection('userActivity').doc(userUid).collection('history').add({
+    //             action: 'disconnection',
+    //             time: new Date(),
+    //         }),
+    //     );
+    // }
 }
