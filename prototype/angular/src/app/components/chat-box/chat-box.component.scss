@@ -1,0 +1,65 @@
+// Variables for colors
+$primary-color: #333; // Dark gray
+$secondary-color: #666; // Slightly lighter gray
+$background-color: #f4f4f4; // Light gray background
+$form-background: #fff; // White form background
+
+.chatbox {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: $form-background;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.screen {
+    min-height: 300px;
+    max-height: 300px; // Set a maximum height for the message screen
+    overflow-y: auto; // Add a scrollbar when content overflows
+    border: 1px solid $secondary-color;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: $background-color;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: $background-color;
+    border-radius: 4px;
+    color: $primary-color;
+}
+
+// Styling for the input box
+.input-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type='text'] {
+    flex-grow: 1; // Allow the input field to grow to fill available space
+    padding: 10px;
+    border: 1px solid $secondary-color;
+    border-radius: 4px;
+    font-size: 16px;
+    color: $primary-color;
+
+    &:focus {
+        border-color: $primary-color;
+    }
+}
+
+button {
+    background-color: $primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+}

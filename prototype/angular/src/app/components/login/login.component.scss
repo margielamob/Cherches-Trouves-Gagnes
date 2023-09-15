@@ -1,0 +1,71 @@
+// Variables for colors
+$primary-color: #333; // Dark gray
+$secondary-color: #666; // Slightly lighter gray
+$background-color: #f4f4f4; // Light gray background
+$form-background: #fff; // White form background
+
+// Basic styling for the entire page
+body {
+    font-family: Arial, sans-serif;
+    background-color: $background-color;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: $form-background;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2,
+h3 {
+    color: $primary-color;
+}
+
+p {
+    line-height: 1.6;
+    color: $primary-color;
+}
+
+// Styling for form elements
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: $primary-color;
+}
+
+input[type='text'],
+input[type='password'] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid $secondary-color;
+    border-radius: 4px;
+    font-size: 16px;
+    color: $primary-color;
+
+    &:focus {
+        border-color: $primary-color;
+    }
+}
+
+button[type='submit'] {
+    background-color: $primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+}
