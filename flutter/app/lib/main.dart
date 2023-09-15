@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => MainPage(),
         '/pageA': (context) => PageA(),
         '/pageB': (context) => PageB(),
+        '/prototype': (context) => PrototypePage(),
       },
     );
   }
@@ -68,9 +69,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageC');
+                        Navigator.pushNamed(context, '/prototype');
                       },
-                      child: Text('Go to Page C'),
+                      child: Text('Go to Prototype'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
@@ -149,6 +150,60 @@ class PageB extends StatelessWidget {
         child: Text(
           'This is Page B',
           style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
+  }
+}
+
+class PrototypePage extends StatelessWidget {
+  sendMessage() {
+    print('Message sent');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Adjusting TextField Width Example'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                  width: 200.0,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 3.0,
+                      color: Colors.blue,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  )),
+              SizedBox(height: 16.0),
+              Container(
+                width: 200.0, // Set the desired width
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter your text',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.0),
+              // Send Button
+              Container(
+                width: 200.0, // Set the desired width
+                child: ElevatedButton(
+                  onPressed: sendMessage,
+                  child: Text('Send'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
