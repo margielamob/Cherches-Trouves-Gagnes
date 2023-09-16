@@ -12,6 +12,11 @@ export class AppComponent implements OnInit {
 
     constructor(private auth: AuthenticationService) {}
     ngOnInit(): void {
+        // listen to session changes
+        this.auth.listenToSessionChanges();
+
+        // automaticly sign out user when page is reloaded
+
         if (localStorage.getItem('isLoadedBefore')) {
             this.auth.signOut();
         } else {
