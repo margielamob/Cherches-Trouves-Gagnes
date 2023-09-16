@@ -2,17 +2,17 @@ import { Service } from 'typedi';
 
 @Service()
 export class UserManagerService {
-    private users: string[] = [];
-    constructor() {}
+    private users: Map<string, string> = new Map();
 
-    addUser(user: string) {
-        if (!this.users.includes(user)) {
-            this.users.push(user);
+    addUser(socketId: string, user: string) {
+        if (!Array.from(this.users.values()).includes(user)) {
+            this.users.set(socketId, user);
         } else {
             throw new Error('User Already Signed In');
         }
     }
-    removeUser(user: string) {
-        this.users.splice(this.users.indexOf(user, 0), 1);
+    removeUser(socketId: string) {
+        this.users.delete(socketId);
+        console.log(this.users);
     }
 }

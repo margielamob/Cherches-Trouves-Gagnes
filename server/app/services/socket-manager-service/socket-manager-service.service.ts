@@ -48,11 +48,16 @@ export class SocketManagerService {
             socket.on(SocketEvent.Disconnect, () => {
                 // eslint-disable-next-line no-console
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
+                this.userManagerService.removeUser(socket.id);
+            });
+
+            socket.on(SocketEvent.DisconnectFromChat, () => {
+                this.userManagerService.removeUser(socket.id);
             });
 
             socket.on(SocketEvent.Authenticate, (userName: string) => {
                 try {
-                    this.userManagerService.addUser(userName);
+                    this.userManagerService.addUser(socket.id, userName);
                     socket.join('allChatProto');
                     socket.emit(SocketEvent.UserAuthenticated);
                     console.log('authenticate successful' + userName);
