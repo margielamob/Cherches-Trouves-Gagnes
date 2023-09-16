@@ -59,7 +59,7 @@ export class SignUpPageComponent {
                         displayName: username as string,
                         email: credential.user?.email as string,
                         emailVerified: credential.user?.emailVerified,
-                        photoURL: ('avatars/' + credential.user?.uid) as string,
+                        photoURL: ('avatars/' + credential.user?.uid + '/avatar.jpg') as string,
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations

@@ -1,6 +1,7 @@
-<main [ngClass]="favoriteTheme">
+<div [ngClass]="favoriteTheme">
     <app-page-header [headerMessage]="'Configuration'"></app-page-header>
-    <app-user-profil-information></app-user-profil-information>
-</main>
-
-
+    <div class="grid-container">
+        <app-user-profil-information></app-user-profil-information>
+        <app-user-statistic></app-user-statistic>
+    </div>
+</div>

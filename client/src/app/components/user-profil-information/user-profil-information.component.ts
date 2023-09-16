@@ -24,20 +24,18 @@ export class UserProfilInformationComponent implements OnInit {
 
     setUserAvatar() {
         if (this.currentUserId === undefined) return;
-        if (this.userService.doesUserAvatarExist(this.currentUserId)) {
-            this.userAvatar = 'assets/default-user-icon.jpg';
-            return;
-        }
         this.userService.getImageOfSignedUser(this.currentUserId).subscribe((url) => {
-            this.userAvatar = url;
+            if (!url) {
+                this.userAvatar = 'assets/default-user-icon.jpg';
+            } else this.userAvatar = url;
         });
     }
 
     openUserAvatarDialog(): void {
         this.dialog.open(DialogUserAvatarComponent, {
             autoFocus: false,
-            width: '50vw',
-            height: '30vh',
+            width: '70vw',
+            height: '50vh',
             data: {
                 adding: false,
                 currentUserId: this.currentUserId,

@@ -67,7 +67,7 @@ export class UserService {
         );
     }
 
-    doesUserAvatarExist(uid: string) {
+    doesUserAvatarExist(uid: string): Observable<boolean> {
         return this.storage
             .ref(`avatars/${uid}/avatar.jpg`)
             .getMetadata()
@@ -85,7 +85,7 @@ export class UserService {
             );
     }
 
-    getImageOfSignedUser(uid: string) {
+    getImageOfSignedUser(uid: string): Observable<string> {
         return this.storage
             .ref(`avatars/${uid}/avatar.jpg`)
             .getDownloadURL()

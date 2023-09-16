@@ -3,15 +3,31 @@
     <div>
         <div class="avatar-container">
             <div *ngFor="let avatarImage of avatarImages">
-                <img [src]="avatarImage.imagePath" alt="{{ avatarImage.fileName }}" />
+                <img
+                    class="avatar list"
+                    [src]="avatarImage.imagePath"
+                    alt="{{ avatarImage.fileName }}"
+                    [class.active]="avatarImage.active"
+                    (click)="toggleBorder(avatarImage)"
+                />
             </div>
+            <img
+                class="avatar profile"
+                [src]="userAvatar.imagePath"
+                alt="avatar"
+                [class.active]="userAvatar.active"
+                (click)="toggleBorder(userAvatar)"
+            />
             <div class="user-avatar">
-                <img width="50px" height="50px" [src]="userAvatar" alt="avatar" (click)="editAvatar()" />
+                <img class="user-camera" [src]="userCamera" alt="avatar" (click)="editAvatar()" />
                 <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" />
             </div>
         </div>
+        <div class="selected-section">
+            <img class="avatar selected-img" [src]="selectedAvatar.imagePath" alt="avatar" />
+        </div>
     </div>
-    <div>
+    <div class="submit-btn">
         <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>
     </div>
 </div>

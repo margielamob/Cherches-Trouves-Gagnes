@@ -5,11 +5,32 @@
 }
 
 .header3 {
-    font-size: x-large;
-    font-weight: 400;
+    font-size: xx-large;
+    font-weight: 500;
     line-height: 1.5em;
     text-align: center;
     margin: 0.5em;
+}
+
+.avatar {
+    border-radius: 50%;
+}
+
+.list {
+    margin: auto;
+}
+
+.list:hover {
+    cursor: pointer;
+}
+
+.user-camera:hover {
+    cursor: pointer;
+}
+
+.active {
+    border: 3px solid rgb(55, 0, 206); /* You can adjust the border style as needed */
+    border-radius: 50%;
 }
 
 .avatar-container {
@@ -20,9 +41,34 @@
     margin: 0 1rem;
 }
 
-.user-avatar {
-    margin: 5px;
-    padding: 15px;
+.selected-section {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.selected-img {
+    width: 100px;
+    height: 100px;
+}
+
+.user-camera {
+    border: 1px solid #cacaca;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background-color: rgb(229, 229, 229);
+    margin-left: 20px;
+}
+
+.profile {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+.submit-btn {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
 }
