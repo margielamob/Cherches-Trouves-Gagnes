@@ -10,12 +10,14 @@ import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
+import { Message } from '@common/prototype/message';
 import { ScoreType } from '@common/score-type';
 import { SocketEvent } from '@common/socket-event';
 import * as http from 'http';
 import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { UserManagerService } from '../prototype-services/user-manager-service.service';
 @Service()
 export class SocketManagerService {
     private sio: Server;
@@ -28,6 +30,7 @@ export class SocketManagerService {
         private readonly scoresHandlerService: ScoresHandlerService,
         private limitedTimeService: LimitedTimeGame,
         private cluesService: CluesService,
+        private userManagerService: UserManagerService,
     ) {}
 
     set server(server: http.Server) {
@@ -45,6 +48,23 @@ export class SocketManagerService {
             socket.on(SocketEvent.Disconnect, () => {
                 // eslint-disable-next-line no-console
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
+            });
+
+            socket.on(SocketEvent.Authenticate, (userName: string) => {
+                try {
+                    this.userManagerService.addUser(userName);
+                    socket.join('allChatProto');
+                    socket.emit(SocketEvent.UserAuthenticated);
+                    console.log('authenticate successful' + userName);
+                } catch (e) {
+                    socket.emit(SocketEvent.UserExists);
+                    console.log('invalid');
+                }
+            });
+            socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
+                console.log('msg');
+                socket.emit(SocketEvent.PrototypeMessage, { ...message, type: 'to' });
+                socket.to('allChatProto').emit(SocketEvent.PrototypeMessage, { ...message, type: 'from' });
             });
 
             socket.on(

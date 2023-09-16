@@ -30,4 +30,8 @@ export enum SocketEvent {
     EventMessage = 'eventMessage',
     FetchDifferences = 'fetchDifferences',
     Clue = 'clue',
+    Authenticate = 'Authenticate',
+    UserExists = 'UserExists',
+    PrototypeMessage = 'PrototypeMessage',
+    UserAuthenticated = 'UserAuthenticated',
 }
