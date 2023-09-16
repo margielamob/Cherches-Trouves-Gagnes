@@ -3,6 +3,7 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Avatar } from '@app/interfaces/avatar';
 import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
+import { UserService } from '@app/services/user-service/user.service';
 
 @Component({
     selector: 'app-dialog-user-avatar',
@@ -23,11 +24,24 @@ export class DialogUserAvatarComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: { adding: boolean; currentUserId: string },
         public dialogRef: MatDialogRef<DialogUserAvatarComponent>,
         private imageUploadService: ImageUploadService,
+        private userService: UserService,
     ) {}
 
     ngOnInit(): void {
         this.title = 'Choissis ton avatar';
         this.loadFileNames();
+        this.setUserAvatar();
+    }
+
+    setUserAvatar() {
+        if (this.data.currentUserId === undefined) return;
+        if (this.userService.doesUserAvatarExist(this.data.currentUserId)) {
+            this.userAvatar = 'assets/default-user-icon.jpg';
+            return;
+        }
+        this.userService.getImageOfSignedUser(this.data.currentUserId).subscribe((url) => {
+            this.userAvatar = url;
+        });
     }
 
     loadFileNames() {
