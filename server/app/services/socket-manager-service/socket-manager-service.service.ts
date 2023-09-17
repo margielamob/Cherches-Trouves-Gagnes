@@ -16,6 +16,7 @@ import * as http from 'http';
 import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { LoggerService } from '../logger-service/logger.service';
 @Service()
 export class SocketManagerService {
     private sio: Server;
@@ -28,6 +29,7 @@ export class SocketManagerService {
         private readonly scoresHandlerService: ScoresHandlerService,
         private limitedTimeService: LimitedTimeGame,
         private cluesService: CluesService,
+        private logger: LoggerService,
     ) {}
 
     set server(server: http.Server) {
@@ -185,6 +187,10 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
                 socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
+            });
+
+            socket.on('Hello form Flutter', (obj: string) => {
+                this.logger.logInfo('flutter sent Hello', JSON.parse(obj));
             });
 
             socket.on(SocketEvent.GameDeleted, (gameId: string) => {

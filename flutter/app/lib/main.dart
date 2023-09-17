@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'components/chat.dart';
+import 'components/tuto.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
         '/pageA': (context) => PageA(),
         '/pageB': (context) => PageB(),
         '/prototype': (context) => PrototypePage(),
+        '/pageD': ((context) => Tuto())
       },
     );
   }
@@ -157,54 +160,30 @@ class PageB extends StatelessWidget {
 }
 
 class PrototypePage extends StatelessWidget {
-  sendMessage() {
-    print('Message sent');
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('This is a ChatBox prototype'),
+      ),
+      body: Center(
+        child: Chat(),
+      ),
+    );
   }
+}
+
+class Tuto extends StatelessWidget {
+  const Tuto({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adjusting TextField Width Example'),
+        title: Text('this ois an example'),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 3.0,
-                      color: Colors.blue,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  )),
-              SizedBox(height: 16.0),
-              Container(
-                width: 200.0, // Set the desired width
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter your message',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              // Send Button
-              Container(
-                width: 200.0, // Set the desired width
-                child: ElevatedButton(
-                  onPressed: sendMessage,
-                  child: Text('Send'),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: Button(),
       ),
     );
   }
