@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
 import { AuthGuard } from '@app/guards/auth.guard';
+import { RedirectIfAuthenticatedGuard } from '@app/guards/redirect.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -14,8 +15,8 @@ import { WaitingRoomComponent } from '@app/pages/waiting-room/waiting-room.compo
 
 const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login', component: LoginPageComponent },
-    { path: 'sign-up', component: SignUpPageComponent },
+    { path: 'login', component: LoginPageComponent, canActivate: [RedirectIfAuthenticatedGuard] },
+    { path: 'sign-up', component: SignUpPageComponent, canActivate: [RedirectIfAuthenticatedGuard] },
     { path: 'home', component: MainPageComponent, canActivate: [AuthGuard] },
     { path: 'game', component: GamePageComponent, canActivate: [AuthGuard] },
     { path: 'create', component: CreateGamePageComponent, canActivate: [AuthGuard] },

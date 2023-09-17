@@ -1,25 +1,27 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AngularFireModule } from '@angular/fire/compat';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { ChatBoxComponent } from '@app/components/chat-box/chat-box.component';
+import { CluesAreaComponent } from '@app/components/clues-area/clues-area.component';
 import { DifferencesAreaComponent } from '@app/components/differences-area/differences-area.component';
 import { ExitGameButtonComponent } from '@app/components/exit-game-button/exit-game-button.component';
 import { PageHeaderComponent } from '@app/components/page-header/page-header.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { TimerStopwatchComponent } from '@app/components/timer-stopwatch/timer-stopwatch.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
 import { Subject } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 import { GamePageComponent } from './game-page.component';
-import { CluesAreaComponent } from '@app/components/clues-area/clues-area.component';
-import { TimerStopwatchComponent } from '@app/components/timer-stopwatch/timer-stopwatch.component';
-import { GameMode } from '@common/game-mode';
 
 class SocketClientServiceMock extends CommunicationSocketService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- connect needs to be empty (Nikolay's example)
@@ -93,7 +95,7 @@ describe('GamePageComponent', () => {
                 TimerStopwatchComponent,
                 CluesAreaComponent,
             ],
-            imports: [RouterTestingModule, HttpClientModule, AppMaterialModule],
+            imports: [RouterTestingModule, HttpClientModule, AppMaterialModule, AngularFireModule.initializeApp(environment.firebase)],
             providers: [
                 { provide: MatDialog, useValue: dialogSpyObj },
                 { provide: CommunicationService, useValue: communicationServiceSpy },

@@ -1,6 +1,7 @@
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,7 +21,8 @@ import { CanvasEventHandlerService } from '@app/services/canvas-event-handler/ca
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { DrawService } from '@app/services/draw-service/draw-service.service';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
-import { of, Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { CreateGamePageComponent } from './create-game-page.component';
 
 describe('CreateGamePageComponent', () => {
@@ -71,6 +73,7 @@ describe('CreateGamePageComponent', () => {
                 ReactiveFormsModule,
                 RouterTestingModule,
                 HttpClientModule,
+                AngularFireModule.initializeApp(environment.firebase),
             ],
             providers: [
                 { provide: MatDialog, useValue: dialogSpyObj },
