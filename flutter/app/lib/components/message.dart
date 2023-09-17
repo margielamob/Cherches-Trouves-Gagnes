@@ -19,7 +19,7 @@ class Message extends StatelessWidget {
   }
 
   String toJson() {
-    var json = {'userName': user, 'message': text};
+    var json = {'username': user, 'message': text};
     return jsonEncode(json);
   }
 

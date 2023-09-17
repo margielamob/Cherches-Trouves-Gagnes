@@ -183,6 +183,7 @@ class PrototypePage extends StatelessWidget {
       body: Center(
         child: Chat(
           socketClient: socketClient,
+          authenticationService: authenticationService,
         ),
       ),
     );

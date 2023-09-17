@@ -18,6 +18,10 @@ class SocketClient {
     socket.disconnect();
   }
 
+  bool isAlive() {
+    return socket.active && socket.connected;
+  }
+
   void emit(String event, dynamic data) {
     socket.emit(event, data);
   }

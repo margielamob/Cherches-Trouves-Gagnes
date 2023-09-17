@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 class User {
-  late String username;
-  late String password;
+  late String username = '';
+  late String password = '';
 
   User();
 

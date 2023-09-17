@@ -17,6 +17,13 @@ class _LoginDialogState extends State<LoginDialog> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    authenticationService.socketClient.connect();
+    authenticationService.alertConnection();
+  }
+
   _LoginDialogState(this.authenticationService);
   @override
   Widget build(BuildContext context) {
@@ -43,19 +50,16 @@ class _LoginDialogState extends State<LoginDialog> {
       actions: <Widget>[
         ElevatedButton(
           onPressed: () {
-            // Process the username and password
             authenticationService.logIn(
                 usernameController.text, passwordController.text);
-            // Close the dialog
+            authenticationService.alertConnection();
             Navigator.of(context).pop();
-
             Navigator.pushNamed(context, '/prototype');
           },
           child: Text('Login'),
         ),
         TextButton(
           onPressed: () {
-            // Close the dialog without doing anything
             Navigator.of(context).pop();
           },
           child: Text('Cancel'),

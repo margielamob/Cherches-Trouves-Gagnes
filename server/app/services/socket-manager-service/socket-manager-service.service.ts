@@ -188,9 +188,12 @@ export class SocketManagerService {
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
                 socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
             });
+            // flutter listeners
 
-            socket.on('Hello form Flutter', (obj: string) => {
+            socket.on('protoTypeMessage', (obj: string) => {
+                const payload = JSON.parse(obj);
                 this.logger.logInfo('flutter sent Hello', JSON.parse(obj));
+                socket.emit('newMessage', JSON.stringify({ username: payload.username, message: payload.message }));
             });
 
             socket.on(SocketEvent.GameDeleted, (gameId: string) => {
