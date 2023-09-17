@@ -4,20 +4,37 @@
             <div class="profile">
                 <h1>Profile</h1>
             </div>
-            <div class="avatar-container">
-                <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">Modifier l'avatar</button>
-                <div class="avatar">
-                    <img class="user-avatar" width="100px" height="100px" [src]="userAvatar" alt="avatar" />
+            <div class="info-container">
+                <div class="btn-container">
+                    <div class="user-avatar section">
+                        <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">
+                            Modifier l'avatar
+                        </button>
+                    </div>
+                    <div class="pseudonym-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Pseudonyme</button>
+                    </div>
+                    <div class="theme-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Thème visuel</button>
+                    </div>
+                    <div class="language-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Langue</button>
+                    </div>
                 </div>
-            </div>
-            <div class="pseudonym-container">
-                <button class="profil-btn" mat-raised-button color="primary">Pseudonyme</button>
-            </div>
-            <div class="theme-container">
-                <button class="profil-btn" mat-raised-button color="primary">Thème visuel</button>
-            </div>
-            <div class="language-container">
-                <button class="profil-btn" mat-raised-button color="primary">Langue</button>
+                <div class="result-container">
+                    <div class="user-avatar section">
+                        <img class="avatar" width="45px" height="45px" [src]="userAvatar" alt="avatar" />
+                    </div>
+                    <div class="pseudonym-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Pseudonyme</button>
+                    </div>
+                    <div class="theme-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Thème visuel</button>
+                    </div>
+                    <div class="language-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Langue</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

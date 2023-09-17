@@ -60,7 +60,6 @@ export class DialogUserAvatarComponent implements OnInit {
 
     loadFileNames() {
         this.avatarImages = [
-            { fileName: 'avatar1.png', imagePath: 'assets/avatar-predefini/avatar1.png', active: false },
             { fileName: 'avatar2.png', imagePath: 'assets/avatar-predefini/avatar2.png', active: false },
             { fileName: 'avatar3.png', imagePath: 'assets/avatar-predefini/avatar3.png', active: false },
         ];
