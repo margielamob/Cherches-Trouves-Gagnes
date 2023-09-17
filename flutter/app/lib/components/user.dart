@@ -1,12 +1,22 @@
 import 'dart:convert';
 
 class User {
-  String userName;
-  String password;
+  late String username;
+  late String password;
 
-  User({required this.userName, required this.password});
+  User();
 
   String toJson() {
-    return jsonEncode(this);
+    var json = {'username': username, 'password': password};
+    return jsonEncode(json);
+  }
+
+  void setInfos(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
+
+  bool isLoggedIn() {
+    return username.isNotEmpty && password.isNotEmpty;
   }
 }

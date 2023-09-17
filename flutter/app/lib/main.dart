@@ -1,7 +1,14 @@
+import 'package:app/components/login_dialog.dart';
+import 'package:app/services/Authentication.service.dart';
+import 'package:app/services/socket-client.service.dart';
 import 'package:flutter/material.dart';
 import 'components/chat.dart';
 import 'components/tuto.dart';
 
+// services for dependency injection
+var socketClient = SocketClient();
+var authenticationService = AuthenticationService(socketClient: socketClient);
+//...
 void main() {
   runApp(MyApp());
 }
@@ -72,7 +79,14 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/prototype');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return LoginDialog(
+                              authenticationService: authenticationService,
+                            );
+                          },
+                        );
                       },
                       child: Text('Go to Prototype'),
                     ),
@@ -167,7 +181,9 @@ class PrototypePage extends StatelessWidget {
         title: Text('This is a ChatBox prototype'),
       ),
       body: Center(
-        child: Chat(),
+        child: Chat(
+          socketClient: socketClient,
+        ),
       ),
     );
   }

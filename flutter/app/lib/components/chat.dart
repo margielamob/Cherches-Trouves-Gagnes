@@ -3,18 +3,21 @@ import 'package:app/services/socket-client.service.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
-  const Chat({super.key});
+  final SocketClient socketClient;
 
+  const Chat({super.key, required this.socketClient});
   @override
-  State<Chat> createState() => _ChatState();
+  // ignore: no_logic_in_create_state
+  State<Chat> createState() => _ChatState(socketClient);
 }
 
 class _ChatState extends State<Chat> {
+  final SocketClient socketClient;
   final List<Message> messages = [];
-  final SocketClient socketClient = SocketClient();
   final bool canType = true;
   TextEditingController textController = TextEditingController();
 
+  _ChatState(this.socketClient);
   @override
   void initState() {
     super.initState();
@@ -51,7 +54,8 @@ class _ChatState extends State<Chat> {
       height: 400,
       decoration: BoxDecoration(
           color: Color.fromARGB(255, 173, 177, 184).withOpacity(0.4),
-          border: Border.all(width: 2, color: Color.fromARGB(255, 0, 0, 0)),
+          border:
+              Border.all(width: 2, color: Color.fromARGB(255, 255, 255, 255)),
           borderRadius: BorderRadius.circular(10)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
