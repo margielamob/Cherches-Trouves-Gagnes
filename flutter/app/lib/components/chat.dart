@@ -68,9 +68,11 @@ class _ChatState extends State<Chat> {
         user: payload['username'],
         isFromUser: isFromUser,
       );
-      setState(() {
-        messages.add(message);
-      });
+      if (mounted) {
+        setState(() {
+          messages.add(message);
+        });
+      }
     });
   }
 
