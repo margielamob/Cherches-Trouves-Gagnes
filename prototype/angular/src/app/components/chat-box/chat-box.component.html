@@ -1,11 +1,9 @@
 <div class="chatbox">
     <div class="screen">
-        <div class="message" *ngFor="let message of chatMessages">
-            {{ message }}
-        </div>
+        <div class="message" *ngFor="let message of chatMessages">{{ message.user.username }}: {{ message.message }}</div>
     </div>
     <div class="input-box">
-        <input type="text" #messageInput (keyup.enter)="sendMessage(messageInput.value)" placeholder="Type a message..." />
+        <input type="text" #messageInput (keydown.enter)="sendMessage(messageInput.value)" placeholder="Type a message..." required />
         <button (click)="sendMessage(messageInput.value)">Send</button>
     </div>
 </div>

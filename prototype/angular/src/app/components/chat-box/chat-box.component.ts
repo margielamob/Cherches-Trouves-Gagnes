@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { User } from 'src/app/interfaces/user';
+import { Component, OnInit } from '@angular/core';
+import { Message } from '@common/prototype/message';
 import { ChatSocketService } from 'src/app/services/chat-socket.service';
 
 @Component({
@@ -8,21 +8,29 @@ import { ChatSocketService } from 'src/app/services/chat-socket.service';
     styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit {
-    @Input() user: User = { username: 'Skander' };
-    public chatMessages = [];
+    public chatMessages: Message[] = [];
+    message = '';
 
-    constructor(private chat: ChatSocketService) {}
+    constructor(private chat: ChatSocketService) {
+        this.chatMessages = chat.messages;
+    }
 
     ngOnInit(): void {
         this.chat.setUser;
+        this.chat.messagesObs.subscribe((messages) => {
+            this.chatMessages = messages;
+        });
     }
 
     public sendMessage(text: string) {
-        const message = {
-            user: this.user,
-            message: text,
-            date: new Date(),
-        };
-        this.chat.sendMessage(message);
+        if (text.trim() !== '') {
+            const message = {
+                user: this.chat.userNameObs.getValue(),
+                message: text.trim(),
+                date: new Date(),
+            };
+            this.chat.sendMessage(message);
+            this.message = '';
+        }
     }
 }

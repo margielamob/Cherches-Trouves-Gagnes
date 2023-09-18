@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SocketEvent } from '@common/socket-event';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environment/environment';
 
@@ -17,6 +18,7 @@ export class SocketClientService {
     }
 
     disconnect() {
+        this.socket.send(SocketEvent.DisconnectFromChat);
         this.socket.disconnect();
     }
 

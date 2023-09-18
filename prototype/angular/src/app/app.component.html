@@ -1,1 +1,4 @@
-<app-chat-box></app-chat-box> <app-login></app-login>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<app-login *ngIf="!authenticated"></app-login>
+<app-main-feed *ngIf="authenticated"></app-main-feed>
