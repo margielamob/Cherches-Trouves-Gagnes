@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Theme } from '@app/enums/theme';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
+import { fromEvent, take, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -14,6 +15,16 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         // listen to session changes
         this.auth.listenToSessionChanges();
+
+        // automaticly sign out user when page is closed
+        const closeTabEvent = fromEvent(window, 'beforeunload');
+
+        closeTabEvent
+            .pipe(takeUntil(closeTabEvent))
+            .pipe(take(1))
+            .subscribe(() => {
+                this.auth.signOut();
+            });
 
         // automaticly sign out user when page is reloaded
 
