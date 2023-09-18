@@ -20,7 +20,7 @@ class Message extends StatelessWidget {
 
   Map toJson() {
     var json = {
-      'user': {'username': user},
+      'username': {'username': user},
       'message': text
     };
     return json;

@@ -17,7 +17,8 @@ import * as http from 'http';
 import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
-import { UserManagerService } from '../prototype-services/user-manager-service.service';
+import { UserManagerService } from '@app/services/prototype-services/user-manager-service.service';
+import { LoggerService } from '../logger-service/logger.service';
 @Service()
 export class SocketManagerService {
     private sio: Server;
@@ -31,6 +32,7 @@ export class SocketManagerService {
         private limitedTimeService: LimitedTimeGame,
         private cluesService: CluesService,
         private userManagerService: UserManagerService,
+        private logger: LoggerService,
     ) {}
 
     set server(server: http.Server) {
@@ -67,7 +69,7 @@ export class SocketManagerService {
                 }
             });
             socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
-                console.log('msg');
+                this.logger.logWarning('message', message);
                 socket.emit(SocketEvent.PrototypeMessage, { ...message, type: 'to' });
                 socket.to('allChatProto').emit(SocketEvent.PrototypeMessage, { ...message, type: 'from' });
             });
