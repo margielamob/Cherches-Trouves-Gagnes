@@ -17,6 +17,7 @@ export class DialogUserAvatarComponent implements OnInit {
     userAvatar: Avatar = { fileName: '', imagePath: '', active: true };
     selectedAvatar: Avatar = { fileName: '', imagePath: '', active: false };
     avatarImages: Avatar[] = [];
+    user$ = this.userService.getCurrentUser();
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     @ViewChild('fileInput') fileInput: ElementRef;
@@ -31,6 +32,7 @@ export class DialogUserAvatarComponent implements OnInit {
 
     ngOnInit(): void {
         this.title = 'Choissis ton avatar';
+        this.user$ = this.userService.getCurrentUser();
         this.loadFileNames();
         this.setUserAvatar();
     }
@@ -74,7 +76,7 @@ export class DialogUserAvatarComponent implements OnInit {
         if (file) {
             // Check if the selected file is a valid image (JPG or PNG)
             if (file.type === 'image/jpeg' || file.type === 'image/png') {
-                this.imageUploadService.uploadImage(file, this.data.currentUserId);
+                this.imageUploadService.uploadImage(file, `avatars/${this.data.currentUserId}/avatar.jpg`);
                 this.setUserAvatar();
             } else {
                 // eslint-disable-next-line no-console

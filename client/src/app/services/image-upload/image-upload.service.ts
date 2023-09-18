@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { Observable } from 'rxjs';
-
+import { Observable, from, switchMap } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
 export class ImageUploadService {
     constructor(private storage: AngularFireStorage) {}
 
-    uploadImage(image: File, uid: string) {
+    uploadImage(image: File, path: string): Observable<string> {
         // eslint-disable-next-line no-console
         console.log('upload image');
-        const task = this.storage.upload(`avatars/${uid}/avatar.jpg`, image);
-        return task.snapshotChanges();
-    }
-
-    getImageUrl(uid: string): Observable<string> {
-        return this.storage.ref(`avatars/${uid}/avatar.jpg`).getDownloadURL();
+        const storageRef = this.storage.ref(path);
+        const uploadTask = from(storageRef.put(image));
+        return uploadTask.pipe(switchMap(() => storageRef.getDownloadURL()));
     }
 }

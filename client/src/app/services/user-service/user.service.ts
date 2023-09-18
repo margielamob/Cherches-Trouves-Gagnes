@@ -59,6 +59,7 @@ export class UserService {
                 }),
             );
     }
+
     updateUser(user: UserData) {
         return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
             catchError((error) => {
@@ -105,6 +106,11 @@ export class UserService {
                     throw error;
                 }),
             );
+    }
+
+    updateUserAvatar(user: UserData): Observable<void> {
+        const ref = this.afs.collection('users').doc(user.uid);
+        return from(ref.update(user));
     }
 
     getCurrentUser(): Observable<UserData | undefined> {
