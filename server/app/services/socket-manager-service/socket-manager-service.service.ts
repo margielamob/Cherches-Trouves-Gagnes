@@ -18,10 +18,12 @@ import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { UserManagerService } from '@app/services/prototype-services/user-manager-service.service';
-import { LoggerService } from '../logger-service/logger.service';
+import { LoggerService } from '@app/services/logger-service/logger.service';
+import { User } from '@common/prototype/user';
 @Service()
 export class SocketManagerService {
     private sio: Server;
+    private rooms: Map<string, User[]>;
 
     // eslint-disable-next-line max-params -- all services are needed
     constructor(
@@ -33,7 +35,10 @@ export class SocketManagerService {
         private cluesService: CluesService,
         private userManagerService: UserManagerService,
         private logger: LoggerService,
-    ) {}
+    ) {
+        this.rooms = new Map<string, User[]>();
+        this.rooms.set('allChatProto', []);
+    }
 
     set server(server: http.Server) {
         this.sio = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -44,12 +49,10 @@ export class SocketManagerService {
             throw new Error('Server instance not set');
         }
         this.sio.on(SocketEvent.Connection, (socket: Socket) => {
-            // eslint-disable-next-line no-console
-            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
+            this.logger.logInfo(`new user connected with : ${socket.id}`);
 
             socket.on(SocketEvent.Disconnect, () => {
-                // eslint-disable-next-line no-console
-                console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
+                this.logger.logWarning(`user disconnected with id : ${socket.id}`);
                 this.userManagerService.removeUser(socket.id);
             });
 
@@ -61,17 +64,18 @@ export class SocketManagerService {
                 try {
                     this.userManagerService.addUser(socket.id, userName);
                     socket.join('allChatProto');
+                    this.rooms.get('allChatProto')?.push({ username: userName });
                     socket.emit(SocketEvent.UserAuthenticated);
-                    console.log('authenticate successful' + userName);
+                    this.logger.logInfo(`authenticate successful, ${userName}`);
                 } catch (e) {
                     socket.emit(SocketEvent.UserExists);
-                    console.log('invalid');
+                    this.logger.logError(e);
                 }
             });
             socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
-                this.logger.logWarning('message', message);
-                socket.emit(SocketEvent.PrototypeMessage, { ...message, type: 'to' });
-                socket.to('allChatProto').emit(SocketEvent.PrototypeMessage, { ...message, type: 'from' });
+                this.sio.emit('newMessage', { ...message, date: this.getTime(), type: 'to' });
+                this.logger.logWarning('sent', { ...message, date: this.getTime(), type: 'from' });
+                this.sio.to('allChatProto').emit('newMessage', { ...message, date: this.getTime(), type: 'from' });
             });
 
             socket.on(
@@ -404,5 +408,20 @@ export class SocketManagerService {
             socket.emit(SocketEvent.Win);
             return;
         }
+    }
+
+    getTime() {
+        return this.formatTime(new Date());
+    }
+
+    private formatTime(date: Date) {
+        const options: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        };
+
+        return new Intl.DateTimeFormat('en-US', options).format(date);
     }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:js_util';
 
 import 'package:app/components/message.dart';
 import 'package:app/components/user.dart';
@@ -23,7 +24,7 @@ class _ChatState extends State<Chat> {
   final SocketClient socketClient;
   late User user = User();
   final AuthenticationService authenticationService;
-  final List<Message> messages = [];
+  final List<ChatMessage> messages = [];
   final bool canType = true;
   TextEditingController textController = TextEditingController();
 
@@ -45,13 +46,9 @@ class _ChatState extends State<Chat> {
 
   void sendMessage(String text) {
     if (text.isEmpty) return;
-    var message = Message(
-      text: text,
-      user: user.username,
-      isFromUser: true,
-    );
-    socketClient.emit('PrototypeMessage', message.toJson());
-    print(message.toJson());
+
+    socketClient.emit(
+        'PrototypeMessage', ChatMessage.createJson(user.username, text));
     if (mounted) {
       setState(() {
         textController.clear();
@@ -60,13 +57,14 @@ class _ChatState extends State<Chat> {
   }
 
   void handleMessageReception() {
-    socketClient.on('newMessage', (payload) {
-      payload = jsonDecode(payload);
-      bool isFromUser = payload['username'] == user.username;
-      var message = Message(
+    socketClient.on('newMessage', (Map<String, dynamic> payload) {
+      print('here');
+      bool isFromUser = payload['user']['username'] == user.username;
+      var message = ChatMessage(
         text: payload['message'],
-        user: payload['username'],
+        username: payload['user']['username'],
         isFromUser: isFromUser,
+        date: payload['date'].toString(),
       );
       if (mounted) {
         setState(() {
@@ -97,10 +95,10 @@ class _ChatState extends State<Chat> {
             decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Color.fromARGB(255, 252, 252, 252), // Shadow color
-                    blurRadius: 10.0, // Shadow blur radius
-                    spreadRadius: 0, // Shadow spread radius
-                    offset: Offset(0, 4.0), // Shadow offset
+                    color: Color.fromARGB(255, 252, 252, 252),
+                    blurRadius: 10.0,
+                    spreadRadius: 0,
+                    offset: Offset(0, 4.0),
                   )
                 ],
                 border: Border.all(
@@ -111,7 +109,12 @@ class _ChatState extends State<Chat> {
             child: ListView.builder(
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                return messages[index];
+                return Align(
+                  alignment: messages[index].isFromUser
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
+                  child: messages[index],
+                );
               },
             ),
           ),
