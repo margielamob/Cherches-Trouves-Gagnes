@@ -6,4 +6,6 @@ class SocketEvents {
   static const PrototypeMessage = 'PrototypeMessage';
   static const NewMessage = 'NewMessage';
   static const Disconnect = 'Disconnect';
+  static const FetchMessages = 'FetchMessages';
+  static const ServeMessages = 'ServeMessages';
 }

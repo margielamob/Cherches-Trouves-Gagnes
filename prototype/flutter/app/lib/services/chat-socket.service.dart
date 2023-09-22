@@ -1,4 +1,4 @@
-import 'package:app/components/message.dart';
+import 'package:app/components/chat-message.dart';
 import 'package:app/components/user.dart';
 import 'package:app/events/socket-events.dart';
 import 'package:app/services/socket-client.service.dart';
@@ -11,8 +11,18 @@ class ChatSocketService {
   }
 
   void sendMessage(String message, User user) {
-    _socket.emit(
-        'PrototypeMessage', ChatMessage.createJson(user.username, message));
+    _socket.emit(SocketEvents.PrototypeMessage,
+        ChatMessage.createJson(user.username, message));
+  }
+
+  void fetchMessages() {
+    _socket.emit(SocketEvents.FetchMessages, null);
+  }
+
+  void handleMessagesServed(void Function(dynamic) onMessagesServed) {
+    _socket.on(SocketEvents.ServeMessages, (dynamic messages) {
+      onMessagesServed(messages);
+    });
   }
 
   void handleReception(

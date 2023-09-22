@@ -1,4 +1,6 @@
 export enum SocketEvent {
+    ServeMessages = 'ServeMessages',
+    FetchMessages = 'FetchMessages',
     RefreshGames = 'refreshGames',
     AcceptPlayer = 'acceptPlayer',
     RejectPlayer = 'rejectPlayer',

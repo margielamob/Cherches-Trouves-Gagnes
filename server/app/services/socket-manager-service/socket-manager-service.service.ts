@@ -24,6 +24,7 @@ import { User } from '@common/prototype/user';
 export class SocketManagerService {
     private sio: Server;
     private rooms: Map<string, User[]>;
+    private messages: Message[];
 
     // eslint-disable-next-line max-params -- all services are needed
     constructor(
@@ -38,6 +39,7 @@ export class SocketManagerService {
     ) {
         this.rooms = new Map<string, User[]>();
         this.rooms.set('allChatProto', []);
+        this.messages = [];
     }
 
     set server(server: http.Server) {
@@ -73,9 +75,15 @@ export class SocketManagerService {
                 }
             });
             socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
+                this.messages.push({ ...message, date: this.getTime(), type: 'from' });
                 socket.emit('NewMessage', { ...message, date: this.getTime(), type: 'to' });
-                this.logger.logWarning('sent', { ...message, date: this.getTime(), type: 'from' });
+                this.logger.logInfo(message.user.username + ' sent ' + message.message);
                 socket.to('allChatProto').emit('NewMessage', { ...message, date: this.getTime(), type: 'from' });
+            });
+
+            socket.on(SocketEvent.FetchMessages, () => {
+                this.logger.logInfo('serving messages...');
+                this.sio.to('allChatProto').emit(SocketEvent.ServeMessages, this.messages);
             });
 
             socket.on(

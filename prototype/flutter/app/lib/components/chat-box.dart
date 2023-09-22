@@ -1,4 +1,4 @@
-import 'package:app/components/message.dart';
+import 'package:app/components/chat-message.dart';
 import 'package:app/components/user.dart';
 import 'package:app/services/Authentication.service.dart';
 import 'package:app/services/chat-socket.service.dart';
@@ -34,6 +34,15 @@ class _ChatBoxState extends State<ChatBox> {
   void initState() {
     super.initState();
     chatSocketService.handleReception(user, updateMessages);
+    chatSocketService.handleMessagesServed(loadMessages);
+    chatSocketService.fetchMessages();
+    print('initState called');
+  }
+
+  void loadMessages(dynamic messages) {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void updateMessages(ChatMessage message) {
