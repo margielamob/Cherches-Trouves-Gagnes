@@ -1,77 +1,63 @@
-import 'dart:convert';
-import 'dart:js_util';
-
 import 'package:app/components/message.dart';
 import 'package:app/components/user.dart';
 import 'package:app/services/Authentication.service.dart';
-import 'package:app/services/socket-client.service.dart';
+import 'package:app/services/chat-socket.service.dart';
 import 'package:flutter/material.dart';
 
-class Chat extends StatefulWidget {
-  final SocketClient socketClient;
+class ChatBox extends StatefulWidget {
+  final ChatSocketService chatSocketService;
   final AuthenticationService authenticationService;
 
-  const Chat(
+  const ChatBox(
       {super.key,
-      required this.socketClient,
+      required this.chatSocketService,
       required this.authenticationService});
   @override
-  // ignore: no_logic_in_create_state
-  State<Chat> createState() => _ChatState(socketClient, authenticationService);
+  State<ChatBox> createState() =>
+      // ignore: no_logic_in_create_state
+      _ChatBoxState(chatSocketService, authenticationService);
 }
 
-class _ChatState extends State<Chat> {
-  final SocketClient socketClient;
+class _ChatBoxState extends State<ChatBox> {
+  final ChatSocketService chatSocketService;
   late User user = User();
   final AuthenticationService authenticationService;
   final List<ChatMessage> messages = [];
   final bool canType = true;
   TextEditingController textController = TextEditingController();
 
-  _ChatState(this.socketClient, this.authenticationService) {
+  _ChatBoxState(this.chatSocketService, this.authenticationService) {
     user = authenticationService.user;
   }
 
   @override
   void initState() {
     super.initState();
-    handleMessageReception();
+    chatSocketService.handleReception(user, updateMessages);
+  }
+
+  void updateMessages(ChatMessage message) {
+    if (mounted) {
+      setState(() {
+        messages.add(message);
+      });
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    authenticationService.socketClient.disconnect();
   }
 
   void sendMessage(String text) {
     if (text.isEmpty) return;
 
-    socketClient.emit(
-        'PrototypeMessage', ChatMessage.createJson(user.username, text));
+    chatSocketService.sendMessage(text, user);
     if (mounted) {
       setState(() {
         textController.clear();
       });
     }
-  }
-
-  void handleMessageReception() {
-    socketClient.on('newMessage', (Map<String, dynamic> payload) {
-      print('here');
-      bool isFromUser = payload['user']['username'] == user.username;
-      var message = ChatMessage(
-        text: payload['message'],
-        username: payload['user']['username'],
-        isFromUser: isFromUser,
-        date: payload['date'].toString(),
-      );
-      if (mounted) {
-        setState(() {
-          messages.add(message);
-        });
-      }
-    });
   }
 
   @override
@@ -109,12 +95,7 @@ class _ChatState extends State<Chat> {
             child: ListView.builder(
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                return Align(
-                  alignment: messages[index].isFromUser
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: messages[index],
-                );
+                return messages[index];
               },
             ),
           ),

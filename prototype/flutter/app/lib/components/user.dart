@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 class User {
   late String username = '';
   late String password = '';
 
   User();
 
-  String toJson() {
-    var json = {'username': username, 'password': password};
-    return jsonEncode(json);
+  Map toJson() {
+    return {'username': username, 'password': password};
   }
 
   void setInfos(String username, String password) {
@@ -18,5 +15,11 @@ class User {
 
   bool isLoggedIn() {
     return username.isNotEmpty && password.isNotEmpty;
+  }
+
+  void dispose() {
+    print('called');
+    username = '';
+    password = '';
   }
 }

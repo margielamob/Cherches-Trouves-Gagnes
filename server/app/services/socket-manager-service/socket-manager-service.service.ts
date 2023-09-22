@@ -73,9 +73,9 @@ export class SocketManagerService {
                 }
             });
             socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
-                this.sio.emit('newMessage', { ...message, date: this.getTime(), type: 'to' });
+                socket.emit('NewMessage', { ...message, date: this.getTime(), type: 'to' });
                 this.logger.logWarning('sent', { ...message, date: this.getTime(), type: 'from' });
-                this.sio.to('allChatProto').emit('newMessage', { ...message, date: this.getTime(), type: 'from' });
+                socket.to('allChatProto').emit('NewMessage', { ...message, date: this.getTime(), type: 'from' });
             });
 
             socket.on(

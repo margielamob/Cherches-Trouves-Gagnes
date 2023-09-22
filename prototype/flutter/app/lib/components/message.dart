@@ -38,7 +38,6 @@ class _ChatMessageState extends State<ChatMessage> {
   String username = '';
   String text;
   double textSize = 12;
-  FontWeight weight = FontWeight.bold;
   bool isFromUser;
   Color userColor = Colors.blue;
   String date;
@@ -68,48 +67,61 @@ class _ChatMessageState extends State<ChatMessage> {
       margin: EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Text(
-            username,
-            textAlign: isFromUser ? TextAlign.right : TextAlign.left,
-            style: TextStyle(
-              color: userColor,
-              fontSize: textSize,
-              fontWeight: weight,
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: isFromUser ? Colors.blue : Colors.grey,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width -
-                  20, // Adjust the maximum width as needed
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                text,
+          // nom du user
+          Row(
+            mainAxisAlignment:
+                isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Text(
+                username,
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: textSize,
-                  fontWeight: weight,
+                  color: userColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
-            ),
+            ],
           ),
-          Text(
-            'message sent at $date',
-            textAlign: isFromUser ? TextAlign.right : TextAlign.left,
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontSize: 10,
-              fontWeight: FontWeight.normal,
-            ),
-          )
+          SizedBox(
+            height: 2,
+          ),
+          // text du message
+          Row(
+            mainAxisAlignment:
+                isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: isFromUser ? Colors.blue : Colors.grey,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: textSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // heure d'envoi du message
+          Row(
+            mainAxisAlignment:
+                isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Text(
+                'message sent at $date',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: 8,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );

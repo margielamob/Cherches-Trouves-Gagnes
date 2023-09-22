@@ -1,13 +1,14 @@
-import 'package:app/components/login_dialog.dart';
+import 'package:app/pages/prototype-page.dart';
 import 'package:app/services/Authentication.service.dart';
+import 'package:app/services/chat-socket.service.dart';
 import 'package:app/services/socket-client.service.dart';
 import 'package:flutter/material.dart';
-import 'components/chat.dart';
 import 'components/tuto.dart';
 
 // services for dependency injection
 var socketClient = SocketClient();
 var authenticationService = AuthenticationService(socketClient: socketClient);
+var chatSocketService = ChatSocketService(socketClient);
 //...
 void main() {
   runApp(MyApp());
@@ -79,14 +80,7 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return LoginDialog(
-                              authenticationService: authenticationService,
-                            );
-                          },
-                        );
+                        PrototypePage.navigateToPrototypePage(context);
                       },
                       child: Text('Go to Prototype'),
                     ),
@@ -173,23 +167,6 @@ class PageB extends StatelessWidget {
   }
 }
 
-class PrototypePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('This is a ChatBox prototype'),
-      ),
-      body: Center(
-        child: Chat(
-          socketClient: socketClient,
-          authenticationService: authenticationService,
-        ),
-      ),
-    );
-  }
-}
-
 class Tuto extends StatelessWidget {
   const Tuto({super.key});
 
@@ -197,7 +174,7 @@ class Tuto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('this ois an example'),
+        title: Text('this is an example'),
       ),
       body: Center(
         child: Button(),

@@ -4,7 +4,7 @@ export enum SocketEvent {
     RejectPlayer = 'rejectPlayer',
     PlayerLeft = 'playerLeft',
     Connection = 'connection',
-    Disconnect = 'disconnect',
+    Disconnect = 'Disconnect',
     CreateGame = 'createGame',
     CreateGameMulti = 'createGameMulti',
     GameCreated = 'gameCreated',
