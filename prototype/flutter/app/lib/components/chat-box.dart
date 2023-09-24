@@ -24,8 +24,6 @@ class _ChatBoxState extends State<ChatBox> {
   final AuthenticationService authenticationService;
   List<ChatMessage> messages = [];
   final bool canType = true;
-  bool showScrollDownArrow = false;
-  bool hasArrowBeenClicked = false;
   FocusNode _textFocusNode = FocusNode();
   TextEditingController _textController = TextEditingController();
   ScrollController _scrollController = ScrollController();
@@ -40,29 +38,12 @@ class _ChatBoxState extends State<ChatBox> {
     chatSocketService.handleReception(user, updateMessages);
     chatSocketService.handleMessagesServed(user, loadMessages);
     chatSocketService.fetchMessages();
-
-    _scrollController.addListener(() {
-      if (hasArrowBeenClicked) return;
-      // I know this is dumb to do it this way
-      // but when I simply assign the boolean expression
-      // to the variable it doesnt work as expected
-      // reaaallyyy strange...
-      setState(() {
-        if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent) {
-          showScrollDownArrow = false;
-        } else {
-          showScrollDownArrow = true;
-        }
-      });
-    });
   }
 
   void loadMessages(List<ChatMessage> newMessages) {
     if (mounted) {
       setState(() {
         messages = newMessages;
-        showScrollDownArrow = newMessages.isNotEmpty;
       });
     }
   }
@@ -134,34 +115,6 @@ class _ChatBoxState extends State<ChatBox> {
                       return messages[index];
                     },
                   ),
-                  if (showScrollDownArrow) // Show the scroll down arrow if there are new messages
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: GestureDetector(
-                        onTap: () {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                          setState(() {
-                            showScrollDownArrow = false;
-                            hasArrowBeenClicked = true;
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple.withOpacity(0.6),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.arrow_downward,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
