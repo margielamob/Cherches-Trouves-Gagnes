@@ -25,6 +25,7 @@ class _ChatBoxState extends State<ChatBox> {
   List<ChatMessage> messages = [];
   final bool canType = true;
   bool showScrollDownArrow = false;
+  bool hasArrowBeenClicked = false;
   FocusNode _textFocusNode = FocusNode();
   TextEditingController _textController = TextEditingController();
   ScrollController _scrollController = ScrollController();
@@ -41,6 +42,7 @@ class _ChatBoxState extends State<ChatBox> {
     chatSocketService.fetchMessages();
 
     _scrollController.addListener(() {
+      if (hasArrowBeenClicked) return;
       // I know this is dumb to do it this way
       // but when I simply assign the boolean expression
       // to the variable it doesnt work as expected
@@ -142,6 +144,7 @@ class _ChatBoxState extends State<ChatBox> {
                           );
                           setState(() {
                             showScrollDownArrow = false;
+                            hasArrowBeenClicked = true;
                           });
                         },
                         child: Container(
