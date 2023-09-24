@@ -71,13 +71,15 @@ class _ChatBoxState extends State<ChatBox> {
     if (mounted) {
       setState(() {
         messages.add(message);
-        Future.delayed(Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        });
+      });
+
+      // Schedule the scroll after the layout has updated
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       });
     }
   }
