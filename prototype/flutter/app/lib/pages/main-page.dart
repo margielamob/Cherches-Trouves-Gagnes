@@ -1,4 +1,4 @@
-import 'package:app/pages/prototype-page.dart';
+import 'package:app/pages/chat-message-page.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {

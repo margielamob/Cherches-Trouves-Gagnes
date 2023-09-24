@@ -1,5 +1,5 @@
 import 'package:app/pages/main-page.dart';
-import 'package:app/pages/prototype-page.dart';
+import 'package:app/pages/chat-message-page.dart';
 import 'package:app/services/authentication.service.dart';
 import 'package:app/services/chat-socket.service.dart';
 import 'package:app/services/socket-client.service.dart';
