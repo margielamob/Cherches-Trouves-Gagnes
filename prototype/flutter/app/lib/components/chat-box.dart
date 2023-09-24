@@ -39,6 +39,21 @@ class _ChatBoxState extends State<ChatBox> {
     chatSocketService.handleReception(user, updateMessages);
     chatSocketService.handleMessagesServed(user, loadMessages);
     chatSocketService.fetchMessages();
+
+    _scrollController.addListener(() {
+      // I know this is dumb to do it this way
+      // but when I simply assign the boolean expression
+      // to the variable it doesnt work as expected
+      // reaaallyyy strange...
+      setState(() {
+        if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent) {
+          showScrollDownArrow = false;
+        } else {
+          showScrollDownArrow = true;
+        }
+      });
+    });
   }
 
   void loadMessages(List<ChatMessage> newMessages) {
@@ -132,7 +147,7 @@ class _ChatBoxState extends State<ChatBox> {
                         child: Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.deepPurple,
+                            color: Colors.deepPurple.withOpacity(0.6),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
