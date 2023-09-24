@@ -1,4 +1,4 @@
-import 'package:app/services/Authentication.service.dart';
+import 'package:app/services/authentication.service.dart';
 import 'package:flutter/material.dart';
 
 class LoginDialog extends StatefulWidget {
@@ -57,7 +57,7 @@ class _LoginDialogState extends State<LoginDialog> {
   void navigate() {
     if (_canNavigate) {
       Navigator.of(context).pop();
-      Navigator.pushNamed(context, '/prototype');
+      Navigator.pushNamed(context, '/ChatMessagePage');
     } else {
       showDialog(
         context: context,

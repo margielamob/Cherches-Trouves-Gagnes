@@ -1,6 +1,6 @@
 import 'package:app/components/chat-message.dart';
 import 'package:app/components/user.dart';
-import 'package:app/services/Authentication.service.dart';
+import 'package:app/services/authentication.service.dart';
 import 'package:app/services/chat-socket.service.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +22,12 @@ class _ChatBoxState extends State<ChatBox> {
   final ChatSocketService chatSocketService;
   late User user = User();
   final AuthenticationService authenticationService;
-  final List<ChatMessage> messages = [];
+  List<ChatMessage> messages = [];
   final bool canType = true;
-  TextEditingController textController = TextEditingController();
+  bool showScrollDownArrow = false;
+  FocusNode _textFocusNode = FocusNode();
+  TextEditingController _textController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   _ChatBoxState(this.chatSocketService, this.authenticationService) {
     user = authenticationService.user;
@@ -34,14 +37,16 @@ class _ChatBoxState extends State<ChatBox> {
   void initState() {
     super.initState();
     chatSocketService.handleReception(user, updateMessages);
-    chatSocketService.handleMessagesServed(loadMessages);
+    chatSocketService.handleMessagesServed(user, loadMessages);
     chatSocketService.fetchMessages();
-    print('initState called');
   }
 
-  void loadMessages(dynamic messages) {
+  void loadMessages(List<ChatMessage> newMessages) {
     if (mounted) {
-      setState(() {});
+      setState(() {
+        messages = newMessages;
+        showScrollDownArrow = newMessages.isNotEmpty;
+      });
     }
   }
 
@@ -49,6 +54,13 @@ class _ChatBoxState extends State<ChatBox> {
     if (mounted) {
       setState(() {
         messages.add(message);
+        Future.delayed(Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
       });
     }
   }
@@ -64,7 +76,7 @@ class _ChatBoxState extends State<ChatBox> {
     chatSocketService.sendMessage(text, user);
     if (mounted) {
       setState(() {
-        textController.clear();
+        _textController.clear();
       });
     }
   }
@@ -72,82 +84,109 @@ class _ChatBoxState extends State<ChatBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      width: 400,
-      height: 400,
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 173, 177, 184).withOpacity(0.4),
-          border:
-              Border.all(width: 2, color: Color.fromARGB(255, 255, 255, 255)),
-          borderRadius: BorderRadius.circular(10)),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            margin: EdgeInsets.only(top: 20),
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromARGB(255, 252, 252, 252),
-                    blurRadius: 10.0,
-                    spreadRadius: 0,
-                    offset: Offset(0, 4.0),
-                  )
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    controller: _scrollController,
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      return messages[index];
+                    },
+                  ),
+                  if (showScrollDownArrow) // Show the scroll down arrow if there are new messages
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: GestureDetector(
+                        onTap: () {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                          setState(() {
+                            showScrollDownArrow = false;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.arrow_downward,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
-                border: Border.all(
-                    width: 1,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    style: BorderStyle.solid),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return messages[index];
-              },
+              ),
             ),
           ),
           SizedBox(height: 16.0),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(width: 35),
-              Container(
-                width: 300,
-                height: 30,
-                margin: EdgeInsets.only(bottom: 10),
+              Expanded(
                 child: TextField(
-                  controller: textController,
+                  focusNode: _textFocusNode,
+                  controller: _textController,
                   onSubmitted: (message) {
                     sendMessage(message);
+                    _textFocusNode.requestFocus();
                   },
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Entrez votre message',
-                    enabled: canType,
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    labelText: 'Enter your message',
                   ),
                 ),
               ),
-              Flexible(
+              SizedBox(width: 16),
+              GestureDetector(
+                onTap: () {
+                  sendMessage(_textController.text);
+                  _textFocusNode.requestFocus();
+                },
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: InkWell(
-                    onTap: () {
-                      sendMessage(textController.text);
-                    },
-                    customBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Icon(Icons.send, color: Colors.black),
-                    ),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.send,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

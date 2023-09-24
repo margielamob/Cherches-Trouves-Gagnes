@@ -19,9 +19,22 @@ class ChatSocketService {
     _socket.emit(SocketEvents.FetchMessages, null);
   }
 
-  void handleMessagesServed(void Function(dynamic) onMessagesServed) {
+  List<ChatMessage> generateChatMessageList(User user, dynamic jsonArray) {
+    List<ChatMessage> list = [];
+
+    for (var obj in jsonArray) {
+      bool isFromUser = obj['user']['username'] == user.username;
+      list.add(_createChatMessageFromJson(isFromUser, obj));
+    }
+
+    return list;
+  }
+
+  void handleMessagesServed(
+      User user, void Function(List<ChatMessage>) onMessagesServed) {
     _socket.on(SocketEvents.ServeMessages, (dynamic messages) {
-      onMessagesServed(messages);
+      var messageList = generateChatMessageList(user, messages);
+      onMessagesServed(messageList);
     });
   }
 
@@ -29,13 +42,17 @@ class ChatSocketService {
       User user, void Function(ChatMessage) onMessageReceived) {
     _socket.on(SocketEvents.NewMessage, (Map<String, dynamic> payload) {
       bool isFromUser = payload['user']['username'] == user.username;
-      var message = ChatMessage(
-        text: payload['message'],
-        username: payload['user']['username'],
-        isFromUser: isFromUser,
-        date: payload['date'].toString(),
-      );
+      var message = _createChatMessageFromJson(isFromUser, payload);
       onMessageReceived(message);
     });
+  }
+
+  ChatMessage _createChatMessageFromJson(bool isFromUser, Map json) {
+    return ChatMessage(
+      text: json['message'],
+      username: json['user']['username'],
+      isFromUser: isFromUser,
+      date: json['date'].toString(),
+    );
   }
 }
