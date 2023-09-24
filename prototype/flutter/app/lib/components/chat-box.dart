@@ -26,7 +26,7 @@ class _ChatBoxState extends State<ChatBox> {
   final bool canType = true;
   FocusNode _textFocusNode = FocusNode();
   TextEditingController _textController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
 
   _ChatBoxState(this.chatSocketService, this.authenticationService) {
     user = authenticationService.user;
@@ -35,6 +35,7 @@ class _ChatBoxState extends State<ChatBox> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     chatSocketService.handleReception(user, updateMessages);
     chatSocketService.handleMessagesServed(user, loadMessages);
     chatSocketService.fetchMessages();
@@ -56,18 +57,23 @@ class _ChatBoxState extends State<ChatBox> {
 
       // Schedule the scroll after the layout has updated
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        Future.delayed(Duration(milliseconds: 200), _scrollDown);
       });
     }
+  }
+
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
+    _scrollController.dispose();
   }
 
   void sendMessage(String text) {
@@ -79,6 +85,8 @@ class _ChatBoxState extends State<ChatBox> {
         _textController.clear();
       });
     }
+    _textFocusNode.requestFocus();
+    _scrollDown();
   }
 
   @override
@@ -128,7 +136,6 @@ class _ChatBoxState extends State<ChatBox> {
                   controller: _textController,
                   onSubmitted: (message) {
                     sendMessage(message);
-                    _textFocusNode.requestFocus();
                   },
                   decoration: InputDecoration(
                     filled: true,
@@ -144,7 +151,6 @@ class _ChatBoxState extends State<ChatBox> {
               GestureDetector(
                 onTap: () {
                   sendMessage(_textController.text);
-                  _textFocusNode.requestFocus();
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

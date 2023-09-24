@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:app/services/authentication.service.dart';
 import 'package:flutter/material.dart';
 
@@ -93,13 +94,7 @@ class _LoginDialogState extends State<LoginDialog> {
               decoration: InputDecoration(
                 labelText: 'Username',
               ),
-            ),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
+              onFieldSubmitted: (value) => submitLogin(),
             ),
           ],
         ),
