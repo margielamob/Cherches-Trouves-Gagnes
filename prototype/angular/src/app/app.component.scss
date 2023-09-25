@@ -4,3 +4,29 @@
     justify-content: center; /* Center children horizontally */
     align-items: center; /* Center children vertically */
 }
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+    min-width: 100%;
+}
+
+app-login-page {
+    flex-grow: 1;
+}
+
+.chat-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+app-main-feed {
+    flex-grow: 1;
+}

@@ -1,71 +1,55 @@
-// Variables for colors
-$primary-color: #333; // Dark gray
-$secondary-color: #666; // Slightly lighter gray
-$background-color: #f4f4f4; // Light gray background
-$form-background: #fff; // White form background
-
-// Basic styling for the entire page
-body {
-    font-family: Arial, sans-serif;
-    background-color: $background-color;
-    margin: 0;
-    padding: 0;
+/* Center the login card on the page */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Change the height as needed */
 }
 
-.container {
-    max-width: 400px;
-    margin: 0 auto;
+/* Style for the login card */
+.login-card {
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    background-color: $form-background;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px; /* Adjust the width of the card as needed */
 }
 
-h1,
-h2,
-h3 {
-    color: $primary-color;
+/* Style for the login form */
+.login-form {
+    text-align: center;
+    min-width: 90%;
 }
 
-p {
-    line-height: 1.6;
-    color: $primary-color;
-}
-
-// Styling for form elements
 .form-group {
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: $primary-color;
+.input-wrapper {
+    flex: 1;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-input[type='text'],
-input[type='password'] {
-    width: 100%;
+.form-input {
+    flex: 1;
     padding: 10px;
-    border: 1px solid $secondary-color;
-    border-radius: 4px;
-    font-size: 16px;
-    color: $primary-color;
-
-    &:focus {
-        border-color: $primary-color;
-    }
+    border: none;
+    border-radius: 5px 0 0 5px;
 }
 
-button[type='submit'] {
-    background-color: $primary-color;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: darken($primary-color, 10%);
-    }
+.form-btn {
+    background-color: lightgrey;
+    color: black;
+    border: 0.5px solid black;
+    border-radius: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Style for the error message */
+.error-message {
+    color: red;
+    margin-top: 10px; /* Adjust the top margin of the error message as needed */
 }

@@ -27,7 +27,6 @@ export class ChatBoxComponent implements OnInit {
             const message = {
                 user: this.chat.userNameObs.getValue(),
                 message: text.trim(),
-                date: new Date(),
             };
             this.chat.sendMessage(message);
             this.message = '';

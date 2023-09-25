@@ -45,7 +45,7 @@ export class ChatSocketService {
     }
 
     public handleEvents() {
-        this.socket.on(SocketEvent.PrototypeMessage, (message: Message) => {
+        this.socket.on(SocketEvent.NewMessage, (message: Message) => {
             console.log('msg');
             this.messagesArray.push(message);
             this.messagesObs.next(this.messagesArray);

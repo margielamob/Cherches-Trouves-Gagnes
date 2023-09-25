@@ -37,4 +37,5 @@ export enum SocketEvent {
     PrototypeMessage = 'PrototypeMessage',
     UserAuthenticated = 'UserAuthenticated',
     DisconnectFromChat = 'DisconnectFromChat',
+    NewMessage = 'NewMessage',
 }
