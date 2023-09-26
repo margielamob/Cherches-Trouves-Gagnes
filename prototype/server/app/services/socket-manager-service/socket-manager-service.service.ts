@@ -56,7 +56,7 @@ export class SocketManagerService {
 
                 let newMessage = { ...message, date: this.getTime() };
 
-                this.messages.push({ ...message, type: 'from' });
+                this.messages.push(newMessage);
                 socket.emit(SocketEvent.NewMessage, { ...newMessage, type: 'to' });
                 socket.to('allChatProto').emit(SocketEvent.NewMessage, { ...newMessage, type: 'from' });
             });

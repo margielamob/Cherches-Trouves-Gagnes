@@ -17,7 +17,6 @@ class AuthenticationService {
     if (!_socketClient.isAlive()) {
       _socketClient.connect();
     }
-    // if (!user.isLoggedIn() || !_socketClient.isAlive()) return;
     _socketClient.emit(SocketEvents.Authenticate, user.username);
   }
 

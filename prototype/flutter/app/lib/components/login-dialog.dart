@@ -56,7 +56,11 @@ class _LoginDialogState extends State<LoginDialog> {
   }
 
   void navigate() {
-    if (_canNavigate) {
+    String errorText = 'this user already exists';
+    if (!isUsernameValid(authenticationService.user.username)) {
+      errorText = 'invalid username format';
+    }
+    if (_canNavigate && isUsernameValid(authenticationService.user.username)) {
       Navigator.of(context).pop();
       Navigator.pushNamed(context, '/ChatMessagePage');
     } else {
@@ -64,9 +68,8 @@ class _LoginDialogState extends State<LoginDialog> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Login Error'),
-            content: Text(
-                'Username already exists or is not logged out. Please try again.'),
+            title: Text(errorText),
+            content: Text('Try another username'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -79,6 +82,10 @@ class _LoginDialogState extends State<LoginDialog> {
         },
       );
     }
+  }
+
+  bool isUsernameValid(String username) {
+    return username.isEmpty || username.contains('');
   }
 
   _LoginDialogState(this._authenticationService);
@@ -94,7 +101,6 @@ class _LoginDialogState extends State<LoginDialog> {
               decoration: InputDecoration(
                 labelText: 'Username',
               ),
-              onFieldSubmitted: (value) => submitLogin(),
             ),
           ],
         ),
