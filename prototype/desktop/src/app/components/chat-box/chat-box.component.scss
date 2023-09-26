@@ -1,36 +1,35 @@
 // Variables for colors
 $primary-color: #333; // Dark gray
 $secondary-color: #666; // Slightly lighter gray
-$background-color: #f4f4f4; // Light gray background
-$form-background: #fff; // White form background
+$background-color: #fff; // Light gray background
+$form-background: #ededed; // White form background
 
 .chatbox-wrapper {
-    margin: 0 auto;
     padding: 20px;
     background-color: $form-background;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     display: flex;
     flex-direction: column; /* Stack children vertically */
     justify-content: center; /* Center children horizontally */
     align-items: stretch; /* Center children vertically */
-    min-width: 100%;
+    margin: 0px 10px 0px 10px;
 }
 
 .screen {
-    min-height: 300px;
+    min-height: 400px;
     max-height: 300px; // Set a maximum height for the message screen
     overflow-y: auto; // Add a scrollbar when content overflows
-    border: 1px solid $secondary-color;
-    border-radius: 4px;
+    border-radius: 10px;
     padding: 10px;
     background-color: $background-color;
 }
 
 .message {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding: 5px;
-    background-color: $background-color;
-    border-radius: 4px;
+    background-color: $form-background;
+    border-radius: 20px;
     color: $primary-color;
 }
 
@@ -38,7 +37,9 @@ $form-background: #fff; // White form background
 .input-box {
     margin-top: 10px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
 }
 
 input[type='text'] {
@@ -54,16 +55,17 @@ input[type='text'] {
     }
 }
 
-button {
-    background-color: $primary-color;
+.icon {
+    background-color: blue;
+    margin-left: 10px;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
+    border-radius: 50%;
+    padding: 10px 10px 10px 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: darken($primary-color, 10%);
+        background-color: darken(blue, 10%);
     }
 }

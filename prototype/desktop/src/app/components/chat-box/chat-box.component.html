@@ -4,6 +4,6 @@
     </div>
     <div class="input-box">
         <input type="text" #messageInput (keydown.enter)="sendMessage(messageInput.value)" placeholder="Type a message..." required />
-        <button (click)="sendMessage(messageInput.value)">Send</button>
+        <mat-icon class="send icon" (click)="sendMessage(messageInput.value)">send</mat-icon>
     </div>
 </div>
