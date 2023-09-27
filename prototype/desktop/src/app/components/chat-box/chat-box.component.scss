@@ -38,6 +38,8 @@ $form-background: #dcdcdc; // White form background
 .self-message {
     background-color: #6fbced;
     display: flex;
+    flex-direction: row-reverse;
+    margin-left: 90%;
     justify-content: flex-end;
     width: fit-content;
 }

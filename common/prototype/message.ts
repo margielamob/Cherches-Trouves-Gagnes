@@ -5,5 +5,4 @@ export interface Message {
     message: string;
     date?: string;
     type?: string;
-    userType: string;
 }
