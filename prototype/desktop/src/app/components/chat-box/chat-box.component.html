@@ -1,6 +1,12 @@
 <div class="chatbox-wrapper">
     <div class="screen">
-        <div class="message" *ngFor="let message of chatMessages">{{ message.user.username }}: {{ message.message }}</div>
+        <div
+            class="message"
+            *ngFor="let message of chatMessages"
+            [ngClass]="{ 'self-message': message.user.username === currentUser, 'other-message': message.user.username != currentUser }"
+        >
+            {{ message.user.username }}: {{ message.message }}
+        </div>
     </div>
     <div class="input-box">
         <input type="text" #messageInput (keydown.enter)="sendMessage(messageInput.value)" placeholder="Type a message..." required />
