@@ -2,7 +2,7 @@
 $primary-color: #333; // Dark gray
 $secondary-color: #666; // Slightly lighter gray
 $background-color: #fff; // Light gray background
-$form-background: #ededed; // White form background
+$form-background: #dcdcdc; // White form background
 
 .chatbox-wrapper {
     padding: 20px;
@@ -17,6 +17,8 @@ $form-background: #ededed; // White form background
 }
 
 .screen {
+    display: flex;
+    flex-direction: column;
     min-height: 400px;
     max-height: 300px; // Set a maximum height for the message screen
     overflow-y: auto; // Add a scrollbar when content overflows
@@ -26,11 +28,25 @@ $form-background: #ededed; // White form background
 }
 
 .message {
+    display: flex;
     margin-bottom: 5px;
     padding: 5px;
-    background-color: $form-background;
     border-radius: 20px;
     color: $primary-color;
+}
+
+.self-message {
+    background-color: #6fbced;
+    display: flex;
+    justify-content: flex-end;
+    width: fit-content;
+}
+
+.other-message {
+    background-color: $form-background;
+    display: flex;
+    justify-content: flex-start;
+    width: fit-content;
 }
 
 // Styling for the input box

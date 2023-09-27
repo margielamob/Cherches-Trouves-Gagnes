@@ -10,9 +10,11 @@ import { ChatSocketService } from 'src/app/services/chat-socket.service';
 export class ChatBoxComponent implements OnInit {
     public chatMessages: Message[] = [];
     message = '';
+    currentUser = '';
 
     constructor(private chat: ChatSocketService) {
         this.chatMessages = chat.messages;
+        this.currentUser = chat.userNameObs.getValue().username;
     }
 
     ngOnInit(): void {
@@ -27,6 +29,7 @@ export class ChatBoxComponent implements OnInit {
             const message = {
                 user: this.chat.userNameObs.getValue(),
                 message: text.trim(),
+                userType: 'self',
             };
             this.chat.sendMessage(message);
             this.message = '';
