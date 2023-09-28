@@ -44,10 +44,17 @@ export class ChatSocketService {
         this.socket.send<Message>(SocketEvent.PrototypeMessage, message);
     }
 
+    public fetchMessages() {
+        this.socket.send<string>(SocketEvent.FetchMessages, this.user.username);
+    }
+
     public handleEvents() {
         this.socket.on(SocketEvent.NewMessage, (message: Message) => {
             this.messagesArray.push(message);
             this.messagesObs.next(this.messagesArray);
+        });
+        this.socket.on(SocketEvent.ServeMessages, (messages: Message[]) => {
+            this.messagesObs.next(messages);
         });
     }
 }

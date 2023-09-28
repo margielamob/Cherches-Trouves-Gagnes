@@ -26,6 +26,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         this.chat.messagesObs.subscribe((messages) => {
             this.chatMessages = messages;
         });
+        this.chat.fetchMessages();
     }
 
     @HostListener('wheel', ['$event'])
@@ -54,6 +55,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
             this.chat.sendMessage(message);
             this.message = '';
             this.newMessage = true;
+            this.myInputField.nativeElement.focus();
         }
     }
 }

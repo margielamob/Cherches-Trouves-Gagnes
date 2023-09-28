@@ -1,11 +1,11 @@
 <div class="chatbox-wrapper">
     <div class="screen">
-        <div *ngFor="let message of chatMessages" class="message-container">
+        <div *ngFor="let message of chatMessages" class="message-container" #message>
             <app-message [message]="message"></app-message>
         </div>
     </div>
     <div class="input-box" #myInput name="input">
-        <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Type a message..." required />
+        <input type="text" [(ngModel)]="message" (keydown.enter)="sendMessage()" placeholder="Type a message..." required autofocus />
         <mat-icon class="send icon" (click)="sendMessage()">send</mat-icon>
     </div>
 </div>

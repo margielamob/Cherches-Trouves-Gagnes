@@ -4,6 +4,10 @@ $secondary-color: #666; // Slightly lighter gray
 $background-color: #fff; // Light gray background
 $form-background: #dcdcdc; // White form background
 
+.message {
+    height: 100%;
+}
+
 .message-body {
     border-radius: 1.15rem;
     line-height: 1.25;
@@ -24,11 +28,13 @@ $form-background: #dcdcdc; // White form background
 .message.message-user {
     display: flex;
     flex-direction: column;
-    align-self: flex-end;
     margin-bottom: 5px;
     padding: 5px;
     border-radius: 20px;
     color: $primary-color;
+    width: fit-content;
+    margin-left: auto;
+    height: 100%;
 }
 
 .message-body.message-user {
@@ -37,9 +43,9 @@ $form-background: #dcdcdc; // White form background
     color: #fff;
     display: flex;
     flex-direction: row-reverse;
-    margin-left: 90%;
-    justify-content: flex-end;
+    justify-content: center;
     width: fit-content;
+    padding: 5px;
 }
 
 .message.message-other {

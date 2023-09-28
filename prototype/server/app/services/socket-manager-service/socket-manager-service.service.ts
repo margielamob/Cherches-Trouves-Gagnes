@@ -63,7 +63,7 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.FetchMessages, () => {
                 this.logger.logInfo('serving messages...');
-                this.sio.to('allChatProto').emit(SocketEvent.ServeMessages, this.messages);
+                socket.emit(SocketEvent.ServeMessages, this.messages);
             });
         });
     }
