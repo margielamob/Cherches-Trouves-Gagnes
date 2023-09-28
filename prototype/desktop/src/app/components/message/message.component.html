@@ -1,0 +1,7 @@
+<div [ngClass]="['message', messageClass]">
+    <div class="username">{{ message.user.username }} :</div>
+    <p [ngClass]="['message-body', messageClass]">
+        {{ message.message }}
+    </p>
+    <div class="timestamp">{{ message.date }}</div>
+</div>

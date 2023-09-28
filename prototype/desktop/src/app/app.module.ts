@@ -8,6 +8,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { LoginComponent } from './components/login/login.component';
+import { MessageComponent } from './components/message/message.component';
 import { LoginPageComponent } from './pages/login-page/login-page/login-page.component';
 import { MainFeedComponent } from './pages/main-feed/main-feed/main-feed.component';
 /**
@@ -17,7 +18,7 @@ import { MainFeedComponent } from './pages/main-feed/main-feed/main-feed.compone
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, ChatBoxComponent, LoginComponent, LoginPageComponent, MainFeedComponent],
+    declarations: [AppComponent, ChatBoxComponent, LoginComponent, LoginPageComponent, MainFeedComponent, MessageComponent],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [],
     bootstrap: [AppComponent],

@@ -1,0 +1,67 @@
+// Variables for colors
+$primary-color: #333; // Dark gray
+$secondary-color: #666; // Slightly lighter gray
+$background-color: #fff; // Light gray background
+$form-background: #dcdcdc; // White form background
+
+.message-body {
+    border-radius: 1.15rem;
+    line-height: 1.25;
+    max-width: 75%;
+    padding: 0.5rem 0.875rem;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message-body::before,
+.message-body::after {
+    bottom: -0.1rem;
+    content: '';
+    height: 1rem;
+    position: absolute;
+}
+
+.message.message-user {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 20px;
+    color: $primary-color;
+}
+
+.message-body.message-user {
+    align-self: flex-end;
+    background-color: #248bf5;
+    color: #fff;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-left: 90%;
+    justify-content: flex-end;
+    width: fit-content;
+}
+
+.message.message-other {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 20px;
+    color: $primary-color;
+}
+
+.message-body.message-other {
+    background-color: $form-background;
+    display: flex;
+    justify-content: flex-start;
+    width: fit-content;
+}
+
+.username {
+    text-align: left;
+}
+
+.timestamp {
+    text-align: right;
+}

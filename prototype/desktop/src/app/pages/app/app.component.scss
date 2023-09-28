@@ -25,8 +25,11 @@ app-login-page {
     text-align: center;
     min-height: 100%;
     min-width: 100%;
+    flex-grow: 1;
 }
 
 app-main-feed {
-    flex-grow: 1;
+    flex-grow: 0;
+    min-width: 100%;
+    min-height: 100%;
 }

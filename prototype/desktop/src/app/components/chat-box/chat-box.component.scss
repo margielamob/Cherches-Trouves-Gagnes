@@ -11,44 +11,27 @@ $form-background: #dcdcdc; // White form background
     border-radius: 10px;
     display: flex;
     flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center children horizontally */
-    align-items: stretch; /* Center children vertically */
+    justify-content: space-between; /* Center children horizontally */
+    //align-items: stretch; /* Center children vertically */
     margin: 0px 10px 0px 10px;
+    flex-grow: 1;
+    height: 00%;
 }
 
 .screen {
-    display: flex;
-    flex-direction: column;
-    min-height: 400px;
-    max-height: 300px; // Set a maximum height for the message screen
-    overflow-y: auto; // Add a scrollbar when content overflows
+    overflow: auto; // Add a scrollbar when content overflows
     border-radius: 10px;
     padding: 10px;
     background-color: $background-color;
+    flex-grow: 9.75;
+    height: 100%;
+    list-style: none;
 }
 
-.message {
+.message-container {
     display: flex;
-    margin-bottom: 5px;
-    padding: 5px;
-    border-radius: 20px;
-    color: $primary-color;
-}
-
-.self-message {
-    background-color: #6fbced;
-    display: flex;
-    flex-direction: row-reverse;
-    margin-left: 90%;
-    justify-content: flex-end;
-    width: fit-content;
-}
-
-.other-message {
-    background-color: $form-background;
-    display: flex;
-    justify-content: flex-start;
-    width: fit-content;
+    align-items: flex-start;
+    flex-grow: 1;
 }
 
 // Styling for the input box
@@ -58,6 +41,7 @@ $form-background: #dcdcdc; // White form background
     flex-direction: row;
     justify-content: center;
     align-items: stretch;
+    flex-grow: 0.25;
 }
 
 input[type='text'] {
