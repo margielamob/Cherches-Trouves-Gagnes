@@ -38,14 +38,16 @@ $form-background: #dcdcdc; // White form background
 }
 
 .message-body.message-user {
-    align-self: flex-end;
     background-color: #248bf5;
     color: #fff;
     display: flex;
     flex-direction: row-reverse;
+    flex-wrap: wrap;
     justify-content: center;
     width: fit-content;
-    padding: 5px;
+    height: fit-content;
+    word-wrap: break-word;
+    white-space: pre-line;
 }
 
 .message.message-other {

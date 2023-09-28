@@ -54,6 +54,7 @@ export class ChatSocketService {
             this.messagesObs.next(this.messagesArray);
         });
         this.socket.on(SocketEvent.ServeMessages, (messages: Message[]) => {
+            this.messagesArray = [...messages];
             this.messagesObs.next(messages);
         });
     }
