@@ -25,6 +25,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         this.chat.setUser;
         this.chat.messagesObs.subscribe((messages) => {
             this.chatMessages = messages;
+            this.newMessage = true;
         });
         this.chat.fetchMessages();
     }
@@ -39,6 +40,10 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewChecked() {
+        this.scrollRecent();
+    }
+
+    public scrollRecent() {
         if (this.newMessage) {
             const recentMessage = this.messagesInDom.last;
             recentMessage.nativeElement.scrollIntoView();

@@ -6,6 +6,8 @@ $form-background: #dcdcdc; // White form background
 
 .message {
     height: 100%;
+    width: fit-content;
+    max-width: 75%;
 }
 
 .message-body {
@@ -32,7 +34,6 @@ $form-background: #dcdcdc; // White form background
     padding: 5px;
     border-radius: 20px;
     color: $primary-color;
-    width: fit-content;
     margin-left: auto;
     height: 100%;
 }
@@ -40,14 +41,12 @@ $form-background: #dcdcdc; // White form background
 .message-body.message-user {
     background-color: #248bf5;
     color: #fff;
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: wrap;
     justify-content: center;
     width: fit-content;
+    max-width: 75%;
     height: fit-content;
     word-wrap: break-word;
-    white-space: pre-line;
+    overflow-wrap: break-word;
 }
 
 .message.message-other {
@@ -57,19 +56,24 @@ $form-background: #dcdcdc; // White form background
     padding: 5px;
     border-radius: 20px;
     color: $primary-color;
+    margin-right: auto;
+    height: 100%;
 }
 
 .message-body.message-other {
     background-color: $form-background;
-    display: flex;
-    justify-content: flex-start;
     width: fit-content;
+    height: fit-content;
+    word-wrap: break-word;
 }
 
 .username {
     text-align: left;
+    width: fit-content;
 }
 
 .timestamp {
     text-align: right;
+    width: fit-content;
+    align-self: left;
 }
