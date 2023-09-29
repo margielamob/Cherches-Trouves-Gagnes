@@ -47,6 +47,7 @@ $form-background: #dcdcdc; // White form background
     height: fit-content;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-left: auto;
 }
 
 .message.message-other {
@@ -70,10 +71,12 @@ $form-background: #dcdcdc; // White form background
 .username {
     text-align: left;
     width: fit-content;
+    margin-left: auto;
 }
 
 .timestamp {
     text-align: right;
     width: fit-content;
     align-self: left;
+    margin-left: auto;
 }
