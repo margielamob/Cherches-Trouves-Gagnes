@@ -1,7 +1,7 @@
 <div [ngClass]="['message', messageClass]">
-    <div class="username">{{ message.user.username }}</div>
+    <div [ngClass]="['username', messageClass]">{{ message.user.username }}</div>
     <div [ngClass]="['message-body', messageClass]">
         {{ message.message }}
     </div>
-    <div class="timestamp">{{ message.date }}</div>
+    <div [ngClass]="['timestamp', messageClass]">{{ message.date }}</div>
 </div>

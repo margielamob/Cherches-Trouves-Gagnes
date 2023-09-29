@@ -68,15 +68,28 @@ $form-background: #dcdcdc; // White form background
     word-wrap: break-word;
 }
 
-.username {
+.username.message-user {
     text-align: left;
     width: fit-content;
     margin-left: auto;
 }
 
-.timestamp {
+.timestamp.message-user {
     text-align: right;
     width: fit-content;
     align-self: left;
     margin-left: auto;
+}
+
+.username.message-other {
+    text-align: left;
+    width: fit-content;
+    margin-right: auto;
+}
+
+.timestamp.message-other {
+    text-align: right;
+    width: fit-content;
+    align-self: left;
+    margin-right: auto;
 }
