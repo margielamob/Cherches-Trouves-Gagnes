@@ -1,8 +1,4 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-<div *ngIf="!authenticated" class="login-wrapper">
-    <app-login-page></app-login-page>
-</div>
-<!-- <div *ngIf="authenticated" class="chat-wrapper"> -->
+<app-login-page *ngIf="!authenticated"></app-login-page>
 <app-main-feed *ngIf="authenticated"></app-main-feed>
-<!-- </div> -->

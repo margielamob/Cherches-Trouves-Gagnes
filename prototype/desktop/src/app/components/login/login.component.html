@@ -17,6 +17,7 @@
                     <button mat-icon-button type="submit" class="btn btn-primary form-btn"><mat-icon>login</mat-icon></button>
                 </div>
                 <div *ngIf="invalid" class="error-message">This user has already signed in</div>
+                <div *ngIf="empty" class="error-message">Please enter a username</div>
             </div>
         </form>
     </div>

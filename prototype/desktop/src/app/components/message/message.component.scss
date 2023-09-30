@@ -8,6 +8,7 @@ $form-background: #dcdcdc; // White form background
     height: 100%;
     width: fit-content;
     max-width: 75%;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .message-body {
@@ -17,6 +18,7 @@ $form-background: #dcdcdc; // White form background
     padding: 0.5rem 0.875rem;
     position: relative;
     word-wrap: break-word;
+    font-size: 15pt;
 }
 
 .message-body::before,
@@ -92,4 +94,16 @@ $form-background: #dcdcdc; // White form background
     width: fit-content;
     align-self: left;
     margin-right: auto;
+}
+
+.timestamp {
+    font-size: 6pt;
+    color: $secondary-color;
+    margin-top: 3px;
+}
+
+.username {
+    font-size: 10pt;
+    color: $secondary-color;
+    margin-bottom: 5px;
 }

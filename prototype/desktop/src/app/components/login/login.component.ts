@@ -11,6 +11,7 @@ import { SocketEvent } from '@common/socket-event';
 export class LoginComponent implements OnInit {
     username = '';
     invalid = false;
+    empty = false;
 
     constructor(private socket: SocketClientService, private chat: ChatSocketService) {}
 
@@ -20,8 +21,9 @@ export class LoginComponent implements OnInit {
 
     public onSubmit() {
         if (this.username.trim() === '') {
-            this.invalid = true;
+            this.empty = true;
         } else {
+            this.empty = false;
             this.socket.send(SocketEvent.Authenticate, this.username);
         }
     }
