@@ -1,18 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PageHeaderComponent } from '@app/components/page-header/page-header.component';
-import { AppMaterialModule } from '@app/modules/material.module';
-import { ExitGameButtonComponent } from '@app/components/exit-game-button/exit-game-button.component';
-import { WaitingRoomComponent } from './waiting-room.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { ExitGameButtonComponent } from '@app/components/exit-game-button/exit-game-button.component';
+import { PageHeaderComponent } from '@app/components/page-header/page-header.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
-import { Socket } from 'socket.io-client';
-import { SocketEvent } from '@common/socket-event';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { PublicGameInformation } from '@common/game-information';
+import { SocketEvent } from '@common/socket-event';
+import { Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
+import { WaitingRoomComponent } from './waiting-room.component';
 
 /* eslint-disable @typescript-eslint/no-empty-function -- connect needs to be empty (Nikolay's example) */
 class SocketClientServiceMock extends CommunicationSocketService {
@@ -44,7 +46,7 @@ describe('WaitingRoomComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent, PageHeaderComponent, ExitGameButtonComponent],
-            imports: [AppMaterialModule, RouterTestingModule, HttpClientModule],
+            imports: [AppMaterialModule, RouterTestingModule, HttpClientModule, AngularFireModule.initializeApp(environment.firebase)],
             providers: [
                 { provide: CommunicationSocketService, useValue: socketServiceMock },
                 { provide: Router, useValue: spyRouter },

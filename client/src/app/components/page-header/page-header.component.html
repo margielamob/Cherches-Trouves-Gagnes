@@ -4,5 +4,10 @@
     </button>
     {{ headerMessage }}
     <span class="filler"></span>
+
+    <button (click)="signOut()" class="home-button" mat-fab color="primary">
+        <mat-icon>vpn_key</mat-icon>
+    </button>
+
     <app-exit-game-button *ngIf="isExitButtonEnabled"></app-exit-game-button>
 </mat-toolbar>
