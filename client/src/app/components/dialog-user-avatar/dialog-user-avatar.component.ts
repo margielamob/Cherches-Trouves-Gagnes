@@ -12,10 +12,9 @@ import { UserService } from '@app/services/user-service/user.service';
 })
 export class DialogUserAvatarComponent implements OnInit {
     title!: string;
-    defaultAvatarFolder = 'assets/avatar-predifini/';
     userCamera = 'assets/camera.png';
-    userAvatar: Avatar = { fileName: '', imagePath: '', active: true };
-    selectedAvatar: Avatar = { fileName: '', imagePath: '', active: false };
+    userAvatar: Avatar = { imagePath: '', active: true };
+    selectedAvatar: Avatar = { imagePath: '', active: false };
     avatarImages: Avatar[] = [];
     user$ = this.userService.getCurrentUser();
 
@@ -32,7 +31,6 @@ export class DialogUserAvatarComponent implements OnInit {
 
     ngOnInit(): void {
         this.title = 'Choissis ton avatar';
-        this.user$ = this.userService.getCurrentUser();
         this.loadFileNames();
         this.setUserAvatar();
     }
@@ -52,18 +50,19 @@ export class DialogUserAvatarComponent implements OnInit {
 
     setUserAvatar() {
         if (this.data.currentUserId === undefined) return;
-        this.userService.getImageOfSignedUser(this.data.currentUserId).subscribe((url) => {
+        this.userService.getAvatarOfSignedUser(this.data.currentUserId).subscribe((url) => {
             if (!url) {
                 this.userAvatar.imagePath = 'assets/default-user-icon.jpg';
             } else this.userAvatar.imagePath = url;
             this.selectedAvatar.imagePath = this.userAvatar.imagePath;
         });
+        this.userService.updateUserByID(this.data.currentUserId);
     }
 
     loadFileNames() {
         this.avatarImages = [
-            { fileName: 'avatar2.png', imagePath: 'assets/avatar-predefini/avatar2.png', active: false },
-            { fileName: 'avatar3.png', imagePath: 'assets/avatar-predefini/avatar3.png', active: false },
+            { imagePath: 'assets/avatar-predefini/avatar2.png', active: false },
+            { imagePath: 'assets/avatar-predefini/avatar3.png', active: false },
         ];
     }
 
@@ -78,6 +77,7 @@ export class DialogUserAvatarComponent implements OnInit {
             if (file.type === 'image/jpeg' || file.type === 'image/png') {
                 this.imageUploadService.uploadImage(file, `avatars/${this.data.currentUserId}/avatar.jpg`);
                 this.setUserAvatar();
+                this.selectedAvatar.imagePath = this.userAvatar.imagePath;
             } else {
                 // eslint-disable-next-line no-console
                 console.error('Invalid file type. Please select a JPG or PNG file.');
@@ -86,8 +86,11 @@ export class DialogUserAvatarComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.selectedAvatar.imagePath === this.userAvatar.imagePath) this.dialogRef.close();
-        else {
+        if (this.selectedAvatar.imagePath === this.userAvatar.imagePath) {
+            this.userService.updateUserAvatar(this.data.currentUserId, `avatars/${this.data.currentUserId}/avatar.jpg`);
+            this.dialogRef.close();
+        } else {
+            this.userService.updateUserAvatar(this.data.currentUserId, this.selectedAvatar.imagePath);
             this.dialogRef.close();
         }
     }

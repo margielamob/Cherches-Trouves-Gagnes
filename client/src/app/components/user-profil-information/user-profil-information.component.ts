@@ -11,40 +11,30 @@ import { Observable } from 'rxjs';
     styleUrls: ['./user-profil-information.component.scss'],
 })
 export class UserProfilInformationComponent implements OnInit {
-    currentUserId: string;
-    userAvatar: string;
+    currentUserId: string | undefined;
+    userAvatar: string | undefined;
     user$: Observable<UserData | undefined>;
+    currentUser: UserData | undefined;
 
     constructor(private userService: UserService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
-        this.userService.getCurrentUser().subscribe((user) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.currentUserId = user!.uid;
+        this.user$ = this.userService.getCurrentUser();
+        this.user$.subscribe((user) => {
+            this.currentUser = user;
+            this.currentUserId = user?.uid;
+            this.userAvatar = user === undefined ? 'assets/default-user-icon.jpg' : user.photoURL;
             this.setUserAvatar();
         });
     }
 
-    // uploadFile(event: unknown, uid: string) {
-    //     this.imageUploadService
-    //         .uploadImage(event.target.files[0], `avatars/${uid}/avatar`)
-    //         .pipe(
-    //             switchMap((photoURL) =>
-    //                 this.userService.updateUser({
-    //                     uid,
-    //                     photoURL,
-    //                 }),
-    //             ),
-    //         )
-    //         .subscribe();
-    // }
-
     setUserAvatar() {
         if (this.currentUserId === undefined) return;
-        this.userService.getImageOfSignedUser(this.currentUserId).subscribe((url) => {
-            if (!url) {
-                this.userAvatar = 'assets/default-user-icon.jpg';
-            } else this.userAvatar = url;
+        console.log(this.currentUser);
+        this.userService.getImageOfSignedUser(this.currentUser?.photoURL).subscribe((url) => {
+            if (url) {
+                this.userAvatar = url;
+            }
         });
     }
 

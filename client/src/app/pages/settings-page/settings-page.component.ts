@@ -9,9 +9,7 @@ import { Theme } from '@app/enums/theme';
 export class SettingsPageComponent implements OnInit {
     favoriteTheme: string = Theme.ClassName;
 
-    // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
     ngOnInit(): void {
-        // eslint-disable-next-line no-console
-        console.log('SettingsPageComponent');
+        return;
     }
 }

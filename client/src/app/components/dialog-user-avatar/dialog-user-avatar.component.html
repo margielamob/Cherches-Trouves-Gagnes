@@ -3,13 +3,7 @@
     <div>
         <div class="avatar-container">
             <div *ngFor="let avatarImage of avatarImages">
-                <img
-                    class="avatar list"
-                    [src]="avatarImage.imagePath"
-                    alt="{{ avatarImage.fileName }}"
-                    [class.active]="avatarImage.active"
-                    (click)="toggleBorder(avatarImage)"
-                />
+                <img class="avatar list" [src]="avatarImage.imagePath" [class.active]="avatarImage.active" (click)="toggleBorder(avatarImage)" />
             </div>
             <img
                 class="avatar profile"
