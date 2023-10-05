@@ -1,7 +1,15 @@
+import 'package:app/pages/admin-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-service.dart';
+import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+void registerDependencies() {
+  GetIt.I.registerSingleton<UserService>(UserService());
+  GetIt.I.registerSingleton<AuthService>(AuthService());
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +21,7 @@ void main() async {
     projectId: 'log3900-103-f3850',
     storageBucket: 'log3900-103-f3850.appspot.com',
   ));
+  registerDependencies();
   runApp(MyApp());
 }
 
@@ -20,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: appTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => LoginPage(),
@@ -28,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
         '/signupPage': (context) => SignUpPage(),
+        '/adminPage': (context) => AdminPage(),
       },
     );
   }
@@ -173,7 +184,9 @@ class PageB extends StatelessWidget {
 //signup page
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  SignUpPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SignUpPage> createState() => SignUpPageState();
@@ -184,8 +197,8 @@ class SignUpPageState extends State<SignUpPage> {
   String? email = "";
   String? userName = "";
   String? password = "";
-  final AuthService authService = AuthService();
-  final UserService userService = UserService();
+  final AuthService authService = GetIt.I.get<AuthService>();
+  final UserService userService = GetIt.I.get<UserService>();
 
   @override
   Widget build(BuildContext context) {
