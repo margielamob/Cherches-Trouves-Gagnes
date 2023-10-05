@@ -2,6 +2,7 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Avatar } from '@app/interfaces/avatar';
+import { UserData } from '@app/interfaces/user';
 import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
 import { UserService } from '@app/services/user-service/user.service';
 
@@ -32,7 +33,9 @@ export class DialogUserAvatarComponent implements OnInit {
     ngOnInit(): void {
         this.title = 'Choissis ton avatar';
         this.loadFileNames();
-        this.setUserAvatar();
+        this.user$.subscribe((user) => {
+            this.setUserAvatar(user);
+        });
     }
 
     toggleBorder(avatar: Avatar) {
@@ -48,15 +51,14 @@ export class DialogUserAvatarComponent implements OnInit {
         this.userAvatar.active = false;
     }
 
-    setUserAvatar() {
-        if (this.data.currentUserId === undefined) return;
-        this.userService.getAvatarOfSignedUser(this.data.currentUserId).subscribe((url) => {
+    setUserAvatar(user: UserData | undefined) {
+        if (user?.uid === undefined) return;
+        this.userService.getAvatarOfSignedUser(user?.uid).subscribe((url) => {
             if (!url) {
                 this.userAvatar.imagePath = 'assets/default-user-icon.jpg';
             } else this.userAvatar.imagePath = url;
             this.selectedAvatar.imagePath = this.userAvatar.imagePath;
         });
-        this.userService.updateUserByID(this.data.currentUserId);
     }
 
     loadFileNames() {
@@ -67,7 +69,12 @@ export class DialogUserAvatarComponent implements OnInit {
     }
 
     editAvatar() {
-        this.fileInput.nativeElement.click();
+        const confirmUpload = window.confirm('Votre avatar sera remplacé par une photo prise avec votre caméra. Continuer ?');
+
+        // Check if the user clicked OK in the confirmation dialog
+        if (confirmUpload) {
+            this.fileInput.nativeElement.click();
+        }
     }
 
     onFileSelected(event: any) {
@@ -76,8 +83,8 @@ export class DialogUserAvatarComponent implements OnInit {
             // Check if the selected file is a valid image (JPG or PNG)
             if (file.type === 'image/jpeg' || file.type === 'image/png') {
                 this.imageUploadService.uploadImage(file, `avatars/${this.data.currentUserId}/avatar.jpg`);
-                this.setUserAvatar();
-                this.selectedAvatar.imagePath = this.userAvatar.imagePath;
+                this.userService.updateUserAvatar(this.data.currentUserId, `avatars/${this.data.currentUserId}/avatar.jpg`);
+                this.toggleBorder(this.userAvatar);
             } else {
                 // eslint-disable-next-line no-console
                 console.error('Invalid file type. Please select a JPG or PNG file.');

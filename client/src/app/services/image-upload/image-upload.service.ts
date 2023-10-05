@@ -8,8 +8,6 @@ export class ImageUploadService {
     constructor(private storage: AngularFireStorage) {}
 
     uploadImage(image: File, path: string): Observable<string> {
-        // eslint-disable-next-line no-console
-        console.log('upload image');
         const storageRef = this.storage.ref(path);
         const uploadTask = from(storageRef.put(image));
         return uploadTask.pipe(switchMap(() => storageRef.getDownloadURL()));

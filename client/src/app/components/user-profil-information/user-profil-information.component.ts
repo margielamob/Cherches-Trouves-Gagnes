@@ -14,28 +14,26 @@ export class UserProfilInformationComponent implements OnInit {
     currentUserId: string | undefined;
     userAvatar: string | undefined;
     user$: Observable<UserData | undefined>;
-    currentUser: UserData | undefined;
 
     constructor(private userService: UserService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
         this.user$ = this.userService.getCurrentUser();
         this.user$.subscribe((user) => {
-            this.currentUser = user;
             this.currentUserId = user?.uid;
-            this.userAvatar = user === undefined ? 'assets/default-user-icon.jpg' : user.photoURL;
-            this.setUserAvatar();
+            this.setUserAvatar(user);
         });
     }
 
-    setUserAvatar() {
+    setUserAvatar(user: UserData | undefined) {
         if (this.currentUserId === undefined) return;
-        console.log(this.currentUser);
-        this.userService.getImageOfSignedUser(this.currentUser?.photoURL).subscribe((url) => {
-            if (url) {
-                this.userAvatar = url;
-            }
-        });
+        if (user?.photoURL === `avatars/${this.currentUserId}/avatar.jpg`) {
+            this.userService.getImageOfSignedUser(user?.photoURL).subscribe((url) => {
+                if (url) {
+                    this.userAvatar = url;
+                }
+            });
+        } else this.userAvatar = user?.photoURL ?? 'assets/default-user-icon.jpg';
     }
 
     openUserAvatarDialog(): void {
