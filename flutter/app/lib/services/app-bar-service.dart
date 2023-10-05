@@ -1,7 +1,7 @@
 import 'package:app/components/logout-dialog.dart';
 import 'package:flutter/material.dart';
 
-class AppBarBuilder {
+class AppBarService {
   static AppBar buildBar(context) {
     return AppBar(
       title: Text('Chat App'),
