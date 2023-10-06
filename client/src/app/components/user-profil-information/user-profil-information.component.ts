@@ -27,13 +27,17 @@ export class UserProfilInformationComponent implements OnInit {
 
     setUserAvatar(user: UserData | undefined) {
         if (this.currentUserId === undefined) return;
-        if (user?.photoURL === `avatars/${this.currentUserId}/avatar.jpg`) {
+        if (user?.photoURL === '') {
+            this.userAvatar = 'assets/default-user-icon.jpg';
+        } else if (user?.photoURL === `avatars/${this.currentUserId}/avatar.jpg`) {
             this.userService.getImageOfSignedUser(user?.photoURL).subscribe((url) => {
                 if (url) {
                     this.userAvatar = url;
                 }
             });
-        } else this.userAvatar = user?.photoURL ?? 'assets/default-user-icon.jpg';
+        } else {
+            this.userAvatar = user?.photoURL ?? 'assets/default-user-icon.jpg';
+        }
     }
 
     openUserAvatarDialog(): void {
