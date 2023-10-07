@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => MainPage(),
+        '/': (context) => LoginPage(),
         '/pageA': (context) => PageA(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
