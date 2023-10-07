@@ -1,5 +1,7 @@
 import 'package:app/pages/admin-page.dart';
 import 'package:app/services/auth-service.dart';
+import 'package:app/services/card-feed-service.dart';
+import 'package:app/services/http-client-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +11,8 @@ import 'package:get_it/get_it.dart';
 void registerDependencies() {
   GetIt.I.registerSingleton<UserService>(UserService());
   GetIt.I.registerSingleton<AuthService>(AuthService());
+  GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
+  GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
 }
 
 void main() async {
@@ -32,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
+        '/': (context) => MainPage(),
         '/pageA': (context) => PageA(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
@@ -87,9 +91,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageB');
+                        Navigator.pushNamed(context, '/adminPage');
                       },
-                      child: Text('Go to Page B'),
+                      child: Text('Go to admin'),
                     ),
                     SizedBox(height: 100),
                     ElevatedButton(

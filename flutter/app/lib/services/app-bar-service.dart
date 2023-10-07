@@ -2,9 +2,9 @@ import 'package:app/components/logout-dialog.dart';
 import 'package:flutter/material.dart';
 
 class AppBarService {
-  static AppBar buildBar(context) {
+  static AppBar buildBar(context, String pageName) {
     return AppBar(
-      title: Text('Chat App'),
+      title: Text(pageName),
       actions: [
         IconButton(
           icon: Icon(Icons.exit_to_app),
