@@ -52,7 +52,7 @@ stages:
     - deploy
 
 install:flutter:
-    stage: build
+    stage: install
     script:
         - flutter packages get
         - flutter build apk
