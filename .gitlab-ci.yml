@@ -1,18 +1,17 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
+before_script:
+    - export FLUTTER_ROOT=$PWD/flutter
+    - export PATH=$FLUTTER_ROOT/bin:$PATH
+    - flutter --version
+    - flutter packages get
+
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
     paths:
         - client/node_modules/
         - server/node_modules/
     policy: pull
-
-before_script:
-    - apt update -qy
-    - apt install -y curl git unzip
-    - curl -sSL https://get.flutter.dev | sh
-    - export PATH="$PATH":"$HOME/.pub-cache/bin"
-    - flutter pub get
 
 .only-client: &only-client
     only:
