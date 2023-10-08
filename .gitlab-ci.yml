@@ -1,16 +1,20 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
-    - apt update
-    - apt install snapd -y
-    - snap install flutter --classic
-    - flutter sdk-path
+    - apt-get update -q && apt-get install -y -qq curl unzip git
+    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
+    - export PATH="$PATH:`pwd`/flutter/bin"
+    - flutter config --no-analytics
+    - flutter precache
+    - flutter --version
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
     paths:
         - client/node_modules/
         - server/node_modules/
+        - .pub-cache/
+        - flutter/
     policy: pull
 
 .only-client: &only-client
@@ -47,6 +51,18 @@ stages:
     - test
     - deploy
 
+install:flutter:
+    stage: build
+    script:
+        - flutter packages get
+        - flutter build apk
+
+test:flutter:
+    stage: test
+    script:
+        - flutter packages get
+        - flutter test
+
 install:client:
     stage: install
     <<: *only-client
@@ -59,12 +75,6 @@ install:client:
             - client/node_modules/
             - client/.npm/
         policy: pull-push
-
-install:flutter:
-    stage: install
-    script:
-        - cd flutter && cd app
-        - flutter pub get
 
 install:server:
     stage: install
@@ -124,15 +134,6 @@ test:server:
         paths:
             - server/coverage/
 
-test:flutter:
-    stage: test
-    needs: ['install:flutter']
-    script:
-        - cd flutter && cd app
-        - flutter test
-    dependencies:
-        - install:flutter
-
 pages:
     stage: deploy
     rules:
@@ -151,6 +152,7 @@ pages:
 variables:
     EC2_USER: ec2-user
     ORIGIN: 'https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}'
+    FLUTTER_CHANNEL: 'stable'
 
 deploy:server:
     stage: deploy
