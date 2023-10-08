@@ -1,7 +1,7 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
-    - sudo snap install flutter --classic
+    - snap install flutter --classic
     - flutter sdk-path
 
 cache:
