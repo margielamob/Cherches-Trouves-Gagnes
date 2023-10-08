@@ -1,9 +1,10 @@
 import 'package:app/services/user-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
 
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
-  UserService userService = UserService();
+  UserService userService = GetIt.I.get<UserService>();
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
