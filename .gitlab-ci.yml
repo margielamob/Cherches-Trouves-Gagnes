@@ -1,6 +1,7 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
+    - apt install snapd
     - snap install flutter --classic
     - flutter sdk-path
 
