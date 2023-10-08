@@ -1,10 +1,9 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
-    - export FLUTTER_ROOT=$PWD/flutter
-    - export PATH=$FLUTTER_ROOT/bin:$PATH
-    - flutter --version
-    - flutter packages get
+    - cd ~/development
+    - tar xf ~/Downloads/flutter_linux_3.13.6-stable.tar.xz
+    - export PATH="$PATH:`pwd`/flutter/bin"
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
