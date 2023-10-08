@@ -1,11 +1,8 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
-    - cd ~
-    - mkdir development
-    - cd ~/development
-    - tar xf ~/Downloads/flutter_linux_3.13.6-stable.tar.xz
-    - export PATH="$PATH:`pwd`/flutter/bin"
+    - sudo snap install flutter --classic
+    - flutter sdk-path
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
