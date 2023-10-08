@@ -7,6 +7,13 @@ cache:
         - server/node_modules/
     policy: pull
 
+before_script:
+    - apt update -qy
+    - apt install -y curl git unzip
+    - curl -sSL https://get.flutter.dev | sh
+    - export PATH="$PATH":"$HOME/.pub-cache/bin"
+    - flutter pub get
+
 .only-client: &only-client
     only:
         refs:
@@ -53,6 +60,12 @@ install:client:
             - client/node_modules/
             - client/.npm/
         policy: pull-push
+
+install:flutter:
+    stage: install
+    script:
+        - cd flutter && cd app
+        - flutter pub get
 
 install:server:
     stage: install
@@ -111,6 +124,15 @@ test:server:
     artifacts:
         paths:
             - server/coverage/
+
+test:flutter:
+    stage: test
+    needs: ['install:flutter']
+    script:
+        - cd flutter && cd app
+        - flutter test
+    dependencies:
+        - install:flutter
 
 pages:
     stage: deploy
