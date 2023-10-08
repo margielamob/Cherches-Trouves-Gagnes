@@ -1,12 +1,14 @@
 image: registry.gitlab.com/nikolayradoev/docker-images/chrome-mongo-node:20223
 
 before_script:
+    - flutter --version
     - apt-get update -q && apt-get install -y -qq curl unzip git
     - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
     - export PATH="$PATH:`pwd`/flutter/bin"
     - flutter config --no-analytics
     - flutter precache
     - flutter --version
+    - ls -al
 
 cache:
     key: '${CI_COMMIT_REF_SLUG}-client'
@@ -45,6 +47,19 @@ cache:
             - server/node_modules/
         policy: pull
 
+.only-flutter: &only-flutter
+    only:
+        refs:
+            - master
+            - merge_requests
+        changes:
+            - flutter/**/*
+    cache:
+        key: '${CI_COMMIT_REF_SLUG}-flutter'
+        paths:
+            - .pub-cache/
+        policy: pull
+
 stages:
     - install
     - lint
@@ -53,15 +68,22 @@ stages:
 
 install:flutter:
     stage: install
+    <<: *only-flutter
     script:
         - flutter packages get
         - flutter build apk
+    cache:
+        key: '${CI_COMMIT_REF_SLUG}-flutter'
 
 test:flutter:
     stage: test
     script:
         - flutter packages get
         - flutter test
+    paths:
+        - .pub-cache/
+    policy:
+        - pull-push
 
 install:client:
     stage: install
