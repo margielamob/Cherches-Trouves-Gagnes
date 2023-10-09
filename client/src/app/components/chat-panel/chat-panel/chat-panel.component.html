@@ -1,0 +1,5 @@
+<mat-card class="main-wrapper">
+    <app-chat-list class="room-list" *ngIf="!showFeed"></app-chat-list>
+
+    <app-chat-feed class="chat-feed" *ngIf="showFeed"></app-chat-feed>
+</mat-card>

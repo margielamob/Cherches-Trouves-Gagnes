@@ -26,6 +26,8 @@ import { AppLogoComponent } from './components/app-logo/app-logo.component';
 import { ApprovalDialogComponent } from './components/approval-dialog/approval-dialog.component';
 import { CentralBoxComponent } from './components/central-tool-box/central-tool-box.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
+import { ChatListComponent } from './components/chat-panel/chat-list/chat-list.component';
+import { ChatPanelComponent } from './components/chat-panel/chat-panel/chat-panel.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
@@ -54,6 +56,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
 
 /**
  * Main module that is used in main.ts.
@@ -107,6 +110,9 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        ChatPanelComponent,
+        ChatListComponent,
+        ChatFeedComponent,
     ],
     imports: [
         AppMaterialModule,

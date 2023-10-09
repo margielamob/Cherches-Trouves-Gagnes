@@ -1,0 +1,8 @@
+<mat-card class="main-wrapper">
+    <mat-list>
+        <mat-list-item *ngFor="let room of rooms" (click)="selectRoom(room)">
+            <mat-icon matListItemIcon>chat</mat-icon>
+            <h4 matListItemTitle>{{ room }}</h4>
+        </mat-list-item>
+    </mat-list>
+</mat-card>
