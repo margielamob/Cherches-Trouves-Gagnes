@@ -12,4 +12,5 @@ coverage/
 /node_modules
 
 #Prototype folder
-/prototype
+prototype/desktop/.angular/cache/
+prototype

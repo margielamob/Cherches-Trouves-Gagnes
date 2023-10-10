@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 // import { ChatMessage } from '@app/interfaces/chat-message';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
@@ -16,7 +17,11 @@ export class ChatFeedComponent implements AfterViewInit, OnInit {
     newMessage = false;
     currentRoom: string;
 
-    constructor(private communicationSocket: CommunicationSocketService, private chatManager: ChatManagerService) {}
+    constructor(
+        private communicationSocket: CommunicationSocketService,
+        private chatManager: ChatManagerService,
+        private chatDisplay: ChatDisplayService,
+    ) {}
 
     ngOnInit(): void {
         this.chatManager.messages.subscribe((messages) => {
@@ -52,6 +57,6 @@ export class ChatFeedComponent implements AfterViewInit, OnInit {
     }
 
     goToList() {
-        this.chatManager.isRoomSelected.next(false);
+        this.chatDisplay.deselectRoom();
     }
 }

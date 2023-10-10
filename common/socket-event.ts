@@ -32,4 +32,9 @@ export enum SocketEvent {
     Clue = 'clue',
     GetRooms = 'GetRooms',
     GetMessages = 'GetMessages',
+    RoomCreated = 'RoomCreated',
+    CreateRoom = 'CreateRoom',
+    GetUserRooms = 'GetUserRooms',
+    JoinRooms = 'JoinRooms',
+    RoomJoined = 'RoomJoined',
 }

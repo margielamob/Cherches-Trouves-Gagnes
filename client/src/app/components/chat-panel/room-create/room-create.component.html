@@ -1,0 +1,15 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title> Create a new chat room </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-form-field appearance="outline" class="input-area">
+        <input matInput placeholder="Room Name" (keydown.enter)="createRoom()" maxlength="200" [(ngModel)]="newRoom" />
+        <button mat-icon-button matSuffix (click)="createRoom()">
+            <mat-icon>send</mat-icon>
+        </button>
+    </mat-form-field>
+
+    <mat-error *ngIf="this.isRoomCreated"> This room already exists </mat-error>
+    <mat-error *ngIf="isInputEmpty"> Email is <strong>required</strong> </mat-error>
+</mat-expansion-panel>

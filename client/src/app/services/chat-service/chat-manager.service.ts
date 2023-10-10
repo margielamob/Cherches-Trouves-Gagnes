@@ -9,20 +9,18 @@ import { BehaviorSubject } from 'rxjs';
 export class ChatManagerService {
     activeRoom: BehaviorSubject<string> = new BehaviorSubject<string>('all');
     roomList: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+    allRoomsList: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
     messages: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
-    isRoomSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
     constructor(private socket: CommunicationSocketService) {
         this.addListeners();
-        this.fetchRooms();
+        this.fetchUserRooms();
     }
 
     selectRoom(room: string) {
         this.activeRoom.next(room);
         this.fetchMessages();
-        this.isRoomSelected.next(true);
     }
 
     sendMessage(message: string) {
@@ -36,20 +34,30 @@ export class ChatManagerService {
     addListeners() {
         this.socket.on(SocketEvent.Message, (message: { message: string; roomId: string }) => {
             if (message.roomId === this.activeRoom.value) {
-                console.log(message.message);
                 this.addMessage(message.message);
             }
         });
         this.socket.on(SocketEvent.EventMessage, (message: string) => {
             this.addMessage(message);
         });
-        this.socket.on(SocketEvent.GetRooms, (rooms: string[]) => {
+        this.socket.on(SocketEvent.GetUserRooms, (rooms: string[]) => {
             this.roomList.next(rooms);
+        });
+        this.socket.on(SocketEvent.GetRooms, (rooms: string[]) => {
+            this.allRoomsList.next(rooms);
+        });
+        this.socket.on(SocketEvent.RoomCreated, (rooms: { all: string[]; user: string[] }) => {
+            this.roomList.next(rooms.user);
+            this.allRoomsList.next(rooms.all);
         });
     }
 
     getCurrentRoom() {
         return this.activeRoom.value;
+    }
+
+    fetchUserRooms() {
+        this.socket.send(SocketEvent.GetUserRooms);
     }
 
     fetchRooms() {
@@ -58,5 +66,13 @@ export class ChatManagerService {
 
     fetchMessages() {
         this.socket.send(SocketEvent.GetMessages, { roomId: this.activeRoom.value });
+    }
+
+    createRoom(roomName: string) {
+        this.socket.send(SocketEvent.CreateRoom, { roomName });
+    }
+
+    joinRooms(roomNames: string[]) {
+        this.socket.send(SocketEvent.JoinRooms, { roomNames });
     }
 }

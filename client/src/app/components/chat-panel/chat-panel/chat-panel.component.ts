@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 
 @Component({
     selector: 'app-chat-panel',
@@ -8,12 +8,16 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
 })
 export class ChatPanelComponent implements OnInit {
     showFeed = false;
+    showSearch = false;
 
-    constructor(private chatManager: ChatManagerService) {}
+    constructor(private chatDisplay: ChatDisplayService) {}
 
     ngOnInit(): void {
-        this.chatManager.isRoomSelected.subscribe((isRoomSelected) => {
+        this.chatDisplay.isRoomSelected.subscribe((isRoomSelected) => {
             this.showFeed = isRoomSelected;
+        });
+        this.chatDisplay.isSearchSelected.subscribe((isSearchSelected) => {
+            this.showSearch = isSearchSelected;
         });
     }
 }

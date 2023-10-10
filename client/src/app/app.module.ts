@@ -57,6 +57,8 @@ import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-er
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
+import { RoomSearchComponent } from './components/chat-panel/room-search/room-search.component';
+import { RoomCreateComponent } from './components/chat-panel/room-create/room-create.component';
 
 /**
  * Main module that is used in main.ts.
@@ -113,6 +115,8 @@ import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.c
         ChatPanelComponent,
         ChatListComponent,
         ChatFeedComponent,
+        RoomSearchComponent,
+        RoomCreateComponent,
     ],
     imports: [
         AppMaterialModule,

@@ -1,3 +1,12 @@
+<mat-toolbar class="toolbar">
+    <mat-toolbar-row>
+        <span> Chat </span>
+        <button mat-icon-button (click)="goToSearch()" class="plus-button">
+            <mat-icon>add</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+
 <mat-card class="main-wrapper">
     <mat-list>
         <mat-list-item *ngFor="let room of rooms" (click)="selectRoom(room)">
