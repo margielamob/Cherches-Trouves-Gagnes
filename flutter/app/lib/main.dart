@@ -3,6 +3,7 @@ import 'package:app/pages/classic-game-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http-client-service.dart';
+import 'package:app/services/image-loader-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,6 +15,7 @@ void registerDependencies() {
   GetIt.I.registerSingleton<AuthService>(AuthService());
   GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
   GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
+  GetIt.I.registerSingleton<ImageLoaderService>(ImageLoaderService());
 }
 
 void main() async {

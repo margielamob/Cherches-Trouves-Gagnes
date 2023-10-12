@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:app/services/image-loader-service.dart';
+import 'package:get_it/get_it.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image);
@@ -42,15 +42,8 @@ class FacePaint extends StatelessWidget {
 }
 
 class Classic extends StatelessWidget {
-  Future<ui.Image> loadImage() async {
-    final ByteData data = await rootBundle.load('difference.bmp');
-    final Uint8List uint8List = data.buffer.asUint8List();
-    final Completer<ui.Image> completer = Completer<ui.Image>();
-    ui.decodeImageFromList(uint8List, (ui.Image img) {
-      completer.complete(img);
-    });
-    return completer.future;
-  }
+  final ImageLoaderService _imageLoaderService =
+      GetIt.I.get<ImageLoaderService>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +53,7 @@ class Classic extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<ui.Image>(
-          future: loadImage(),
+          future: _imageLoaderService.loadImage('../assets/difference.bmp'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
