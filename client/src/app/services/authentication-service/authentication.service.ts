@@ -161,4 +161,20 @@ export class AuthenticationService {
         };
         return from(this.afs.collection('users').doc(userUid).collection('activityLogs').add(log));
     }
+
+    sendEmailVerification() {
+        return from(this.afAuth.currentUser).pipe(
+            switchMap((user) => {
+                // send email verification if user is not verified
+                if (user && !user.emailVerified) {
+                    return from(user.sendEmailVerification());
+                }
+                // else return null
+                return of(null);
+            }),
+            catchError((err) => {
+                throw err;
+            }),
+        );
+    }
 }
