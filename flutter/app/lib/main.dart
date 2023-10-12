@@ -1,4 +1,5 @@
 import 'package:app/pages/admin-page.dart';
+import 'package:app/pages/classic-game-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http-client-service.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
-        '/pageA': (context) => PageA(),
+        '/classic': (context) => Classic(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
@@ -85,9 +86,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 70),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageA');
+                        Navigator.pushNamed(context, '/classic');
                       },
-                      child: Text('Go to Page A'),
+                      child: Text('Mode de jeux classique'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
@@ -146,23 +147,6 @@ class MainPage extends StatelessWidget {
               ],
             )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class PageA extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Page A'),
-      ),
-      body: Center(
-        child: Text(
-          'This is Page A',
-          style: TextStyle(fontSize: 24),
         ),
       ),
     );
