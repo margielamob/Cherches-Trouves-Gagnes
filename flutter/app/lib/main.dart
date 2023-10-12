@@ -1,9 +1,9 @@
 import 'package:app/pages/admin-page.dart';
-import 'package:app/pages/classic-game-page.dart';
+import 'package:app/pages/classic_game_page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http-client-service.dart';
-import 'package:app/services/image-loader-service.dart';
+import 'package:app/services/image_loader_service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
