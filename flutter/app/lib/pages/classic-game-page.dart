@@ -1,22 +1,23 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-Future<ui.Image> loadImage() async {
-  final File imageFile = File('../assets/difference.bmp');
-  final data = await imageFile.readAsBytes();
-  return await decodeImageFromList(data);
+class FacePaint extends StatelessWidget {
+  final ui.Image image;
+
+  FacePaint(this.image);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: MyCustomPainter(image),
+    );
+  }
 }
-
-SizedBox(
-  width: image.width.toDouble(),
-  height: image.height.toDouble(),
-  child: FacePaint(
-    painter: FacePainter(loadImage()),
-  ),
-);
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image);
@@ -34,6 +35,9 @@ class FacePainter extends CustomPainter {
 }
 
 class MyCustomPainter extends CustomPainter {
+  MyCustomPainter(this.image);
+  final ui.Image image;
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -52,6 +56,16 @@ class MyCustomPainter extends CustomPainter {
 }
 
 class Classic extends StatelessWidget {
+  Future<ui.Image> loadImage() async {
+    final ByteData data = await rootBundle.load('difference.bmp');
+    final Uint8List uint8List = data.buffer.asUint8List();
+    final Completer<ui.Image> completer = Completer<ui.Image>();
+    ui.decodeImageFromList(uint8List, (ui.Image img) {
+      completer.complete(img);
+    });
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,18 +73,21 @@ class Classic extends StatelessWidget {
         title: Text('Classic'),
       ),
       body: Center(
-        child: Stack(
-          children: [
-            Image.asset(
-              '../assets/difference.bmp', // Replace with your image path
-              width: 640, // Adjust the width and height as needed
-              height: 480,
-            ),
-            CustomPaint(
-              size: Size(200, 200), // Set the size of the custom paint
-              painter: MyCustomPainter(),
-            ),
-          ],
+        child: FutureBuilder<ui.Image>(
+          future: loadImage(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              final image = snapshot.data;
+              if (image != null) {
+                return SizedBox(
+                  width: image.width.toDouble(),
+                  height: image.height.toDouble(),
+                  child: FacePaint(image),
+                );
+              }
+            }
+            return CircularProgressIndicator();
+          },
         ),
       ),
     );
