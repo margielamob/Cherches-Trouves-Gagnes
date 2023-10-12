@@ -49,6 +49,7 @@ import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
+import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
@@ -107,6 +108,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        EmailVerificationComponent,
     ],
     imports: [
         AppMaterialModule,

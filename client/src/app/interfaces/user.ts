@@ -2,7 +2,6 @@ export interface UserData {
     // from AngularFireAuth
     displayName: string;
     email: string;
-    emailVerified?: boolean;
     photoURL?: string;
     uid: string;
     phoneNumber?: string;
