@@ -30,6 +30,7 @@ import { CluesAreaComponent } from './components/clues-area/clues-area.component
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
+import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
 import { DialogUploadFormComponent } from './components/dialog-upload-form/dialog-upload-form.component';
@@ -119,6 +120,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserStatisticComponent,
         UserAvatarComponent,
         EmailVerificationComponent,
+        DialogDeleteAccountComponent,
     ],
     imports: [
         AppMaterialModule,

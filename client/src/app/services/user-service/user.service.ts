@@ -26,8 +26,8 @@ export class UserService {
         return from(this.afs.collection('users').doc(user.uid).set(user));
     }
 
-    deleteUser(user: UserData) {
-        return from(this.afs.collection('users').doc(user.uid).delete());
+    deleteUser(userUid: string) {
+        return from(this.afs.collection('users').doc(userUid).delete());
     }
 
     isUserNameAvailable(userName: string): Observable<boolean> {
