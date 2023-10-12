@@ -1,4 +1,5 @@
 import 'package:app/pages/admin-page.dart';
+import 'package:app/pages/setting-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http-client-service.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/loginPage': (context) => LoginPage(),
         '/signupPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
+        '/SettingPage': (context) => SettingPage(),
       },
     );
   }
@@ -99,9 +101,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageC');
+                        Navigator.pushNamed(context, '/SettingPage');
                       },
-                      child: Text('Go to Page C'),
+                      child: Text('Go to Setting Page'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
