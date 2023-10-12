@@ -51,7 +51,7 @@ class Classic extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<ui.Image>(
-          future: _imageLoaderService.loadImage('../assets/difference.bmp'),
+          future: _imageLoaderService.loadImage('difference.bmp'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
