@@ -177,4 +177,31 @@ export class AuthenticationService {
             }),
         );
     }
+
+    deleteAccount() {
+        return from(this.afAuth.currentUser).pipe(
+            switchMap((user) => {
+                if (user) {
+                    const uid = user.uid;
+
+                    // Signout User
+                    return from(this.afAuth.signOut()).pipe(
+                        switchMap(() => {
+                            // delete user from Firebase Authentication
+                            return from(user.delete()).pipe(
+                                switchMap(() => {
+                                    // delete user from Firestore
+                                    return this.userService.deleteUser(uid);
+                                }),
+                                catchError((error) => {
+                                    throw error;
+                                }),
+                            );
+                        }),
+                    );
+                }
+                return of(null);
+            }),
+        );
+    }
 }
