@@ -26,9 +26,18 @@ class Classic extends StatelessWidget {
         title: Text('Classic'),
       ),
       body: Center(
-        child: CustomPaint(
-          size: Size(200, 200),
-          painter: MyCustomPainter(),
+        child: Stack(
+          children: [
+            Image.asset(
+              '../assets/difference.bmp', // Replace with your image path
+              width: 640, // Adjust the width and height as needed
+              height: 480,
+            ),
+            CustomPaint(
+              size: Size(200, 200), // Set the size of the custom paint
+              painter: MyCustomPainter(),
+            ),
+          ],
         ),
       ),
     );
