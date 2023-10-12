@@ -16,6 +16,7 @@ export class ChatManagerService {
     constructor(private socket: CommunicationSocketService) {
         this.addListeners();
         this.fetchUserRooms();
+        this.fetchRooms();
     }
 
     selectRoom(room: string) {
@@ -50,6 +51,9 @@ export class ChatManagerService {
             this.roomList.next(rooms.user);
             this.allRoomsList.next(rooms.all);
         });
+        this.socket.on(SocketEvent.NewRoom, (rooms: string[]) => {
+            this.allRoomsList.next(rooms);
+        });
     }
 
     getCurrentRoom() {
@@ -73,6 +77,7 @@ export class ChatManagerService {
     }
 
     joinRooms(roomNames: string[]) {
+        console.log(roomNames);
         this.socket.send(SocketEvent.JoinRooms, { roomNames });
     }
 }

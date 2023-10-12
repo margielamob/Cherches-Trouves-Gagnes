@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class RoomCreateComponent implements OnInit {
     newRoom = '';
     allRooms: string[] = [];
 
-    constructor(private chatManager: ChatManagerService) {}
+    constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
     ngOnInit(): void {
         this.chatManager.roomList.subscribe((rooms) => {
@@ -27,6 +28,7 @@ export class RoomCreateComponent implements OnInit {
         if (this.newRoom.trim() !== '') {
             this.chatManager.createRoom(this.newRoom.trim());
             this.newRoom = '';
+            this.chatDisplay.deselectSearch();
         } else if (this.allRooms.includes(this.newRoom.trim())) {
             this.isRoomCreated = true;
             this.errorMessage = 'Room name already exists';

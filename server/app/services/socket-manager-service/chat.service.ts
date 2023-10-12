@@ -46,15 +46,17 @@ export class ChatSocketManager {
             console.log(roomName);
             this.createRoom(roomName);
             this.addRoomsToUser(socket, [roomName]);
-            this.server.sio.emit(SocketEvent.RoomCreated, {
+            socket.emit(SocketEvent.RoomCreated, {
                 all: Array.from(this.allRooms.keys()),
                 user: this.userRooms.get(socket.id),
             });
+            socket.broadcast.emit(SocketEvent.NewRoom, Array.from(this.allRooms.keys()));
         });
 
         socket.on(SocketEvent.JoinRooms, (roomNames: string[]) => {
-            console.log(roomNames);
+            console.log('joinRooms : ' + roomNames);
             this.addRoomsToUser(socket, roomNames);
+            socket.emit(SocketEvent.GetUserRooms, this.userRooms.get(socket.id));
         });
     }
 

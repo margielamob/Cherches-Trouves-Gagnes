@@ -59,6 +59,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
 import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
 import { RoomSearchComponent } from './components/chat-panel/room-search/room-search.component';
 import { RoomCreateComponent } from './components/chat-panel/room-create/room-create.component';
+import { RoomAddComponent } from './components/chat-panel/room-add/room-add.component';
 
 /**
  * Main module that is used in main.ts.
@@ -117,6 +118,7 @@ import { RoomCreateComponent } from './components/chat-panel/room-create/room-cr
         ChatFeedComponent,
         RoomSearchComponent,
         RoomCreateComponent,
+        RoomAddComponent,
     ],
     imports: [
         AppMaterialModule,

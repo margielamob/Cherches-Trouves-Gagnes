@@ -1,0 +1,7 @@
+<mat-selection-list #list [(ngModel)]="selectedRooms">
+    <mat-list-option *ngFor="let room of unjoinedRooms" [value]="room">
+        {{ room }}
+    </mat-list-option>
+</mat-selection-list>
+
+<button mat-flat-button (click)="joinRooms()">Join</button>

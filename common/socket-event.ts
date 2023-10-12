@@ -37,4 +37,5 @@ export enum SocketEvent {
     GetUserRooms = 'GetUserRooms',
     JoinRooms = 'JoinRooms',
     RoomJoined = 'RoomJoined',
+    NewRoom = 'NewRoom',
 }
