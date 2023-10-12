@@ -1,4 +1,43 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+
+class ImageHandler {
+
+}
+
+
+Future<ui.Image> loadImage() async {
+  final File imageFile = File('path_to_your_image.jpg');
+  final data = await imageFile.readAsBytes();
+  return await decodeImageFromList(data);
+}
+
+
+SizedBox(
+  width: image.width.toDouble(),
+  height: image.height.toDouble(),
+  child: FacePaint(
+    painter: FacePainter(image),
+  ),
+);
+
+class FacePainter extends CustomPainter {
+  FacePainter(this.image);
+  final ui.Image image;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawImage(image, Offset.zero, Paint());
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
 
 class MyCustomPainter extends CustomPainter {
   @override
