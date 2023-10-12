@@ -6,19 +6,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class FacePaint extends StatelessWidget {
-  final ui.Image image;
-
-  FacePaint(this.image);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: FacePainter(image),
-    );
-  }
-}
-
 class FacePainter extends CustomPainter {
   FacePainter(this.image);
   final ui.Image image;
@@ -26,20 +13,6 @@ class FacePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawImage(image, Offset.zero, Paint());
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class MyCustomPainter extends CustomPainter {
-  MyCustomPainter(this.image);
-  final ui.Image image;
-
-  @override
-  void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.blue
       ..strokeCap = StrokeCap.round
@@ -52,6 +25,19 @@ class MyCustomPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class FacePaint extends StatelessWidget {
+  final ui.Image image;
+
+  FacePaint(this.image);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: FacePainter(image),
+    );
   }
 }
 
