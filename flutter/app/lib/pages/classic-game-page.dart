@@ -4,23 +4,17 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 
-class ImageHandler {
-
-}
-
-
 Future<ui.Image> loadImage() async {
-  final File imageFile = File('path_to_your_image.jpg');
+  final File imageFile = File('../assets/difference.bmp');
   final data = await imageFile.readAsBytes();
   return await decodeImageFromList(data);
 }
-
 
 SizedBox(
   width: image.width.toDouble(),
   height: image.height.toDouble(),
   child: FacePaint(
-    painter: FacePainter(image),
+    painter: FacePainter(loadImage()),
   ),
 );
 
