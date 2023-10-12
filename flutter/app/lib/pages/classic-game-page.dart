@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app/services/image-loader-service.dart';
-import 'package:get_it/get_it.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image);
@@ -42,8 +41,7 @@ class FacePaint extends StatelessWidget {
 }
 
 class Classic extends StatelessWidget {
-  final ImageLoaderService _imageLoaderService =
-      GetIt.I.get<ImageLoaderService>();
+  final ImageLoaderService _imageLoaderService = ImageLoaderService();
 
   @override
   Widget build(BuildContext context) {
