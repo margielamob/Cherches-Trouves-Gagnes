@@ -14,7 +14,7 @@ class FacePaint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: MyCustomPainter(image),
+      painter: FacePainter(image),
     );
   }
 }
