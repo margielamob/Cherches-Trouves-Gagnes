@@ -1,18 +1,22 @@
 import 'package:app/pages/admin-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
+import 'package:app/services/card-service.dart';
 import 'package:app/services/http-client-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 void registerDependencies() {
+  GetIt.I.registerSingleton<EventBus>(EventBus());
   GetIt.I.registerSingleton<UserService>(UserService());
   GetIt.I.registerSingleton<AuthService>(AuthService());
   GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
   GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
+  GetIt.I.registerSingleton<CardService>(CardService());
 }
 
 void main() async {
@@ -37,7 +41,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => LoginPage(),
+        '/': (context) => MainPage(),
         '/pageA': (context) => PageA(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
