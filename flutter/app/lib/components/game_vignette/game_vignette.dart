@@ -1,15 +1,15 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
-class FacePainter extends CustomPainter {
-  FacePainter(this.image);
+class _FacePainter extends CustomPainter {
+  _FacePainter(this.image);
   final ui.Image image;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawImage(image, Offset.zero, Paint());
     final paint = Paint()
-      ..color = Colors.red
+      ..color = Colors.green
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
 
@@ -31,7 +31,7 @@ class FacePaint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: FacePainter(image),
+      painter: _FacePainter(image),
     );
   }
 }
