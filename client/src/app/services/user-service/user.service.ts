@@ -59,6 +59,7 @@ export class UserService {
                 }),
             );
     }
+
     updateUser(user: UserData) {
         return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
             catchError((error) => {
@@ -67,9 +68,42 @@ export class UserService {
         );
     }
 
-    getImageOfSignedUser(uid: string) {
+    updateUserByID(userID: string) {
+        return from(this.afs.collection('users').doc(userID).update({}));
+    }
+
+    doesUserAvatarExist(uid: string): Observable<boolean> {
         return this.storage
-            .ref(`avatars/${uid}`)
+            .ref(`avatars/${uid}/avatar.jpg`)
+            .getMetadata()
+            .pipe(
+                map((metadata) => {
+                    if (metadata) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }),
+                catchError((error) => {
+                    throw error;
+                }),
+            );
+    }
+
+    getImageOfSignedUser(path: string | undefined): Observable<string> {
+        return this.storage
+            .ref(`${path}`)
+            .getDownloadURL()
+            .pipe(
+                catchError((error) => {
+                    throw error;
+                }),
+            );
+    }
+
+    getAvatarOfSignedUser(uid: string): Observable<string> {
+        return this.storage
+            .ref(`avatars/${uid}/avatar.jpg`)
             .getDownloadURL()
             .pipe(
                 catchError((error) => {
@@ -87,6 +121,14 @@ export class UserService {
                     throw error;
                 }),
             );
+    }
+
+    updateUserAvatar(userID: string, photoURL: string) {
+        return from(this.afs.collection('users').doc(userID).update({ photoURL })).pipe(
+            catchError((error) => {
+                throw error;
+            }),
+        );
     }
 
     getCurrentUser(): Observable<UserData | undefined> {
