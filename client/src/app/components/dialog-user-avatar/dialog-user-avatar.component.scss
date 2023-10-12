@@ -1,0 +1,89 @@
+.containerSpaceBetween {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header3 {
+    font-size: xx-large;
+    font-weight: 500;
+    line-height: 1.5em;
+    text-align: center;
+    margin: 0.5em;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.list:hover {
+    cursor: pointer;
+}
+
+.user-camera:hover {
+    cursor: pointer;
+}
+
+.active {
+    border: 3px solid rgb(55, 0, 206);
+    border-radius: 50%;
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1rem;
+}
+
+.selected-section {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.selected-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.user-camera {
+    border: 1px solid #cacaca;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+.profile {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+.submit-btn {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.error {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.error p {
+    color: red;
+}
+
+.error mat-icon {
+    margin-top: 4px;
+}

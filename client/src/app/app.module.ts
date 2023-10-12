@@ -33,6 +33,7 @@ import { DialogCreateGameComponent } from './components/dialog-create-game/dialo
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
 import { DialogUploadFormComponent } from './components/dialog-upload-form/dialog-upload-form.component';
+import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
 import { ExitGameButtonComponent } from './components/exit-game-button/exit-game-button.component';
 import { GameCardButtonsComponent } from './components/game-card-buttons/game-card-buttons.component';
@@ -48,11 +49,15 @@ import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/p
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
+import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
+import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
+import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 
@@ -108,6 +113,11 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        SettingsPageComponent,
+        UserProfilInformationComponent,
+        DialogUserAvatarComponent,
+        UserStatisticComponent,
+        UserAvatarComponent,
         EmailVerificationComponent,
     ],
     imports: [
