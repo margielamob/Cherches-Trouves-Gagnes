@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class HttpClientService {
-  final String baseUri = 'http://localhost:3000/api';
+  final String baseUri = 'http://10.0.0.9:3000/api';
 
   Future<Map<dynamic, dynamic>> fetchRawCardsByPage(int page) async {
     final response =
@@ -35,11 +35,10 @@ class HttpClientService {
     }
   }
 
-  Future<bool> deleteCardSelection(Set<String> ids) async {
+  Future<bool> deleteAllCards() async {
     try {
       final response = await http.delete(
-        Uri.parse('$baseUri/game/cards/selection'),
-        body: jsonEncode(ids),
+        Uri.parse('$baseUri/game/cards'),
       );
       return response.statusCode == HttpStatus.accepted;
     } catch (error) {

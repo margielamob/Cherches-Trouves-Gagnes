@@ -1,7 +1,6 @@
 import 'package:app/components/game-card/admin-card-data.dart';
 import 'package:app/components/game-card/admin-card-widget.dart';
 import 'package:app/events/card-deleted-event.dart';
-import 'package:app/events/card-selection-deleted-event.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/card-service.dart';
 import 'package:event_bus/event_bus.dart';
@@ -32,7 +31,6 @@ class _CardFeedState extends State<CardFeed> {
     super.initState();
     _fetchCards();
     _handleCardDeleted();
-    _handleSelectionDeletion();
   }
 
   Future<void> _fetchCards() async {
@@ -79,32 +77,29 @@ class _CardFeedState extends State<CardFeed> {
     });
   }
 
-  void _handleSelectionDeletion() {
-    _eventBus.on<CardSelectionDeletedEvent>().listen((event) {
-      print('got deletion');
-      setState(() {
-        currentCards.removeWhere((card) => event.cardIds.contains(card.id));
-      });
-    });
-  }
-
   AlertDialog buildDialog(context) {
     return AlertDialog(
-      title: Text("Delete Confirmation"),
-      content: Text("Are you sure you want to delete these cards?"),
+      title: Text("Confirmation de suppression"),
+      content: Text("Êtes vous sur de supprimer tous les jeux?"),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Cancel"),
+          child: Text("Annuler"),
         ),
         TextButton(
           onPressed: () {
-            _cardService.deleteSelection();
+            _cardService.deleteAll().then((deleted) {
+              if (deleted) {
+                setState(() {
+                  currentCards.clear();
+                });
+              }
+            });
             Navigator.of(context).pop();
           },
-          child: Text("Delete"),
+          child: Text("Confirmer"),
         ),
       ],
     );
@@ -146,32 +141,35 @@ class _CardFeedState extends State<CardFeed> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Spacer(),
-                    GestureDetector(
-                      child: Center(
-                        child: Icon(
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _handleRefresh();
+                        },
+                        icon: Icon(
                           Icons.refresh,
-                          size: 48,
-                          color: _feedService.hasNext
-                              ? Colors.deepPurple.withOpacity(0.8)
-                              : Colors.deepPurple.withOpacity(0.2),
+                          color:
+                              _feedService.hasNext ? Colors.white : Colors.grey,
                         ),
+                        label: Text('Charger plus de jeux'),
                       ),
-                      onTap: () {
-                        _handleRefresh();
-                      },
                     ),
                     Spacer(),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return buildDialog(context);
-                          },
-                        );
-                      },
-                      icon: Icon(Icons.delete),
-                      label: Text('DELETE SELECTION'),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return buildDialog(context);
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.delete),
+                        label: Text('Supprimer tout'),
+                      ),
                     ),
                     Spacer(),
                   ],
