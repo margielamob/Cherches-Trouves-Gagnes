@@ -45,10 +45,10 @@ class AdminCardWidget extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.grey, // Shadow color
-              offset: Offset(0, 2), // Offset in x and y
-              blurRadius: 4, // Spread of the shadow
-              spreadRadius: 0, // How far the shadow should be spread
+              color: Colors.grey,
+              offset: Offset(0, 2),
+              blurRadius: 4,
+              spreadRadius: 0,
             ),
           ],
         ),
