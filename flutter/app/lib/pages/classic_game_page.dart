@@ -19,10 +19,11 @@ class Classic extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
               if (image != null) {
-                return SizedBox(
-                  width: image.width.toDouble(),
-                  height: image.height.toDouble(),
-                  child: GameVignette(image),
+                return Column(
+                  children: <Widget>[
+                    GestureDetector(child: GameVignette(image)),
+                    Text("we are fuckie")
+                  ],
                 );
               }
             }

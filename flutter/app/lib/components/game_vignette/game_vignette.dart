@@ -24,14 +24,15 @@ class _GameVignettePainter extends CustomPainter {
 }
 
 class GameVignette extends StatelessWidget {
-  final ui.Image image;
-
   GameVignette(this.image);
+  final ui.Image image;
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _GameVignettePainter(image),
+    return SizedBox(
+      width: image.width.toDouble(),
+      height: image.height.toDouble(),
+      child: CustomPaint(painter: _GameVignettePainter(image)),
     );
   }
 }
