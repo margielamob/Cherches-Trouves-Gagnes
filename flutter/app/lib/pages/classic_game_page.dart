@@ -22,7 +22,7 @@ class Classic extends StatelessWidget {
                 return SizedBox(
                   width: image.width.toDouble(),
                   height: image.height.toDouble(),
-                  child: FacePaint(image),
+                  child: GameVignette(image),
                 );
               }
             }
