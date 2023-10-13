@@ -45,9 +45,9 @@ class AdminCardWidget extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: const Color.fromARGB(255, 223, 222, 222),
               offset: Offset(0, 2),
-              blurRadius: 4,
+              blurRadius: 1,
               spreadRadius: 0,
             ),
           ],
