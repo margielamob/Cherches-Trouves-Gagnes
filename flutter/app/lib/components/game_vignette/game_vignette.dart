@@ -9,7 +9,7 @@ class _GameVignettePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawImage(image, Offset.zero, Paint());
     final paint = Paint()
-      ..color = Colors.orange
+      ..color = Colors.purple
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
 
