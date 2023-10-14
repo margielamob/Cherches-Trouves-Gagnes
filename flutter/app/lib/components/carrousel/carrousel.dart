@@ -88,9 +88,12 @@ class _CarrouselState extends State<Carrousel> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FilledButton(
-                    onPressed: onPressed,
-                    child: Icon(Icons.arrow_back),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: FilledButton(
+                      onPressed: onPressed,
+                      child: Icon(Icons.arrow_back),
+                    ),
                   ),
                   FilledButton(
                     onPressed: onPressed,
