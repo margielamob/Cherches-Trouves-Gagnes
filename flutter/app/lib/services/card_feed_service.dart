@@ -1,3 +1,4 @@
+import 'package:app/data/carrousel_request_data.dart';
 import 'package:app/data/game_card_data.dart';
 import 'package:app/services/http_client_service.dart';
 import 'package:get_it/get_it.dart';
@@ -11,9 +12,9 @@ class CardFeedService {
   Future<void> fetchCards() async {
     _isFetchingCards = true;
     try {
-      final cards = await _httpClientService.fetchRawCardsByPage(_currentPage);
-      _currentCards =
-          cards.map((jsonCard) => GameCardData.fromJson(jsonCard)).toList();
+      final carrouselRequest =
+          await _httpClientService.fetchCarrouselByPage(_currentPage);
+      _currentCards = carrouselRequest.gameCardData;
       _isFetchingCards = false;
       _currentPage++;
     } catch (error) {
