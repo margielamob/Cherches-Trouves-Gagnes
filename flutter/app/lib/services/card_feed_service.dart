@@ -19,10 +19,10 @@ class CardFeedService {
   }
 
   bool hasNext() {
-    return true;
+    return carrouselState.carrouselData.hasNext;
   }
 
   bool hasPrevious() {
-    return false;
+    return carrouselState.carrouselData.hasPrevious;
   }
 }
