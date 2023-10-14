@@ -100,7 +100,7 @@ class _CarrouselState extends State<Carrousel> {
                     child: Icon(Icons.arrow_forward),
                   ),
                 ],
-              )
+              ),
             ],
           );
         }
