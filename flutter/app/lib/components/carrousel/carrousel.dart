@@ -33,22 +33,30 @@ class _CarrouselState extends State<Carrousel> {
         } else if (!snapshot.hasData) {
           return Text('No data available');
         } else {
-          return Center(
-              child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: snapshot.data!.length,
-            itemBuilder: (_, index) {
-              if (snapshot.data != null) {
-                return CarrouselCard(
-                  data: snapshot.data![index],
-                  enabled: true,
-                );
-              } else {
-                return Text("Il n'y a pas de jeux pour le moment!");
-              }
-            },
-          ));
+          return Column(
+            children: [
+              Text("fuck this shit"),
+              Expanded(
+                child: Center(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (_, index) {
+                      if (snapshot.data != null) {
+                        return CarrouselCard(
+                          data: snapshot.data![index],
+                          enabled: true,
+                        );
+                      } else {
+                        return Text("Il n'y a pas de jeux pour le moment!");
+                      }
+                    },
+                  ),
+                ),
+              )
+            ],
+          );
         }
       },
     );
@@ -92,3 +100,5 @@ Column(
           );
 
 */
+// I hate this error
+// https://docs.flutter.dev/testing/common-errors#:~:text=To%20fix%20this%20error%2C%20specify,height%20using%20a%20Flexible%20widget.
