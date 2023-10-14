@@ -23,6 +23,7 @@ class CarrouselCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
