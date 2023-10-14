@@ -12,10 +12,10 @@ class Carrousel extends StatefulWidget {
 }
 
 class _CarrouselState extends State<Carrousel> {
-  final feedService = GetIt.I.get<CardFeedService>();
+  final cardFeedService = GetIt.I.get<CardFeedService>();
 
   Future<List<GameCardData>> getCurrentPageCards() {
-    return feedService.getCurrentPageCards();
+    return cardFeedService.getCurrentPageCards();
   }
 
   final bool enabled = true;
@@ -91,13 +91,13 @@ class _CarrouselState extends State<Carrousel> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: FilledButton(
-                      onPressed: onPressed,
+                      onPressed: cardFeedService.hasPrevious() ? () {} : null,
                       child: Icon(Icons.arrow_back),
                     ),
                   ),
                   SizedBox(width: 20.0),
                   FilledButton(
-                    onPressed: onPressed,
+                    onPressed: cardFeedService.hasNext() ? () {} : null,
                     child: Icon(Icons.arrow_forward),
                   ),
                 ],
