@@ -24,8 +24,8 @@ class CarrouselCard extends StatelessWidget {
             height: 240,
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.black, // Color of the border
-                width: 2.0, // Width of the border
+                color: Colors.black,
+                width: 1.0,
               ),
             ),
             child: Image.network(
