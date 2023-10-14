@@ -23,21 +23,11 @@ class CardFeedService {
   }
 
   void getNextPageCards() {
-    try {
-      currentPage = currentPage + 1;
-    } catch (error) {
-      print(error);
-      throw Exception('could not load and parse cards');
-    }
+    currentPage = currentPage + 1;
   }
 
-  void getPreviousPageCards() async {
-    try {
-      currentPage = currentPage - 1;
-    } catch (error) {
-      print(error);
-      throw Exception('could not load and parse cards');
-    }
+  void getPreviousPageCards() {
+    currentPage = currentPage - 1;
   }
 
   bool hasNext() {
