@@ -1,5 +1,4 @@
 import 'package:app/components/carrousel/carrousel_card.dart';
-import 'package:app/data/carrousel_data.dart';
 import 'package:app/data/game_card_data.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,9 @@ class _CarrouselState extends State<Carrousel> {
         } else if (!snapshot.hasData) {
           return Text('No data available');
         } else {
-          return ListView.builder(
+          return Center(
+              child: ListView.builder(
+            shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: snapshot.data!.length,
             itemBuilder: (_, index) {
@@ -44,7 +45,7 @@ class _CarrouselState extends State<Carrousel> {
                 return Text("Il n'y a pas de jeux pour le moment!");
               }
             },
-          );
+          ));
         }
       },
     );
