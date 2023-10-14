@@ -1,9 +1,7 @@
 import 'package:app/data/game_card_data.dart';
-import 'package:app/components/game_card/carrousel_card.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:vibration/vibration.dart';
 
 class Carrousel extends StatefulWidget {
   const Carrousel({super.key});
@@ -37,6 +35,8 @@ class _CarrouselState extends State<Carrousel> {
         });
   }
 }
+
+// TODO: Afficher une carte correctement.
 
 /*
 
