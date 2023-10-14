@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:app/data/game_card_data.dart';
 
@@ -12,7 +10,6 @@ class CarrouselCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final VoidCallback? onPressed = enabled ? () {} : null;
-    Uint8List imageBytes = base64Decode(data.thumbnail.split(',').last);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -44,7 +41,7 @@ class CarrouselCard extends StatelessWidget {
                       width: 320,
                       height: 240,
                       child: Image.memory(
-                        imageBytes,
+                        data.imageBytes,
                         fit: BoxFit.cover,
                       ),
                     ),
