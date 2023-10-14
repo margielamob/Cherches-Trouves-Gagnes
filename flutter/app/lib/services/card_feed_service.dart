@@ -4,14 +4,42 @@ import 'package:app/services/http_client_service.dart';
 import 'package:get_it/get_it.dart';
 
 class CardFeedService {
+  int currentPage = 0;
   late CarrouselRequestData carrouselState;
-  final HttpClientService _httpClientService = GetIt.I.get<HttpClientService>();
+  final HttpClientService _httpClientService;
+
+  CardFeedService() : _httpClientService = GetIt.I.get<HttpClientService>() {
+    _initializeCarrouselState();
+  }
+
+  void _initializeCarrouselState() async {
+    carrouselState = await _httpClientService.fetchCarrouselByPage(0);
+  }
 
   Future<List<GameCardData>> getCurrentPageCards() async {
     try {
-      final carrouselRequest = await _httpClientService.fetchCarrouselByPage(0);
+      final carrouselRequest =
+          await _httpClientService.fetchCarrouselByPage(currentPage);
       carrouselState = carrouselRequest;
       return carrouselRequest.gameCardData;
+    } catch (error) {
+      print(error);
+      throw Exception('getCurrentCards is broken');
+    }
+  }
+
+  void getNextPageCards() {
+    try {
+      currentPage = currentPage + 1;
+    } catch (error) {
+      print(error);
+      throw Exception('could not load and parse cards');
+    }
+  }
+
+  void getPreviousPageCards() async {
+    try {
+      currentPage = currentPage - 1;
     } catch (error) {
       print(error);
       throw Exception('could not load and parse cards');

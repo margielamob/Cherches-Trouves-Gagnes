@@ -87,13 +87,23 @@ class _CarrouselState extends State<Carrousel> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: FilledButton(
-                      onPressed: cardFeedService.hasPrevious() ? () {} : null,
+                      onPressed: cardFeedService.hasPrevious()
+                          ? () {
+                              cardFeedService.getPreviousPageCards();
+                              setState(() {});
+                            }
+                          : null,
                       child: Icon(Icons.arrow_back),
                     ),
                   ),
                   SizedBox(width: 20.0),
                   FilledButton(
-                    onPressed: cardFeedService.hasNext() ? () {} : null,
+                    onPressed: cardFeedService.hasNext()
+                        ? () {
+                            cardFeedService.getNextPageCards();
+                            setState(() {});
+                          }
+                        : null,
                     child: Icon(Icons.arrow_forward),
                   ),
                 ],
