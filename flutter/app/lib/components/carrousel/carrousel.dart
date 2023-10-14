@@ -33,7 +33,7 @@ class _CarrouselState extends State<Carrousel> {
             return Text('No data available');
           } else {
             return ListView.builder(
-              itemCount: snapshot.data?.length ?? 0,
+              itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
                 if (snapshot.data != null) {
                   return CarrouselCard(data: snapshot.data![index]);
