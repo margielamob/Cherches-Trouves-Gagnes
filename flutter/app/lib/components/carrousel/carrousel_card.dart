@@ -46,20 +46,23 @@ class CarrouselCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      FilledButton(
-                        onPressed: onPressed,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(Icons
-                                .arrow_forward), // Add the right arrow icon
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        FilledButton(
+                          onPressed: onPressed,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(Icons
+                                  .arrow_forward), // Add the right arrow icon
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
