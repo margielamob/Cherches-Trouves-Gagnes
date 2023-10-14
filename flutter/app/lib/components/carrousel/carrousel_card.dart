@@ -55,6 +55,7 @@ class CarrouselCard extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
+                              Text("Supprimer "),
                               Icon(Icons.delete),
                             ],
                           ),
