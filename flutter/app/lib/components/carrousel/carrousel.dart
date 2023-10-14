@@ -1,3 +1,5 @@
+import 'package:app/components/game_card/carrousel_card.dart';
+import 'package:app/data/carrousel_data.dart';
 import 'package:app/data/game_card_data.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +25,23 @@ class _CarrouselState extends State<Carrousel> {
         future: getCurrentPageCards(),
         builder:
             (BuildContext context, AsyncSnapshot<List<GameCardData>> snapshot) {
-          if (snapshot.hasData) {
-            return Text('tout est good');
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data available');
           } else {
-            return SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(),
+            return ListView.builder(
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                if (snapshot.data != null) {
+                  return CarrouselCard(data: snapshot.data![index]);
+                } else {
+                  // Handle the case when snapshot.data is null
+                  return SizedBox.shrink(); // or another appropriate widget
+                }
+              },
             );
           }
         });
