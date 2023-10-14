@@ -41,7 +41,7 @@ class CarrouselCard extends StatelessWidget {
                       width: 320,
                       height: 240,
                       child: Image.memory(
-                        data.imageBytes,
+                        data.thumbnail,
                         fit: BoxFit.cover,
                       ),
                     ),
