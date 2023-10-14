@@ -14,55 +14,33 @@ class Carrousel extends StatefulWidget {
 
 class _CarrouselState extends State<Carrousel> {
   final feedService = GetIt.I.get<CardFeedService>();
-  List<GameCardData> currentCards = [];
-  bool _isUpdatingCards = false;
 
-  final GlobalKey<RefreshIndicatorState> _refreshKey =
-      GlobalKey<RefreshIndicatorState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchCards();
-  }
-
-  Future<void> _fetchCards() async {
-    try {
-      await feedService.fetchCards();
-      setState(() {
-        currentCards.addAll(feedService.getCurrentCards());
-      });
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  // Handle pull-to-refresh
-  Future<void> _handleRefresh() async {
-    Vibration.vibrate(duration: 50);
-
-    setState(() {
-      _isUpdatingCards = true;
-    });
-
-    await _fetchCards();
-
-    setState(() {
-      _isUpdatingCards = false;
-    });
-  }
-
-  bool isLoading() {
-    return feedService.isFetching() || _isUpdatingCards;
+  Future<List<GameCardData>> getCurrentPageCards() {
+    return feedService.getCurrentPageCards();
   }
 
   @override
   Widget build(BuildContext context) {
-    return feedService.isFetching()
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Column(
+    return FutureBuilder<List<GameCardData>>(
+        future: getCurrentPageCards(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<GameCardData>> snapshot) {
+          if (snapshot.hasData) {
+            return Text('tout est good');
+          } else {
+            return SizedBox(
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+}
+
+/*
+
+Column(
             children: [
               Expanded(
                 child: RefreshIndicator(
@@ -93,5 +71,5 @@ class _CarrouselState extends State<Carrousel> {
               )
             ],
           );
-  }
-}
+
+*/

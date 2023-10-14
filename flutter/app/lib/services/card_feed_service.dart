@@ -23,6 +23,18 @@ class CardFeedService {
     }
   }
 
+  Future<List<GameCardData>> getCurrentPageCards() async {
+    _isFetchingCards = true;
+    try {
+      final carrouselRequest =
+          await _httpClientService.fetchCarrouselByPage(_currentPage);
+      return carrouselRequest.gameCardData;
+    } catch (error) {
+      print(error);
+      throw Exception('could not load and parse cards');
+    }
+  }
+
   bool isFetching() {
     return _isFetchingCards;
   }
