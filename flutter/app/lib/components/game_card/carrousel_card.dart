@@ -12,17 +12,27 @@ class CarrouselCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              data.title,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            data.title,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Image.network(data.thumbnail),
+          Container(
+            width: 320,
+            height: 240,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black, // Color of the border
+                width: 2.0, // Width of the border
+              ),
+            ),
+            child: Image.network(
+              data.thumbnail,
+              fit: BoxFit.cover,
+            ),
+          ),
         ],
       ),
     );
