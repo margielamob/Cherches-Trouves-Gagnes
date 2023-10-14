@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vibration/vibration.dart';
 
-class Carousel extends StatefulWidget {
-  const Carousel({super.key});
+class Carrousel extends StatefulWidget {
+  const Carrousel({super.key});
 
   @override
-  State<Carousel> createState() => _CarouselState();
+  State<Carrousel> createState() => _CarrouselState();
 }
 
-class _CarouselState extends State<Carousel> {
+class _CarrouselState extends State<Carrousel> {
   final feedService = GetIt.I.get<CardFeedService>();
   List<AdminCardData> currentCards = [];
   bool _isUpdatingCards = false;
