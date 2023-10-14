@@ -14,7 +14,6 @@ class CarrouselCard extends StatelessWidget {
           Card(
             margin: EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   data.title,
