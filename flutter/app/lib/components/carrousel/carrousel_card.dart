@@ -12,6 +12,8 @@ class CarrouselCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Card(
+            elevation: 10,
+            shadowColor: Colors.grey,
             margin: EdgeInsets.all(8.0),
             child: Padding(
               padding: EdgeInsets.all(8.0),
