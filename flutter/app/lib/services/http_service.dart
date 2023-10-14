@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:app/data/carrousel_request_data.dart';
 import 'package:http/http.dart' as http;
 
-class HttpClientService {
+class HttpService {
   final String baseUri = 'http://localhost:3000/api';
 
   Future<CarrouselRequestData> fetchCarrouselByPage(int page) async {

@@ -1,7 +1,7 @@
 import 'package:app/pages/admin_page.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/services/card_feed_service.dart';
-import 'package:app/services/http_client_service.dart';
+import 'package:app/services/http_service.dart';
 import 'package:app/services/user_service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +11,7 @@ import 'package:get_it/get_it.dart';
 void registerDependencies() {
   GetIt.I.registerSingleton<UserService>(UserService());
   GetIt.I.registerSingleton<AuthService>(AuthService());
-  GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
+  GetIt.I.registerSingleton<HttpService>(HttpService());
   GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
 }
 
