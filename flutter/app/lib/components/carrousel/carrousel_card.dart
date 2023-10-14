@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 
 class CarrouselCard extends StatelessWidget {
   final GameCardData data;
-  CarrouselCard({required this.data});
+  CarrouselCard({required this.data, required this.enabled});
+
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
+    final VoidCallback? onPressed = enabled ? () {} : null;
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,6 +46,20 @@ class CarrouselCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: onPressed,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Icon(Icons
+                                .arrow_forward), // Add the right arrow icon
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -50,3 +67,7 @@ class CarrouselCard extends StatelessWidget {
         ]);
   }
 }
+
+/*
+
+*/
