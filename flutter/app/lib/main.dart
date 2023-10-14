@@ -186,7 +186,7 @@ class PageB extends StatelessWidget {
   }
 }
 
-//signup page
+//SignUp page
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({
