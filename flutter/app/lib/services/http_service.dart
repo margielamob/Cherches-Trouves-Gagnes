@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class HttpClientService {
+class HttpService {
   final String baseUri = 'http://localhost:3000/api';
 
   Future<List<Map<dynamic, dynamic>>> fetchRawCardsByPage(int page) async {
