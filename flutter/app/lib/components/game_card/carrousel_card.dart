@@ -1,9 +1,9 @@
-import 'package:app/components/game_card/admin_card_data.dart';
+import 'package:app/components/game_card/carrousel_card_data.dart';
 import 'package:flutter/material.dart';
 
-class AdminCardWidget extends StatelessWidget {
-  final AdminCardData data;
-  AdminCardWidget({required this.data});
+class CarrouselCard extends StatelessWidget {
+  final GameCardData data;
+  CarrouselCard({required this.data});
 
   @override
   Widget build(BuildContext context) {

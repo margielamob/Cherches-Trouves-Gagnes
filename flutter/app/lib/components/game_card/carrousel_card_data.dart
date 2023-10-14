@@ -1,16 +1,16 @@
-class AdminCardData {
+class GameCardData {
   String id;
   String title;
   String thumbnail;
 
-  AdminCardData({
+  GameCardData({
     required this.id,
     required this.title,
     required this.thumbnail,
   });
 
-  factory AdminCardData.fromJson(Map json) {
-    return AdminCardData(
+  factory GameCardData.fromJson(Map json) {
+    return GameCardData(
       id: json['id'],
       title: json['name'],
       thumbnail: json['thumbnail'],

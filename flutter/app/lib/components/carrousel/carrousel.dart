@@ -1,5 +1,5 @@
-import 'package:app/components/game_card/admin_card_data.dart';
-import 'package:app/components/game_card/admin_card_widget.dart';
+import 'package:app/components/game_card/carrousel_card_data.dart';
+import 'package:app/components/game_card/carrousel_card.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -14,7 +14,7 @@ class Carrousel extends StatefulWidget {
 
 class _CarrouselState extends State<Carrousel> {
   final feedService = GetIt.I.get<CardFeedService>();
-  List<AdminCardData> currentCards = [];
+  List<GameCardData> currentCards = [];
   bool _isUpdatingCards = false;
 
   final GlobalKey<RefreshIndicatorState> _refreshKey =
@@ -76,7 +76,7 @@ class _CarrouselState extends State<Carrousel> {
                     ),
                     itemCount: currentCards.length,
                     itemBuilder: (context, index) {
-                      return AdminCardWidget(data: currentCards[index]);
+                      return CarrouselCard(data: currentCards[index]);
                     },
                   ),
                 ),
