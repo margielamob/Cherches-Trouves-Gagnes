@@ -22,31 +22,37 @@ class _CarrouselState extends State<Carrousel> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<GameCardData>>(
-        future: getCurrentPageCards(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<GameCardData>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData) {
-            return Text('No data available');
-          } else {
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) {
-                if (snapshot.data != null) {
-                  return CarrouselCard(data: snapshot.data![index]);
-                } else {
-                  return SizedBox.shrink();
-                }
-              },
-            );
-          }
-        });
+      future: getCurrentPageCards(),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<GameCardData>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData) {
+          return Text('No data available');
+        } else {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: snapshot.data!.length,
+            itemBuilder: (_, index) {
+              if (snapshot.data != null) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CarrouselCard(data: snapshot.data![index]),
+                    ]);
+              } else {
+                return Text("Il n'y a pas de jeux pour le moment!");
+              }
+            },
+          );
+        }
+      },
+    );
   }
 }
 
