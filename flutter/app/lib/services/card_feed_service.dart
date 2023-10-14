@@ -4,17 +4,11 @@ import 'package:app/services/http_client_service.dart';
 import 'package:get_it/get_it.dart';
 
 class CardFeedService {
-  int currentPage = 0;
+  int currentPage = 1;
   late CarrouselRequestData carrouselState;
   final HttpClientService _httpClientService;
 
-  CardFeedService() : _httpClientService = GetIt.I.get<HttpClientService>() {
-    _initializeCarrouselState();
-  }
-
-  void _initializeCarrouselState() async {
-    carrouselState = await _httpClientService.fetchCarrouselByPage(0);
-  }
+  CardFeedService() : _httpClientService = GetIt.I.get<HttpClientService>();
 
   Future<List<GameCardData>> getCurrentPageCards() async {
     try {
