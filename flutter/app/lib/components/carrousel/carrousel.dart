@@ -49,6 +49,7 @@ class _CarrouselState extends State<Carrousel> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text("Créer un jeux"),
+                          SizedBox(width: 2.0),
                           Icon(Icons.create),
                         ],
                       ),
@@ -60,6 +61,7 @@ class _CarrouselState extends State<Carrousel> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text("Supprimer tous les jeux"),
+                          SizedBox(width: 2.0),
                           Icon(Icons.delete),
                         ],
                       ),
