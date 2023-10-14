@@ -14,7 +14,7 @@ class Carrousel extends StatefulWidget {
 class _CarrouselState extends State<Carrousel> {
   final cardFeedService = GetIt.I.get<CardFeedService>();
 
-  final bool enabled = true;
+  final bool enabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _CarrouselState extends State<Carrousel> {
                     ),
                     SizedBox(width: 10.0),
                     FilledButton(
-                      onPressed: onPressed,
+                      onPressed: () => cardFeedService.areGamesAvailable(),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[

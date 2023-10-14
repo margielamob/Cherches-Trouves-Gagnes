@@ -37,4 +37,8 @@ class CardFeedService {
   bool hasPrevious() {
     return carrouselState.carrouselData.hasPrevious;
   }
+
+  bool areGamesAvailable() {
+    return carrouselState.carrouselData.nbOfGames >= 1;
+  }
 }
