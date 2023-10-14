@@ -1,4 +1,4 @@
-import 'package:app/components/game-card/admin-card-data.dart';
+import 'package:app/components/game_card/admin_card_data.dart';
 import 'package:flutter/material.dart';
 
 class AdminCardWidget extends StatelessWidget {

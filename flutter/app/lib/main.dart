@@ -1,8 +1,8 @@
-import 'package:app/pages/admin-page.dart';
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/card-feed-service.dart';
-import 'package:app/services/http-client-service.dart';
-import 'package:app/services/user-service.dart';
+import 'package:app/pages/admin_page.dart';
+import 'package:app/services/auth_service.dart';
+import 'package:app/services/card_feed_service.dart';
+import 'package:app/services/http_client_service.dart';
+import 'package:app/services/user_service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
