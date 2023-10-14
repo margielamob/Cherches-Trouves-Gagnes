@@ -84,6 +84,10 @@ class _CarrouselState extends State<Carrousel> {
                     },
                   ),
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text("first button"), Text("second button")],
               )
             ],
           );
@@ -93,7 +97,7 @@ class _CarrouselState extends State<Carrousel> {
   }
 }
 
-// TODO: Afficher une carte correctement.
+// TODO: Ajouter des boutons pour changer de page.
 
 /*
 
