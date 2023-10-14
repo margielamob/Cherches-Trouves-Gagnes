@@ -41,6 +41,7 @@ class _CarrouselState extends State<Carrousel> {
               Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FilledButton(
                       onPressed: onPressed,
