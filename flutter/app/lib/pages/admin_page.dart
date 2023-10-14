@@ -1,4 +1,4 @@
-import 'package:app/components/card_feed/card_feed.dart';
+import 'package:app/components/carousel/carousel.dart';
 import 'package:app/services/app_bar_service.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class AdminPage extends StatelessWidget {
         context,
         'Administration',
       ),
-      body: CardFeed(),
+      body: Carousel(),
     );
   }
 }
