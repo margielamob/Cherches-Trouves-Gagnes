@@ -38,8 +38,7 @@ class _CarrouselState extends State<Carrousel> {
                 if (snapshot.data != null) {
                   return CarrouselCard(data: snapshot.data![index]);
                 } else {
-                  // Handle the case when snapshot.data is null
-                  return SizedBox.shrink(); // or another appropriate widget
+                  return SizedBox.shrink();
                 }
               },
             );
