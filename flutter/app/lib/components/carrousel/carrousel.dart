@@ -1,4 +1,4 @@
-import 'package:app/data/carrousel_card_data.dart';
+import 'package:app/data/game_card_data.dart';
 import 'package:app/components/game_card/carrousel_card.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';

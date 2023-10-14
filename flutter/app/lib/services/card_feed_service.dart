@@ -1,4 +1,4 @@
-import 'package:app/data/carrousel_card_data.dart';
+import 'package:app/data/game_card_data.dart';
 import 'package:app/services/http_client_service.dart';
 import 'package:get_it/get_it.dart';
 
