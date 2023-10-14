@@ -39,12 +39,7 @@ class _CarrouselState extends State<Carrousel> {
             itemCount: snapshot.data!.length,
             itemBuilder: (_, index) {
               if (snapshot.data != null) {
-                return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CarrouselCard(data: snapshot.data![index]),
-                    ]);
+                return CarrouselCard(data: snapshot.data![index]);
               } else {
                 return Text("Il n'y a pas de jeux pour le moment!");
               }
