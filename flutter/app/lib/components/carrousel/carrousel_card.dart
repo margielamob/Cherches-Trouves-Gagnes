@@ -7,19 +7,21 @@ class CarrouselCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            data.title,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+    return Container(
+      height: 300, // Set the desired height here
+      child: Card(
+        margin: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              data.title,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Container(
+            Container(
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.black,
@@ -33,8 +35,10 @@ class CarrouselCard extends StatelessWidget {
                   data.thumbnail,
                   fit: BoxFit.cover,
                 ),
-              )),
-        ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

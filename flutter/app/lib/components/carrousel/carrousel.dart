@@ -37,7 +37,7 @@ class _CarrouselState extends State<Carrousel> {
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
+              itemBuilder: (_, index) {
                 if (snapshot.data != null) {
                   return CarrouselCard(data: snapshot.data![index]);
                 } else {
