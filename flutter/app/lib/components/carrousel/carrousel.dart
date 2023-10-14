@@ -18,8 +18,11 @@ class _CarrouselState extends State<Carrousel> {
     return feedService.getCurrentPageCards();
   }
 
+  final bool enabled = true;
+
   @override
   Widget build(BuildContext context) {
+    final VoidCallback? onPressed = enabled ? () {} : null;
     return FutureBuilder<List<GameCardData>>(
       future: getCurrentPageCards(),
       builder:
@@ -35,7 +38,23 @@ class _CarrouselState extends State<Carrousel> {
         } else {
           return Column(
             children: [
-              Text("fuck this shit"),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    FilledButton(
+                      onPressed: onPressed,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Supprimer tous les jeux"),
+                          Icon(Icons.delete),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Center(
                   child: ListView.builder(
@@ -44,10 +63,7 @@ class _CarrouselState extends State<Carrousel> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (_, index) {
                       if (snapshot.data != null) {
-                        return CarrouselCard(
-                          data: snapshot.data![index],
-                          enabled: true,
-                        );
+                        return CarrouselCard(data: snapshot.data![index]);
                       } else {
                         return Text("Il n'y a pas de jeux pour le moment!");
                       }

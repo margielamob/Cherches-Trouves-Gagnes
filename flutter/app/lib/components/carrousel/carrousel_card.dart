@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class CarrouselCard extends StatelessWidget {
   final GameCardData data;
-  CarrouselCard({required this.data, required this.enabled});
+  CarrouselCard({required this.data});
 
-  final bool enabled;
+  final bool enabled = true;
 
   @override
   Widget build(BuildContext context) {
