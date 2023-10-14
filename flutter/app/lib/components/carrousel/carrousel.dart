@@ -102,6 +102,7 @@ class _CarrouselState extends State<Carrousel> {
                   ),
                 ],
               ),
+              SizedBox(height: 30),
             ],
           );
         }
