@@ -1,4 +1,4 @@
-import 'package:app/components/game_card/carrousel_card.dart';
+import 'package:app/components/carrousel/carrousel_card.dart';
 import 'package:app/data/carrousel_data.dart';
 import 'package:app/data/game_card_data.dart';
 import 'package:app/services/card_feed_service.dart';
@@ -35,6 +35,7 @@ class _CarrouselState extends State<Carrousel> {
             return Text('No data available');
           } else {
             return ListView.builder(
+              scrollDirection: Axis.horizontal,
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
                 if (snapshot.data != null) {
