@@ -47,7 +47,7 @@ class CarrouselCard extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
                     child: Row(
                       children: [
                         FilledButton(
@@ -55,8 +55,7 @@ class CarrouselCard extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Icon(Icons
-                                  .arrow_forward), // Add the right arrow icon
+                              Icon(Icons.delete),
                             ],
                           ),
                         )
