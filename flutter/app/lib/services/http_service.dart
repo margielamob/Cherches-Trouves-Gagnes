@@ -21,12 +21,11 @@ class HttpService {
     }
   }
 
-  Future<GameImage> fetchCarrouselByPage(String bmpId) async {
+  Future<GameImage> fetchGameImage(String bmpId) async {
     final response = await http.get(Uri.parse('$baseUri/bmp/$bmpId'));
     if (response.statusCode == 200) {
       final responseData = await jsonDecode(response.body);
-      final responseApi = GameImage.fromJson(responseData);
-      return responseApi;
+      return GameImage.fromJson(responseData);
     } else {
       throw Exception('Failed to load cards');
     }
