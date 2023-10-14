@@ -95,6 +95,7 @@ class _CarrouselState extends State<Carrousel> {
                       child: Icon(Icons.arrow_back),
                     ),
                   ),
+                  SizedBox(width: 20.0),
                   FilledButton(
                     onPressed: onPressed,
                     child: Icon(Icons.arrow_forward),
