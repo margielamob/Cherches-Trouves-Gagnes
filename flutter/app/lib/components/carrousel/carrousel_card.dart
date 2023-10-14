@@ -15,8 +15,8 @@ class CarrouselCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Card(
-            elevation: 10,
-            shadowColor: Colors.grey,
+            // elevation: 2.0,
+            shadowColor: Color.fromARGB(255, 46, 46, 46),
             margin: EdgeInsets.all(8.0),
             child: Padding(
               padding: EdgeInsets.all(8.0),
@@ -25,7 +25,7 @@ class CarrouselCard extends StatelessWidget {
                   Text(
                     data.title,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
