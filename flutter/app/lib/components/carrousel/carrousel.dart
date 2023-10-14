@@ -117,42 +117,5 @@ class _CarrouselState extends State<Carrousel> {
   }
 }
 
-// TODO: Ajouter des boutons pour changer de page.
-
-/*
-
-Column(
-            children: [
-              Expanded(
-                child: RefreshIndicator(
-                  key: _refreshKey,
-                  onRefresh: _handleRefresh,
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: currentCards.length,
-                    itemBuilder: (context, index) {
-                      return CarrouselCard(data: currentCards[index]);
-                    },
-                  ),
-                ),
-              ),
-              GestureDetector(
-                child: Center(
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 48,
-                    color: Colors.deepPurple.withOpacity(0.8),
-                  ),
-                ),
-                onTap: () {},
-              )
-            ],
-          );
-
-*/
-// I hate this error
+// Be aware of this error:
 // https://docs.flutter.dev/testing/common-errors#:~:text=To%20fix%20this%20error%2C%20specify,height%20using%20a%20Flexible%20widget.
