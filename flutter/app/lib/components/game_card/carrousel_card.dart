@@ -1,4 +1,4 @@
-import 'package:app/components/game_card/carrousel_card_data.dart';
+import 'package:app/data/carrousel_card_data.dart';
 import 'package:flutter/material.dart';
 
 class CarrouselCard extends StatelessWidget {

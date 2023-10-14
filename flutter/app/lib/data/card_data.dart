@@ -1,4 +1,4 @@
-import 'package:app/data/score.dart';
+import 'package:app/data/score_data.dart';
 
 class CardData {
   final String id;
@@ -7,8 +7,8 @@ class CardData {
   final String idOriginalBmp;
   final String idEditedBmp;
   final int nbDifferences;
-  final List<Score> soloScore;
-  final List<Score> multiplayerScore;
+  final List<ScoreData> soloScore;
+  final List<ScoreData> multiplayerScore;
 
   const CardData({
     required this.id,
@@ -30,10 +30,10 @@ class CardData {
       nbDifferences: json['nbDifferences'],
       thumbnail: json['thumbnail'],
       soloScore: (json['multiplayerScore'] as List)
-          .map((e) => Score.fromJson(e))
+          .map((e) => ScoreData.fromJson(e))
           .toList(),
       multiplayerScore: (json['multiplayerScore'] as List)
-          .map((e) => Score.fromJson(e))
+          .map((e) => ScoreData.fromJson(e))
           .toList(),
     );
   }
