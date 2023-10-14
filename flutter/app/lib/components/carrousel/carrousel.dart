@@ -14,17 +14,13 @@ class Carrousel extends StatefulWidget {
 class _CarrouselState extends State<Carrousel> {
   final cardFeedService = GetIt.I.get<CardFeedService>();
 
-  Future<List<GameCardData>> getCurrentPageCards() {
-    return cardFeedService.getCurrentPageCards();
-  }
-
   final bool enabled = true;
 
   @override
   Widget build(BuildContext context) {
     final VoidCallback? onPressed = enabled ? () {} : null;
     return FutureBuilder<List<GameCardData>>(
-      future: getCurrentPageCards(),
+      future: cardFeedService.getCurrentPageCards(),
       builder:
           (BuildContext context, AsyncSnapshot<List<GameCardData>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
