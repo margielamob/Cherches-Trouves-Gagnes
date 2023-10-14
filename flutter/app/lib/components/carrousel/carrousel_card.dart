@@ -20,19 +20,20 @@ class CarrouselCard extends StatelessWidget {
             ),
           ),
           Container(
-            width: 320,
-            height: 240,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-                width: 1.0,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.0,
+                ),
               ),
-            ),
-            child: Image.network(
-              data.thumbnail,
-              fit: BoxFit.cover,
-            ),
-          ),
+              child: SizedBox(
+                width: 320,
+                height: 240,
+                child: Image.network(
+                  data.thumbnail,
+                  fit: BoxFit.cover,
+                ),
+              )),
         ],
       ),
     );
