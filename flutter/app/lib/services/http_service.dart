@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:app/data/game_image_data.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
@@ -16,6 +16,17 @@ class HttpService {
                   (jsonCard) => jsonCard as Map<dynamic, dynamic>)
               .toList();
       return cardList;
+    } else {
+      throw Exception('Failed to load cards');
+    }
+  }
+
+  Future<GameImage> fetchCarrouselByPage(String bmpId) async {
+    final response = await http.get(Uri.parse('$baseUri/bmp/$bmpId'));
+    if (response.statusCode == 200) {
+      final responseData = await jsonDecode(response.body);
+      final responseApi = GameImage.fromJson(responseData);
+      return responseApi;
     } else {
       throw Exception('Failed to load cards');
     }

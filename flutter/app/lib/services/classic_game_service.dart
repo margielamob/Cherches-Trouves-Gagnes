@@ -5,5 +5,7 @@ import 'package:get_it/get_it.dart';
 
 class ClassicGameService {
   final httpService = GetIt.I.get<HttpService>();
+  
 
+  // Responsable d'avoir deux images avec les différences.
 }
