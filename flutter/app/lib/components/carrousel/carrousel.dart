@@ -48,6 +48,17 @@ class _CarrouselState extends State<Carrousel> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
+                          Text("Créer un jeux"),
+                          Icon(Icons.create),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 10.0),
+                    FilledButton(
+                      onPressed: onPressed,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
                           Text("Supprimer tous les jeux"),
                           Icon(Icons.delete),
                         ],
