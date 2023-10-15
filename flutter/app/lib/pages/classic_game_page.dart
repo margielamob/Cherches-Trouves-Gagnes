@@ -1,11 +1,13 @@
-import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
-import 'package:app/services/image_loader_service.dart';
 import 'package:app/components/game_vignette/game_vignette.dart';
+import 'package:app/services/classic_game_service.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 class Classic extends StatelessWidget {
-  final ImageLoaderService _imageLoaderService = ImageLoaderService();
+  final ClassicGameService _classicGameService = Get.find();
   final RxDouble x = 0.0.obs;
   final RxDouble y = 0.0.obs;
 
@@ -16,8 +18,9 @@ class Classic extends StatelessWidget {
         title: Text('Classic'),
       ),
       body: Center(
-        child: FutureBuilder<ui.Image>(
-          future: _imageLoaderService.loadImage('difference.bmp'),
+        child: FutureBuilder<Uint8List>(
+          future: _classicGameService
+              .decompressImage("f8442f87-27c7-4353-8c20-b7e83708af9c"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
@@ -25,11 +28,17 @@ class Classic extends StatelessWidget {
                 return Column(
                   children: <Widget>[
                     GestureDetector(
-                        onTapUp: (details) {
-                          x.value = details.localPosition.dx;
-                          y.value = details.localPosition.dy;
-                        },
-                        child: GameVignette(image)),
+                      onTapUp: (details) {
+                        x.value = details.localPosition.dx;
+                        y.value = details.localPosition.dy;
+                      },
+                      child: Image.memory(
+                        snapshot.data!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    //GameVignette(image)),
                     Obx(() => Text("Coordinate x : ${x.value}, y : ${y.value}"))
                   ],
                 );
