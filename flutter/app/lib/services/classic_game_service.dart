@@ -19,7 +19,6 @@ class ClassicGameService {
     if (decompressedString == null) {
       return base64Decode("");
     }
-    decompressedString = "data:image/png;base64,$decompressedString";
-    return base64Decode(decompressedString.split(',').last);
+    return base64Decode(decompressedString);
   }
 }
