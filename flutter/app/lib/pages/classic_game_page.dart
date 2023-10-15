@@ -8,8 +8,6 @@ class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
   final RxDouble x1 = 0.0.obs;
   final RxDouble y1 = 0.0.obs;
-  final RxDouble x2 = 0.0.obs;
-  final RxDouble y2 = 0.0.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +37,6 @@ class Classic extends StatelessWidget {
                         ),
                         Obx(() =>
                             Text("Coordinate x : ${x1.value}, y : ${y1.value}"))
-                      ],
-                    ),
-                    SizedBox(width: 20),
-                    Column(
-                      children: <Widget>[
-                        GestureDetector(
-                          onTapUp: (details) {
-                            x2.value = details.localPosition.dx;
-                            y2.value = details.localPosition.dy;
-                          },
-                          child: GameVignette(image),
-                        ),
-                        Obx(() =>
-                            Text("Coordinate x : ${x2.value}, y : ${y2.value}"))
                       ],
                     ),
                   ],
