@@ -5,6 +5,7 @@ import 'package:lzstring/lzstring.dart';
 import 'package:get/get.dart';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 class ClassicGameService {
   final HttpService httpService = Get.find();
@@ -19,5 +20,18 @@ class ClassicGameService {
       return base64Decode("");
     }
     return base64Decode(decompressedString);
+  }
+
+  Future<ui.Image> convertFromUint8ListToImage(Uint8List imageToConvert) async {
+    final codec = await ui.instantiateImageCodec(imageToConvert);
+    final frameInfo = await codec.getNextFrame();
+    final ui.Image uiImage = frameInfo.image;
+    return uiImage;
+  }
+
+  Future<ui.Image> getImageFromId(String bmpId) async {
+    final imageList = await decompressImage(bmpId);
+    final uiImage = convertFromUint8ListToImage(imageList);
+    return uiImage;
   }
 }

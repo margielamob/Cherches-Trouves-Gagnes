@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 class Classic extends StatelessWidget {
@@ -15,22 +13,14 @@ class Classic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<ui.Image> convertFromUint8ListToImage(
-        Uint8List imageToConvert) async {
-      final codec = await ui.instantiateImageCodec(imageToConvert);
-      final frameInfo = await codec.getNextFrame();
-      final ui.Image uiImage = frameInfo.image;
-      return uiImage;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Classic'),
       ),
       body: Center(
-        child: FutureBuilder<Uint8List>(
+        child: FutureBuilder<ui.Image>(
           future: _classicGameService
-              .decompressImage("f8442f87-27c7-4353-8c20-b7e83708af9c"),
+              .getImageFromId("f8442f87-27c7-4353-8c20-b7e83708af9c"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
