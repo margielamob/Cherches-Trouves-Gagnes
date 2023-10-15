@@ -14,9 +14,8 @@ class ClassicGameService {
     GameImage compressedString = await httpService.fetchGameImage(bmpId);
     print(compressedString.content);
     String? decompressedString =
-        LZString.decompressSync(compressedString.content);
+        await LZString.decompressFromUTF16(compressedString.content);
 
-    print(decompressedString); // null
     if (decompressedString == null) {
       return base64Decode("");
     }
