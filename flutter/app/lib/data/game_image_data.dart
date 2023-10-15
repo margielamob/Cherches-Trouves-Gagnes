@@ -1,13 +1,13 @@
 class GameImage {
-  final String image;
+  final String content;
 
   const GameImage({
-    required this.image,
+    required this.content,
   });
 
   factory GameImage.fromJson(Map json) {
     return GameImage(
-      image: json['image'],
+      content: json['image'],
     );
   }
 }
