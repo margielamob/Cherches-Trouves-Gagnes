@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class Avatar extends StatelessWidget {
-  final String? photoURL;
+  final Uint8List? photoURL;
   final VoidCallback? onTap;
 
   const Avatar({this.photoURL, this.onTap});
@@ -18,7 +20,7 @@ class Avatar extends StatelessWidget {
               )
             : CircleAvatar(
                 radius: 50.0,
-                backgroundImage: NetworkImage(photoURL!),
+                backgroundImage: MemoryImage(photoURL!),
               ),
       ),
     );
