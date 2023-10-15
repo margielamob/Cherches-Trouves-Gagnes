@@ -75,6 +75,9 @@ class SignUpPageState extends State<SignUpPage> {
                           if (value == null || value.isEmpty) {
                             return "Veuillez entrer un nom d'utilisateur.";
                           }
+                          if (value.contains('@') || value.contains(' ')) {
+                            return "Le nom d'utilisateur ne doit pas contenir d'espaces ou de caractères spéciaux.";
+                          }
                           return null;
                         }, (value) => userName = value),
                         SizedBox(height: 30),
@@ -89,33 +92,53 @@ class SignUpPageState extends State<SignUpPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
+                              bool isAvailable = await userService
+                                  .isUserNameAvailable(userName as String);
 
-                              try {
-                                final firebaseCredential =
-                                    await authService.signUp(email as String,
-                                        password as String, userName as String);
-
-                                UserData user = UserData(
-                                  uid: firebaseCredential.user!.uid,
-                                  displayName: userName as String,
-                                  email: email as String,
-                                  emailVerified: false,
-                                  photoURL: '',
-                                  phoneNumber: '',
-                                  theme: '',
-                                  language: '',
-                                  gameLost: 0,
-                                  gameWins: 0,
-                                  gamePlayed: 0,
-                                  averageTime: '',
+                              if (!isAvailable) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Ce nom d\'utilisateur est déjà pris.'),
+                                    backgroundColor: Colors.red,
+                                  ),
                                 );
+                                return;
+                              } else {
+                                try {
+                                  final firebaseCredential =
+                                      await authService.signUp(
+                                          email as String,
+                                          password as String,
+                                          userName as String);
 
-                                await userService.addUser(user);
-                                print('User added');
-                                _formKey.currentState!.reset();
-                                Navigator.pushNamed(context, '/loginPage');
-                              } catch (error) {
-                                print(error);
+                                  UserData user = UserData(
+                                    uid: firebaseCredential.user!.uid,
+                                    displayName: userName as String,
+                                    email: email as String,
+                                    emailVerified: false,
+                                    photoURL: '',
+                                    phoneNumber: '',
+                                    theme: '',
+                                    language: '',
+                                    gameLost: 0,
+                                    gameWins: 0,
+                                    gamePlayed: 0,
+                                    averageTime: '',
+                                  );
+
+                                  await userService.addUser(user);
+                                  _formKey.currentState!.reset();
+                                  Navigator.pushNamed(context, '/loginPage');
+                                } catch (error) {
+                                  print(error);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('$error'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               }
                             }
                           },
