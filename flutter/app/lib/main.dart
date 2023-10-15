@@ -286,7 +286,6 @@ class SignUpPageState extends State<SignUpPage> {
                                   uid: firebaseCredential.user!.uid,
                                   displayName: userName as String,
                                   email: email as String,
-                                  emailVerified: false,
                                   photoURL: '',
                                   phoneNumber: '',
                                   theme: '',

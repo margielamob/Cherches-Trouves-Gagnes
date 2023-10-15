@@ -14,7 +14,15 @@ class SettingPage extends StatefulWidget {
 class SettingPageState extends State<SettingPage> {
   final AuthService authService = GetIt.I.get<AuthService>();
   final UserService userService = GetIt.I.get<UserService>();
+  String? avatarUrl;
+
   @override
+  void initState() {
+    super.initState();
+    // Récupérer l'URL de l'avatar de l'utilisateur au chargement de la page
+    // avatarUrl = userService.getUserAvatarUrl();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -31,19 +39,40 @@ class SettingPageState extends State<SettingPage> {
                   height: 400,
                   color: Colors.blue,
                   child: Center(
-                    child: TextButton(
-                        onPressed: () async {
-                          // await userService.updateUserTheme('dark');
-                        },
-                        style: ButtonStyle(),
-                        child: const Text(
-                          "Modifier l'avatar",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        )),
-                  )),
+                      child: FutureBuilder<UserData?>(
+                        future: authService.getCurrentUser(),
+                        builder: (BuildContext context, AsyncSnapshot<UserData?> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            UserData? userData = snapshot.data;
+
+                            return Row(children: [
+                              if (avatarUrl != null)
+                                Image.network(
+                                  avatarUrl!,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              TextButton(
+                                  onPressed: () async {
+                                    // await userService.updateUserTheme('dark');
+                                  },
+                                  style: ButtonStyle(),
+                                  child: Text(
+                                    userData?.displayName ?? 'displayName',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  )),
+                            ]);
+                          }
+                        }
+                      ))),
               SizedBox(width: 20),
               Container(
                   width: 300,
@@ -69,4 +98,5 @@ class SettingPageState extends State<SettingPage> {
       ),
     );
   }
+
 }

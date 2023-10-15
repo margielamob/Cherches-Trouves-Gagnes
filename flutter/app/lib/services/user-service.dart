@@ -6,7 +6,6 @@ class UserData {
   final String uid;
   final String displayName;
   final String email;
-  final bool emailVerified;
   final String? photoURL;
   final String? phoneNumber;
   final String? theme;
@@ -20,7 +19,6 @@ class UserData {
     required this.uid,
     required this.displayName,
     required this.email,
-    this.emailVerified = false,
     this.photoURL,
     this.phoneNumber,
     this.theme,
@@ -36,7 +34,6 @@ class UserData {
       'uid': uid,
       'displayName': displayName,
       'email': email,
-      'emailVerified': emailVerified,
       'photoURL': photoURL,
       'phoneNumber': phoneNumber,
       'theme': theme,
@@ -47,11 +44,27 @@ class UserData {
       'averageTime': averageTime,
     };
   }
+
+  factory UserData.fromMap(Map<String, dynamic> data) {
+    return UserData(
+      uid: data['uid'] ?? '',
+      displayName: data['displayName'] ?? '',
+      email: data['email'] ?? '',
+      photoURL: data['photoURL'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      theme: data['theme'] ?? '',
+      language: data['language'] ?? '',
+      gameLost: data['gameLost'] ?? 0,
+      gameWins: data['gameWins'] ?? 0,
+      gamePlayed: data['gamePlayed'] ?? 0,
+      averageTime: data['averageTime'] ?? '',
+    );
+  }
 }
 
 class UserService {
-  FirebaseFirestore db = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
+  FirebaseFirestore db = FirebaseFirestore.instance;
 
   Future<void> addUser(UserData user) async {
     CollectionReference users = db.collection('users');
@@ -59,22 +72,6 @@ class UserService {
         .doc(user.uid)
         .set(user.toMap())
         .catchError((error) => print("Failed to add user: $error"));
-  }
-
-  Future<void> updateUser(UserData user) async {
-    CollectionReference users = db.collection('users');
-    return users
-        .doc(user.uid)
-        .update(user.toMap())
-        .catchError((error) => print("Failed to update user: $error"));
-  }
-
-  Future<void> deleteUser(UserData user) async {
-    CollectionReference users = db.collection('users');
-    return users
-        .doc(user.uid)
-        .delete()
-        .catchError((error) => print("Failed to delete user: $error"));
   }
 
   Future<bool> isUserNameAvailable(String userName) async {
@@ -97,6 +94,22 @@ class UserService {
     }
 
     return result.docs.first;
+  }
+
+  Future<void> updateUser(UserData user) async {
+    CollectionReference users = db.collection('users');
+    return users
+        .doc(user.uid)
+        .update(user.toMap())
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> deleteUser(UserData user) async {
+    CollectionReference users = db.collection('users');
+    return users
+        .doc(user.uid)
+        .delete()
+        .catchError((error) => print("Failed to delete user: $error"));
   }
 
   Future<DocumentSnapshot?> getUserByUid(String uid) async {
