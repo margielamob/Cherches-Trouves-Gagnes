@@ -2,7 +2,7 @@ import 'package:app/components/game-card/admin-card-data.dart';
 import 'package:app/components/game-card/admin-card-widget.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 import 'package:vibration/vibration.dart';
 
 class CardFeed extends StatefulWidget {
@@ -13,7 +13,7 @@ class CardFeed extends StatefulWidget {
 }
 
 class _CardFeedState extends State<CardFeed> {
-  final feedService = GetIt.I.get<CardFeedService>();
+  final CardFeedService feedService = Get.find();
   List<AdminCardData> currentCards = [];
   bool _isUpdatingCards = false;
 

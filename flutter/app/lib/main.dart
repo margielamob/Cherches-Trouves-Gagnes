@@ -4,20 +4,22 @@ import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http_service.dart';
 import 'package:app/services/image_loader_service.dart';
+import 'package:app/services/image_decoder_service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/services/classic_game_service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 void registerDependencies() {
-  GetIt.I.registerSingleton<UserService>(UserService());
-  GetIt.I.registerSingleton<AuthService>(AuthService());
-  GetIt.I.registerSingleton<HttpService>(HttpService());
-  GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
-  GetIt.I.registerSingleton<ImageLoaderService>(ImageLoaderService());
-  GetIt.I.registerSingleton<ClassicGameService>(ClassicGameService());
+  Get.put(UserService());
+  Get.put(AuthService());
+  Get.put(HttpService());
+  Get.put(CardFeedService());
+  Get.put(ImageDecoderService());
+  Get.put(ImageLoaderService());
+  Get.put(ClassicGameService());
 }
 
 void main() async {
@@ -190,8 +192,8 @@ class SignUpPageState extends State<SignUpPage> {
   String? email = "";
   String? userName = "";
   String? password = "";
-  final AuthService authService = GetIt.I.get<AuthService>();
-  final UserService userService = GetIt.I.get<UserService>();
+  final AuthService authService = Get.find();
+  final UserService userService = Get.find();
 
   @override
   Widget build(BuildContext context) {
