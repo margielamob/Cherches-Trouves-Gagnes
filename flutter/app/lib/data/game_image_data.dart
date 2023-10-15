@@ -1,5 +1,3 @@
-import 'package:lzstring/lzstring.dart';
-
 class GameImage {
   final String image;
 
@@ -13,6 +11,11 @@ class GameImage {
     );
   }
 }
+
+// Ce ne devrait peut-être pas de la responsabilité 
+// de la classe de donnéees de traiter l'information
+// c'est plûtot la responsabilité d'une service
+// import 'package:lzstring/lzstring.dart';
 
 // Il y a une fonction qui se nomme decompressImage
 // C'est elle qui décompresse les images du serveur.
