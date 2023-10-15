@@ -70,23 +70,25 @@ class AuthService {
   }
 
   Future<UserData?> getCurrentUser() async {
-      DocumentSnapshot userDoc = await userService.db.collection('users').doc(await getCurrentUserId()).get();
-      if (userDoc.exists) {
-        return UserData(
-          uid: userDoc['uid'],
-          displayName: userDoc['displayName'],
-          email: userDoc['email'],
-          photoURL: userDoc['photoURL'],
-          phoneNumber: userDoc['phoneNumber'],
-          theme: userDoc['theme'],
-          language: userDoc['language'],
-          gameLost: userDoc['gameLost'],
-          gameWins: userDoc['gameWins'],
-          gamePlayed: userDoc['gamePlayed'],
-          averageTime: userDoc['averageTime'],
-        );
-      }
+    DocumentSnapshot userDoc = await userService.db
+        .collection('users')
+        .doc(await getCurrentUserId())
+        .get();
+    if (userDoc.exists) {
+      return UserData(
+        uid: userDoc['uid'],
+        displayName: userDoc['displayName'],
+        email: userDoc['email'],
+        photoURL: userDoc['photoURL'],
+        phoneNumber: userDoc['phoneNumber'],
+        theme: userDoc['theme'],
+        language: userDoc['language'],
+        gameLost: userDoc['gameLost'],
+        gameWins: userDoc['gameWins'],
+        gamePlayed: userDoc['gamePlayed'],
+        averageTime: userDoc['averageTime'],
+      );
+    }
     return null;
   }
-
 }

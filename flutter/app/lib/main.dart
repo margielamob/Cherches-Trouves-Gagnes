@@ -1,19 +1,23 @@
 import 'package:app/pages/admin-page.dart';
-import 'package:app/pages/setting-page.dart';
+import 'package:app/pages/profile-page.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/card-feed-service.dart';
 import 'package:app/services/http-client-service.dart';
+import 'package:app/services/user-controller-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+final locator = GetIt.instance;
+
 void registerDependencies() {
-  GetIt.I.registerSingleton<UserService>(UserService());
-  GetIt.I.registerSingleton<AuthService>(AuthService());
-  GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
-  GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
+  locator.registerSingleton<UserService>(UserService());
+  locator.registerSingleton<AuthService>(AuthService());
+  locator.registerSingleton<HttpClientService>(HttpClientService());
+  locator.registerSingleton<CardFeedService>(CardFeedService());
+  locator.registerSingleton<UserControllerService>(UserControllerService());
 }
 
 void main() async {
@@ -45,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/loginPage': (context) => LoginPage(),
         '/signupPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
-        '/SettingPage': (context) => SettingPage(),
+        '/ProfilePage': (context) => ProfilePage(),
       },
     );
   }
@@ -101,9 +105,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/SettingPage');
+                        Navigator.pushNamed(context, '/ProfilePage');
                       },
-                      child: Text('Go to Setting Page'),
+                      child: Text('Go to Profile Page'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(

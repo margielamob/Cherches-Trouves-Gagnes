@@ -40,39 +40,46 @@ class SettingPageState extends State<SettingPage> {
                   color: Colors.blue,
                   child: Center(
                       child: FutureBuilder<UserData?>(
-                        future: authService.getCurrentUser(),
-                        builder: (BuildContext context, AsyncSnapshot<UserData?> snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            UserData? userData = snapshot.data;
+                          future: authService.getCurrentUser(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<UserData?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              UserData? userData = snapshot.data;
 
-                            return Row(children: [
-                              if (avatarUrl != null)
-                                Image.network(
-                                  avatarUrl!,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              TextButton(
-                                  onPressed: () async {
-                                    // await userService.updateUserTheme('dark');
-                                  },
-                                  style: ButtonStyle(),
-                                  child: Text(
-                                    userData?.displayName ?? 'displayName',
+                              return Row(children: [
+                                if (avatarUrl != null)
+                                  Image.network(
+                                    avatarUrl!,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                SizedBox(width: 10),
+                                Text("Modifier l'avatar",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
-                                    ),
-                                  )),
-                            ]);
-                          }
-                        }
-                      ))),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      // await userService.updateUserTheme('dark');
+                                    },
+                                    style: ButtonStyle(),
+                                    child: Text(
+                                      userData?.displayName ?? 'displayName',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    )),
+                              ]);
+                            }
+                          }))),
               SizedBox(width: 20),
               Container(
                   width: 300,
@@ -98,5 +105,4 @@ class SettingPageState extends State<SettingPage> {
       ),
     );
   }
-
 }
