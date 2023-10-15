@@ -1,9 +1,9 @@
 import 'package:app/services/auth-service.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 class LogoutDialog extends StatelessWidget {
-  final AuthService authService = GetIt.I.get<AuthService>();
+  final AuthService authService = Get.find();
 
   Widget _onSignOutError(context) {
     return AlertDialog(

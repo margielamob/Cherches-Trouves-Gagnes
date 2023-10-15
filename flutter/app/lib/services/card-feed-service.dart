@@ -1,12 +1,12 @@
 import 'package:app/components/game-card/admin-card-data.dart';
 import 'package:app/services/http-client-service.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 class CardFeedService {
   int _currentPage = 0;
   bool _isFetchingCards = false;
   List<AdminCardData> _currentCards = [];
-  final HttpClientService _httpClientService = GetIt.I.get<HttpClientService>();
+  final HttpClientService _httpClientService = Get.find();
 
   Future<void> fetchCards() async {
     _isFetchingCards = true;
