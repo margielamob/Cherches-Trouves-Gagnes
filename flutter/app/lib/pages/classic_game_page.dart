@@ -3,6 +3,10 @@ import 'package:app/components/game_vignette/game_vignette.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
@@ -11,6 +15,14 @@ class Classic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<ui.Image> convertFromUint8ListToImage(
+        Uint8List imageToConvert) async {
+      final codec = await ui.instantiateImageCodec(imageToConvert);
+      final frameInfo = await codec.getNextFrame();
+      final ui.Image uiImage = frameInfo.image;
+      return uiImage;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Classic'),
