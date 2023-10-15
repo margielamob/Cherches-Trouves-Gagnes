@@ -6,8 +6,10 @@ import 'dart:ui' as ui;
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
-  final RxDouble x = 0.0.obs;
-  final RxDouble y = 0.0.obs;
+  final RxDouble x1 = 0.0.obs;
+  final RxDouble y1 = 0.0.obs;
+  final RxDouble x2 = 0.0.obs;
+  final RxDouble y2 = 0.0.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +32,13 @@ class Classic extends StatelessWidget {
                       children: <Widget>[
                         GestureDetector(
                           onTapUp: (details) {
-                            x.value = details.localPosition.dx;
-                            y.value = details.localPosition.dy;
+                            x1.value = details.localPosition.dx;
+                            y1.value = details.localPosition.dy;
                           },
                           child: GameVignette(image),
                         ),
                         Obx(() =>
-                            Text("Coordinate x : ${x.value}, y : ${y.value}"))
+                            Text("Coordinate x : ${x1.value}, y : ${y1.value}"))
                       ],
                     ),
                     SizedBox(width: 20),
@@ -44,13 +46,13 @@ class Classic extends StatelessWidget {
                       children: <Widget>[
                         GestureDetector(
                           onTapUp: (details) {
-                            x.value = details.localPosition.dx;
-                            y.value = details.localPosition.dy;
+                            x2.value = details.localPosition.dx;
+                            y2.value = details.localPosition.dy;
                           },
                           child: GameVignette(image),
                         ),
                         Obx(() =>
-                            Text("Coordinate x : ${x.value}, y : ${y.value}"))
+                            Text("Coordinate x : ${x2.value}, y : ${y2.value}"))
                       ],
                     ),
                   ],
