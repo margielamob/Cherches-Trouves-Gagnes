@@ -1,7 +1,7 @@
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({
@@ -17,8 +17,8 @@ class SignUpPageState extends State<SignUpPage> {
   String? email = "";
   String? userName = "";
   String? password = "";
-  final AuthService authService = GetIt.I.get<AuthService>();
-  final UserService userService = GetIt.I.get<UserService>();
+  final AuthService authService = Get.find();
+  final UserService userService = Get.find();
 
   @override
   Widget build(BuildContext context) {

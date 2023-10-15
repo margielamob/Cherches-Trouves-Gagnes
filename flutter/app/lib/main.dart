@@ -9,13 +9,13 @@ import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 void registerDependencies() {
-  GetIt.I.registerSingleton<UserService>(UserService());
-  GetIt.I.registerSingleton<AuthService>(AuthService());
-  GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
-  GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
+  Get.put(UserService());
+  Get.put(AuthService());
+  Get.put(HttpClientService());
+  Get.put(CardFeedService());
 }
 
 void main() async {
