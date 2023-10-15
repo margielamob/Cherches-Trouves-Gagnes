@@ -1,4 +1,4 @@
-class CarrouselData {
+class CarouselData {
   int currentPage;
   int gamesOnPage;
   int nbOfGames;
@@ -6,7 +6,7 @@ class CarrouselData {
   bool hasNext;
   bool hasPrevious;
 
-  CarrouselData({
+  CarouselData({
     required this.currentPage,
     required this.gamesOnPage,
     required this.nbOfGames,
@@ -15,8 +15,8 @@ class CarrouselData {
     required this.hasPrevious,
   });
 
-  factory CarrouselData.fromJson(Map json) {
-    return CarrouselData(
+  factory CarouselData.fromJson(Map json) {
+    return CarouselData(
       currentPage: json['currentPage'],
       gamesOnPage: json['gamesOnPage'],
       nbOfGames: json['nbOfGames'],

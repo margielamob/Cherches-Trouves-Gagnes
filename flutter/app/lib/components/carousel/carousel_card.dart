@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:app/data/game_card_data.dart';
 
-class CarrouselCard extends StatelessWidget {
+class CarouselCard extends StatelessWidget {
   final GameCardData data;
-  const CarrouselCard({required this.data});
+  const CarouselCard({required this.data});
 
   final bool enabled = true;
 

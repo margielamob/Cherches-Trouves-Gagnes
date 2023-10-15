@@ -1,17 +1,17 @@
-import 'package:app/components/carrousel/carrousel_card.dart';
+import 'package:app/components/carousel/carousel_card.dart';
 import 'package:app/data/game_card_data.dart';
 import 'package:app/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class Carrousel extends StatefulWidget {
-  const Carrousel({super.key});
+class Carousel extends StatefulWidget {
+  const Carousel({super.key});
 
   @override
-  State<Carrousel> createState() => _CarrouselState();
+  State<Carousel> createState() => _CarouselState();
 }
 
-class _CarrouselState extends State<Carrousel> {
+class _CarouselState extends State<Carousel> {
   final cardFeedService = GetIt.I.get<CardFeedService>();
 
   final bool enabled = false;
@@ -73,7 +73,7 @@ class _CarrouselState extends State<Carrousel> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (_, index) {
                       if (snapshot.data != null) {
-                        return CarrouselCard(data: snapshot.data![index]);
+                        return CarouselCard(data: snapshot.data![index]);
                       } else {
                         return Text("Il n'y a pas de jeux pour le moment!");
                       }

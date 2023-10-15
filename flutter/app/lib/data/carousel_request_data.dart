@@ -1,21 +1,21 @@
-import 'package:app/data/carrousel_data.dart';
+import 'package:app/data/carousel_data.dart';
 import 'package:app/data/game_card_data.dart';
 
-class CarrouselRequestData {
-  final CarrouselData carrouselData;
+class CarouselRequestData {
+  final CarouselData carouselData;
   final List<GameCardData> gameCardData;
 
-  CarrouselRequestData({
-    required this.carrouselData,
+  CarouselRequestData({
+    required this.carouselData,
     required this.gameCardData,
   });
 
-  factory CarrouselRequestData.fromJson(Map<String, dynamic> json) {
+  factory CarouselRequestData.fromJson(Map<String, dynamic> json) {
     final carouselInfoJson = json['carouselInfo'];
     final gamesList = json['games'] as List<dynamic>;
 
-    return CarrouselRequestData(
-      carrouselData: CarrouselData.fromJson(carouselInfoJson),
+    return CarouselRequestData(
+      carouselData: CarouselData.fromJson(carouselInfoJson),
       gameCardData:
           gamesList.map((gameJson) => GameCardData.fromJson(gameJson)).toList(),
     );
