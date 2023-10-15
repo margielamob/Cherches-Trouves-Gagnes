@@ -23,16 +23,36 @@ class Classic extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               final image = snapshot.data;
               if (image != null) {
-                return Column(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTapUp: (details) {
-                        x.value = details.localPosition.dx;
-                        y.value = details.localPosition.dy;
-                      },
-                      child: GameVignette(image),
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTapUp: (details) {
+                            x.value = details.localPosition.dx;
+                            y.value = details.localPosition.dy;
+                          },
+                          child: GameVignette(image),
+                        ),
+                        Obx(() =>
+                            Text("Coordinate x : ${x.value}, y : ${y.value}"))
+                      ],
                     ),
-                    Obx(() => Text("Coordinate x : ${x.value}, y : ${y.value}"))
+                    SizedBox(width: 20),
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTapUp: (details) {
+                            x.value = details.localPosition.dx;
+                            y.value = details.localPosition.dy;
+                          },
+                          child: GameVignette(image),
+                        ),
+                        Obx(() =>
+                            Text("Coordinate x : ${x.value}, y : ${y.value}"))
+                      ],
+                    ),
                   ],
                 );
               }
