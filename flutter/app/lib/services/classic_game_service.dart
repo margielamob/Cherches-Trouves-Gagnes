@@ -12,8 +12,11 @@ class ClassicGameService {
 
   Future<Uint8List> decompressImage(String bmpId) async {
     GameImage compressedString = await httpService.fetchGameImage(bmpId);
+    print(compressedString.content);
     String? decompressedString =
-        await LZString.decompress(compressedString.content);
+        LZString.decompressSync(compressedString.content);
+
+    print(decompressedString); // null
     if (decompressedString == null) {
       return base64Decode("");
     }

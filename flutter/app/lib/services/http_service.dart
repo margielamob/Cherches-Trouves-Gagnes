@@ -25,7 +25,8 @@ class HttpService {
     final response = await http.get(Uri.parse('$baseUri/bmp/$bmpId'));
     if (response.statusCode == 200) {
       final responseData = await jsonDecode(response.body);
-      return GameImage.fromJson(responseData);
+      final requestParsed = GameImage.fromJson(responseData);
+      return requestParsed;
     } else {
       throw Exception('Failed to load cards');
     }
