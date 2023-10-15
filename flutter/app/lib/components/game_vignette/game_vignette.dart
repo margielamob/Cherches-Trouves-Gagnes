@@ -30,8 +30,8 @@ class GameVignette extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: image.width.toDouble(),
-      height: image.height.toDouble(),
+      width: image.width.toInt().toDouble(),
+      height: image.height.toInt().toDouble(),
       child: CustomPaint(painter: _GameVignettePainter(image)),
     );
   }
