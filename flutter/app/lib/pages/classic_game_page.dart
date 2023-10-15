@@ -1,4 +1,5 @@
 import 'package:app/services/classic_game_service.dart';
+import 'package:app/components/game_vignette/game_vignette.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:typed_data';
@@ -29,13 +30,8 @@ class Classic extends StatelessWidget {
                         x.value = details.localPosition.dx;
                         y.value = details.localPosition.dy;
                       },
-                      child: Image.memory(
-                        snapshot.data!,
-                        fit: BoxFit.cover,
-                      ),
+                      child: GameVignette(image),
                     ),
-
-                    //GameVignette(image)),
                     Obx(() => Text("Coordinate x : ${x.value}, y : ${y.value}"))
                   ],
                 );
@@ -48,3 +44,10 @@ class Classic extends StatelessWidget {
     );
   }
 }
+
+/*
+Image.memory(
+    snapshot.data!,
+    fit: BoxFit.cover,
+  ),
+*/
