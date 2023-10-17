@@ -1,11 +1,11 @@
-import 'package:app/components/card-feed/card-feed.dart';
-import 'package:app/services/app-bar-service.dart';
-import 'package:app/services/card-feed-service.dart';
+import 'package:app/domain/services/app_bar_service.dart';
+import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/pages/carousel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AdminPage extends StatelessWidget {
-  final CardFeedService service = Get.find();
+  final CarouselService service = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +13,7 @@ class AdminPage extends StatelessWidget {
         context,
         'Administration',
       ),
-      body: CardFeed(),
+      body: Carousel(),
     );
   }
 }

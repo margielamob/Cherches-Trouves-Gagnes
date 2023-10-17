@@ -1,4 +1,4 @@
-import 'package:app/components/logout-dialog.dart';
+import 'package:app/components/logout_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AppBarService {
