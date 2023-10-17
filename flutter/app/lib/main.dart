@@ -1,21 +1,22 @@
-import 'package:app/pages/admin-page.dart';
+import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/sign_up_page.dart';
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/card-feed-service.dart';
-import 'package:app/services/http-client-service.dart';
-import 'package:app/services/user-service.dart';
-import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/http_service.dart';
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/themes/default-theme.dart';
+import 'package:provider/provider.dart';
 
 void registerDependencies() {
   Get.put(UserService());
   Get.put(AuthService());
-  Get.put(HttpClientService());
-  Get.put(CardFeedService());
+  Get.put(HttpService());
+  Get.put(CarouselService());
 }
 
 void main() async {
@@ -29,7 +30,18 @@ void main() async {
     storageBucket: 'log3900-103-f3850.appspot.com',
   ));
   registerDependencies();
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) {
+          CarouselService carouselService = Get.find();
+          return carouselService;
+        })
+        // Add more providers here
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -45,7 +57,7 @@ class MyApp extends StatelessWidget {
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/signupPage': (context) => SignUpPage(),
+        '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
       },
     );

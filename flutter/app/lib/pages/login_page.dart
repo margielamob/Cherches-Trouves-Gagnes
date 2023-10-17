@@ -1,4 +1,4 @@
-import 'package:app/services/auth-service.dart';
+import 'package:app/domain/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
