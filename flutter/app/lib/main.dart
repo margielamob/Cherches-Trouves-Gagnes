@@ -8,7 +8,16 @@ import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+
+void registerDependenciesUpdate() {
+  Get.put(AuthService());
+  Get.put(UserService());
+  Get.put(HttpClientService());
+  Get.put(CardFeedService());
+  Get.put(UserControllerService());
+}
 
 final locator = GetIt.instance;
 
