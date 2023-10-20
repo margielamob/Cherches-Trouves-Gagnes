@@ -22,6 +22,7 @@ dependencies:
     firebase_auth: ^4.10.0
     cloud_firestore: ^4.9.2
     get: ^4.6.6
+    lzstring: ^2.0.0+2
 
 dev_dependencies:
     flutter_test:
@@ -31,3 +32,5 @@ dev_dependencies:
 
 flutter:
     uses-material-design: true
+    assets:
+        - assets/

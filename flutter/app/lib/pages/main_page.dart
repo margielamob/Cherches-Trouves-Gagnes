@@ -26,7 +26,7 @@ class MainPage extends StatelessWidget {
                           ),
                           SizedBox(width: 20),
                           Image.asset(
-                            'logoJdD.png',
+                            'assets/logoJdD.png',
                             width: 100,
                             height: 100,
                           ),
@@ -82,18 +82,15 @@ class MainPage extends StatelessWidget {
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'quote.png',
-                          width: 500,
-                          height: 800,
-                        ),
-                      ],
-                    )
+                    Image.asset(
+                      'assets/quote.png',
+                      height: 600,
+                    ),
                   ],
-                )
+                ),
               ],
             )
           ],
