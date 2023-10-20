@@ -1,10 +1,12 @@
-import 'package:app/components/carousel_modal.dart';
+import 'package:app/components/carousel_bottom_classic.dart';
+import 'package:app/components/carousel_bottom_delete.dart';
 import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_card_model.dart';
 
 class CarouselCard extends StatelessWidget {
   final GameCardModel data;
-  const CarouselCard({required this.data});
+  final bool isAdministrationPage;
+  const CarouselCard({required this.data, required this.isAdministrationPage});
 
   @override
   Widget build(BuildContext context) {
@@ -43,33 +45,9 @@ class CarouselCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
-                    child: Row(
-                      children: [
-                        FilledButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CarouselModal(
-                                    verification:
-                                        "Voulez-vous vraiment supprimer ce jeux?",
-                                    gameId: data.id);
-                              },
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("Supprimer "),
-                              Icon(Icons.delete),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
+                  isAdministrationPage
+                      ? CarouselBottomDelete(data: data)
+                      : CarouselBottomClassic(data: data),
                 ],
               ),
             ),
@@ -79,9 +57,3 @@ class CarouselCard extends StatelessWidget {
     );
   }
 }
-
-
-/*
-                            carouselService.deleteCardById(data.id);
-
-*/

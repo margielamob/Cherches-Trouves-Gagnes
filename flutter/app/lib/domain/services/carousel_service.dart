@@ -11,10 +11,12 @@ class CarouselState {
 class CarouselService extends ChangeNotifier {
   CarouselState state = CarouselState();
 
-  late CarouselRequestModel carouselState;
+  CarouselRequestModel? carouselState;
   final HttpService _httpService;
 
-  CarouselService() : _httpService = Get.find();
+  CarouselService() : _httpService = Get.find() {
+    getCurrentPageCards();
+  }
 
   Future<List<GameCardModel>> getCurrentPageCards() async {
     try {
@@ -24,7 +26,7 @@ class CarouselService extends ChangeNotifier {
       return carouselRequest.gameCardData;
     } catch (error) {
       print(error);
-      throw Exception('getCurrentCards is broken');
+      throw Exception('Error fetching cards');
     }
   }
 
@@ -39,15 +41,18 @@ class CarouselService extends ChangeNotifier {
   }
 
   bool hasNext() {
-    return carouselState.carouselData.hasNext;
+    return carouselState!.carouselData.hasNext;
   }
 
   bool hasPrevious() {
-    return carouselState.carouselData.hasPrevious;
+    return carouselState!.carouselData.hasPrevious;
   }
 
   bool areGamesAvailable() {
-    return carouselState.carouselData.nbOfGames >= 1;
+    if (carouselState != null) {
+      return carouselState!.carouselData.nbOfGames >= 1;
+    }
+    return false;
   }
 
   Future<bool> deleteAll() async {

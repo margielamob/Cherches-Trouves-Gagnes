@@ -19,6 +19,9 @@ class CarouselModal extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FilledButton(
+              style: ButtonStyle(
+                minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -26,9 +29,9 @@ class CarouselModal extends StatelessWidget {
             ),
             SizedBox(width: 30),
             FilledButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Colors.red, // Set the button's background color to red
+              style: ButtonStyle(
+                minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+                backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

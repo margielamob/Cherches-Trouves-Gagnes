@@ -1,3 +1,4 @@
+import 'package:app/domain/models/game_image_model.dart';
 import 'package:app/domain/models/carousel_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,6 +14,17 @@ class HttpService {
       final responseData = await jsonDecode(response.body);
       final responseApi = CarouselRequestModel.fromJson(responseData);
       return responseApi;
+    } else {
+      throw Exception('Failed to load cards');
+    }
+  }
+
+  Future<GameImageModel> fetchGameImage(String bmpId) async {
+    final response = await http.get(Uri.parse('$baseUri/bmp/$bmpId'));
+    if (response.statusCode == 200) {
+      final responseData = await jsonDecode(response.body);
+      final requestParsed = GameImageModel.fromJson(responseData);
+      return requestParsed;
     } else {
       throw Exception('Failed to load cards');
     }
