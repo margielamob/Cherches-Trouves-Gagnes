@@ -67,6 +67,20 @@ install:server:
             - server/.npm/
         policy: pull-push
 
+install:flutter:
+    stage: install
+    script:
+        - echo "Installing Git, Flutter, and unzip..."
+        - apt-get update
+        - apt-get install -y git
+        - apt-get install -y unzip
+        - git clone https://github.com/flutter/flutter.git /opt/flutter
+        - export PATH=$PATH:/opt/flutter/bin
+        - flutter doctor
+        - cd flutter/app
+        - flutter packages get
+        - flutter test
+
 lint:client:
     stage: lint
     needs: ['install:client']
