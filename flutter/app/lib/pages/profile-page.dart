@@ -1,14 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:app/components/avatar/avatar.dart';
 import 'package:app/main.dart';
 import 'package:app/services/auth-service.dart';
-import 'package:app/services/image-upload-serice.dart';
 import 'package:app/services/user-controller-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({
@@ -20,14 +16,15 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   final AuthService authService = GetIt.I.get<AuthService>();
+  final UserService userService = GetIt.I.get<UserService>();
   UserData? currentUser = locator.get<UserControllerService>().currentUser;
-  Uint8List? avatar;
+  String? avatar;
 
-  void selectAvatar() async {
-    Uint8List img = await pickImage(ImageSource.gallery);
-    setState(() {
-      avatar = img;
-    });
+  void setAvatar() async {
+    // String img = await userService.getPhotoURL(currentUser!.uid);
+    // setState(() {
+    //   avatar = img;
+    // });
   }
 
   @override
@@ -37,6 +34,11 @@ class ProfilePageState extends State<ProfilePage> {
     userControllerService.onUserDataReady = (userData) {
       setState(() {
         currentUser = userData;
+      });
+    };
+    userControllerService.onUserAvatarReady = (userAvatar) {
+      setState(() {
+        avatar = userAvatar;
       });
     };
   }
@@ -65,10 +67,9 @@ class ProfilePageState extends State<ProfilePage> {
                   Avatar(
                     photoURL: avatar,
                     onTap: () async {
-                      selectAvatar();
+                      // selectAvatar();
                     },
                   ),
-                  Text("Salut ${currentUser?.displayName}"),
                 ],
               ),
             ),
@@ -88,20 +89,135 @@ class ProfilePageState extends State<ProfilePage> {
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               )),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText:
-                                    "Nom d'utilisateur : ${currentUser?.displayName}"),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change UserName
+                                  },
+                                  child: Text("Nom d'utilisateur "),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change UserName
+                                  },
+                                  child: Text("${currentUser?.displayName}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText:
-                                    "Thème visuel : ${currentUser?.theme}"),
+                          SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("Thème visuel "),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${currentUser?.theme}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Langue : ${currentUser?.language}"),
-                          )
+                          SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("Langue"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${currentUser?.language}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -113,24 +229,179 @@ class ProfilePageState extends State<ProfilePage> {
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               )),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Nombre de parties jouées : ${0}"),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("Nombre de parties jouées"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${0}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText: "Nombre de parties gagnées : ${0}"),
+                          SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("Nombre de parties gagnées"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${0}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText:
-                                    "Moyenne de différence trouvé par partie : ${0}"),
+                          SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text(
+                                      "Moyenne de différence trouvé par partie"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${0}"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                hintText:
-                                    "Temps moyen par parties : ${0} secondes"),
-                          )
+                          SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("Temps moyen par parties"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(300, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white))),
+                              SizedBox(width: 10.0),
+                              TextButton(
+                                  onPressed: () async {
+                                    // function to change Theme
+                                  },
+                                  child: Text("${0} secondes"),
+                                  style: ButtonStyle(
+                                          alignment: Alignment.center,
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(200, 50)))
+                                      .copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColorLight),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black))),
+                            ],
+                          ),
                         ],
                       ),
                     ),

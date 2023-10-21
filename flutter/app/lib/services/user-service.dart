@@ -123,9 +123,9 @@ class UserService {
     return result.docs.first;
   }
 
-  Future<Reference?> getPhotoURL(String uid) async {
+  Future<String> getPhotoURL(String uid) async {
     Reference ref = storage.ref().child('avatars/$uid/avatar.jpg');
-    return ref;
+    return ref.getDownloadURL();
   }
 
   Future<void> updateUserAvatar(String uid, String photoURL) async {

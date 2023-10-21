@@ -1,15 +1,14 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 class Avatar extends StatelessWidget {
-  final Uint8List? photoURL;
+  final String? photoURL;
   final VoidCallback? onTap;
 
   const Avatar({this.photoURL, this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    print(photoURL ?? 'null');
     return GestureDetector(
       onTap: onTap,
       child: Center(
@@ -20,7 +19,7 @@ class Avatar extends StatelessWidget {
               )
             : CircleAvatar(
                 radius: 50.0,
-                backgroundImage: MemoryImage(photoURL!),
+                backgroundImage: NetworkImage(photoURL!),
               ),
       ),
     );
