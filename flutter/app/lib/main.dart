@@ -1,3 +1,9 @@
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/classic_game_service.dart';
+import 'package:app/domain/services/http_service.dart';
+import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/create_game.dart';
@@ -5,16 +11,10 @@ import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/sign_up_page.dart';
-import 'package:app/domain/services/classic_game_service.dart';
-import 'package:app/domain/services/carousel_service.dart';
-import 'package:app/domain/services/http_service.dart';
-import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/user_service.dart';
-import 'package:app/domain/themes/default-theme.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 void registerDependencies() {
   Get.put(UserService());
