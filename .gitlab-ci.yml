@@ -73,13 +73,9 @@ install:flutter:
         - cd flutter/app
         - flutter --version
         - flutter packages get
-        - |
-            if [[ "$CI_BRANCH" == "dev" ]]; then
-                flutter test
-                flutter build apk
-            else
-                flutter test
-            fi
+        - flutter test
+        # - flutter build apk
+
 lint:client:
     stage: lint
     needs: ['install:client']
