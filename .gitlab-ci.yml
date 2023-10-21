@@ -68,19 +68,18 @@ install:server:
         policy: pull-push
 
 install:flutter:
-    stage: install
+    image: ghcr.io/cirruslabs/flutter:3.13.8
     script:
-        - echo "Installing Git, Flutter, and unzip..."
-        - apt-get update
-        - apt-get install -y git
-        - apt-get install -y unzip
-        - git clone https://github.com/flutter/flutter.git /opt/flutter
-        - export PATH=$PATH:/opt/flutter/bin
-        - flutter doctor
         - cd flutter/app
+        - flutter --version
         - flutter packages get
-        - flutter test
-
+        - |
+            if [[ "$CI_BRANCH" == "dev" ]]; then
+                flutter test
+                flutter build apk
+            else
+                flutter test
+            fi
 lint:client:
     stage: lint
     needs: ['install:client']
