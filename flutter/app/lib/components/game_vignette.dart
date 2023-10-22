@@ -1,20 +1,17 @@
-import 'dart:ui' as ui;
+import 'package:app/domain/models/vignettes_model.dart';
 import 'package:flutter/material.dart';
 
 class _GameVignettePainter extends CustomPainter {
-  _GameVignettePainter(this.image);
-  final ui.Image image;
+  final VignettesModel images;
+  final List<Offset> pixelCoordinates;
+
+  _GameVignettePainter(this.images, this.pixelCoordinates);
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawImage(image, Offset.zero, Paint());
-    final paint = Paint()
-      ..color = Colors.purple
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    canvas.drawCircle(center, 50, paint);
+    canvas.drawImage(images.original, Offset.zero, Paint());
+    canvas.clipRect(Rect.fromPoints(Offset(50.0, 50.0), Offset(150.0, 150.0)));
+    canvas.drawImage(images.modified, Offset.zero, Paint());
   }
 
   @override
@@ -24,15 +21,19 @@ class _GameVignettePainter extends CustomPainter {
 }
 
 class GameVignette extends StatelessWidget {
-  GameVignette(this.image);
-  final ui.Image image;
+  final VignettesModel images;
+  final List<Offset> pixelCoordinates;
+
+  GameVignette(this.images, this.pixelCoordinates);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: image.width.toInt().toDouble(),
-      height: image.height.toInt().toDouble(),
-      child: CustomPaint(painter: _GameVignettePainter(image)),
+      width: images.original.width.toDouble(),
+      height: images.original.height.toDouble(),
+      child: CustomPaint(
+        painter: _GameVignettePainter(images, pixelCoordinates),
+      ),
     );
   }
 }

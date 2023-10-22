@@ -2,6 +2,7 @@ import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/http_service.dart';
+import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
@@ -22,6 +23,8 @@ void registerDependencies() {
   Get.put(HttpService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
+  Get.put(ImageDecoderService());
+  Get.put(ClassicGameService());
 }
 
 void main() async {
@@ -58,8 +61,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
+        '/classic': (context) => Classic(
+            bmpOriginalId: "c8bf53b7-2424-4e3f-8362-829410c27332",
+            bmpModifiedId: "37c82484-45b1-4e39-81a5-7d6d7242c127"),
         '/gameSelection': (context) => GameSelectionPage(),
-        '/classic': (context) => Classic(),
         '/create': (context) => CreateGamePage(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),

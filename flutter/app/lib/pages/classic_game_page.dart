@@ -1,13 +1,17 @@
+import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/components/game_vignette.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:ui' as ui;
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
   final RxDouble x1 = 0.0.obs;
   final RxDouble y1 = 0.0.obs;
+  final String bmpOriginalId;
+  final String bmpModifiedId;
+
+  Classic({required this.bmpOriginalId, required this.bmpModifiedId});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +21,9 @@ class Classic extends StatelessWidget {
       ),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          FutureBuilder<ui.Image>(
-            future: _classicGameService
-                .getImageFromId("af110df7-2bfe-443a-9c55-6e6392975b6d"),
+          FutureBuilder<VignettesModel>(
+            future: _classicGameService.getImagesFromIds(
+                bmpOriginalId, bmpModifiedId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final image = snapshot.data;
@@ -34,7 +38,15 @@ class Classic extends StatelessWidget {
                               x1.value = details.localPosition.dx;
                               y1.value = details.localPosition.dy;
                             },
-                            child: GameVignette(image),
+                            child: GameVignette(
+                              VignettesModel(
+                                  modified: image.modified,
+                                  original: image.original),
+                              [
+                                Offset(100, 200),
+                                Offset(300, 150),
+                              ],
+                            ),
                           ),
                           Obx(() => Text(
                               "Coordinate x : ${x1.value}, y : ${y1.value}"))
@@ -52,9 +64,3 @@ class Classic extends StatelessWidget {
     );
   }
 }
-
-// TODO: 
-// Commencer à jouer avec les pinceaux et les positions
-// Commencer à comprendre comment est-ce que les traits sont faits
-// Faire un service qui demande les deux images en même temps pour éviter qu'on
-// utilise deux fois Future.builder
