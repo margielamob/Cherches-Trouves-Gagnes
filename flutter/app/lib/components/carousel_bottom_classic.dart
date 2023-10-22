@@ -1,9 +1,9 @@
+import 'package:app/components/carousel_bottom.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:flutter/material.dart';
 
-class CarouselBottomClassic extends StatelessWidget {
-  final GameCardModel data;
-  const CarouselBottomClassic({required this.data});
+class CarouselBottomClassic extends CarouselBottom {
+  CarouselBottomClassic(GameCardModel data) : super(data: data);
 
   @override
   Widget build(BuildContext context) {

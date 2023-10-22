@@ -1,5 +1,6 @@
 import 'package:app/components/carousel_bottom_classic.dart';
 import 'package:app/components/carousel_bottom_delete.dart';
+import 'package:app/components/image_border.dart';
 import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_card_model.dart';
 
@@ -29,14 +30,10 @@ class CarouselCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: SizedBox(
+                  ImageBorder.forSizeBox(
+                    color: Colors.black,
+                    width: 1.0,
+                    sizeBoxChild: SizedBox(
                       width: 320,
                       height: 240,
                       child: Image.memory(
@@ -45,9 +42,17 @@ class CarouselCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Nombre de différences : ${data.nbDifferences}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                   isAdministrationPage
-                      ? CarouselBottomDelete(data: data)
-                      : CarouselBottomClassic(data: data),
+                      ? CarouselBottomDelete(data)
+                      : CarouselBottomClassic(data),
                 ],
               ),
             ),
