@@ -41,6 +41,9 @@
                     <mat-label>Mot de passe</mat-label>
                     <input matInput placeholder="*******" formControlName="password" required />
                     <mat-error *ngIf="password?.errors?.['required']"> Mot de passe requis </mat-error>
+                    <mat-error *ngIf="password?.errors?.['minlength'] && signUpForm.get('password')?.touched">
+                        <p>Le mot de passe doit contenir au moins 6 caractères</p>
+                    </mat-error>
                 </mat-form-field>
 
                 <button class="form-btn" mat-raised-button color="primary" type="submit">S'inscrire</button>

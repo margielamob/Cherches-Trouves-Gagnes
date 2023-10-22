@@ -16,7 +16,12 @@ export class AuthGuard implements CanActivate {
                 if (!user) {
                     this.router.navigate(['/login']);
                     return false;
+                    // if user is registred but not verified
+                } else if (!user.emailVerified) {
+                    this.router.navigate(['/verify-email']);
+                    return false;
                 }
+
                 return true;
             }),
         );

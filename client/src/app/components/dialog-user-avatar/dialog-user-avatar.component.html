@@ -1,0 +1,38 @@
+<div class="containerSpaceBetween">
+    <div class="header3">{{ title }}</div>
+    <div>
+        <div class="avatar-container">
+            <div *ngFor="let avatarImage of avatarImages">
+                <img class="avatar list" [src]="avatarImage.imagePath" [class.active]="avatarImage.active" (click)="toggleBorder(avatarImage)" />
+            </div>
+            <img
+                *ngIf="userAvatar.imagePath !== ''"
+                class="avatar profile"
+                [src]="userAvatar.imagePath"
+                alt="avatar"
+                [class.active]="userAvatar.active"
+                (click)="toggleBorder(userAvatar)"
+            />
+            <div class="user-avatar">
+                <img
+                    class="avatar profile"
+                    [src]="selectedFile ? selectedFileURL : defaultAvatar.imagePath"
+                    [class.active]="defaultAvatar.active"
+                    (click)="toggleBorder(defaultAvatar)"
+                    alt="avatar"
+                />
+                <img class="user-camera" [src]="userCamera" alt="avatar" (click)="editAvatar()" />
+                <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" />
+            </div>
+        </div>
+        <div class="selected-section">
+            <img class="selected-img" [src]="selectedFile && defaultAvatar.active ? selectedFileURL : selectedAvatar.imagePath" alt="avatar" />
+        </div>
+    </div>
+    <div class="error" *ngIf="fileTypeError">
+        <p><mat-icon>error</mat-icon> {{ fileTypeError }}</p>
+    </div>
+    <div class="submit-btn">
+        <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>
+    </div>
+</div>

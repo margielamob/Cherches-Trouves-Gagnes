@@ -1,5 +1,5 @@
 <mat-toolbar class="header-toolbar" color="primary">
-    <button class="home-button" mat-fab color="primary" routerLink="/" *ngIf="isHomeButtonEnabled">
+    <button class="home-button" mat-fab color="primary" routerLink="/home" *ngIf="isHomeButtonEnabled">
         <mat-icon>home</mat-icon>
     </button>
     {{ headerMessage }}
@@ -8,6 +8,6 @@
     <button (click)="signOut()" class="home-button" mat-fab color="primary">
         <mat-icon>vpn_key</mat-icon>
     </button>
-
+    <app-user-avatar></app-user-avatar>
     <app-exit-game-button *ngIf="isExitButtonEnabled"></app-exit-game-button>
 </mat-toolbar>

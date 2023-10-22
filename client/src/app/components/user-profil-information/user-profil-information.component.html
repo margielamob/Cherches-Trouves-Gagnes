@@ -1,0 +1,39 @@
+<div class="grid-container">
+    <div class="profil-container">
+        <div class="user-container">
+            <div class="profile">
+                <h1>Profile</h1>
+            </div>
+            <div class="info-container">
+                <div class="btn-container">
+                    <div class="user-avatar section">
+                        <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">
+                            Modifier l'avatar
+                        </button>
+                    </div>
+                    <div class="pseudonym-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Pseudonyme</button>
+                    </div>
+                    <div class="theme-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Thème visuel</button>
+                    </div>
+                    <div class="language-container">
+                        <button class="profil-btn" mat-raised-button color="primary">Langue</button>
+                    </div>
+                </div>
+                <div class="result-container">
+                    <app-user-avatar></app-user-avatar>
+                    <div class="pseudonym-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Pseudonyme</button>
+                    </div>
+                    <div class="theme-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Thème visuel</button>
+                    </div>
+                    <div class="language-container">
+                        <button class="profil-btn" mat-raised-button color="secondary">Langue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
