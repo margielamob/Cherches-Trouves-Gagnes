@@ -9,24 +9,13 @@ import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 
-void registerDependenciesUpdate() {
-  Get.put(AuthService());
+void registerDependencies() {
   Get.put(UserService());
+  Get.put(AuthService());
   Get.put(HttpClientService());
   Get.put(CardFeedService());
   Get.put(UserControllerService());
-}
-
-final locator = GetIt.instance;
-
-void registerDependencies() {
-  locator.registerSingleton<UserService>(UserService());
-  locator.registerSingleton<AuthService>(AuthService());
-  locator.registerSingleton<HttpClientService>(HttpClientService());
-  locator.registerSingleton<CardFeedService>(CardFeedService());
-  locator.registerSingleton<UserControllerService>(UserControllerService());
 }
 
 void main() async {
@@ -217,8 +206,8 @@ class SignUpPageState extends State<SignUpPage> {
   String? email = "";
   String? userName = "";
   String? password = "";
-  final AuthService authService = GetIt.I.get<AuthService>();
-  final UserService userService = GetIt.I.get<UserService>();
+  final UserService userService = Get.find();
+  final AuthService authService = Get.find();
 
   @override
   Widget build(BuildContext context) {

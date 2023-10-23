@@ -66,6 +66,8 @@ class UserService {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
 
+  UserData? get currentUser => null;
+
   Future<void> addUser(UserData user) async {
     CollectionReference users = db.collection('users');
     return users

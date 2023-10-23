@@ -1,12 +1,12 @@
-import 'package:app/main.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-service.dart';
+import 'package:get/get.dart';
 
 class UserControllerService {
+  UserService userService = Get.find();
+  AuthService authService = Get.find();
   UserData? currentUser;
   String? userAvatarUrl;
-  AuthService authService = locator.get<AuthService>();
-  UserService userService = locator.get<UserService>();
   Future<UserData?>? init;
   Future<String?>? avatarInit;
   Function(UserData?)? onUserDataReady;
@@ -21,6 +21,7 @@ class UserControllerService {
             onUserAvatarReady!(userAvatar);
           }
         });
+        print(currentUser!.displayName);
       }
     });
   }
@@ -31,6 +32,10 @@ class UserControllerService {
   }
 
   Future<String?> UserAvatar(UserData user) async {
+    if (user.photoURL!.startsWith('assets/')) {
+      userAvatarUrl = user.photoURL;
+      return userAvatarUrl;
+    }
     userAvatarUrl = await userService.getPhotoURL(currentUser!.uid);
     return userAvatarUrl;
   }

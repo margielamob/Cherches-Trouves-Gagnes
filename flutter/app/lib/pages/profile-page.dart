@@ -1,10 +1,10 @@
+import 'package:app/components/avatar-dialog.dart';
 import 'package:app/components/avatar/avatar.dart';
-import 'package:app/main.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-controller-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({
@@ -15,9 +15,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  final AuthService authService = GetIt.I.get<AuthService>();
-  final UserService userService = GetIt.I.get<UserService>();
-  UserData? currentUser = locator.get<UserControllerService>().currentUser;
+  final UserService userService = Get.find();
+  final AuthService authService = Get.find();
+  final UserControllerService userControllerService = Get.find();
+  UserData? currentUser;
   String? avatar;
 
   void setAvatar() async {
@@ -30,7 +31,6 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    final userControllerService = locator.get<UserControllerService>();
     userControllerService.onUserDataReady = (userData) {
       setState(() {
         currentUser = userData;
@@ -67,7 +67,12 @@ class ProfilePageState extends State<ProfilePage> {
                   Avatar(
                     photoURL: avatar,
                     onTap: () async {
-                      // selectAvatar();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AvatarDialog();
+                        },
+                      );
                     },
                   ),
                 ],
