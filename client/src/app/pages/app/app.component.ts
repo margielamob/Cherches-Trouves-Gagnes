@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Theme } from '@app/enums/theme';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
+import { LanguageService } from '@app/services/language-service/language-service.service';
 
 @Component({
     selector: 'app-root',
@@ -10,8 +11,10 @@ import { AuthenticationService } from '@app/services/authentication-service/auth
 export class AppComponent implements OnInit {
     favoriteTheme: string = Theme.ClassName;
 
-    constructor(private auth: AuthenticationService) {}
+    constructor(private auth: AuthenticationService, private langService: LanguageService) {}
     ngOnInit(): void {
+        this.langService.setDefaultLanguage();
+        console.log('Langue courante app :', this.langService.currunetLanguage);
         // listen to session changes
         this.auth.listenToSessionChanges();
 

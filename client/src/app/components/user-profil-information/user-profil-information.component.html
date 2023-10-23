@@ -2,23 +2,29 @@
     <div class="profil-container">
         <div class="user-container">
             <div class="profile">
-                <h1>Profile</h1>
+                <h1>{{ 'CONFIG.TITLE' | translate }}</h1>
             </div>
             <div class="info-container">
                 <div class="btn-container">
                     <div class="user-avatar section">
                         <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">
-                            Modifier l'avatar
+                            {{ 'CONFIG.AVATAR' | translate }}
                         </button>
                     </div>
                     <div class="pseudonym-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Pseudonyme</button>
+                        <button class="profil-btn" mat-raised-button color="primary">
+                            {{ 'CONFIG.USERNAME' | translate }}
+                        </button>
                     </div>
                     <div class="theme-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Thème visuel</button>
+                        <button class="profil-btn" mat-raised-button color="primary">
+                            {{ 'CONFIG.THEME' | translate }}
+                        </button>
                     </div>
                     <div class="language-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Langue</button>
+                        <button class="profil-btn" mat-raised-button color="primary">
+                            {{ 'CONFIG.LANGUAGE' | translate }}
+                        </button>
                     </div>
                 </div>
                 <div class="result-container">
@@ -29,11 +35,17 @@
                     <div class="theme-container">
                         <button class="profil-btn" mat-raised-button color="secondary">Thème visuel</button>
                     </div>
-                    <div class="language-container">
-                        <button class="profil-btn" mat-raised-button color="secondary">Langue</button>
+                    <div class="language-container" [formGroup]="settingsForm">
+                        <mat-form-field>
+                            <mat-label> Selectionne une langue </mat-label>
+                            <mat-select formControlName="language" (selectionChange)="onLanguageChange($event)">
+                                <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </div>
             </div>
+            <button mat-raised-button color="accent" (click)="saveChanges()">{{ 'CONFIG.SAVE' | translate }}</button>
         </div>
     </div>
 </div>

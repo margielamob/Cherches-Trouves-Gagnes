@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -133,5 +133,17 @@ export class UserService {
 
     getCurrentUser(): Observable<UserData | undefined> {
         return this.user$;
+    }
+
+    getUserLang(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.language !== undefined) {
+                    return of(user.language);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
     }
 }

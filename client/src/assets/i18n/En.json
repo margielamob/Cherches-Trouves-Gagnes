@@ -1,0 +1,18 @@
+{
+    "CONFIG": {
+        "TITLE": "Account settings",
+        "AVATAR": "Profil picture",
+        "USERNAME": "Username",
+        "THEME": "Theme",
+        "LANGUAGE": "Language",
+        "SAVE": "Save settings",
+        "DELETE": "Delete account"
+    },
+    "STATISTICS": {
+        "TITLE": "Account statistics",
+        "PLAYED_GAMES": "Played games",
+        "WON_GAMES": "Won games",
+        "AVERAGE_TIME": "Average time",
+        "AVERAGE_DiFFERENCE": "Average difference"
+    }
+}

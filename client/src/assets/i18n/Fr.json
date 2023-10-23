@@ -1,0 +1,19 @@
+{
+    "CONFIG": {
+        "TITLE": "Configuration du compte",
+        "AVATAR": "Avatar",
+        "USERNAME": "Nom d'utilisateur",
+        "THEME": "Thème",
+        "LANGUAGE": "Langue",
+        "SAVE": "Enregistrer la configuration",
+        "DELETE": "Supprimer le compte"
+    },
+
+    "STATISTICS": {
+        "TITLE": "Statistique du compte",
+        "PLAYED_GAMES": "Parties jouées",
+        "WON_GAMES": "Parties gagnées",
+        "AVERAGE_TIME": "Temps moyen",
+        "AVERAGE_DiFFERENCE": "moyenne des différences trouvé par partie"
+    }
+}
