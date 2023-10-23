@@ -14,5 +14,14 @@
         "WON_GAMES": "Won games",
         "AVERAGE_TIME": "Average time",
         "AVERAGE_DiFFERENCE": "Average difference"
+    },
+
+    "MAINPAGE": {
+        "TITLE": "The difference game",
+        "TEAM": "Team 106 :",
+        "CLASSIC": "Classic",
+        "LIMITED_TIME": "Limited Time",
+        "ADMINISTRATION": "Administration",
+        "SETTINGS": "Settings"
     }
 }

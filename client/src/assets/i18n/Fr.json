@@ -15,5 +15,14 @@
         "WON_GAMES": "Parties gagnées",
         "AVERAGE_TIME": "Temps moyen",
         "AVERAGE_DiFFERENCE": "moyenne des différences trouvé par partie"
+    },
+
+    "MAINPAGE": {
+        "TITLE": "Le jeux de différences",
+        "TEAM": "L'équipe 106 :",
+        "CLASSIC": "Classique",
+        "LIMITED_TIME": "Temps limité",
+        "ADMINISTRATION": "Administration",
+        "SETTINGS": "Paramètres"
     }
 }
