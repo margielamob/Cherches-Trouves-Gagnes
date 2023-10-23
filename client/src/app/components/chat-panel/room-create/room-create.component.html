@@ -4,12 +4,10 @@
     </mat-expansion-panel-header>
 
     <mat-form-field appearance="outline" class="input-area">
-        <input matInput placeholder="Room Name" (keydown.enter)="createRoom()" maxlength="200" [(ngModel)]="newRoom" />
+        <input matInput placeholder="Room Name" (keydown.enter)="createRoom()" [(ngModel)]="newRoom" [formControl]="formControl" />
         <button mat-icon-button matSuffix (click)="createRoom()">
             <mat-icon>send</mat-icon>
         </button>
+        <mat-error *ngIf="formControl.hasError('roomError') || isInputEmpty || isRoomCreated"> {{ errorMessage }} </mat-error>
     </mat-form-field>
-
-    <mat-error *ngIf="this.isRoomCreated"> This room already exists </mat-error>
-    <mat-error *ngIf="isInputEmpty"> Email is <strong>required</strong> </mat-error>
 </mat-expansion-panel>

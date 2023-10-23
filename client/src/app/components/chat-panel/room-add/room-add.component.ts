@@ -14,7 +14,6 @@ export class RoomAddComponent implements OnInit {
     constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
     ngOnInit(): void {
-        console.log('room-add.component.ts: ngOnInit(): this.chatManager.allRoomsList.value: ', this.chatManager.allRoomsList.value);
         this.chatManager.allRoomsList.subscribe((rooms) => {
             this.unjoinedRooms = rooms.filter((room) => !this.chatManager.roomList.value.includes(room));
         });

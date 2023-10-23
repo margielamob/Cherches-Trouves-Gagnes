@@ -67,6 +67,8 @@ import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-er
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { ChatOverlayComponent } from './components/chat-panel/chat-overlay/chat-overlay.component';
+import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-button.component';
 
 /**
  * Main module that is used in main.ts.
@@ -133,6 +135,8 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserAvatarComponent,
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
+        ChatOverlayComponent,
+        ChatButtonComponent,
     ],
     imports: [
         AppMaterialModule,

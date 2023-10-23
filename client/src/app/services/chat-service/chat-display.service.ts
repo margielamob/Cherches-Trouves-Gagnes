@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ChatDisplayService {
     isRoomSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isSearchSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isChatVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     selectRoom() {
         this.isRoomSelected.next(true);
@@ -19,5 +20,8 @@ export class ChatDisplayService {
     }
     deselectSearch() {
         this.isSearchSelected.next(false);
+    }
+    toggleChat() {
+        this.isChatVisible.next(!this.isChatVisible.value);
     }
 }

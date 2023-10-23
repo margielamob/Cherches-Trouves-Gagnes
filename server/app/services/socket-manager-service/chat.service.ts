@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChatMessage } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
 import * as io from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
@@ -23,9 +25,10 @@ export class ChatSocketManager {
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         this.addRoomsToUser(socket, ['all', 'room1', 'room2']);
         this.initializeRooms(socket);
-        socket.on(SocketEvent.Message, (message: string, roomId: string) => {
-            console.log(message, roomId);
-            this.server.sio.to(roomId).emit(SocketEvent.Message, { message, roomId });
+
+        socket.on(SocketEvent.Message, (message: ChatMessage) => {
+            console.log(message);
+            this.server.sio.to(message.room).emit(SocketEvent.Message, message);
         });
 
         socket.on(SocketEvent.GetRooms, () => {

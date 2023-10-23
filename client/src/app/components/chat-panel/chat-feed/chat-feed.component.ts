@@ -3,6 +3,7 @@ import { ChatDisplayService } from '@app/services/chat-service/chat-display.serv
 // import { ChatMessage } from '@app/interfaces/chat-message';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { ChatMessage } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
 
 @Component({
@@ -12,7 +13,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class ChatFeedComponent implements AfterViewInit, OnInit {
     @ViewChild('scroll', { static: true }) private scroll: ElementRef;
-    messages: string[] = [];
+    messages: ChatMessage[] = [];
     currentMessage: string;
     newMessage = false;
     currentRoom: string;
@@ -58,5 +59,13 @@ export class ChatFeedComponent implements AfterViewInit, OnInit {
 
     goToList() {
         this.chatDisplay.deselectRoom();
+    }
+
+    isPersonalMessage(message: ChatMessage): boolean {
+        return this.chatManager.isOwnMessage(message);
+    }
+
+    isOpponentMessage(message: ChatMessage): boolean {
+        return this.chatManager.isOpponentMessage(message);
     }
 }

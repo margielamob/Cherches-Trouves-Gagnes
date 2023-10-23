@@ -1,33 +1,36 @@
-<mat-card class="main-wrapper">
-    <!-- <mat-card-header class="header">
-        <button mat-icon-button (click)="goToList()" class="back-button">
-            <mat-icon mat-card-avatar>arrow_back_ios</mat-icon>
-        </button>
-        <mat-card-title> {{ currentRoom }} </mat-card-title>
-    </mat-card-header> -->
+<div class="main-wrapper">
     <mat-toolbar class="toolbar">
-        <mat-toolbar-row>
-            <button mat-icon-button (click)="goToList()">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </button>
-            <span> {{ currentRoom }} </span>
-        </mat-toolbar-row>
+        <button mat-icon-button (click)="goToList()">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </button>
+        <span> {{ currentRoom }} </span>
     </mat-toolbar>
     <div class="chat-area" #scroll>
         <div *ngFor="let message of messages">
             <div class="message-wrapper">
-                <div>
-                    <div class="message-content">
-                        {{ message }}
+                <div
+                    [ngClass]="{
+                        'message-wrapper-opponent': isOpponentMessage(message),
+                        'message-wrapper-personal': isPersonalMessage(message)
+                    }"
+                >
+                    <div
+                        class="message-content"
+                        [ngClass]="{
+                            opponent: isOpponentMessage(message),
+                            personal: isPersonalMessage(message)
+                        }"
+                    >
+                        {{ message.message }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <mat-form-field appearance="outline" class="input-area">
+    <mat-form-field appearance="outline" class="input-area" style="margin-bottom: -1.25em">
         <input matInput placeholder="Entrez un message..." (keydown.enter)="sendMessage()" maxlength="200" [(ngModel)]="currentMessage" />
         <button mat-icon-button matSuffix (click)="sendMessage()">
             <mat-icon>send</mat-icon>
         </button>
     </mat-form-field>
-</mat-card>
+</div>
