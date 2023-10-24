@@ -1,6 +1,6 @@
 import 'package:app/components/game-card/admin-card-data.dart';
 import 'package:app/components/game-card/admin-card-widget.dart';
-import 'package:app/domain/services/card-feed-service.dart';
+import 'package:app/domain/services/card_feed_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vibration/vibration.dart';
