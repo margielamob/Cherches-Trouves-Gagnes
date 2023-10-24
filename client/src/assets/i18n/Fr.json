@@ -38,5 +38,9 @@
         "NO": "Non",
         "PLAYER_FOUND": "Joueur trouvé",
         "PLAY_AGAINST_PLAYER": "Voulez-vous jouer contre : <b>{{ opponentsName }}</b>"
+    },
+
+    "CHAT-BOX": {
+        "Write_MESSAGE": "Entrez un message..."
     }
 }
