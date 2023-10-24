@@ -42,5 +42,9 @@
 
     "CHAT-BOX": {
         "Write_MESSAGE": "Entrez un message..."
+    },
+
+    "CLUES-AREA": {
+        "CLUES": "Demander un Indice"
     }
 }

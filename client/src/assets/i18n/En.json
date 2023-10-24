@@ -40,5 +40,9 @@
 
     "CHAT-BOX": {
         "Write_MESSAGE": "Write un message..."
+    },
+
+    "CLUES-AREA": {
+        "CLUES": "Ask for a clue"
     }
 }
