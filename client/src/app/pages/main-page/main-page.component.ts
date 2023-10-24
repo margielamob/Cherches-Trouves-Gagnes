@@ -14,9 +14,9 @@ import { GameMode } from '@common/game-mode';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: "app-main-page",
-  templateUrl: "./main-page.component.html",
-  styleUrls: ["./main-page.component.scss"],
+    selector: 'app-main-page',
+    templateUrl: './main-page.component.html',
+    styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
@@ -37,9 +37,9 @@ export class MainPageComponent implements OnInit {
         this.user$ = this.userService.getCurrentUser();
     }
 
-  onClickPlayClassic(): void {
-    this.mainPageService.setGameMode(GameMode.Classic);
-  }
+    onClickPlayClassic(): void {
+        this.mainPageService.setGameMode(GameMode.Classic);
+    }
 
     onClickPlayLimited(): void {
         this.matDialog.open(LoadingScreenComponent, {
@@ -62,7 +62,7 @@ export class MainPageComponent implements OnInit {
         });
     }
 
-  openNameDialog(isMulti: boolean = false) {
-    this.matDialog.open(UserNameInputComponent, { data: { isMulti } });
-  }
+    openNameDialog(isMulti: boolean = false) {
+        this.matDialog.open(UserNameInputComponent, { data: { isMulti } });
+    }
 }
