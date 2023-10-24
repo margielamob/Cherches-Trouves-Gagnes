@@ -13,8 +13,12 @@ import { UserService } from '@app/services/user-service/user.service';
 })
 export class DialogUserAvatarComponent implements OnInit {
     title!: string;
+    fileTypeError: string | null = null;
+    selectedFileURL: string | null = null;
+    selectedFile: File | null = null;
     userCamera = 'assets/camera.png';
     userAvatar: Avatar = { imagePath: '', active: true };
+    defaultAvatar: Avatar = { imagePath: 'assets/default-user-icon.jpg', active: false };
     selectedAvatar: Avatar = { imagePath: '', active: false };
     avatarImages: Avatar[] = [];
     user$ = this.userService.getCurrentUser();
@@ -49,16 +53,30 @@ export class DialogUserAvatarComponent implements OnInit {
             avatarImage.active = false;
         });
         this.userAvatar.active = false;
+        this.defaultAvatar.active = false;
     }
 
     setUserAvatar(user: UserData | undefined) {
+        this.selectedAvatar.imagePath = this.defaultAvatar.imagePath;
         if (user?.uid === undefined) return;
-        this.userService.getAvatarOfSignedUser(user?.uid).subscribe((url) => {
-            if (!url) {
-                this.userAvatar.imagePath = 'assets/default-user-icon.jpg';
-            } else this.userAvatar.imagePath = url;
-            this.selectedAvatar.imagePath = this.userAvatar.imagePath;
-        });
+        if (user?.photoURL === '') {
+            return;
+        }
+
+        if (user?.photoURL?.startsWith('avatars/')) {
+            this.userService.getAvatarOfSignedUser(user?.uid).subscribe({
+                next: (url) => {
+                    if (!url) {
+                        this.userAvatar.imagePath = '';
+                    } else this.userAvatar.imagePath = url;
+                    this.selectedAvatar.imagePath = this.userAvatar.imagePath;
+                },
+                error: () => {
+                    this.userAvatar.imagePath = '';
+                    this.selectedAvatar.imagePath = this.defaultAvatar.imagePath;
+                },
+            });
+        }
     }
 
     loadFileNames() {
@@ -69,12 +87,7 @@ export class DialogUserAvatarComponent implements OnInit {
     }
 
     editAvatar() {
-        const confirmUpload = window.confirm('Votre avatar sera remplacé par une photo prise avec votre caméra. Continuer ?');
-
-        // Check if the user clicked OK in the confirmation dialog
-        if (confirmUpload) {
-            this.fileInput.nativeElement.click();
-        }
+        this.fileInput.nativeElement.click();
     }
 
     onFileSelected(event: any) {
@@ -82,17 +95,29 @@ export class DialogUserAvatarComponent implements OnInit {
         if (file) {
             // Check if the selected file is a valid image (JPG or PNG)
             if (file.type === 'image/jpeg' || file.type === 'image/png') {
-                this.imageUploadService.uploadImage(file, `avatars/${this.data.currentUserId}/avatar.jpg`);
-                this.userService.updateUserAvatar(this.data.currentUserId, `avatars/${this.data.currentUserId}/avatar.jpg`);
-                this.toggleBorder(this.userAvatar);
+                this.fileTypeError = null;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (e.target) {
+                        this.selectedFileURL = e.target.result as string;
+                    }
+                };
+                reader.readAsDataURL(file);
+                this.selectedFile = file;
+                this.toggleBorder(this.defaultAvatar);
             } else {
-                // eslint-disable-next-line no-console
-                console.error('Invalid file type. Please select a JPG or PNG file.');
+                this.fileTypeError = 'Invalid file type. Please select a JPG or PNG file.';
             }
         }
     }
 
     onSubmit(): void {
+        if (this.selectedFile && this.defaultAvatar.active) {
+            this.imageUploadService.uploadImage(this.selectedFile, `avatars/${this.data.currentUserId}/avatar.jpg`).subscribe(() => {
+                this.userService.updateUserAvatar(this.data.currentUserId, `avatars/${this.data.currentUserId}/avatar.jpg`);
+                this.dialogRef.close();
+            });
+        }
         if (this.selectedAvatar.imagePath === this.userAvatar.imagePath) {
             this.userService.updateUserAvatar(this.data.currentUserId, `avatars/${this.data.currentUserId}/avatar.jpg`);
             this.dialogRef.close();

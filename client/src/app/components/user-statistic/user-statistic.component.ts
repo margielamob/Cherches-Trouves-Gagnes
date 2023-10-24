@@ -1,15 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-user-statistic',
-  templateUrl: './user-statistic.component.html',
-  styleUrls: ['./user-statistic.component.scss']
+    selector: 'app-user-statistic',
+    templateUrl: './user-statistic.component.html',
+    styleUrls: ['./user-statistic.component.scss'],
 })
-export class UserStatisticComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class UserStatisticComponent {}

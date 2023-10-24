@@ -30,6 +30,7 @@ import { CluesAreaComponent } from './components/clues-area/clues-area.component
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
+import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
 import { DialogUploadFormComponent } from './components/dialog-upload-form/dialog-upload-form.component';
@@ -49,15 +50,17 @@ import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/p
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
+import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
 import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
+import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
+import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 
 /**
  * Main module that is used in main.ts.
@@ -115,6 +118,9 @@ import { UserStatisticComponent } from './components/user-statistic/user-statist
         UserProfilInformationComponent,
         DialogUserAvatarComponent,
         UserStatisticComponent,
+        UserAvatarComponent,
+        EmailVerificationComponent,
+        DialogDeleteAccountComponent,
     ],
     imports: [
         AppMaterialModule,

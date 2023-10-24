@@ -5,8 +5,10 @@ import { Theme } from '@app/enums/theme';
 import { UserData } from '@app/interfaces/user';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { switchMap, take } from 'rxjs';
+import { from, switchMap, take, throwError } from 'rxjs';
 import { userNameValidator } from 'utils/custom-validators';
+
+const PASSWORD_MIN_LENGTH = 6;
 
 @Component({
     selector: 'app-sign-up-page',
@@ -25,7 +27,7 @@ export class SignUpPageComponent {
                 [userNameValidator(this.userService)],
             ),
             email: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl('', Validators.required),
+            password: new FormControl('', [Validators.required, Validators.minLength(PASSWORD_MIN_LENGTH)]),
         });
     }
 
@@ -58,8 +60,7 @@ export class SignUpPageComponent {
                     const user: UserData = {
                         displayName: username as string,
                         email: credential.user?.email as string,
-                        emailVerified: credential.user?.emailVerified,
-                        photoURL: ('avatars/' + credential.user?.uid + '/avatar.jpg') as string,
+                        photoURL: '',
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations
@@ -70,7 +71,15 @@ export class SignUpPageComponent {
                         gamePlayed: 0,
                         averageTime: '0:0',
                     };
-                    return this.userService.adduser(user);
+                    return this.userService.adduser(user).pipe(
+                        switchMap(() => {
+                            return from(
+                                // send email verification after refister the user
+                                credential.user?.sendEmailVerification() ??
+                                    throwError(() => new Error("Impossible d'envoyer le courriel de vérification.")),
+                            );
+                        }),
+                    );
                 }),
             )
             .pipe(take(1))

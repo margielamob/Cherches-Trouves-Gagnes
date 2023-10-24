@@ -4,6 +4,7 @@ import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.com
 import { AuthGuard } from '@app/guards/auth.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
+import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameSelectionPageComponent } from '@app/pages/game-selection-page/game-selection-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
@@ -26,6 +27,8 @@ const routes: Routes = [
     { path: 'waiting', component: WaitingRoomComponent, canActivate: [AuthGuard] },
     { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
     { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
+    { path: 'verify-email', component: EmailVerificationComponent },
+
     { path: '**', redirectTo: '/home' },
 ];
 
