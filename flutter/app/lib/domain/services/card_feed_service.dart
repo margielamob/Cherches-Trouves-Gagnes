@@ -6,7 +6,7 @@ class CardFeedService {
   int _currentPage = 0;
   bool _isFetchingCards = false;
   List<AdminCardData> _currentCards = [];
-  final HttpClientService _httpClientService = Get.find();
+  final HttpService _httpClientService = Get.find();
 
   Future<void> fetchCards() async {
     _isFetchingCards = true;

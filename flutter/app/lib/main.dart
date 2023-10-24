@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 void registerDependencies() {
   Get.put(UserService());
   Get.put(AuthService());
-  Get.put(HttpClientService());
+  Get.put(HttpService());
   Get.put(CardFeedService());
 }
 
