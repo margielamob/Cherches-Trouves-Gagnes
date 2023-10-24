@@ -1,7 +1,7 @@
-import 'package:app/components/avatar-dialog.dart';
+import 'package:app/components/avatar/avatar-dialog.dart';
 import 'package:app/components/avatar/avatar.dart';
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/user-service.dart';
+import 'package:app/domain/services/auth-service.dart';
+import 'package:app/domain/services/user-service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

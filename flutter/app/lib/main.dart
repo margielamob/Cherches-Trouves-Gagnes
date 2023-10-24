@@ -1,12 +1,11 @@
 import 'package:app/components/camera.dart';
+import 'package:app/domain/services/auth-service.dart';
+import 'package:app/domain/services/card-feed-service.dart';
+import 'package:app/domain/services/http-client-service.dart';
+import 'package:app/domain/services/user-service.dart';
+import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin-page.dart';
 import 'package:app/pages/profile-page.dart';
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/card-feed-service.dart';
-import 'package:app/services/http-client-service.dart';
-import 'package:app/services/user-controller-service.dart';
-import 'package:app/services/user-service.dart';
-import 'package:app/themes/default-theme.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ void registerDependencies() {
   Get.put(AuthService());
   Get.put(HttpClientService());
   Get.put(CardFeedService());
-  Get.put(UserControllerService());
 }
 
 late List<CameraDescription> cameras;

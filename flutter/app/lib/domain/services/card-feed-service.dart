@@ -1,5 +1,5 @@
 import 'package:app/components/game-card/admin-card-data.dart';
-import 'package:app/services/http-client-service.dart';
+import 'package:app/domain/services/http-client-service.dart';
 import 'package:get/get.dart';
 
 class CardFeedService {
