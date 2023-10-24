@@ -1,4 +1,3 @@
-import 'package:app/components/avatar-dialog.dart';
 import 'package:app/components/avatar/avatar.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-service.dart';
@@ -21,7 +20,17 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<void> initUser() async {
     currentUser = await authService.getCurrentUser();
-    avatar = await userService.getPhotoURL(currentUser!.uid);
+    if (currentUser != null) {
+      if (currentUser!.photoURL == '') {
+        avatar = 'assets/default-user-icon.jpg';
+        return;
+      }
+      if (currentUser!.photoURL!.startsWith('assets/')) {
+        avatar = currentUser!.photoURL;
+      } else {
+        avatar = await userService.getPhotoURL(currentUser!.uid);
+      }
+    }
   }
 
   void setAvatar() async {
@@ -72,16 +81,87 @@ class ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Avatar(
-                            photoURL: avatar,
-                            onTap: () async {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AvatarDialog();
-                                },
-                              );
-                            },
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Avatar(
+                              photoURL: avatar,
+                              onTap: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => Dialog(
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              const Text(
+                                                'Choissisez votre avatar',
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Avatar(
+                                                    photoURL:
+                                                        'assets/default-user-icon.jpg',
+                                                    onTap: () async {},
+                                                  ),
+                                                  SizedBox(width: 10.0),
+                                                  Avatar(
+                                                    photoURL:
+                                                        'assets/avatar-predefini/avatar2.png',
+                                                    onTap: () async {},
+                                                  ),
+                                                  SizedBox(width: 10.0),
+                                                  Avatar(
+                                                    photoURL:
+                                                        'assets/avatar-predefini/avatar3.png',
+                                                    onTap: () async {},
+                                                  ),
+                                                  SizedBox(width: 10.0),
+                                                  Avatar(
+                                                    photoURL:
+                                                        'assets/camera.png',
+                                                    onTap: () async {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          '/TakePictureScreen');
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 20.0),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                      "Sauvegarder votre avatar"),
+                                                  style: ButtonStyle(
+                                                          alignment:
+                                                              Alignment.center)
+                                                      .copyWith(
+                                                          backgroundColor:
+                                                              MaterialStateProperty.all<
+                                                                  Color>(Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
+                                                          foregroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(
+                                                                      Colors.white))),
+                                            ],
+                                          ))),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),

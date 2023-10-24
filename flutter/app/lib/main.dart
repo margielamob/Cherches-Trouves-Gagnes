@@ -1,3 +1,4 @@
+import 'package:app/components/camera.dart';
 import 'package:app/pages/admin-page.dart';
 import 'package:app/pages/profile-page.dart';
 import 'package:app/services/auth-service.dart';
@@ -6,6 +7,7 @@ import 'package:app/services/http-client-service.dart';
 import 'package:app/services/user-controller-service.dart';
 import 'package:app/services/user-service.dart';
 import 'package:app/themes/default-theme.dart';
+import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +20,8 @@ void registerDependencies() {
   Get.put(UserControllerService());
 }
 
+late List<CameraDescription> cameras;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -29,12 +33,14 @@ void main() async {
     storageBucket: 'log3900-103-f3850.appspot.com',
   ));
   registerDependencies();
+  cameras = await availableCameras();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final firstCamera = cameras.first;
     return MaterialApp(
       theme: appTheme,
       initialRoute: '/',
@@ -48,6 +54,8 @@ class MyApp extends StatelessWidget {
         '/signupPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
+        '/TakePictureScreen': (context) =>
+            TakePictureScreen(camera: firstCamera),
       },
     );
   }
@@ -96,7 +104,7 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/adminPage');
+                        Navigator.pushNamed(context, '/pageB');
                       },
                       child: Text('Go to admin'),
                     ),
