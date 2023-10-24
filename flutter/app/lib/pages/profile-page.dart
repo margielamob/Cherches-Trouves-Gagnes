@@ -1,3 +1,4 @@
+import 'package:app/components/avatar-dialog.dart';
 import 'package:app/components/avatar/avatar.dart';
 import 'package:app/services/auth-service.dart';
 import 'package:app/services/user-service.dart';
@@ -31,13 +32,6 @@ class ProfilePageState extends State<ProfilePage> {
         avatar = await userService.getPhotoURL(currentUser!.uid);
       }
     }
-  }
-
-  void setAvatar() async {
-    // String img = await userService.getPhotoURL(currentUser!.uid);
-    // setState(() {
-    //   avatar = img;
-    // });
   }
 
   @override
@@ -88,77 +82,9 @@ class ProfilePageState extends State<ProfilePage> {
                               onTap: () async {
                                 showDialog(
                                   context: context,
-                                  builder: (BuildContext context) => Dialog(
-                                      child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              const Text(
-                                                'Choissisez votre avatar',
-                                                style: TextStyle(
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 15),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Avatar(
-                                                    photoURL:
-                                                        'assets/default-user-icon.jpg',
-                                                    onTap: () async {},
-                                                  ),
-                                                  SizedBox(width: 10.0),
-                                                  Avatar(
-                                                    photoURL:
-                                                        'assets/avatar-predefini/avatar2.png',
-                                                    onTap: () async {},
-                                                  ),
-                                                  SizedBox(width: 10.0),
-                                                  Avatar(
-                                                    photoURL:
-                                                        'assets/avatar-predefini/avatar3.png',
-                                                    onTap: () async {},
-                                                  ),
-                                                  SizedBox(width: 10.0),
-                                                  Avatar(
-                                                    photoURL:
-                                                        'assets/camera.png',
-                                                    onTap: () async {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          '/TakePictureScreen');
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 20.0),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                      "Sauvegarder votre avatar"),
-                                                  style: ButtonStyle(
-                                                          alignment:
-                                                              Alignment.center)
-                                                      .copyWith(
-                                                          backgroundColor:
-                                                              MaterialStateProperty.all<
-                                                                  Color>(Theme.of(
-                                                                      context)
-                                                                  .primaryColor),
-                                                          foregroundColor:
-                                                              MaterialStateProperty
-                                                                  .all<Color>(
-                                                                      Colors.white))),
-                                            ],
-                                          ))),
+                                  builder: (BuildContext context) {
+                                    return AvatarDialog();
+                                  },
                                 );
                               },
                             ),
@@ -300,8 +226,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child:
-                                              Text("${currentUser?.language}"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -314,7 +238,9 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
+                                                          Color>(Colors.black)),
+                                          child:
+                                              Text("${currentUser?.language}")),
                                     ],
                                   ),
                                 ],
@@ -336,8 +262,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child:
-                                              Text("Nombre de parties jouées"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -350,7 +274,54 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColor),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.white))),
+                                                          Color>(Colors.white)),
+                                          child:
+                                              Text("Nombre de parties jouées")),
+                                      SizedBox(width: 10.0),
+                                      TextButton(
+                                          onPressed: () async {
+                                            // function to change Theme
+                                          },
+                                          style: ButtonStyle(
+                                                  alignment: Alignment.center,
+                                                  minimumSize:
+                                                      MaterialStateProperty.all<
+                                                          Size>(Size(200, 50)))
+                                              .copyWith(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          Theme.of(context)
+                                                              .primaryColorLight),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.black)),
+                                          child: Text("${0}")),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      TextButton(
+                                          onPressed: () async {
+                                            // function to change Theme
+                                          },
+                                          style: ButtonStyle(
+                                                  alignment: Alignment.center,
+                                                  minimumSize:
+                                                      MaterialStateProperty.all<
+                                                          Size>(Size(300, 50)))
+                                              .copyWith(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<Color>(
+                                                          Theme.of(context)
+                                                              .primaryColor),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.white)),
+                                          child:
+                                              Text("Nombre de parties gagnées")),
                                       SizedBox(width: 10.0),
                                       TextButton(
                                           onPressed: () async {
@@ -381,8 +352,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child:
-                                              Text("Nombre de parties gagnées"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -395,13 +364,14 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColor),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.white))),
+                                                          Color>(Colors.white)),
+                                          child:
+                                              Text("Moyenne de différence trouvé par partie")),
                                       SizedBox(width: 10.0),
                                       TextButton(
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child: Text("${0}"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -415,7 +385,8 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
+                                                          Color>(Colors.black)),
+                                          child: Text("${0}")),
                                     ],
                                   ),
                                   SizedBox(height: 5.0),
@@ -426,8 +397,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child: Text(
-                                              "Moyenne de différence trouvé par partie"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -440,58 +409,14 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColor),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.white))),
-                                      SizedBox(width: 10.0),
-                                      TextButton(
-                                          onPressed: () async {
-                                            // function to change Theme
-                                          },
-                                          child: Text("${0}"),
-                                          style: ButtonStyle(
-                                                  alignment: Alignment.center,
-                                                  minimumSize:
-                                                      MaterialStateProperty.all<
-                                                          Size>(Size(200, 50)))
-                                              .copyWith(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Theme.of(context)
-                                                              .primaryColorLight),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5.0),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      TextButton(
-                                          onPressed: () async {
-                                            // function to change Theme
-                                          },
+                                                          Color>(Colors.white)),
                                           child:
-                                              Text("Temps moyen par parties"),
-                                          style: ButtonStyle(
-                                                  alignment: Alignment.center,
-                                                  minimumSize:
-                                                      MaterialStateProperty.all<
-                                                          Size>(Size(300, 50)))
-                                              .copyWith(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<Color>(
-                                                          Theme.of(context)
-                                                              .primaryColor),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Colors.white))),
+                                              Text("Temps moyen par parties")),
                                       SizedBox(width: 10.0),
                                       TextButton(
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child: Text("${0} secondes"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -505,7 +430,8 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
+                                                          Color>(Colors.black)),
+                                          child: Text("${0} secondes")),
                                     ],
                                   ),
                                 ],
@@ -515,7 +441,6 @@ class ProfilePageState extends State<ProfilePage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text("Sauvegarder le profile"),
                                 style: ButtonStyle(alignment: Alignment.center)
                                     .copyWith(
                                         backgroundColor:
@@ -523,7 +448,8 @@ class ProfilePageState extends State<ProfilePage> {
                                                 Theme.of(context).primaryColor),
                                         foregroundColor:
                                             MaterialStateProperty.all<Color>(
-                                                Colors.white)))
+                                                Colors.white)),
+                                child: Text("Sauvegarder le profile"))
                           ],
                         ),
                       ))

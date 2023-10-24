@@ -8,7 +8,6 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(photoURL ?? 'null');
     return GestureDetector(
       onTap: onTap,
       child: Center(
