@@ -46,5 +46,12 @@
 
     "CLUES-AREA": {
         "CLUES": "Demander un Indice"
+    },
+
+    "COMMON_TOOL_BOX": {
+        "DELETE": "Supprimer",
+        "DRAW": "Dessiner",
+        "ADD_BACKGROUND": "Ajouter tous les arrière-plans",
+        "RESET_BACKGROUND": "Réinitialiser tous les arrière-plans"
     }
 }

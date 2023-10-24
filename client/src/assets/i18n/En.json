@@ -44,5 +44,12 @@
 
     "CLUES-AREA": {
         "CLUES": "Ask for a clue"
+    },
+
+    "COMMON_TOOL_BOX": {
+        "DELETE": "Delete",
+        "DRAW": "Draw",
+        "ADD_BACKGROUND": "Add background",
+        "RESET_BACKGROUND": " Reset background"
     }
 }
