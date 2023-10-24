@@ -29,5 +29,12 @@
         "DELETE": "Delete a game",
         "RESET": "Reset time record",
         "UPDATE": "Update game settings"
+    },
+
+    "APPROUVAL_DIALOG": {
+        "YES": "Yes",
+        "NO": "No",
+        "PLAYER_FOUND": "Player found",
+        "PLAY_AGAINST_PLAYER": "Would you like to plays against : <b>{{ opponentsName }}</b>"
     }
 }

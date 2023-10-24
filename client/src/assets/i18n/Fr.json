@@ -31,5 +31,12 @@
         "DELETE": "Supprimer un jeu",
         "RESET": "Réinitialiser les temps record",
         "UPDATE": "Modifier les paramètres d'un jeu"
+    },
+
+    "APPROUVAL_DIALOG": {
+        "YES": "Oui",
+        "NO": "Non",
+        "PLAYER_FOUND": "Joueur trouvé",
+        "PLAY_AGAINST_PLAYER": "Voulez-vous jouer contre : <b>{{ opponentsName }}</b>"
     }
 }
