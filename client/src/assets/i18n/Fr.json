@@ -24,5 +24,12 @@
         "LIMITED_TIME": "Temps limité",
         "ADMINISTRATION": "Administration",
         "SETTINGS": "Paramètres"
+    },
+
+    "ADMIN_COMMANDS": {
+        "CREATE": "Créer un nouveau jeu",
+        "DELETE": "Supprimer un jeu",
+        "RESET": "Réinitialiser les temps record",
+        "UPDATE": "Modifier les paramètres d'un jeu"
     }
 }

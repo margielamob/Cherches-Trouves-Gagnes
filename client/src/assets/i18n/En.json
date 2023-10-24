@@ -23,5 +23,11 @@
         "LIMITED_TIME": "Limited Time",
         "ADMINISTRATION": "Administration",
         "SETTINGS": "Settings"
+    },
+    "ADMIN_COMMANDS": {
+        "CREATE": "Create a new game",
+        "DELETE": "Delete a game",
+        "RESET": "Reset time record",
+        "UPDATE": "Update game settings"
     }
 }
