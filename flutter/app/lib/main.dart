@@ -1,4 +1,3 @@
-import 'package:app/components/take_picture_screen.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
@@ -7,6 +6,7 @@ import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
+import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/create_game.dart';
 import 'package:app/pages/game_selection_page.dart';
