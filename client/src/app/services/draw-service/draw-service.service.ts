@@ -38,6 +38,8 @@ export class DrawService {
     coordDraw: Vec2 = DEFAULT_POSITION_MOUSE_CLIENT;
     isClick: boolean = DEFAULT_DRAW_CLIENT;
 
+    isRectangleToolSelected: boolean = false;
+
     constructor(private canvasStateService: CanvasStateService, private pencil: PencilService) {
         this.$drawingImage = new Map();
     }
@@ -329,4 +331,6 @@ export class DrawService {
             }
         }
     }
+
+    private getRectangleCoords() {}
 }
