@@ -14,20 +14,58 @@ class AuthService {
         password: password,
       );
       return userCredential;
-    } on FirebaseAuthException {
-      rethrow;
+    } on FirebaseAuthException catch (error) {
+      String errorMessage;
+
+      switch (error.code) {
+        case 'user-not-found':
+          errorMessage = 'Aucun utilisateur trouvé avec cet e-mail.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Mot de passe incorrect.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'le format de l\'email est invalide';
+          break;
+        default:
+          errorMessage =
+              'Une erreur inconnue s’est produite. Veuillez réessayer plus tard.';
+      }
+      throw errorMessage;
     }
   }
 
   Future<UserCredential> signUp(
       String email, String password, String displayName) async {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    return userCredential;
+      return userCredential;
+    } on FirebaseAuthException catch (error) {
+      String errorMessage;
+      switch (error.code) {
+        case 'email-already-in-use':
+          errorMessage = 'Cet e-mail est déjà utilisé par un autre compte.';
+          break;
+
+        case 'invalid-email':
+          errorMessage = 'Adresse e-mail invalide.';
+          break;
+        case 'weak-password':
+          errorMessage =
+              'Le mot de passe est trop faible. Veuillez choisir un mot de 6 caractères ou plus.';
+          break;
+        default:
+          errorMessage =
+              'Une erreur inconnue s’est produite. Veuillez réessayer plus tard.';
+      }
+
+      throw errorMessage;
+    }
   }
 
   Future<UserCredential> signInWithUserName(
