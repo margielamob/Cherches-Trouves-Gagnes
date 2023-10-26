@@ -1,3 +1,4 @@
+import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,8 @@ class AuthService {
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -31,6 +33,7 @@ class AuthService {
           errorMessage =
               'Une erreur inconnue s’est produite. Veuillez réessayer plus tard.';
       }
+
       throw errorMessage;
     }
   }
@@ -47,6 +50,9 @@ class AuthService {
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;
+
+      // cast the error to a firebase auth exception
+
       switch (error.code) {
         case 'email-already-in-use':
           errorMessage = 'Cet e-mail est déjà utilisé par un autre compte.';
@@ -74,14 +80,13 @@ class AuthService {
       try {
         return await signIn(credential, password);
       } catch (error) {
-        print(error);
         rethrow;
       }
     } else {
       try {
         final userSnapshot = await userService.getUserByDisplayName(credential);
         if (userSnapshot == null) {
-          throw Exception('nom introuvable');
+          throw ('Nom d\'utilisateur introuvable');
         }
 
         Map<String, dynamic>? userData =
@@ -90,10 +95,9 @@ class AuthService {
         if (userEmail != null) {
           return await signIn(userEmail, password);
         } else {
-          throw Exception('adress-email introuvable');
+          throw ('Nom d\'utilisateur introuvable');
         }
       } catch (error) {
-        print(error);
         rethrow;
       }
     }

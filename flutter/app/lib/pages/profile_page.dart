@@ -1,5 +1,6 @@
 import 'package:app/components/avatar/avatar.dart';
 import 'package:app/components/avatar/avatar_dialog.dart';
+import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:flutter/material.dart';
