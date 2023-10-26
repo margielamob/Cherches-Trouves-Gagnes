@@ -1,7 +1,7 @@
+import 'package:app/components/carousel.dart';
 import 'package:app/components/carousel_modal.dart';
 import 'package:app/domain/services/app_bar_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
-import 'package:app/components/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
