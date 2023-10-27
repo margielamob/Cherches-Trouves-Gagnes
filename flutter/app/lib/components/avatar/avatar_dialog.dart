@@ -135,17 +135,18 @@ class AvatarDialogState extends State<AvatarDialog> {
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                    color: selectedAvatar ==
-                                            'assets/avatar-predefini/avatar3.png'
+                                    color: selectedAvatar == widget.imagePath
                                         ? Colors.blue
                                         : Colors.transparent,
                                     width: 3.0),
                                 borderRadius: BorderRadius.circular(50.0),
                               ),
-                              child: CircleAvatar(
-                                radius: 50.0,
-                                backgroundImage:
-                                    NetworkImage('${widget.imagePath}'),
+                              child: Avatar(
+                                photoURL: widget.imagePath,
+                                onTap: () async {
+                                  selectedAvatar = widget.imagePath;
+                                  setState(() {});
+                                },
                               ),
                             ),
                           ),
