@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { CommunicationService } from '@app/services/communication/communication.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { UserService } from '@app/services/user-service/user.service';
+import { GameId } from '@common/game-id';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
-import { SocketEvent } from '@common/socket-event';
-import { Subject } from 'rxjs';
-import { GameId } from '@common/game-id';
 import { GameTimeConstants } from '@common/game-time-constants';
-import { CommunicationService } from '@app/services/communication/communication.service';
-
+import { SocketEvent } from '@common/socket-event';
+import { UserAuth } from '@common/userAuth';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
+import { Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
 export class GameInformationHandlerService {
+    playersEX: UserAuth[] = [];
     players: { name: string; nbDifferences: number }[] = [];
     roomId: string;
+    player: UserAuth;
     $playerLeft: Subject<void> = new Subject();
     $differenceFound: Subject<string> = new Subject();
     $newGame: Subject<void> = new Subject();
@@ -28,6 +32,7 @@ export class GameInformationHandlerService {
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
         private readonly communicationService: CommunicationService,
+        private readonly userService: UserService,
     ) {}
 
     propertiesAreUndefined(): boolean {
@@ -43,13 +48,17 @@ export class GameInformationHandlerService {
             this.routerService.navigateTo('game');
         });
 
-        this.socket.on(SocketEvent.WaitPlayer, (roomId: string) => {
-            this.roomId = roomId;
+        this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            this.roomId = info.roomId;
             this.isMulti = true;
+            this.playersEX = info.players;
             this.routerService.navigateTo('waiting');
         });
     }
 
+    getPlayersEX() {
+        return this.playersEX;
+    }
     getConstants(): void {
         this.communicationService.getGameTimeConstants().subscribe((gameTimeConstants) => {
             if (gameTimeConstants && gameTimeConstants.body) {
@@ -126,5 +135,18 @@ export class GameInformationHandlerService {
 
     isLimitedTime() {
         return this.gameMode === GameMode.LimitedTime;
+    }
+
+    waitingRoom() {
+        this.userService.getCurrentUser().subscribe((user) => {
+            if (user?.displayName) {
+                this.socket.send(SocketEvent.CreateGameMulti, {
+                    player: { displayName: user?.displayName, avatar: user?.photoURL },
+                    mode: this.gameMode,
+                    game: { card: this.getId(), isMulti: this.isMulti },
+                });
+                this.handleSocketEvent();
+            }
+        });
     }
 }

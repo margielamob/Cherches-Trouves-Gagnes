@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ApprovalDialogComponent } from '@app/components/approval-dialog/approval-dialog.component';
 import { RejectedDialogComponent } from '@app/components/rejected-dialog/rejected-dialog.component';
@@ -9,6 +9,8 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { RouterService } from '@app/services/router-service/router.service';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
+import { UserAuth } from '@common/userAuth';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
@@ -16,7 +18,7 @@ import { User } from '@common/user';
 })
 export class WaitingRoomComponent implements OnInit, OnDestroy {
     favoriteTheme: string = Theme.ClassName;
-
+    players: UserAuth[] = [];
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private exitButton: ExitButtonHandlerService,
@@ -29,6 +31,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.players = this.gameInformationHandlerService.playersEX;
         this.socketService.on(SocketEvent.RequestToJoin, (player: User) => {
             this.dialog.open(ApprovalDialogComponent, { disableClose: true, data: { opponentsName: player.name, opponentsRoomId: player.id } });
         });
@@ -42,8 +45,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
                 this.routerService.navigateTo('/');
             }
         });
+        this.socketService.on(SocketEvent.UpdatePlayers, (info: WaitingRoomInfo) => {
+            this.players.push(info.players[info.players.length - 1]);
+        });
 
         this.socketService.once(SocketEvent.JoinGame, (data: { roomId: string; playerName: string }) => {
+            console.log('join game');
             this.gameInformationHandlerService.setPlayerName(data.playerName);
 
             this.socketService.send(SocketEvent.JoinGame, { player: this.gameInformationHandlerService.getPlayer().name, room: data.roomId });
@@ -56,6 +63,11 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
                 });
             }
         });
+    }
+
+    play() {
+        console.log('play');
+        this.socketService.send(SocketEvent.Ready, this.gameInformationHandlerService.roomId);
     }
 
     ngOnDestroy() {

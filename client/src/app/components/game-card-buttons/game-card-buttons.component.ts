@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteDialogComponent } from '@app/components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { UserNameInputComponent } from '@app/components/user-name-input/user-name-input.component';
 import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
-import { UserNameInputComponent } from '@app/components/user-name-input/user-name-input.component';
-import { ConfirmDeleteDialogComponent } from '@app/components/confirm-delete-dialog/confirm-delete-dialog.component';
 
 @Component({
     selector: 'app-game-card-buttons',
@@ -38,9 +38,11 @@ export class GameCardButtonsComponent {
     }
 
     onClickCreateJoinGame(): void {
+        console.log('create game :' + this.gameCard.gameInformation);
         this.gameInfoHandlerService.setGameInformation(this.gameCard.gameInformation);
         this.gameInfoHandlerService.isMulti = true;
-        this.openNameDialog(true);
+        this.gameInfoHandlerService.waitingRoom();
+        // this.openNameDialog(true);
     }
 
     onClickRefreshGame(): void {
