@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:app/components/avatar/avatar_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +63,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
+                builder: (context) => AvatarDialog(
                   imagePath: image.path,
                 ),
               ),
@@ -88,7 +87,7 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
+      body: Image.network((imagePath)),
     );
   }
 }

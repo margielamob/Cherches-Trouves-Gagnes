@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AvatarDialog extends StatefulWidget {
-  AvatarDialog({Key? key, required}) : super(key: key);
+  final String? imagePath;
+  AvatarDialog({Key? key, this.imagePath}) : super(key: key);
   @override
   State<AvatarDialog> createState() => AvatarDialogState();
 }
@@ -127,6 +128,27 @@ class AvatarDialogState extends State<AvatarDialog> {
                         ),
                       ),
                     ),
+                    widget.imagePath == null
+                        ? SizedBox(width: 10.0)
+                        : MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: selectedAvatar ==
+                                            'assets/avatar-predefini/avatar3.png'
+                                        ? Colors.blue
+                                        : Colors.transparent,
+                                    width: 3.0),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              child: CircleAvatar(
+                                radius: 50.0,
+                                backgroundImage:
+                                    NetworkImage('${widget.imagePath}'),
+                              ),
+                            ),
+                          ),
                     SizedBox(width: 10.0),
                     MouseRegion(
                       cursor: SystemMouseCursors.click,
@@ -147,7 +169,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                         userService.updateUserAvatar(
                             currentUser!.uid, selectedAvatar!);
                       }
-                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/ProfilePage');
                     },
                     style: ButtonStyle(alignment: Alignment.center).copyWith(
                         backgroundColor: MaterialStateProperty.all<Color>(
