@@ -166,7 +166,10 @@ class AvatarDialogState extends State<AvatarDialog> {
                 TextButton(
                     onPressed: () {
                       if (selectedAvatar != null) {
-                        print(currentUser!.uid);
+                        if (selectedAvatar == widget.imagePath) {
+                          userService.uploadAvatar(
+                              currentUser!.uid, selectedAvatar!);
+                        }
                         userService.updateUserAvatar(
                             currentUser!.uid, selectedAvatar!);
                       }
