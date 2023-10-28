@@ -114,5 +114,9 @@
 
     "DIFFERENCE_AREA": {
         "NAME": "Nom du joueur : {{ name }}"
+    },
+
+    "EXIT_BTN": {
+        "LEAVE": "Quitter"
     }
 }
