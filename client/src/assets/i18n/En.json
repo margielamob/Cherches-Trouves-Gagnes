@@ -117,5 +117,13 @@
     },
     "GAME_CARD": {
         "BEST_SCORE": "Best score"
+    },
+
+    "GAME_CARD_BTN": {
+        "DELETE": "Delete game",
+        "RESET": "Reset record",
+        "PLAY": "Play",
+        "JOIN": "Join",
+        "CREATE": "Create"
     }
 }

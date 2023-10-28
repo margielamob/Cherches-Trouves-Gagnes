@@ -121,5 +121,13 @@
     },
     "GAME_CARD": {
         "BEST_SCORE": "Meilleur score"
+    },
+
+    "GAME_CARD_BTN": {
+        "DELETE": "Supprimer le jeu",
+        "RESET": "Réinitialiser les records",
+        "PLAY": "Jouer",
+        "JOIN": "Joindre",
+        "CREATE": "Créer le jeu"
     }
 }
