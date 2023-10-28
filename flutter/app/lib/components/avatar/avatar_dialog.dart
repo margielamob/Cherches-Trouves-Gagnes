@@ -2,11 +2,14 @@ import 'package:app/components/avatar/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/user_service.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AvatarDialog extends StatefulWidget {
-  AvatarDialog({Key? key, required}) : super(key: key);
+  final String? imagePath;
+  final XFile? imageFile;
+  AvatarDialog({Key? key, this.imagePath, this.imageFile}) : super(key: key);
   @override
   State<AvatarDialog> createState() => AvatarDialogState();
 }
@@ -17,6 +20,7 @@ class AvatarDialogState extends State<AvatarDialog> {
   UserData? currentUser;
   String? avatar;
   String? selectedAvatar;
+  bool isLoading = false;
 
   Future<void> initUser() async {
     currentUser = await authService.getCurrentUser();
@@ -127,6 +131,28 @@ class AvatarDialogState extends State<AvatarDialog> {
                         ),
                       ),
                     ),
+                    widget.imagePath == null
+                        ? SizedBox(width: 10.0)
+                        : MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: selectedAvatar == widget.imagePath
+                                        ? Colors.blue
+                                        : Colors.transparent,
+                                    width: 3.0),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              child: Avatar(
+                                photoURL: widget.imagePath,
+                                onTap: () async {
+                                  selectedAvatar = widget.imagePath;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ),
                     SizedBox(width: 10.0),
                     MouseRegion(
                       cursor: SystemMouseCursors.click,
@@ -140,21 +166,37 @@ class AvatarDialogState extends State<AvatarDialog> {
                   ],
                 ),
                 SizedBox(height: 20.0),
-                TextButton(
-                    onPressed: () {
-                      if (selectedAvatar != null) {
-                        print(currentUser!.uid);
-                        userService.updateUserAvatar(
-                            currentUser!.uid, selectedAvatar!);
-                      }
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(alignment: Alignment.center).copyWith(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).primaryColor),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                    child: Text("Sauvegarder votre choix")),
+                isLoading
+                    ? CircularProgressIndicator()
+                    : TextButton(
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          if (selectedAvatar != null) {
+                            if (selectedAvatar == widget.imagePath) {
+                              await userService.uploadAvatar(
+                                  currentUser!.uid, widget.imageFile!);
+                              await userService.updateUserAvatar(
+                                  currentUser!.uid,
+                                  'avatars/${currentUser?.uid}/avatar.jpg');
+                            } else {
+                              await userService.updateUserAvatar(
+                                  currentUser!.uid, selectedAvatar!);
+                            }
+                          }
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushNamed(context, '/ProfilePage');
+                        },
+                        style: ButtonStyle(alignment: Alignment.center)
+                            .copyWith(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Theme.of(context).primaryColor),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white)),
+                        child: Text("Sauvegarder votre choix")),
               ],
             )));
   }
