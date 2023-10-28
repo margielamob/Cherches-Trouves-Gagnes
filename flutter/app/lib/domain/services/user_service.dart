@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:app/domain/models/user_data.dart';
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-// interface user
+import 'package:image_picker/image_picker.dart';
 
 class UserService {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -75,5 +78,13 @@ class UserService {
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({'photoURL': photoURL}).catchError(
         (error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> uploadAvatar(String uid, XFile imagePathXFile) async {
+    Uint8List imageBytes = await imagePathXFile.readAsBytes();
+    Reference ref = storage.ref().child('avatars/$uid/avatar.jpg');
+    UploadTask uploadTask = ref.putData(imageBytes);
+    await uploadTask.whenComplete(() => null);
+    updateUserAvatar(uid, 'avatars/$uid/avatar.jpg');
   }
 }

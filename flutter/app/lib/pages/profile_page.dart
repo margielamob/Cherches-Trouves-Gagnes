@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({
-    Key? key,
+    Key? key
   }) : super(key: key);
   @override
   State<ProfilePage> createState() => ProfilePageState();
@@ -137,8 +137,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change UserName
                                           },
-                                          child: Text(
-                                              "${currentUser?.displayName}"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -151,7 +149,9 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
+                                                          Color>(Colors.black)),
+                                          child: Text(
+                                              "${currentUser?.displayName}")),
                                     ],
                                   ),
                                   SizedBox(height: 5.0),
@@ -182,7 +182,6 @@ class ProfilePageState extends State<ProfilePage> {
                                           onPressed: () async {
                                             // function to change Theme
                                           },
-                                          child: Text("${currentUser?.theme}"),
                                           style: ButtonStyle(
                                                   alignment: Alignment.center,
                                                   minimumSize:
@@ -196,7 +195,10 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black))),
+                                                          Color>(Colors.black)
+                                                    ),
+                                          child: Text("${currentUser?.theme}")
+                                        ),
                                     ],
                                   ),
                                   SizedBox(height: 5.0),
