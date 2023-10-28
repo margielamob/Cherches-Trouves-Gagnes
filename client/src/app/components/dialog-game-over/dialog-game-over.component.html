@@ -1,26 +1,21 @@
 <div [ngClass]="theme">
     <div *ngIf="!this.isClassic">
-        <h1 mat-dialog-title>Partie terminée !</h1>
-        <div mat-dialog-content>
-            Félicitations, vous avez trouvé <b>{{ nbPoints }}</b> différence(s) !
-        </div>
+        w
+        <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>
+        <div mat-dialog-content [innerHTML]="'GAME_OVER_DIALOG.NOT_CLASSIC.MESSAGE' | translate: { nbPoints: nbPoints }"></div>
     </div>
     <div *ngIf="this.isWin && this.isClassic">
-        <h1 mat-dialog-title>Partie terminée !</h1>
-        <div mat-dialog-content>Félicitations, tu as <b>gagné</b>.</div>
-        <div *ngIf="isClassic" mat-dialog-content>Tu es le vainqueur !</div>
+        <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>
+        <div mat-dialog-content>{{ 'GAME_OVER_DIALOG.CLASSIC.WINNER' | translate }}</div>
+        <div *ngIf="isClassic" mat-dialog-content>{{ 'GAME_OVER_DIALOG.WON' | translate }}</div>
     </div>
     <div *ngIf="!this.isWin && this.isClassic">
-        <h1 mat-dialog-title>Partie terminée !</h1>
-        <div mat-dialog-content>Bonne partie, mais tu as <b>perdu </b>.</div>
-        <div *ngIf="isClassic" mat-dialog-content>Le vainqueur est : {{ winner }}.</div>
+        <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>
+        <div mat-dialog-content>{{ 'GAME_OVER_DIALOG.LOST' | translate }}</div>
+        <div [innerHTML]="'GAME_OVER_DIALOG.CLASSIC.LOOSER' | translate: { winner: winner }" *ngIf="isClassic" mat-dialog-content></div>
     </div>
     <div *ngIf="this.index && this.time">
-        <div mat-dialog-content>
-            Vous avez gagné en <b>{{ time }}</b
-            >, vous êtes maintenant à la position <b>{{ index }}</b
-            >.
-        </div>
+        <div [innerHTML]="'GAME_OVER_DIALOG.RANK' | translate: { time: time, index: index }" mat-dialog-content></div>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>Quitter</button>

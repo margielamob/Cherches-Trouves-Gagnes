@@ -73,5 +73,19 @@
         "MESSAGE": "Are you sure you want to delete your account ?",
         "DELETE": "Delete",
         "CANCEL": "Cancel"
+    },
+    "GAME_OVER_DIALOG": {
+        "TITLE": "Game Over",
+        "WON": "You won",
+        "LOST": "You lost",
+        "RANK": " You Won in <b>{{ time }}</b>, your currunt rank is  <b>{{ index }}</b>.",
+        "NOT_CLASSIC": {
+            "MESSAGE": "Congratulations, you found <b>{{ nbPoints }}</b> difference(s)!"
+        },
+        "CLASSIC": {
+            "MESSAGE": "The winner is: {{ winner }}",
+            "WINNER": "You are the winner!",
+            "LOOSER": "The winner is: {{ winner }}."
+        }
     }
 }

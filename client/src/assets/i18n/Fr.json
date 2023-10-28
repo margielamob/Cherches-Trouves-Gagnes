@@ -75,5 +75,20 @@
         "MESSAGE": "Êtes-vous certain de vouloir supprimer votre compte ?",
         "DELETE": "Supprimer",
         "CANCEL": "Annuler"
+    },
+
+    "GAME_OVER_DIALOG": {
+        "TITLE": "Partie terminée",
+        "WON": "Vous avez gagné",
+        "LOST": "Vous avez perdu",
+        "RANK": " Vous avez gagné en <b>{{ time }}</b>, vous êtes maintenant à la position <b>{{ index }}</b>.",
+        "NOT_CLASSIC": {
+            "MESSAGE": " Félicitations, vous avez trouvé <b>{{ nbPoints }}</b> différence(s) !"
+        },
+        "CLASSIC": {
+            "MESSAGE": "Le vainqueur est : {{ winner }}",
+            "WINNER": "Tu es le vainqueur !",
+            "LOOSER": "Le vainqueur est : {{ winner }}."
+        }
     }
 }
