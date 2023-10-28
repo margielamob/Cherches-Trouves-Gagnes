@@ -2,12 +2,14 @@ import 'package:app/components/avatar/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/user_service.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AvatarDialog extends StatefulWidget {
   final String? imagePath;
-  AvatarDialog({Key? key, this.imagePath}) : super(key: key);
+  final XFile? imageFile;
+  AvatarDialog({Key? key, this.imagePath, this.imageFile}) : super(key: key);
   @override
   State<AvatarDialog> createState() => AvatarDialogState();
 }
@@ -18,6 +20,7 @@ class AvatarDialogState extends State<AvatarDialog> {
   UserData? currentUser;
   String? avatar;
   String? selectedAvatar;
+  bool isLoading = false;
 
   Future<void> initUser() async {
     currentUser = await authService.getCurrentUser();
@@ -163,24 +166,33 @@ class AvatarDialogState extends State<AvatarDialog> {
                   ],
                 ),
                 SizedBox(height: 20.0),
-                TextButton(
-                    onPressed: () {
-                      if (selectedAvatar != null) {
-                        if (selectedAvatar == widget.imagePath) {
-                          userService.uploadAvatar(
-                              currentUser!.uid, selectedAvatar!);
-                        }
-                        userService.updateUserAvatar(
-                            currentUser!.uid, selectedAvatar!);
-                      }
-                      Navigator.pushNamed(context, '/ProfilePage');
-                    },
-                    style: ButtonStyle(alignment: Alignment.center).copyWith(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).primaryColor),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                    child: Text("Sauvegarder votre choix")),
+                isLoading
+                    ? CircularProgressIndicator()
+                    : TextButton(
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          if (selectedAvatar != null) {
+                            if (selectedAvatar == widget.imagePath) {
+                              await userService.uploadAvatar(
+                                  currentUser!.uid, widget.imageFile!);
+                            }
+                            await userService.updateUserAvatar(
+                                currentUser!.uid, selectedAvatar!);
+                          }
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushNamed(context, '/ProfilePage');
+                        },
+                        style: ButtonStyle(alignment: Alignment.center)
+                            .copyWith(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Theme.of(context).primaryColor),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white)),
+                        child: Text("Sauvegarder votre choix")),
               ],
             )));
   }
