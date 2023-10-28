@@ -60,5 +60,13 @@
         "MESSAGE": "La suppression ne peut pas être restaurée.",
         "DELETE": "Supprimer",
         "CANCEL": "Annuler"
+    },
+
+    "CONFIRM_CREATE_DIALOG": {
+        "TITLE": "Validation des differences",
+        "MESSAGE": "Il y a {{nbDifference}} differences dans ce jeu",
+        "ERROR": "Le nom du jeu doit contenir des lettres",
+        "CREATE": "Créer la partie",
+        "CANCEL": "Annuler"
     }
 }

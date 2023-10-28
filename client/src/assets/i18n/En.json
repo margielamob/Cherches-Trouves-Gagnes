@@ -58,5 +58,13 @@
         "MESSAGE": "Data cannot be restored.",
         "DELETE": "Delete",
         "CANCEL": "Cancel"
+    },
+
+    "CONFIRM_CREATE_DIALOG": {
+        "TITLE": "Validation of differences",
+        "MESSAGE": "There are {{nbDifference}} differences in this game",
+        "ERROR": "The game name must contain letters",
+        "CREATE": "Create game",
+        "CANCEL": "Cancel"
     }
 }
