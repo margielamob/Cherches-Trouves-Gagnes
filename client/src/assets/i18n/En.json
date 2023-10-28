@@ -106,5 +106,9 @@
     "DIALOG_USER": {
         "TITLE": "Choose your avatar",
         "ERROR": "Invalid type. Please select JPG or PNG file"
+    },
+
+    "DIFFERENCE_AREA": {
+        "NAME": "Player name : {{ name }} "
     }
 }

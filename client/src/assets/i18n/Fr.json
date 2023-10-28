@@ -110,5 +110,9 @@
     "DIALOG_USER": {
         "TITLE": "Choissis ton avatar",
         "ERROR": "Type invalid. Selectionner une image de type  JPG ou PNG."
+    },
+
+    "DIFFERENCE_AREA": {
+        "NAME": "Nom du joueur : {{ name }}"
     }
 }

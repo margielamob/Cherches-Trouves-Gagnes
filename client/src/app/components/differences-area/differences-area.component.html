@@ -1,6 +1,6 @@
 <section class="gamers-infos">
     <div class="gamer-info" *ngFor="let player of this.players">
-        <p class="first-player-name player-name">Nom du joueur : {{ player.name }}</p>
+        <p [innerHTML]="'DIFFERENCE_AREA.NAME' | translate: { name: player.name }" class="first-player-name player-name"></p>
         <section class="differences">
             <p>
                 {{ player.nbDifference }}
