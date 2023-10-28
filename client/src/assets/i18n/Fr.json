@@ -96,5 +96,14 @@
         "TITLE": "En quel mode de jeu voulez-vous jouer ?",
         "SOLO": "Solo",
         "COOP": "Coopération"
+    },
+
+    "UPLOAD_DIALOG": {
+        "TITLE": "Upload a 24-bit BMP image of size 640x480",
+        "NOT_BITMAP": "Le type d'image doit être un bitmap (.bmp)",
+        "NOT_24BITS": "L'image doit être en 24 bits",
+        "SIZE": "La taille d'image doit être de 640x480",
+        "CANCEL": "Annuler",
+        "UPLOAD": "Télécharger"
     }
 }

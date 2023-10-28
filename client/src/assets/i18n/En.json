@@ -93,5 +93,13 @@
         "TITLE": "Choose your game mode",
         "SOLO": "Solo",
         "COOP": "Coop"
+    },
+    "UPLOAD_DIALOG": {
+        "TITLE": "Upload an image that should be ",
+        "NOT_BITMAP": "Image should be a bitmap",
+        "NOT_24BITS": "Image sould be 24 bits",
+        "SIZE": "Image size should be 640x480",
+        "CANCEL": "Cancel",
+        "UPLOAD": "Upload"
     }
 }
