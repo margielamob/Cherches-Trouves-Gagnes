@@ -177,9 +177,13 @@ class AvatarDialogState extends State<AvatarDialog> {
                             if (selectedAvatar == widget.imagePath) {
                               await userService.uploadAvatar(
                                   currentUser!.uid, widget.imageFile!);
+                              await userService.updateUserAvatar(
+                                  currentUser!.uid,
+                                  'avatars/${currentUser?.uid}/avatar.jpg');
+                            } else {
+                              await userService.updateUserAvatar(
+                                  currentUser!.uid, selectedAvatar!);
                             }
-                            await userService.updateUserAvatar(
-                                currentUser!.uid, selectedAvatar!);
                           }
                           // ignore: use_build_context_synchronously
                           Navigator.pushNamed(context, '/ProfilePage');
