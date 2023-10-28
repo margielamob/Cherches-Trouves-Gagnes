@@ -118,5 +118,8 @@
 
     "EXIT_BTN": {
         "LEAVE": "Quitter"
+    },
+    "GAME_CARD": {
+        "BEST_SCORE": "Meilleur score"
     }
 }

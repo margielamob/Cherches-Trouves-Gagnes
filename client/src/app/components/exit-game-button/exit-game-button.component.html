@@ -14,10 +14,10 @@
         <div mat-dialog-actions align="end">
             <button mat-raised-button mat-dialog-close color="primary">Annuler</button>
             <div *ngIf="exitButtonService.currentPage.game">
-                <button color="primary" mat-button routerLink="/home" mat-dialog-close>{{'EXIT_BTN.LEAVE'}| translate}</button>
+                <button color="primary" mat-button routerLink="/home" mat-dialog-close>{{ 'EXIT_BTN.LEAVE' | translate }}</button>
             </div>
             <div *ngIf="exitButtonService.currentPage.createGame">
-                <button mat-button routerLink="/admin" mat-dialog-close color="primary">{{'EXIT_BTN.LEAVE'}| translate}</button>
+                <button mat-button routerLink="/admin" mat-dialog-close color="primary">{{ 'EXIT_BTN.LEAVE' | translate }}</button>
             </div>
             <div *ngIf="exitButtonService.currentPage.waitingRoom">
                 <button mat-button routerLink="/" mat-dialog-close color="primary" (click)="onLeaveWaiting()">{{'EXIT_BTN.LEAVE'}| translate}</button>

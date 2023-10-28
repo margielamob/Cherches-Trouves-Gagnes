@@ -114,5 +114,8 @@
 
     "EXIT_BTN": {
         "LEAVE": "Leave"
+    },
+    "GAME_CARD": {
+        "BEST_SCORE": "Best score"
     }
 }
