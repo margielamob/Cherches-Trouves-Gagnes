@@ -68,5 +68,12 @@
         "ERROR": "Le nom du jeu doit contenir des lettres",
         "CREATE": "Créer la partie",
         "CANCEL": "Annuler"
+    },
+
+    "DELETE_ACCOUNT_DIALOG": {
+        "TITLE": "Supprimer le compte",
+        "MESSAGE": "Êtes-vous certain de vouloir supprimer votre compte ?",
+        "DELETE": "Supprimer",
+        "CANCEL": "Annuler"
     }
 }
