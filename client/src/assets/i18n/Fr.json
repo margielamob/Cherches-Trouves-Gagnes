@@ -105,5 +105,10 @@
         "SIZE": "La taille d'image doit être de 640x480",
         "CANCEL": "Annuler",
         "UPLOAD": "Télécharger"
+    },
+
+    "DIALOG_USER": {
+        "TITLE": "Choissis ton avatar",
+        "ERROR": "Type invalid. Selectionner une image de type  JPG ou PNG."
     }
 }
