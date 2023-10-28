@@ -90,5 +90,11 @@
             "WINNER": "Tu es le vainqueur !",
             "LOOSER": "Le vainqueur est : {{ winner }}."
         }
+    },
+
+    "LIMNITED_TIME": {
+        "TITLE": "En quel mode de jeu voulez-vous jouer ?",
+        "SOLO": "Solo",
+        "COOP": "Coopération"
     }
 }
