@@ -1,17 +1,21 @@
 <section class="carousel" [ngClass]="favoriteTheme">
     <div class="page-content" *ngIf="this.isInformationLoaded(); else loadingScreen">
         <div class="game-number-container" *ngIf="!isAdmin">
-            <span class="game-number">{{ getCardsCount() }} jeu<span *ngIf="hasMoreThanOneCard()">x</span></span>
+            <span [innerHTML]="'GAME_CAROUSEL.COUNT' | translate: { count: getCardsCount() }" class="game-number"
+                >{{ getCardsCount() }} jeu<span *ngIf="hasMoreThanOneCard()">x</span></span
+            >
         </div>
 
         <div *ngIf="!hasCards()" class="no-game-container">
             <mat-card class="no-game-card">
                 <mat-card-header class="no-game-center">
-                    <mat-card-title><b>Aucun jeu disponible !</b></mat-card-title>
+                    <mat-card-title
+                        ><b>{{ 'GAME_CAROUSEL.EMPTY' | translate }}</b></mat-card-title
+                    >
                 </mat-card-header>
 
                 <mat-card-actions class="no-game-center">
-                    <button mat-raised-button color="primary" routerLink="/create">Créer un jeu</button>
+                    <button mat-raised-button color="primary" routerLink="/create">{{ 'GAME_CAROUSEL.CREATE' | translate }}</button>
                 </mat-card-actions>
                 <mat-card-footer>
                     <mat-progress-bar class="progess-bar" mode="buffer" color="primary"></mat-progress-bar>

@@ -125,5 +125,11 @@
         "PLAY": "Play",
         "JOIN": "Join",
         "CREATE": "Create"
+    },
+
+    "GAME_CAROUSEL": {
+        "COUNT": "Number of games : {{ count }}",
+        "EMPTY": "No game found",
+        "CREATE": "Create a new game"
     }
 }
