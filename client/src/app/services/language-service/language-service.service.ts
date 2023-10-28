@@ -8,6 +8,8 @@ export class LanguageService {
     currunetLanguage: string;
     constructor(private translateService: TranslateService) {}
 
+    // A CHANGER CAN DO BETTER !!!!!!!!
+
     setDefaultLanguage() {
         this.translateService.setDefaultLang('Fr');
         this.translateService.use('Fr');

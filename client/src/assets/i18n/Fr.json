@@ -53,5 +53,12 @@
         "DRAW": "Dessiner",
         "ADD_BACKGROUND": "Ajouter tous les arrière-plans",
         "RESET_BACKGROUND": "Réinitialiser tous les arrière-plans"
+    },
+
+    "CONFIRM_DELETE_DIALOG": {
+        "TITLE": "Êtes-vous certain de vouloir supprimer ?",
+        "MESSAGE": "La suppression ne peut pas être restaurée.",
+        "DELETE": "Supprimer",
+        "CANCEL": "Annuler"
     }
 }
