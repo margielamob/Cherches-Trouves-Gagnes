@@ -43,7 +43,12 @@ export class DialogGameOverComponent {
         this.dialog.closeAll();
     }
 
+    leaveGame(): void {
+        this.replayService.resetReplay();
+    }
+
     quitGame() {
+        this.leaveGame();
         this.dialog.closeAll();
     }
 }
