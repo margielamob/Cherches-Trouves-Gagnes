@@ -205,14 +205,14 @@
     "HEADER": {
         "GAME_SELECTION": "Sélectionnez votre jeu",
         "SETTINGS": "Paramètres",
-        "ADMINISTRATION": "Administration",
-        "STATISTICS": "Statistiques",
+        "WAITING_ROOM": "Salle d'attente",
         "HOME": "Accueil"
     },
 
     "SERVER": {
         "ERROR": "Erreur de connexion",
         "MESSAGE": "La connection avec la base de donnée n'est pas établie. Veuillez réessayer plus tard.",
-        "HOME": "Accueil"
+        "HOME": "Accueil",
+        "WAITING_MESSAGE": "En attente d'un autre joueur..."
     }
 }

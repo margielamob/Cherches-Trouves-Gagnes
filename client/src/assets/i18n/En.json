@@ -203,15 +203,14 @@
 
     "HEADER": {
         "GAME_SELECTION": "Choose a game",
-        "SETTINGS": "Paramètres",
-        "ADMINISTRATION": "Administration",
-        "STATISTICS": "Statistiques",
-        "HOME": "Accueil"
+        "SETTINGS": "Settings",
+        "WAITING_ROOM": "Waiting room"
     },
 
     "SERVER": {
         "ERROR": "Connexion error",
         "MESSAGE": "The connection with the database is not established. Please try again later.",
-        "HOME": "Home page"
+        "HOME": "Home page",
+        "WAITING_MESSAGE": "Waiting for other players to join the game..."
     }
 }
