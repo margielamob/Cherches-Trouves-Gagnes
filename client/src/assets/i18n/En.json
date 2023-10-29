@@ -149,5 +149,9 @@
     "NO_GAME_SNACKBAR": {
         "TITLE": "No game found",
         "CREATE": "Create a new game"
+    },
+
+    "PLAY_AREA": {
+        "POSITION": "<strong>The difference is at the {{ clue }} position</strong>"
     }
 }
