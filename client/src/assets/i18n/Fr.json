@@ -159,5 +159,11 @@
 
     "REFRESH_SNACKBAR": {
         "TITLE": "Un jeu a été ajouté ou supprimé."
+    },
+
+    "REDIRECT_DIALOG": {
+        "CLASSIC": "Retour sur la page de séléction",
+        "NOT_CLASSIC": "Retour à l'accueil",
+        "REASON": "Vous avez été redirigés car {{ reason }}"
     }
 }
