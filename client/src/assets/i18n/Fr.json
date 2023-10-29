@@ -155,5 +155,9 @@
 
     "PLAY_AREA": {
         "POSITION": "<strong>La différence se trouve à la position {{ clue }}</strong>"
+    },
+
+    "REFRESH_SNACKBAR": {
+        "TITLE": "Un jeu a été ajouté ou supprimé."
     }
 }
