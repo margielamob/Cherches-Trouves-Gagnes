@@ -167,7 +167,7 @@
         "REASON": "Vous avez été redirigés car {{ reason }}"
     },
 
-    "SIDEPAR": {
+    "SIDEBAR": {
         "GAME_INFO": "GAME INFO",
         "NAME": "Nom de jeu: <b>{{ gameName }}</b>",
         "MODE": "Mode de jeu: <b>{{ gameMode }}</b>",
