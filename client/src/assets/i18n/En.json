@@ -185,5 +185,19 @@
         "ERROR": "Username is not valide",
         "CANCEL": "Cancel",
         "CONTINUE": "Continue"
+    },
+
+    "CREATE_GAME_PAGE": {
+        "HEADER_MESSAGE": "Game creation",
+        "DRAWING_BOARD": "Drawing board #1",
+        "DRAWING_BOARD_2": "Drawing board #2",
+        "VALIDATE": "Validate",
+        "RADIUS": {
+            "LABEL": "Choose the enlargement radius",
+            "VALUE0": "0px widening radius",
+            "VALUE3": "3px widening radius",
+            "VALUE9": "9px widening radius",
+            "VALUE15": "15px widening radius"
+        }
     }
 }

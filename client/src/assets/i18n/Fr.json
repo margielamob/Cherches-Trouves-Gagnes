@@ -137,7 +137,7 @@
     },
 
     "GAME_CONSTANTS": {
-        "TITLE": ">Modifier les constantes de jeu",
+        "TITLE": "Modifier les constantes de jeu",
         "BASE_TIME": "Temps de base du jeu (secondes)",
         "BONUS_TIME": "Temps bonus lors de la détection d'une différence (secondes)",
         "PENALTY_TIME": "Temps pénalisé lors de la demande d'un indice (secondes)",
@@ -186,5 +186,19 @@
         "ERROR": "Entrez un nom valide",
         "CANCEL": "Annuler",
         "CONTINUE": "Continuer"
+    },
+
+    "CREATE_GAME_PAGE": {
+        "HEADER_MESSAGE": "Création de partie",
+        "DRAWING_BOARD": "Tableau de dessin #1",
+        "DRAWING_BOARD_2": "Tableau de dessin #2",
+        "VALIDATE": "Valider",
+        "RADIUS": {
+            "LABEL": "Choisir le rayon d'élargissement",
+            "VALUE0": "0px rayon d'élargissement",
+            "VALUE3": "3px rayon d'élargissement",
+            "VALUE9": "9px rayon d'élargissement",
+            "VALUE15": "15px rayon d'élargissement"
+        }
     }
 }
