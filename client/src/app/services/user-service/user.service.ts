@@ -146,4 +146,16 @@ export class UserService {
             }),
         );
     }
+
+    getUserEmail(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.email !== undefined) {
+                    return of(user.email);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
 }
