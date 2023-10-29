@@ -200,5 +200,19 @@
             "VALUE9": "9px rayon d'élargissement",
             "VALUE15": "15px rayon d'élargissement"
         }
+    },
+
+    "HEADER": {
+        "GAME_SELECTION": "Sélectionnez votre jeu",
+        "SETTINGS": "Paramètres",
+        "ADMINISTRATION": "Administration",
+        "STATISTICS": "Statistiques",
+        "HOME": "Accueil"
+    },
+
+    "SERVER": {
+        "ERROR": "Erreur de connexion",
+        "MESSAGE": "La connection avec la base de donnée n'est pas établie. Veuillez réessayer plus tard.",
+        "HOME": "Accueil"
     }
 }

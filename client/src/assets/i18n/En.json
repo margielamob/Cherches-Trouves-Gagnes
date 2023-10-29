@@ -199,5 +199,19 @@
             "VALUE9": "9px widening radius",
             "VALUE15": "15px widening radius"
         }
+    },
+
+    "HEADER": {
+        "GAME_SELECTION": "Choose a game",
+        "SETTINGS": "Paramètres",
+        "ADMINISTRATION": "Administration",
+        "STATISTICS": "Statistiques",
+        "HOME": "Accueil"
+    },
+
+    "SERVER": {
+        "ERROR": "Connexion error",
+        "MESSAGE": "The connection with the database is not established. Please try again later.",
+        "HOME": "Home page"
     }
 }
