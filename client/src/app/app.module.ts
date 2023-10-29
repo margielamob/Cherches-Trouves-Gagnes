@@ -49,6 +49,7 @@ import { PageHeaderComponent } from './components/page-header/page-header.compon
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
+import { ReplayButtonsComponent } from './components/replay-buttons/replay-buttons.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
@@ -121,6 +122,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserAvatarComponent,
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
+        ReplayButtonsComponent,
     ],
     imports: [
         AppMaterialModule,

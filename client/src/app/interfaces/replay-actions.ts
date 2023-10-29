@@ -1,6 +1,6 @@
 import { ReplayActions } from '@app/enums/replay-actions';
-import { ChatMessage } from '@app/interfaces/chat-message';
 import { Coordinate } from '@common/coordinate';
+import { ChatMessage } from '@app/interfaces/chat-message';
 
 export interface ClickErrorData {
     isMainCanvas: boolean;
@@ -10,5 +10,7 @@ export interface ClickErrorData {
 export interface ReplayEvent {
     action: ReplayActions;
     timestamp: number;
-    data?: Coordinate[] | ClickErrorData | ChatMessage | string | number;
+    data?: ReplayPayload;
 }
+
+export type ReplayPayload = Coordinate[] | ClickErrorData | ChatMessage | string | number;

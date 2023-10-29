@@ -18,6 +18,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class GamePageComponent implements OnDestroy {
     favoriteTheme: string = Theme.ClassName;
+    isReplayAvailable: boolean;
     title: string;
     clock: string;
 
@@ -30,6 +31,7 @@ export class GamePageComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
     ) {
+        this.isReplayAvailable = false;
         exitButtonService.setGamePage();
         this.title = 'Mode ' + this.gameInfoHandlerService.gameMode + ' ' + (this.gameInfoHandlerService.isMulti ? 'Multijoueur' : 'Solo');
         this.handleSocket();
@@ -68,6 +70,7 @@ export class GamePageComponent implements OnDestroy {
         dialogConfig.disableClose = true;
         dialogConfig.minWidth = '50%';
         if (this.gameInfoHandlerService.isClassic()) {
+            this.isReplayAvailable = true;
             dialogConfig.data = {
                 win: isWin,
                 winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent().name,
