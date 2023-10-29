@@ -163,5 +163,13 @@
         "CLASSIC": "Return to the selection page",
         "NOT_CLASSIC": "Back to Home Page",
         "REASON": "You have been redirected because {{ reason }}"
+    },
+
+    "SIDEPAR": {
+        "GAME_INFO": "GAME INFO",
+        "NAME": "Home",
+        "MODE": "Se",
+        "PENALTY": "Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>",
+        "BONUS_TIME": "Temps gagné par différence trouvé : <b>{{ differenceTime }} secondes</b>"
     }
 }

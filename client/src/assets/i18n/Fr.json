@@ -165,5 +165,13 @@
         "CLASSIC": "Retour sur la page de séléction",
         "NOT_CLASSIC": "Retour à l'accueil",
         "REASON": "Vous avez été redirigés car {{ reason }}"
+    },
+
+    "SIDEPAR": {
+        "GAME_INFO": "INFOS DU JEU",
+        "NAME": "Game name: <b>{{ gameName }}</b>",
+        "MODE": "Game mode: <b>{{ gameMode }}</b>",
+        "PENALTY": "Penalty time added: <b>{{ penaltyTime }} seconds</b>",
+        "BONUS_TIME": "Time saved per difference found: <b>{{ differenceTime }} seconds</b>"
     }
 }

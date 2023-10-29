@@ -3,18 +3,10 @@
         <mat-grid-tile>
             <section class="game-infos">
                 <p class="title"><strong> INFOS DU JEU</strong></p>
-                <p>
-                    Nom du jeu : <b>{{ gameName }}</b>
-                </p>
-                <p>
-                    Mode de jeu : <b>{{ gameMode }}</b>
-                </p>
-                <p *ngIf="isSoloMode()">
-                    Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>
-                </p>
-                <p *ngIf="isLimitedTimeMode()">
-                    Temps gagné par différence trouvé : <b>{{ differenceTime }} secondes</b>
-                </p>
+                <p [innerHTML]="'SIDEPAR.NAME' | translate: { gameName: gameName }"></p>
+                <p [innerHTML]="'SIDEPAR.MODE' | translate: { gameMode: gameMode }"></p>
+                <p [innerHTML]="'SIDEPAR.PENALTY' | translate: { penaltyTime: penaltyTime }" *ngIf="isSoloMode()"></p>
+                <p [innerHTML]="'SIDEPAR.BONUS_TIME' | translate: { differenceTime: differenceTime }" *ngIf="isLimitedTimeMode()"></p>
             </section>
         </mat-grid-tile>
         <mat-grid-tile>
