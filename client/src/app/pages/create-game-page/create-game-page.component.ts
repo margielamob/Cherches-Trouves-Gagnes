@@ -12,6 +12,7 @@ import { CanvasEventHandlerService } from '@app/services/canvas-event-handler/ca
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { DrawService } from '@app/services/draw-service/draw-service.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -24,6 +25,7 @@ export class CreateGamePageComponent {
     theme: typeof Theme = Theme;
     drawingImage: Map<CanvasType, ImageData> = new Map();
     canvasType: typeof CanvasType = CanvasType;
+    lang = this.translateService.currentLang;
     // eslint-disable-next-line max-params
     constructor(
         public dialog: MatDialog,
@@ -31,6 +33,7 @@ export class CreateGamePageComponent {
         private communication: CommunicationService,
         private canvasEventHandler: CanvasEventHandlerService,
         exitButtonService: ExitButtonHandlerService,
+        private translateService: TranslateService,
     ) {
         this.drawService.initialize();
         this.drawingImage.set(CanvasType.Left, new ImageData(Canvas.Width, Canvas.Height));
@@ -65,8 +68,10 @@ export class CreateGamePageComponent {
     }
 
     manageErrorInForm(validationImageErrors: string) {
+        const title = this.lang === 'Fr' ? "Message d'erreur" : 'Error message';
+
         this.dialog.open(DialogFormsErrorComponent, {
-            data: { formTitle: 'Create Game Form', errorMessages: [validationImageErrors] },
+            data: { formTitle: title, errorMessages: [validationImageErrors] },
         });
     }
 
@@ -83,6 +88,9 @@ export class CreateGamePageComponent {
     }
 
     isGameValid() {
+        const errorMessage = this.lang === 'Fr' ? 'Il faut entre 3 et 9 differences' : 'You need between 3 and 9 differences';
+
+        // Utilisez la traduction dans votre fonction
         this.dialog.open(LoadingScreenComponent, { panelClass: 'custom-dialog-container' });
         return this.communication
             .validateGame(
@@ -93,7 +101,7 @@ export class CreateGamePageComponent {
             .subscribe((response: HttpResponse<{ numberDifference: number; width: number; height: number; data: number[] }> | null) => {
                 this.dialog.closeAll();
                 if (!response || !response.body) {
-                    this.manageErrorInForm('Il faut entre 3 et 9 differences');
+                    this.manageErrorInForm(errorMessage);
                     return;
                 }
                 this.validateForm(response.body.numberDifference as number, response.body.data);
