@@ -146,5 +146,10 @@
         "DEFAULT": "Restaurer les valeurs par défaut",
         "DEFAULT_LABEL": "Valeur par défaut",
         "APPLY": "Appliquer les changements"
+    },
+
+    "NO_GAME_SNACKBAR": {
+        "TITLE": "Aucun jeu disponible !",
+        "CREATE": "Créer un jeu"
     }
 }

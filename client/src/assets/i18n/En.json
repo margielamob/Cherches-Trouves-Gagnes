@@ -144,5 +144,10 @@
         "DEFAULT_LABEL": "Defaults values",
 
         "APPLY": "Apply changes"
+    },
+
+    "NO_GAME_SNACKBAR": {
+        "TITLE": "No game found",
+        "CREATE": "Create a new game"
     }
 }
