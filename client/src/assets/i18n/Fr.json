@@ -168,10 +168,16 @@
     },
 
     "SIDEPAR": {
-        "GAME_INFO": "INFOS DU JEU",
-        "NAME": "Game name: <b>{{ gameName }}</b>",
-        "MODE": "Game mode: <b>{{ gameMode }}</b>",
-        "PENALTY": "Penalty time added: <b>{{ penaltyTime }} seconds</b>",
-        "BONUS_TIME": "Time saved per difference found: <b>{{ differenceTime }} seconds</b>"
+        "GAME_INFO": "GAME INFO",
+        "NAME": "Nom de jeu: <b>{{ gameName }}</b>",
+        "MODE": "Mode de jeu: <b>{{ gameMode }}</b>",
+        "PENALTY": "Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>",
+        "BONUS_TIME": "Temps gagné par différence trouvé : <b>{{ differenceTime }} secondes</b>"
+    },
+    "TOOLBOX": {
+        "RESET_FRONT": "Réinitialiser avant-plan",
+        "PASTE": "Coller l'avant-plan externe",
+        "ADD": "Ajouter arrière-plan",
+        "RESET_BACK": "Réinitialiser arrière-plan"
     }
 }

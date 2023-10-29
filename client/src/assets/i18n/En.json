@@ -165,11 +165,18 @@
         "REASON": "You have been redirected because {{ reason }}"
     },
 
-    "SIDEPAR": {
-        "GAME_INFO": "GAME INFO",
-        "NAME": "Home",
-        "MODE": "Se",
-        "PENALTY": "Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>",
-        "BONUS_TIME": "Temps gagné par différence trouvé : <b>{{ differenceTime }} secondes</b>"
+    "SIDEBAR": {
+        "GAME_INFO": "INFOS DU JEU",
+        "NAME": "Game name: <b>{{ gameName }}</b>",
+        "MODE": "Game mode: <b>{{ gameMode }}</b>",
+        "PENALTY": "Penalty time added: <b>{{ penaltyTime }} seconds</b>",
+        "BONUS_TIME": "Time saved per difference found: <b>{{ differenceTime }} seconds</b>"
+    },
+
+    "TOOLBOX": {
+        "RESET_FRONT": "Reset foreground",
+        "PASTE": "Paste Outer Foreground",
+        "ADD": "Add background",
+        "RESET_BACK": "Reset background"
     }
 }

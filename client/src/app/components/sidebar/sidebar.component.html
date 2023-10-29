@@ -3,12 +3,12 @@
         <mat-grid-tile>
             <section class="game-infos">
                 <p class="title">
-                    <strong>{{ 'SIDEPAR.GAME_INFO' | translate }}</strong>
+                    <strong>{{ 'SIDEBAR.GAME_INFO' | translate }}</strong>
                 </p>
-                <p [innerHTML]="'SIDEPAR.NAME' | translate: { gameName: gameName }"></p>
-                <p [innerHTML]="'SIDEPAR.MODE' | translate: { gameMode: gameMode }"></p>
-                <p [innerHTML]="'SIDEPAR.PENALTY' | translate: { penaltyTime: penaltyTime }" *ngIf="isSoloMode()"></p>
-                <p [innerHTML]="'SIDEPAR.BONUS_TIME' | translate: { differenceTime: differenceTime }" *ngIf="isLimitedTimeMode()"></p>
+                <p [innerHTML]="'SIDEBAR.NAME' | translate: { gameName: gameName }"></p>
+                <p [innerHTML]="'SIDEBAR.MODE' | translate: { gameMode: gameMode }"></p>
+                <p [innerHTML]="'SIDBAR.PENALTY' | translate: { penaltyTime: penaltyTime }" *ngIf="isSoloMode()"></p>
+                <p [innerHTML]="'SIDEBAR.BONUS_TIME' | translate: { differenceTime: differenceTime }" *ngIf="isLimitedTimeMode()"></p>
             </section>
         </mat-grid-tile>
         <mat-grid-tile>
