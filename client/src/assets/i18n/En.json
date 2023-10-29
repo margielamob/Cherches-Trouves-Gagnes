@@ -131,5 +131,18 @@
         "COUNT": "Number of games : {{ count }}",
         "EMPTY": "No game found",
         "CREATE": "Create a new game"
+    },
+
+    "GAME_CONSTANTS": {
+        "TITLE": "Change game constants",
+        "BASE_TIME": " Base time (secondes)",
+        "BONUS_TIME": "Bonus time when detecting a difference (seconds)",
+        "PENALTY_TIME": "Time penalized when requesting a hint (seconds)",
+        "CLOSE_MENU": "Close menu",
+        "CLOSE": "Close",
+        "DEFAULT": "Restore defaults",
+        "DEFAULT_LABEL": "Defaults values",
+
+        "APPLY": "Apply changes"
     }
 }

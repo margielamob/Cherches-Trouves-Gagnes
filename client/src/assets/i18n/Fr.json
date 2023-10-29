@@ -134,5 +134,17 @@
         "COUNT": "Nombre de jeux : {{ count }}",
         "EMPTY": "Aucun jeu disponible !",
         "CREATE": "Créer un jeu"
+    },
+
+    "GAME_CONSTANTS": {
+        "TITLE": ">Modifier les constantes de jeu",
+        "BASE_TIME": "Temps de base du jeu (secondes)",
+        "BONUS_TIME": "Temps bonus lors de la détection d'une différence (secondes)",
+        "PENALTY_TIME": "Temps pénalisé lors de la demande d'un indice (secondes)",
+        "CLOSE_MENU": "Fermer le menu",
+        "CLOSE": "Fermer",
+        "DEFAULT": "Restaurer les valeurs par défaut",
+        "DEFAULT_LABEL": "Valeur par défaut",
+        "APPLY": "Appliquer les changements"
     }
 }
