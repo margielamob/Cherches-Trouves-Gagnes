@@ -2,7 +2,9 @@
     <mat-grid-list cols="3" rowHeight="15vh">
         <mat-grid-tile>
             <section class="game-infos">
-                <p class="title"><strong> INFOS DU JEU</strong></p>
+                <p class="title">
+                    <strong>{{ 'SIDEPAR.GAME_INFO' | translate }}</strong>
+                </p>
                 <p [innerHTML]="'SIDEPAR.NAME' | translate: { gameName: gameName }"></p>
                 <p [innerHTML]="'SIDEPAR.MODE' | translate: { gameMode: gameMode }"></p>
                 <p [innerHTML]="'SIDEPAR.PENALTY' | translate: { penaltyTime: penaltyTime }" *ngIf="isSoloMode()"></p>
