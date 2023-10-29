@@ -179,5 +179,12 @@
         "PASTE": "Coller l'avant-plan externe",
         "ADD": "Ajouter arrière-plan",
         "RESET_BACK": "Réinitialiser arrière-plan"
+    },
+
+    "USER_NAME": {
+        "PLACEHOLDER": "Nom d'utilisateur",
+        "ERROR": "Entrez un nom valide",
+        "CANCEL": "Annuler",
+        "CONTINUE": "Continuer"
     }
 }

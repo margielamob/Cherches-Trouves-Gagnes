@@ -178,5 +178,12 @@
         "PASTE": "Paste Outer Foreground",
         "ADD": "Add background",
         "RESET_BACK": "Reset background"
+    },
+
+    "USER_NAME": {
+        "PLACEHOLDER": "Username",
+        "ERROR": "Username is not valide",
+        "CANCEL": "Cancel",
+        "CONTINUE": "Continue"
     }
 }
