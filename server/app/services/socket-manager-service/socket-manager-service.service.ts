@@ -120,8 +120,7 @@ export class SocketManagerService {
             });
 
             socket.on(SocketEvent.Ready, (roomId: string) => {
-                console.log('ready');
-                this.sio.to(roomId).emit(SocketEvent.JoinGame);
+                this.sio.to(roomId).emit(SocketEvent.JoinGame, { roomId, playerName: 'a' });
             });
 
             socket.on(SocketEvent.JoinGame, (player: string, gameId: string) => {
@@ -130,6 +129,7 @@ export class SocketManagerService {
                 // socket.broadcast.to(gameId).emit(SocketEvent.JoinGame, { roomId: gameId, playerName: player });
 
                 if (this.gameManager.isClassic(gameId)) {
+                    console.log(gameId);
                     this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 } else {
                     const gameCard = this.gameManager.getGameInfo(gameId);

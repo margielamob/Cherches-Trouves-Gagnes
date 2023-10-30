@@ -50,7 +50,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.once(SocketEvent.JoinGame, (data: { roomId: string; playerName: string }) => {
-            console.log('join game');
             this.gameInformationHandlerService.setPlayerName(data.playerName);
 
             this.socketService.send(SocketEvent.JoinGame, { player: this.gameInformationHandlerService.getPlayer().name, room: data.roomId });
@@ -66,8 +65,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     play() {
-        console.log('play');
-        this.socketService.send(SocketEvent.Ready, this.gameInformationHandlerService.roomId);
+        this.socketService.send(SocketEvent.Ready, { roomId: this.gameInformationHandlerService.roomId });
     }
 
     ngOnDestroy() {
