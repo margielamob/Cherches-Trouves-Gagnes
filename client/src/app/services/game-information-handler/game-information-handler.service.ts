@@ -18,7 +18,7 @@ export class GameInformationHandlerService {
     playersEX: UserAuth[] = [];
     players: { name: string; nbDifferences: number }[] = [];
     roomId: string;
-    player: UserAuth;
+    player: UserAuth = { displayName: '', avatar: '' };
     $playerLeft: Subject<void> = new Subject();
     $differenceFound: Subject<string> = new Subject();
     $newGame: Subject<void> = new Subject();
@@ -138,15 +138,13 @@ export class GameInformationHandlerService {
     }
 
     waitingRoom() {
-        this.userService.getCurrentUser().subscribe((user) => {
-            if (user?.displayName) {
-                this.socket.send(SocketEvent.CreateGameMulti, {
-                    player: { displayName: user?.displayName, avatar: user?.photoURL },
-                    mode: this.gameMode,
-                    game: { card: this.getId(), isMulti: this.isMulti },
-                });
-                this.handleSocketEvent();
-            }
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
+        this.socket.send(SocketEvent.CreateGameMulti, {
+            player: { displayName: this.player.displayName, avatar: this.player.avatar },
+            mode: this.gameMode,
+            game: { card: this.getId(), isMulti: this.isMulti },
         });
+        this.handleSocketEvent();
     }
 }

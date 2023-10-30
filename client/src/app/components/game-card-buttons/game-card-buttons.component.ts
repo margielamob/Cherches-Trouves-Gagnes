@@ -38,7 +38,6 @@ export class GameCardButtonsComponent {
     }
 
     onClickCreateJoinGame(): void {
-        console.log('create game :' + this.gameCard.gameInformation);
         this.gameInfoHandlerService.setGameInformation(this.gameCard.gameInformation);
         this.gameInfoHandlerService.isMulti = true;
         this.gameInfoHandlerService.waitingRoom();

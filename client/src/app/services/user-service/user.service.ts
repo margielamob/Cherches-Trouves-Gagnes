@@ -9,6 +9,7 @@ import { Observable, catchError, from, map, switchMap } from 'rxjs';
     providedIn: 'root',
 })
 export class UserService {
+    activeUser: UserData;
     user$: Observable<UserData | undefined>;
     constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
         this.user$ = this.afAuth.authState.pipe(
@@ -20,6 +21,11 @@ export class UserService {
                 }
             }),
         );
+        this.user$.subscribe((user) => {
+            if (user) {
+                this.activeUser = user;
+            }
+        });
     }
 
     adduser(user: UserData) {

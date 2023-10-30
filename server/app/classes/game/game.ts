@@ -26,6 +26,7 @@ export class Game {
         this.isMulti = player.isMulti;
         this.context = new GameContext(game.mode as GameMode, new InitGameState(), player.isMulti);
         this.id = v4();
+        console.log(this.id);
         this.context.next();
         this.addPlayer(player.player);
     }

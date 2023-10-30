@@ -39,6 +39,7 @@ export class GameManagerService {
         this.games.set(game.identifier, game);
         this.difference.setGameDifferences(game.identifier);
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
+
         return game.identifier;
     }
 

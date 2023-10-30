@@ -40,7 +40,7 @@ export class DifferencesDetectionHandlerService {
     }
 
     getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
-        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, gameId: id });
+        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, roomId: this.gameInfoHandlerService.roomId });
         this.handleSocketDifferenceNotFound(ctx, mousePosition);
     }
 

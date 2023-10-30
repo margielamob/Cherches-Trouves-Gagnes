@@ -129,7 +129,6 @@ export class SocketManagerService {
                 // socket.broadcast.to(gameId).emit(SocketEvent.JoinGame, { roomId: gameId, playerName: player });
 
                 if (this.gameManager.isClassic(gameId)) {
-                    console.log(gameId);
                     this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 } else {
                     const gameCard = this.gameManager.getGameInfo(gameId);
@@ -331,6 +330,7 @@ export class SocketManagerService {
             socket.broadcast.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
             socket.emit(SocketEvent.WaitPlayer, { roomId, players });
             socket.join(roomId);
+            console.log('ROOM ID: ' + roomId + ' GAME ID: ' + game.card);
             this.gameManager.addPlayer({ name: player.displayName, id: socket.id }, game.card);
         }
     }
