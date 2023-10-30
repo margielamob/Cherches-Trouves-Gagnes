@@ -1,7 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { Canvas } from '@app/enums/canvas';

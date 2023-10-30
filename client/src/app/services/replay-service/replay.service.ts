@@ -4,7 +4,9 @@ import { ReplayActions } from '@app/enums/replay-actions';
 import { ReplayEvent, ReplayPayload } from '@app/interfaces/replay-actions';
 import { ReplayInterval } from '@app/interfaces/replay-interval';
 import { CaptureService } from '@app/services/capture-service/capture.service';
+import { PublicGameInformation } from '@common/game-information';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { GameInformationHandlerService } from '../game-information-handler/game-information-handler.service';
 
 @Injectable({
     providedIn: 'root',
@@ -25,6 +27,7 @@ export class ReplayService implements OnDestroy {
 
     constructor(
         private readonly captureService: CaptureService, // private readonly cheatService: CheatModeService
+        private readonly gameInfoService: GameInformationHandlerService,
     ) {
         this.addReplayEvent();
         this.isReplaying = false;
@@ -53,6 +56,7 @@ export class ReplayService implements OnDestroy {
     startReplay(): void {
         this.isReplaying = true;
         this.currentReplayIndex = 0;
+        console.log(this.replayEvents, 'replay events');
         this.replayInterval = this.createReplayInterval(
             () => this.replaySwitcher(this.replayEvents[this.currentReplayIndex]),
             () => this.getNextInterval(),
@@ -116,7 +120,7 @@ export class ReplayService implements OnDestroy {
     private replaySwitcher(replayData: ReplayEvent): void {
         switch (replayData.action) {
             case ReplayActions.StartGame:
-                this.replayGameStart();
+                this.replayGameStart(replayData.data as ReplayPayload);
                 break;
             case ReplayActions.ClickFound:
                 this.replayClickFound();
@@ -154,6 +158,7 @@ export class ReplayService implements OnDestroy {
         }
         this.currentReplayIndex++;
     }
+
     private createReplayInterval(callback: () => void, getNextInterval: () => number): ReplayInterval {
         let timeoutId: ReturnType<typeof setTimeout> | null = null;
         let remainingTime: number;
@@ -214,7 +219,9 @@ export class ReplayService implements OnDestroy {
             : REPLAY_LIMITER;
     }
 
-    private replayGameStart(): void {
+    private replayGameStart(replayData: ReplayPayload): void {
+        console.log(replayData, 'replay game start ');
+        this.gameInfoService.setGameInformation(replayData as PublicGameInformation);
         // this.hintService.resetHints();
         // this.gameManager.differences = (replayData as GameRoom).originalDifferences;
         // this.imageService.loadImage(this.gameAreaService.getOriginalContext(), (replayData as GameRoom).clientGame.original);

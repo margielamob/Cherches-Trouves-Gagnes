@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { ReplayActions } from '@app/enums/replay-actions';
+import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
@@ -13,10 +15,12 @@ export class CheatModeService {
     private coords: Coordinate[][];
     private intervals: { difference: Coordinate[]; clocks: number[] }[] = [];
 
+    // eslint-disable-next-line max-params
     constructor(
         private differenceDetectionHandler: DifferencesDetectionHandlerService,
         private socket: CommunicationSocketService,
         private gameInformationHandler: GameInformationHandlerService,
+        private captureService: CaptureService,
     ) {}
 
     async manageCheatMode(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D): Promise<void> {
@@ -25,6 +29,7 @@ export class CheatModeService {
 
     stopCheatModeDifference(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, difference: Coordinate[]) {
         this.findClocksDifference(difference)?.clocks.forEach((clock: number) => clearInterval(clock));
+        this.captureService.saveReplayEvent(ReplayActions.DeactivateCheat, difference);
         for (const coord of difference) {
             ctx.clearRect(coord.x, coord.y, 1, 1);
             ctxModified.clearRect(coord.x, coord.y, 1, 1);
@@ -67,6 +72,7 @@ export class CheatModeService {
 
     private async startCheatMode(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D): Promise<boolean> {
         await this.fetchAllDifferenceNotFound();
+        this.coords.forEach((difference: Coordinate[]) => this.captureService.saveReplayEvent(ReplayActions.ActivateCheat, difference));
         this.coords.forEach((difference: Coordinate[]) =>
             this.intervals.push({ difference, clocks: this.startCheatModeDifference(ctx, ctxModified, difference) }),
         );

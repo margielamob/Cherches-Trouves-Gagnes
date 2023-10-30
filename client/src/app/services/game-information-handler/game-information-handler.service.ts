@@ -8,6 +8,8 @@ import { Subject } from 'rxjs';
 import { GameId } from '@common/game-id';
 import { GameTimeConstants } from '@common/game-time-constants';
 import { CommunicationService } from '@app/services/communication/communication.service';
+import { CaptureService } from '@app/services/capture-service/capture.service';
+import { ReplayActions } from '@app/enums/replay-actions';
 
 @Injectable({
     providedIn: 'root',
@@ -24,10 +26,12 @@ export class GameInformationHandlerService {
     isMulti: boolean = false;
     gameTimeConstants: GameTimeConstants;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
         private readonly communicationService: CommunicationService,
+        private readonly captureService: CaptureService,
     ) {}
 
     propertiesAreUndefined(): boolean {
@@ -38,6 +42,7 @@ export class GameInformationHandlerService {
         this.socket.once(SocketEvent.Play, (infos: GameId) => {
             if (infos.gameCard) {
                 this.setGameInformation(infos.gameCard);
+                this.captureService.saveReplayEvent(ReplayActions.StartGame, infos.gameCard);
             }
             this.roomId = infos.gameId;
             this.routerService.navigateTo('game');

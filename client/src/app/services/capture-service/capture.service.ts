@@ -19,6 +19,7 @@ export class CaptureService {
 
     saveReplayEvent(action: ReplayActions, data?: ReplayPayload): void {
         const replayEvent: ReplayEvent = { action, timestamp: Date.now(), data };
+        console.table(replayEvent);
         this.replayEventsSubject.next(replayEvent);
     }
 }

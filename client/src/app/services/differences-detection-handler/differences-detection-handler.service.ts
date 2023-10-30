@@ -2,7 +2,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FlashTimer } from '@app/constants/game-constants';
+import { ReplayActions } from '@app/enums/replay-actions';
 import { Vec2 } from '@app/interfaces/vec2';
+import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { Coordinate } from '@common/coordinate';
@@ -15,10 +17,12 @@ export class DifferencesDetectionHandlerService {
     correctSound = new Audio('assets/correctanswer.wav');
     wrongSound = new Audio('assets/wronganswer.wav');
 
+    // eslint-disable-next-line max-params
     constructor(
         public matDialog: MatDialog,
         private readonly socketService: CommunicationSocketService,
         private readonly gameInfoHandlerService: GameInformationHandlerService,
+        private readonly captureService: CaptureService,
     ) {}
 
     setNumberDifferencesFound(isPlayerAction: boolean) {
@@ -52,6 +56,8 @@ export class DifferencesDetectionHandlerService {
 
     differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
         this.playWrongSound();
+        const isMainCanvas = false;
+        this.captureService.saveReplayEvent(ReplayActions.ClickError, { isMainCanvas, pos: mousePosition });
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);
         this.mouseIsDisabled = true;
@@ -64,6 +70,7 @@ export class DifferencesDetectionHandlerService {
 
     differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
         this.playCorrectSound();
+        this.captureService.saveReplayEvent(ReplayActions.ClickFound, coords);
         this.displayDifferenceTemp(ctx, coords, false);
         this.clearDifference(ctxModified, coords);
     }
