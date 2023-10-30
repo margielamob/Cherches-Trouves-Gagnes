@@ -9,6 +9,8 @@ import { UserService } from '@app/services/user-service/user.service';
 })
 export class AppComponent implements OnInit {
     currentTheme: string = 'default';
+    isLoadingData = true;
+
     constructor(private langService: LanguageService, public userService: UserService) {}
     ngOnInit(): void {
         this.langService.setDefaultLanguage();
@@ -16,6 +18,7 @@ export class AppComponent implements OnInit {
         this.userService.getUserTheme().subscribe((theme) => {
             this.currentTheme = theme as string;
             console.log('Theme courant app :', this.currentTheme);
+            this.isLoadingData = false;
         });
     }
 }

@@ -1,3 +1,11 @@
-<main [ngClass]="{ 'indigo-pink-theme ': currentTheme === 'Default', 'deeppurple-amber-theme': currentTheme === 'Alternative' }">
-    <router-outlet></router-outlet>
-</main>
+<div *ngIf="!isLoadingData; else loadingTemplate">
+    <main [ngClass]="{ 'indigo-pink-theme': currentTheme === 'Default', 'deeppurple-amber-theme': currentTheme === 'Alternative' }">
+        <router-outlet></router-outlet>
+    </main>
+</div>
+
+<ng-template #loadingTemplate>
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+</ng-template>
