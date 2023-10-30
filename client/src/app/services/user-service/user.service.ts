@@ -147,6 +147,18 @@ export class UserService {
         );
     }
 
+    getUserTheme(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.theme !== undefined) {
+                    return of(user.theme);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
     getUserEmail(): Observable<string | null> {
         return this.user$.pipe(
             switchMap((user) => {

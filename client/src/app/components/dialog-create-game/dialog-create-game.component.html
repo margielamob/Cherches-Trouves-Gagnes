@@ -1,4 +1,4 @@
-<div [ngClass]="theme.ClassName" class="dialog">
+<div class="dialog">
     <h2 mat-title>{{ 'CONFIRM_CREATE_DIALOG.TITLE' | translate }}</h2>
     <mat-card-content [innerHTML]="'CONFIRM_CREATE_DIALOG.MESSAGE' | translate: { nbDifference: this.data.nbDifference }"></mat-card-content>
     <canvas width="640px" height="480px" id="imageDifference" #imageDifference></canvas>

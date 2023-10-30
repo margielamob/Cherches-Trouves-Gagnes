@@ -1,3 +1,8 @@
-<main [ngClass]="favoriteTheme">
+<main
+    [ngClass]="{
+        'deeppurple-amber-theme': themeService.getCurruntTheme() === 'Default',
+        'pink-bluegrey-theme': themeService.getCurruntTheme() === 'Alternative'
+    }"
+>
     <router-outlet></router-outlet>
 </main>

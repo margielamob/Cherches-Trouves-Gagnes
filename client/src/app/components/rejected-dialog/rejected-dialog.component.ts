@@ -1,6 +1,5 @@
 import { Component, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 
 @Component({
@@ -10,7 +9,6 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 })
 export class RejectedDialogComponent {
     @Input() reason: string;
-    favoriteTheme: string = Theme.ClassName;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)

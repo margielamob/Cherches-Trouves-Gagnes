@@ -1,4 +1,4 @@
-<main [ngClass]="favoriteTheme">
+<main>
     <h2 *ngIf="isClassic()">{{ 'REDIRECT_DIALOG.CLASSIC|translate' }}</h2>
     <h2 *ngIf="!isClassic()">{{ 'REDIRECT_DIALOG.NOT_CLASSIC|translate' }}</h2>
     <div [innerHTML]="'REDIRECT_DIALOG.REASON' | translate: { reason: reason }" mat-dialog-content></div>

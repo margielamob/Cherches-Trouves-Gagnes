@@ -3,7 +3,7 @@
 </button>
 
 <ng-template #exitDialogContent>
-    <div [ngClass]="theme">
+    <div>
         <h1 mat-dialog-title>{{ exitButtonService.getTitle() }}</h1>
         <div *ngIf="exitButtonService.currentPage.waitingRoom; else otherPage">
             <div mat-dialog-content>{{ exitButtonService.getMessage() }}</div>

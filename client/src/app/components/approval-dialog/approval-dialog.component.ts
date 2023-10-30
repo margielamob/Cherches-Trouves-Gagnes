@@ -1,12 +1,12 @@
 import { Component, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { SocketEvent } from '@common/socket-event';
-import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
-import { Theme } from '@app/enums/theme';
 
 @Component({
     selector: 'app-approval-dialog',
@@ -28,9 +28,10 @@ export class ApprovalDialogComponent {
         private readonly gameInformationHandlerService: GameInformationHandlerService,
         private readonly routerService: RouterService,
         private readonly snackBar: MatSnackBar,
+        private themeService: ThemeService,
     ) {
         this.opponentsName = data.opponentsName;
-        this.favoriteTheme = Theme.ClassName;
+        this.favoriteTheme = this.themeService.curruntTheme;
     }
 
     onClickApprove() {

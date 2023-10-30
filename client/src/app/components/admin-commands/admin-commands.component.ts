@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
-import { AdminService } from '@app/services/admin-service/admin.service';
 import { ConfirmDeleteDialogComponent } from '@app/components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { AdminService } from '@app/services/admin-service/admin.service';
 
 @Component({
     selector: 'app-admin-commands',
@@ -10,8 +9,6 @@ import { ConfirmDeleteDialogComponent } from '@app/components/confirm-delete-dia
     styleUrls: ['./admin-commands.component.scss'],
 })
 export class AdminCommandsComponent {
-    favoriteTheme: string = Theme.ClassName;
-
     constructor(private readonly adminService: AdminService, private readonly matDialog: MatDialog) {}
 
     hasCards(): boolean {

@@ -3,7 +3,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogGameOverComponent } from '@app/components/dialog-game-over/dialog-game-over.component';
 import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
-import { Theme } from '@app/enums/theme';
 import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
@@ -17,7 +16,6 @@ import { SocketEvent } from '@common/socket-event';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy {
-    favoriteTheme: string = Theme.ClassName;
     title: string;
     clock: string;
 

@@ -21,4 +21,8 @@ export class LanguageService {
         this.translateService.use(language);
         this.currunetLanguage = this.translateService.currentLang;
     }
+
+    getLanguage() {
+        return this.currunetLanguage;
+    }
 }

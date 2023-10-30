@@ -1,4 +1,4 @@
-<section class="carousel" [ngClass]="favoriteTheme">
+<section class="carousel">
     <div class="page-content" *ngIf="this.isInformationLoaded(); else loadingScreen">
         <div class="game-number-container" *ngIf="!isAdmin">
             <span [innerHTML]="'GAME_CAROUSEL.COUNT' | translate: { count: getCardsCount() }" class="game-number"

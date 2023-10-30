@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { GameRecord } from '@common/game-record';
+import { ThemeService } from '../../services/theme-service/theme.service';
 
 @Component({
     selector: 'app-dialog-game-over',
@@ -20,6 +20,7 @@ export class DialogGameOverComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { win: boolean; winner: string; isClassic: boolean; nbPoints: string; record: GameRecord },
         private readonly timeFormatter: TimeFormatterService,
+        private themeService: ThemeService,
         public dialog: MatDialog,
     ) {
         this.isWin = data.win;
@@ -28,7 +29,7 @@ export class DialogGameOverComponent {
         this.nbPoints = data.nbPoints;
         this.index = data.record ? data.record.index : null;
         this.time = data.record ? this.timeFormatter.formatTimeForScore(data.record.time) : null;
-        this.theme = Theme.ClassName;
+        this.theme = this.themeService.curruntTheme;
     }
 
     quitGame() {
