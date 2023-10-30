@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from '@app/services/language-service/language-service.service';
-import { ThemeService } from '@app/services/theme-service/theme.service';
+import { UserService } from '@app/services/user-service/user.service';
 
 @Component({
     selector: 'app-root',
@@ -8,13 +8,14 @@ import { ThemeService } from '@app/services/theme-service/theme.service';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-    favoriteTheme: string = this.themeService.curruntTheme;
-    constructor(private langService: LanguageService, public themeService: ThemeService) {}
+    currentTheme: string = 'default';
+    constructor(private langService: LanguageService, public userService: UserService) {}
     ngOnInit(): void {
         this.langService.setDefaultLanguage();
         console.log('Langue courante app :', this.langService.getLanguage());
-
-        // listen to session changes
-        // this.auth.listenToSessionChanges();
+        this.userService.getUserTheme().subscribe((theme) => {
+            this.currentTheme = theme as string;
+            console.log('Theme courant app :', this.currentTheme);
+        });
     }
 }

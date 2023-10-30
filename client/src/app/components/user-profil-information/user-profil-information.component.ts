@@ -4,10 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { DialogUserAvatarComponent } from '@app/components/dialog-user-avatar/dialog-user-avatar.component';
 import { LanguageCode, languageCodeMap } from '@app/enums/lang';
-import { Theme, themeCodeMap } from '@app/enums/theme';
+import { Theme } from '@app/enums/theme';
 import { UserData } from '@app/interfaces/user';
 import { LanguageService } from '@app/services/language-service/language-service.service';
-import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 
 import { Observable } from 'rxjs';
@@ -23,17 +22,12 @@ export class UserProfilInformationComponent implements OnInit {
     userLang: string | undefined;
     user$: Observable<UserData | undefined>;
     languages = Object.values(LanguageCode);
-    themes = Object.values(Theme);
+    themes = Object.keys(Theme);
     settingsForm: FormGroup;
     curruntLanguage: string | undefined = 'Fr';
     curruntTheme: string = '';
 
-    constructor(
-        private userService: UserService,
-        private dialog: MatDialog,
-        private langService: LanguageService,
-        private themeService: ThemeService,
-    ) {
+    constructor(private userService: UserService, private dialog: MatDialog, private langService: LanguageService) {
         this.settingsForm = new FormGroup({
             theme: new FormControl('', [Validators.required]),
             language: new FormControl('', [Validators.required]),
@@ -103,10 +97,16 @@ export class UserProfilInformationComponent implements OnInit {
     }
 
     onThemeChange(event: MatSelectChange) {
-        const theme = themeCodeMap.get(event.value) as string;
-        console.log('theme sélectionnée :', theme);
-        this.themeService.setTheme(theme);
-        console.log('themeService currnttheme :', this.themeService.curruntTheme);
+        const selectedTheme = event.value;
+        this.userService.setUserTheme(selectedTheme).subscribe(() => {
+            // Récupérez et configurez le thème de l'utilisateur
+            this.userService.getUserTheme().subscribe((userTheme) => {
+                if (userTheme) {
+                    console.log('userTheme :', userTheme);
+                    this.curruntTheme = userTheme;
+                }
+            });
+        });
     }
 
     saveChanges() {

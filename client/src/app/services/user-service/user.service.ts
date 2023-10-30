@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, take } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -167,6 +167,20 @@ export class UserService {
                 } else {
                     return of(null);
                 }
+            }),
+        );
+    }
+
+    setUserTheme(theme: string): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user) {
+                    return of(undefined); // Ou gestion d'erreur appropriée
+                }
+                const userId = user.uid;
+                const userRef = this.afs.collection('users').doc(userId);
+                return from(userRef.update({ theme }));
             }),
         );
     }
