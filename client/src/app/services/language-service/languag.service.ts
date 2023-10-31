@@ -5,12 +5,23 @@ import { TranslateService } from '@ngx-translate/core';
     providedIn: 'root',
 })
 export class LanguageService {
-    currunetLanguage: string = 'Fr';
+    currunetLanguage: string = '';
     constructor(private translateService: TranslateService) {}
 
     setAppLanguage(lang: string) {
         if (!lang) this.currunetLanguage = 'Fr';
         this.translateService.setDefaultLang(lang);
         this.translateService.use(lang);
+        this.setCurrentLanguage(lang);
+        console.log('langService', this.currunetLanguage);
+    }
+
+    setCurrentLanguage(lang: string) {
+        console.log('langue courante :', lang);
+        this.currunetLanguage = lang;
+    }
+
+    getCurrentLanguage() {
+        return this.currunetLanguage;
     }
 }

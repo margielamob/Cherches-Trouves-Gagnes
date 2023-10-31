@@ -6,10 +6,10 @@ import { DialogUserAvatarComponent } from '@app/components/dialog-user-avatar/di
 import { LanguageCode, languageCodeMap } from '@app/enums/lang';
 import { Theme } from '@app/enums/theme';
 import { UserData } from '@app/interfaces/user';
-import { LanguageService } from '@app/services/language-service/language-service.service';
+import { LanguageService } from '@app/services/language-service/languag.service';
 import { UserService } from '@app/services/user-service/user.service';
 
-import { Observable } from 'rxjs';
+import { Observable, switchMap, take } from 'rxjs';
 
 @Component({
     selector: 'app-user-profil-information',
@@ -92,17 +92,18 @@ export class UserProfilInformationComponent implements OnInit {
     onLanguageChange(event: MatSelectChange) {
         const lang = languageCodeMap.get(event.value) as string;
         console.log('Langue sélectionnée :', lang);
-        this.userService.setUserLang(lang).subscribe(() => {
-            // Récupérez et configurez la langue de l'utilisateur
-            this.userService.getUserLang().subscribe((userLang) => {
+
+        this.userService
+            .setUserLang(lang)
+            .pipe(switchMap(() => this.userService.getUserLang().pipe(take(1))))
+            .subscribe((userLang) => {
                 if (userLang) {
                     console.log('userLang :', userLang);
                     this.curruntLanguage = userLang;
-                    // this.langService.setlanguage(lang);
+                    this.langService.setAppLanguage(userLang as string);
+                    // La langue a été mise à jour dans Firebase, et vous avez récupéré la nouvelle langue
                 }
             });
-        });
-        console.log('Langue sélectionnée settings :', this.langService.currunetLanguage);
     }
 
     onThemeChange(event: MatSelectChange) {

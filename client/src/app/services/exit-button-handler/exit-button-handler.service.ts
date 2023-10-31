@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Pages } from '@app/interfaces/pages';
+import { LanguageService } from '@app/services/language-service/languag.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExitButtonHandlerService {
     currentPage: Pages;
+
+    constructor(private langService: LanguageService) {}
 
     setGamePage(): void {
         this.currentPage = { game: true, createGame: false, waitingRoom: false };
@@ -23,7 +26,8 @@ export class ExitButtonHandlerService {
         if (this.currentPage.game) {
             return 'Quitter la partie ?';
         } else if (this.currentPage.createGame) {
-            return 'Quitter la création ?';
+            console.log('Langue exit :', this.langService.getCurrentLanguage());
+            return this.langService.getCurrentLanguage() === 'Fr' ? 'Quitter la création de partie ?' : 'Leave game creation ?';
         } else if (this.currentPage.waitingRoom) {
             return "Quitter la salle d'attente ?";
         }
