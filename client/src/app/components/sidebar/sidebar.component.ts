@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
-import { ReplayService } from '@app/services/replay-service/replay.service';
 import { GameMode } from '@common/game-mode';
 @Component({
     selector: 'app-sidebar',
@@ -13,7 +12,7 @@ export class SidebarComponent {
     penaltyTime: number;
     differenceTime: number;
 
-    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService, private readonly replayService: ReplayService) {
+    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService) {
         this.setInfos();
     }
 
@@ -38,9 +37,5 @@ export class SidebarComponent {
 
     isMulti() {
         return this.gameInformationHandlerService.isMulti;
-    }
-
-    isReplayMode() {
-        return this.replayService.isReplaying;
     }
 }

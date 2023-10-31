@@ -9,13 +9,14 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { SocketEvent } from '@common/socket-event';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ReplayService implements OnDestroy {
-    isReplaying: boolean = false;
+    isReplaying: BehaviorSubject<boolean>;
+    isReplaying$: Observable<boolean>;
     private replayEvents: ReplayEvent[];
     private replaySpeed: number;
     // private currentCoords: Coordinate[];
@@ -36,7 +37,8 @@ export class ReplayService implements OnDestroy {
         private readonly communicationSocket: CommunicationSocketService,
     ) {
         this.addReplayEvent();
-        this.isReplaying = false;
+        this.isReplaying = new BehaviorSubject<boolean>(false);
+        this.isReplaying$ = this.isReplaying.asObservable();
         this.replayTimer = new BehaviorSubject<number>(0);
         this.replayDifferenceFound = new BehaviorSubject<number>(0);
         this.replayOpponentDifferenceFound = new BehaviorSubject<number>(0);
@@ -47,6 +49,7 @@ export class ReplayService implements OnDestroy {
         this.isDifferenceFound = false;
         this.currentReplayIndex = 0;
     }
+
     get replayTimer$() {
         return this.replayTimer.asObservable();
     }
@@ -60,7 +63,7 @@ export class ReplayService implements OnDestroy {
     }
 
     startReplay(): void {
-        this.isReplaying = true;
+        this.isReplaying.next(true);
         this.currentReplayIndex = 0;
         console.log(this.replayEvents, 'replay events');
         this.replayInterval = this.createReplayInterval(
@@ -102,7 +105,7 @@ export class ReplayService implements OnDestroy {
         this.replaySpeed = SPEED_X1;
         this.replayEvents = [];
         this.currentReplayIndex = 0;
-        this.isReplaying = false;
+        this.isReplaying.next(false);
     }
 
     ngOnDestroy(): void {
@@ -206,7 +209,7 @@ export class ReplayService implements OnDestroy {
                 clearTimeout(timeoutId);
                 timeoutId = null;
             }
-            this.isReplaying = false;
+            this.isReplaying.next(false);
         };
 
         return { start, pause, resume, cancel };

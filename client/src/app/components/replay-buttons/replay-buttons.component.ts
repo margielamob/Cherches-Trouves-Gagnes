@@ -13,10 +13,15 @@ export class ReplayButtonsComponent implements OnInit, OnDestroy {
     isReplayPaused: boolean;
     replaySpeeds: number[];
     replaySpeed: number;
+    isReplay = false;
     constructor(private readonly replayService: ReplayService) {
         this.isReplayAvailable = false;
         this.isReplayPaused = false;
         this.replaySpeeds = REPLAY_SPEEDS;
+
+        this.replayService.isReplaying$.subscribe((isReplaying) => {
+            this.isReplay = isReplaying;
+        });
     }
 
     ngOnInit() {
@@ -52,7 +57,7 @@ export class ReplayButtonsComponent implements OnInit, OnDestroy {
     }
 
     isReplaying(): boolean {
-        return this.replayService.isReplaying;
+        return this.isReplay;
     }
 
     setSpeed(speed: number) {
