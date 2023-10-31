@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ReplayActions } from '@app/enums/replay-actions';
+import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { CommunicationService } from '@app/services/communication/communication.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { GameId } from '@common/game-id';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
+import { GameTimeConstants } from '@common/game-time-constants';
 import { SocketEvent } from '@common/socket-event';
 import { Subject } from 'rxjs';
-import { GameId } from '@common/game-id';
-import { GameTimeConstants } from '@common/game-time-constants';
-import { CommunicationService } from '@app/services/communication/communication.service';
-import { CaptureService } from '@app/services/capture-service/capture.service';
-import { ReplayActions } from '@app/enums/replay-actions';
 
 @Injectable({
     providedIn: 'root',
@@ -42,9 +42,9 @@ export class GameInformationHandlerService {
         this.socket.once(SocketEvent.Play, (infos: GameId) => {
             if (infos.gameCard) {
                 this.setGameInformation(infos.gameCard);
-                this.captureService.saveReplayEvent(ReplayActions.StartGame, infos.gameCard);
             }
             this.roomId = infos.gameId;
+            this.captureService.saveReplayEvent(ReplayActions.StartGame, infos.gameId);
             this.routerService.navigateTo('game');
         });
 

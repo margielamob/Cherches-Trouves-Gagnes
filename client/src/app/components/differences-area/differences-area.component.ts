@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 
 @Component({
@@ -7,6 +7,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
     styleUrls: ['./differences-area.component.scss'],
 })
 export class DifferencesAreaComponent {
+    @Input() nbDifferences: number;
     players: { name: string; nbDifference: string }[];
     private mainPlayer: { name: string; nbDifferences: number };
     private opponentPlayer: { name: string; nbDifferences: number };

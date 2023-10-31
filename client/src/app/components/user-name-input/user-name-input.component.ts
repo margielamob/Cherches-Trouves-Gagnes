@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogLimitedTimeComponent } from '@app/components/dialog-limited-time/dialog-limited-time.component';
 import { Theme } from '@app/enums/theme';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { SocketEvent } from '@common/socket-event';
-import { DialogLimitedTimeComponent } from '@app/components/dialog-limited-time/dialog-limited-time.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-user-name-input',

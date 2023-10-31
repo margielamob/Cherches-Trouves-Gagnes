@@ -1,8 +1,8 @@
 import { ReplayActions } from '@app/enums/replay-actions';
 import { ChatMessage } from '@app/interfaces/chat-message';
 import { Coordinate } from '@common/coordinate';
-import { PublicGameInformation } from '@common/game-information';
 import { Vec2 } from './vec2';
+import { GameMode } from '@common/game-mode';
 
 export interface ClickErrorData {
     isMainCanvas: boolean;
@@ -15,4 +15,4 @@ export interface ReplayEvent {
     data?: ReplayPayload;
 }
 
-export type ReplayPayload = Coordinate[] | ClickErrorData | ChatMessage | string | number | PublicGameInformation;
+export type ReplayPayload = Coordinate[] | ClickErrorData | ChatMessage | string | number | GameMode;

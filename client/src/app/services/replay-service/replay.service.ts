@@ -1,16 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { REPLAY_LIMITER, SPEED_X1 } from '@app/constants/replay';
 import { ReplayActions } from '@app/enums/replay-actions';
+import { ChatMessage } from '@app/interfaces/chat-message';
 import { ReplayEvent, ReplayPayload } from '@app/interfaces/replay-actions';
 import { ReplayInterval } from '@app/interfaces/replay-interval';
 import { CaptureService } from '@app/services/capture-service/capture.service';
+import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
-import { PublicGameInformation } from '@common/game-information';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { SocketEvent } from '@common/socket-event';
-import { ChatMessage } from '@app/interfaces/chat-message';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -29,9 +28,10 @@ export class ReplayService implements OnDestroy {
     private replayOpponentDifferenceFound: BehaviorSubject<number>;
     private replayEventsSubjectSubscription: Subscription;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly captureService: CaptureService,
-        private readonly gameInfoService: GameInformationHandlerService,
+        private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly differenceHandlerService: DifferencesDetectionHandlerService,
         private readonly communicationSocket: CommunicationSocketService,
     ) {
@@ -227,19 +227,12 @@ export class ReplayService implements OnDestroy {
 
     private replayGameStart(replayData: ReplayPayload): void {
         console.log(replayData, 'replay game start ');
-        this.gameInfoService.setGameInformation(replayData as PublicGameInformation);
-        // this.hintService.resetHints();
-        // this.gameManager.differences = (replayData as GameRoom).originalDifferences;
-        // this.imageService.loadImage(this.gameAreaService.getOriginalContext(), (replayData as GameRoom).clientGame.original);
-        // this.imageService.loadImage(this.gameAreaService.getModifiedContext(), (replayData as GameRoom).clientGame.modified);
-        // this.gameAreaService.setAllData();
     }
 
     private replayClickFound(): void {
         // this.currentCoords = replayData as Coordinate[];
         this.isDifferenceFound = true;
         this.differenceHandlerService.playCorrectSound();
-        console.log('replay click found');
         // this.gameAreaService.setAllData();
         // this.gameAreaService.replaceDifference(replayData as Coordinate[], this.replaySpeed);
     }
@@ -255,7 +248,7 @@ export class ReplayService implements OnDestroy {
 
     private replayCaptureMessage(replayData: ReplayPayload): void {
         const messageSent = replayData as ChatMessage;
-        this.communicationSocket.send(SocketEvent.Message, { message: messageSent, roomId: this.gameInfoService.roomId });
+        this.communicationSocket.send(SocketEvent.Message, { message: messageSent, roomId: this.gameInfoHandlerService.roomId });
     }
 
     private replayActivateCheat(): void {
