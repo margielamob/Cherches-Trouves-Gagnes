@@ -23,6 +23,7 @@ import * as LZString from 'lz-string';
 })
 export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input() gameId: string;
+    @Input() isReplayAvailable: boolean;
     @ViewChild('actionsGameOriginal') private canvasOriginal: ElementRef<HTMLCanvasElement>;
     @ViewChild('actionsGameModified') private canvasModified: ElementRef<HTMLCanvasElement>;
     @ViewChild('imgOriginal') private canvasImgOriginal: ElementRef<HTMLCanvasElement>;
@@ -91,7 +92,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     onClick($event: MouseEvent, canvas: string) {
-        if (!this.isMouseDisabled()) {
+        if (!this.isMouseDisabled() && !this.isReplayAvailable) {
             const ctx: CanvasRenderingContext2D = canvas === 'original' ? this.getContextOriginal() : this.getContextModified();
             this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId);
         }

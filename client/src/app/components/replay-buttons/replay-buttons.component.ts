@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { REPLAY_SPEEDS, SPEED_X1 } from '@app/constants/replay';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { REPLAY_SPEEDS, SPEED_X1, WAITING_TIME } from '@app/constants/replay';
 import { ReplayService } from '@app/services/replay-service/replay.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { ReplayService } from '@app/services/replay-service/replay.service';
     templateUrl: './replay-buttons.component.html',
     styleUrls: ['./replay-buttons.component.scss'],
 })
-export class ReplayButtonsComponent implements OnInit {
+export class ReplayButtonsComponent implements OnInit, OnDestroy {
     @Input() isReplayAvailable: boolean;
     isReplayButtonDisabled: boolean;
     isReplayPaused: boolean;
@@ -25,37 +25,41 @@ export class ReplayButtonsComponent implements OnInit {
 
     replay(isMidReplay: boolean) {
         if (isMidReplay) {
-            // this.replayService.restartReplay();
+            this.replayService.restartReplay();
         } else {
-            // this.replayService.startReplay();
+            this.replayService.startReplay();
         }
-        // this.replayService.restartTimer();
-        // this.isReplayPaused = false;
-        // this.isReplayButtonDisabled = true;
-        // setTimeout(() => {
-        //     this.isReplayButtonDisabled = false;
-        // }, WAITING_TIME);
+        this.replayService.restartTimer();
+        this.isReplayPaused = false;
+        this.isReplayButtonDisabled = true;
+        setTimeout(() => {
+            this.isReplayButtonDisabled = false;
+        }, WAITING_TIME);
     }
 
     pause() {
         this.isReplayPaused = !this.isReplayPaused;
-        // this.replayService.pauseReplay();
+        this.replayService.pauseReplay();
     }
 
     resume() {
         this.isReplayPaused = !this.isReplayPaused;
-        // this.replayService.resumeReplay();
+        this.replayService.resumeReplay();
     }
 
     quit() {
-        // this.replayService.resetReplay();
+        this.replayService.resetReplay();
     }
 
     isReplaying(): boolean {
         return this.replayService.isReplaying;
     }
 
-    setSpeed() {
-        // this.replayService.upSpeed(speed);
+    setSpeed(speed: number) {
+        this.replayService.upSpeed(speed);
+    }
+
+    ngOnDestroy() {
+        this.replayService.resetReplay();
     }
 }

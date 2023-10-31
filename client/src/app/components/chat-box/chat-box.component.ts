@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { ReplayActions } from '@app/enums/replay-actions';
 import { ChatMessage } from '@app/interfaces/chat-message';
+import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { SocketEvent } from '@common/socket-event';
@@ -9,11 +11,16 @@ import { SocketEvent } from '@common/socket-event';
     styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit, AfterViewInit {
+    @Input() isReplayAvailable: boolean;
     @ViewChild('scroll', { static: true }) private scroll: ElementRef;
     messages: ChatMessage[] = [];
     currentMessage: string;
 
-    constructor(private communicationSocket: CommunicationSocketService, private gameInformation: GameInformationHandlerService) {}
+    constructor(
+        private communicationSocket: CommunicationSocketService,
+        private gameInformation: GameInformationHandlerService,
+        private captureService: CaptureService,
+    ) {}
 
     @HostListener('window:keyup', ['$event'])
     onDialogClick(event: KeyboardEvent): void {
@@ -30,6 +37,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.communicationSocket.on(SocketEvent.Message, (message: string) => {
+            this.captureService.saveReplayEvent(ReplayActions.CaptureMessage, message);
             this.addMessage(message, 'opponent');
         });
         this.communicationSocket.on(SocketEvent.EventMessage, (message: string) => {
@@ -56,6 +64,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
     onClickSend(): void {
         this.addMessage(this.currentMessage, 'personal');
         this.communicationSocket.send(SocketEvent.Message, { message: this.currentMessage, roomId: this.gameInformation.roomId });
+        this.captureService.saveReplayEvent(ReplayActions.CaptureMessage, this.currentMessage);
         this.currentMessage = '';
     }
 

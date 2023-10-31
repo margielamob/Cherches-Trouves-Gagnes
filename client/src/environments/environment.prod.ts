@@ -8,6 +8,6 @@ export const environment = {
         messagingSenderId: '277200615128',
     },
     production: true,
-    serverUrl: 'http://ec2-15-223-70-81.ca-central-1.compute.amazonaws.com:3000/api',
-    socketUrl: 'http://ec2-15-223-70-81.ca-central-1.compute.amazonaws.com:3000',
+    serverUrl: 'http://localhost:3000//api',
+    socketUrl: 'http://localhost:3000',
 };

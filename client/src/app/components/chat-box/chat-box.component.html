@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <mat-form-field *ngIf="isMulti()" appearance="outline" class="input-area">
+    <mat-form-field *ngIf="isMulti() && !isReplayAvailable" appearance="outline" class="input-area">
         <input matInput placeholder="Entrez un message..." maxlength="200" [(ngModel)]="currentMessage" />
         <button mat-icon-button matSuffix (click)="onClickSend()">
             <mat-icon>send</mat-icon>

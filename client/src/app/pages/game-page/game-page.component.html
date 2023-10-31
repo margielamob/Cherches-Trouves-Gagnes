@@ -4,11 +4,11 @@
         <div class="game-section">
             <app-sidebar></app-sidebar>
             <section class="container">
-                <app-play-area class="play-area" tabindex="0" [gameId]="this.gameInfoHandlerService.roomId"></app-play-area>
+                <app-play-area [isReplayAvailable]="isReplayAvailable" class="play-area" tabindex="0" [gameId]="this.gameInfoHandlerService.roomId"></app-play-area>
             </section>
         </div>
         <div class="chat-section">
-            <app-chat-box></app-chat-box>
+            <app-chat-box [isReplayAvailable]="isReplayAvailable" ></app-chat-box>
         </div>
     </div>
     <app-replay-buttons [isReplayAvailable]="isReplayAvailable"></app-replay-buttons>
