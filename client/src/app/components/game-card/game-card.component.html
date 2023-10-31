@@ -13,5 +13,5 @@
         <span *ngFor="let player of joinableGameCard.players"> {{ player.avatar }} {{ player.name }} <br /> </span>
         <div>{{ joinableGameCard.nbDifferences }}</div>
     </mat-card-content>
-    <app-game-card-buttons [gameCard]="gameCard"></app-game-card-buttons>
+    <app-game-card-buttons *ngIf="!isJoining" [gameCard]="gameCard"></app-game-card-buttons>
 </mat-card>

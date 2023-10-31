@@ -54,6 +54,7 @@ export class GameManagerService {
             return;
         }
         const thumbnail = game.information.thumbnail;
+        console.log(thumbnail);
         const nbDifferences = game.information.differences.length;
         const players = this.getPlayers(roomId) || [];
         return { players, nbDifferences, thumbnail, roomId };

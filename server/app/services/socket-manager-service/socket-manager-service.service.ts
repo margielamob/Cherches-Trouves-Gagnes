@@ -61,7 +61,6 @@ export class SocketManagerService {
             );
 
             socket.on(SocketEvent.CreateClassicGame, async (player: User, cardId: string) => {
-                console.log(cardId);
                 await this.createClassicGame(player, cardId, true, socket);
             });
 
@@ -335,9 +334,10 @@ export class SocketManagerService {
         }
     }
 
+    // eslint-disable-next-line max-params
     async createClassicGame(player: User, cardId: string, isMulti: boolean, socket: Socket) {
         const roomId = await this.gameManager.createGame(
-            { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti: true },
+            { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
             GameMode.Classic,
             cardId,
         );
