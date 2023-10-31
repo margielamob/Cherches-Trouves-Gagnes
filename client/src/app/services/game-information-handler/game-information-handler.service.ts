@@ -126,8 +126,12 @@ export class GameInformationHandlerService {
         return this.players[0];
     }
 
-    getOpponent(): { name: string; nbDifferences: number } {
-        return this.players[1];
+    getOpponent(): { name: string; nbDifferences: number }[] {
+        return this.players.filter((player) => player.name !== this.player.displayName);
+    }
+
+    getOpponents(): { name: string; nbDifferences: number }[] {
+        return this.players.filter((player) => player.name !== this.player.displayName);
     }
 
     isClassic() {
@@ -145,6 +149,17 @@ export class GameInformationHandlerService {
             player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
             cardId: this.getId(),
         });
+        this.setPlayerName(this.player.displayName);
+        this.handleSocketEvent();
+    }
+    joinGame(roomId: string) {
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
+        this.socket.send(SocketEvent.JoinClassicGame, {
+            player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
+            roomId,
+        });
+        this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();
     }
 }

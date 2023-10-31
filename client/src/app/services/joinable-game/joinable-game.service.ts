@@ -21,9 +21,13 @@ export class JoinableGameService {
 
     private initSocketListeners(): void {
         this.communicationSocket.on(SocketEvent.ClassicGameCreated, (game: JoinableGameCard) => {
-            console.log('players : ' + game.players);
             const updatedGames = [...this._joinableGames.value, game];
             this._joinableGames.next(updatedGames);
+        });
+
+        this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
+            console.log(payload.games.length);
+            this._joinableGames.next(payload.games);
         });
     }
 

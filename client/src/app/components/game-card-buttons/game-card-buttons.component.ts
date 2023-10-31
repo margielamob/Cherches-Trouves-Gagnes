@@ -6,6 +6,7 @@ import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { JoinableGameCard } from '@common/joinable-game-card';
 
 @Component({
     selector: 'app-game-card-buttons',
@@ -14,7 +15,7 @@ import { RouterService } from '@app/services/router-service/router.service';
 })
 export class GameCardButtonsComponent {
     @Input() gameCard: GameCard;
-
+    @Input() joinableGameCard: JoinableGameCard;
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly gameInfoHandlerService: GameInformationHandlerService,
@@ -42,6 +43,12 @@ export class GameCardButtonsComponent {
         this.gameInfoHandlerService.isMulti = true;
         this.gameInfoHandlerService.waitingRoom();
         // this.openNameDialog(true);
+    }
+
+    onClickJoinGame(): void {
+        this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
+        this.gameInfoHandlerService.isMulti = true;
+        this.gameInfoHandlerService.joinGame(this.joinableGameCard.roomId);
     }
 
     onClickRefreshGame(): void {

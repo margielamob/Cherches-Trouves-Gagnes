@@ -20,6 +20,7 @@ import { Observable } from 'rxjs';
 })
 export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
+    showGameOptions: boolean = false;
 
     readonly title: string = 'Jeu de différences';
 
@@ -60,6 +61,16 @@ export class MainPageComponent implements OnInit {
                 this.matDialog.closeAll();
             },
         });
+    }
+
+    toggleGameOptions(): void {
+        this.onClickPlayClassic();
+        this.showGameOptions = !this.showGameOptions;
+    }
+
+    navigateTo(path: string): void {
+        this.router.navigateTo(path);
+        this.toggleGameOptions(); // Hide the options after selection
     }
 
     openNameDialog(isMulti: boolean = false) {

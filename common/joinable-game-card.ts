@@ -1,3 +1,4 @@
+import { PublicGameInformation } from './game-information';
 import { User } from './user';
 
 export interface JoinableGameCard {
@@ -5,4 +6,5 @@ export interface JoinableGameCard {
     nbDifferences: number;
     thumbnail: string;
     roomId: string;
+    gameInformation: PublicGameInformation;
 }

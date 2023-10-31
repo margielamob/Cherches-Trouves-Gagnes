@@ -10,8 +10,19 @@
         </div>
     </mat-card-content>
     <mat-card-content *ngIf="isJoining">
-        <span *ngFor="let player of joinableGameCard.players"> {{ player.avatar }} {{ player.name }} <br /> </span>
+        <span *ngFor="let player of joinableGameCard.players">
+            <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
+            {{ player.name }} <br />
+        </span>
         <div>{{ joinableGameCard.nbDifferences }}</div>
     </mat-card-content>
-    <app-game-card-buttons *ngIf="!isJoining" [gameCard]="gameCard"></app-game-card-buttons>
+    <ng-container *ngIf="isJoining; then joiningTemplate; else notJoiningTemplate"></ng-container>
+
+    <ng-template #joiningTemplate>
+        <app-game-card-buttons [joinableGameCard]="joinableGameCard"></app-game-card-buttons>
+    </ng-template>
+
+    <ng-template #notJoiningTemplate>
+        <app-game-card-buttons [gameCard]="gameCard"></app-game-card-buttons>
+    </ng-template>
 </mat-card>

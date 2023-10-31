@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { Game } from '@app/classes/game/game';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { DifferenceService } from '@app/services/difference-service/difference.service';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { LimitedTimeGame } from '@app/services/limited-time-game-service/limited-time-game.service';
 import { TimerService } from '@app/services/timer-service/timer.service';
+import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
 import { DifferenceFound } from '@common/difference';
 import { GameMode } from '@common/game-mode';
@@ -12,6 +14,7 @@ import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
 import { Server } from 'socket.io';
 import { Service } from 'typedi';
+import LZString = require('lz-string');
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
@@ -44,8 +47,10 @@ export class GameManagerService {
         return game.identifier;
     }
 
-    getJoinableGames() {
-        return Array.from(this.joinableGames.values());
+    getJoinableGames(): JoinableGameCard[] {
+        return Array.from(this.joinableGames.keys())
+            .map((roomId) => this.getJoinableGame(roomId))
+            .filter((game) => game !== undefined) as JoinableGameCard[];
     }
 
     getJoinableGame(roomId: string): JoinableGameCard | undefined {
@@ -53,11 +58,21 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-        const thumbnail = game.information.thumbnail;
-        console.log(thumbnail);
+        const thumbnail = BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail);
         const nbDifferences = game.information.differences.length;
         const players = this.getPlayers(roomId) || [];
-        return { players, nbDifferences, thumbnail, roomId };
+        const gameCardInfo = {
+            id: game.information.id,
+            name: game.information.name,
+            thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail),
+            nbDifferences: game.information.differences.length,
+            idEditedBmp: game.information.idEditedBmp,
+            idOriginalBmp: game.information.idOriginalBmp,
+            multiplayerScore: game.information.multiplayerScore,
+            soloScore: game.information.soloScore,
+            isMulti: false,
+        };
+        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
     }
 
     getGameInfo(gameId: string) {

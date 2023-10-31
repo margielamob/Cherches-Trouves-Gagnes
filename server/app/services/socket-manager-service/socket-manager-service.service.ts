@@ -48,20 +48,16 @@ export class SocketManagerService {
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
 
-            socket.on(
-                SocketEvent.CreateGame,
-                async (player: string, mode: GameMode, game: { card: string; isMulti: boolean }) =>
-                    await this.createGameSolo(player, mode, game, socket),
-            );
-
-            socket.on(
-                SocketEvent.CreateGameMulti,
-                async (player: User, mode: GameMode, game: { card: string; isMulti: boolean }) =>
-                    await this.createGameMulti(player, mode, game, socket),
-            );
-
             socket.on(SocketEvent.CreateClassicGame, async (player: User, cardId: string) => {
                 await this.createClassicGame(player, cardId, true, socket);
+            });
+
+            socket.on(SocketEvent.JoinClassicGame, async (player: User, roomId: string) => {
+                await this.joinClassicGame(player, roomId, socket);
+            });
+
+            socket.on(SocketEvent.GetJoinableGames, async () => {
+                await this.getJoinableGames();
             });
 
             socket.on(SocketEvent.Message, (message: string, roomId: string) => {
@@ -88,51 +84,14 @@ export class SocketManagerService {
                 this.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
             });
 
-            socket.on(SocketEvent.AcceptPlayer, (roomId: string, opponentsRoomId: string, playerName: string) => {
-                const request = this.multiplayerGameManager.getRequest(roomId);
-                if (!this.multiplayerGameManager.playersRequestExists(roomId, opponentsRoomId) || !request) {
-                    socket.emit(SocketEvent.PlayerLeft);
-                    return;
-                }
-
-                this.multiplayerGameManager.removeGameWaiting(roomId);
-                this.sio.sockets.emit(SocketEvent.GetGamesWaiting, {
-                    mode: GameMode.Classic,
-                    gamesWaiting: this.multiplayerGameManager.getGamesWaiting(GameMode.Classic),
-                });
-
-                this.sio.to(opponentsRoomId).emit(SocketEvent.JoinGame, { roomId, playerName });
-                socket.join(roomId);
-                for (const player of request) {
-                    if (this.multiplayerGameManager.isNotAPlayersRequest(player.id, opponentsRoomId)) {
-                        this.sio.to(player.id).emit(SocketEvent.RejectPlayer, this.multiplayerGameManager.rejectMessages.gameStarted);
-                    }
-                }
-                this.multiplayerGameManager.deleteAllRequests(roomId);
-                this.gameManager.setTimer(roomId);
-                this.gameManager.sendTimer(this.sio, roomId, roomId);
-            });
-
-            socket.on(SocketEvent.RejectPlayer, (roomId: string, opponentsRoomId: string) => {
-                this.multiplayerGameManager.deleteFirstRequest(roomId);
-                if (this.multiplayerGameManager.theresARequest(roomId)) {
-                    const newPlayerRequest = this.multiplayerGameManager.getNewRequest(roomId);
-                    this.sio.to(roomId).emit(SocketEvent.RequestToJoin, newPlayerRequest);
-                }
-
-                this.sio.to(opponentsRoomId).emit(SocketEvent.RejectPlayer, this.multiplayerGameManager.rejectMessages.rejected);
-            });
-
             socket.on(SocketEvent.Ready, (roomId: string) => {
-                this.sio.to(roomId).emit(SocketEvent.JoinGame, { roomId, playerName: 'a' });
+                this.sio.to(roomId).emit(SocketEvent.JoinGame, { roomId });
             });
 
             socket.on(SocketEvent.JoinGame, (player: string, gameId: string) => {
-                // this.gameManager.addPlayer({ name: player, id: socket.id }, gameId);
-                // socket.join(gameId);
-                // socket.broadcast.to(gameId).emit(SocketEvent.JoinGame, { roomId: gameId, playerName: player });
-
                 if (this.gameManager.isClassic(gameId)) {
+                    this.gameManager.setTimer(gameId);
+                    this.gameManager.sendTimer(this.sio, gameId, socket.id);
                     this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 } else {
                     const gameCard = this.gameManager.getGameInfo(gameId);
@@ -176,21 +135,6 @@ export class SocketManagerService {
                     socket.leave(gameId);
                     this.gameManager.leaveGame(socket.id, gameId);
                 }
-            });
-
-            socket.on(SocketEvent.LeaveWaiting, (roomId: string, gameCard: string) => {
-                if (roomId) {
-                    const request = this.multiplayerGameManager.getRequest(roomId);
-                    if (request) {
-                        for (const player of request) {
-                            this.sio.to(player.id).emit(SocketEvent.RejectPlayer, this.multiplayerGameManager.rejectMessages.playerQuit);
-                        }
-                    }
-                    this.multiplayerGameManager.removeGameWaiting(roomId);
-                    return;
-                }
-
-                this.multiplayerGameManager.deleteRequest(this.multiplayerGameManager.getRoomIdWaiting(gameCard), socket.id);
             });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
@@ -279,61 +223,6 @@ export class SocketManagerService {
             });
         });
     }
-
-    // eslint-disable-next-line max-params -- absolutely need all the params
-    async createGameSolo(player: string, mode: GameMode, game: { card: string; isMulti: boolean }, socket: Socket) {
-        const id = await this.gameManager.createGame({ player: { name: player, id: socket.id }, isMulti: game.isMulti }, mode, game.card);
-        socket.join(id);
-        this.gameManager.setTimer(id);
-        this.gameManager.sendTimer(this.sio, id, socket.id);
-        const gameCard = this.gameManager.getGameInfo(id);
-        let gameCardInfo: PublicGameInformation;
-        if (gameCard) {
-            gameCardInfo = {
-                id: gameCard.id,
-                name: gameCard.name,
-                thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(gameCard.thumbnail),
-                nbDifferences: gameCard.differences.length,
-                idEditedBmp: gameCard.idEditedBmp,
-                idOriginalBmp: gameCard.idOriginalBmp,
-                multiplayerScore: gameCard.multiplayerScore,
-                soloScore: gameCard.soloScore,
-                isMulti: false,
-            };
-            socket.emit(SocketEvent.Play, { gameId: id, gameCard: gameCardInfo });
-            return;
-        }
-        socket.emit(SocketEvent.Play, { gameId: id });
-    }
-
-    // eslint-disable-next-line max-params -- absolutely need all the params
-    async createGameMulti(player: User, mode: GameMode, game: { card: string; isMulti: boolean }, socket: Socket) {
-        let roomId = this.multiplayerGameManager.getRoomIdWaiting(game.card);
-        const players = [player];
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
-        if (this.multiplayerGameManager.isGameWaiting(game.card, mode)) {
-            if (mode === GameMode.Classic) {
-                socket.join(roomId);
-                this.multiplayerGameManager.addPlayerToRoom(roomId, player);
-                this.gameManager.addPlayer({ name: player.name, id: socket.id }, game.card);
-                socket.emit(SocketEvent.WaitPlayer, { roomId, players: this.multiplayerGameManager.getPlayers(roomId) });
-                this.sio.to(roomId).emit(SocketEvent.UpdatePlayers, { roomId, players: this.multiplayerGameManager.getPlayers(roomId) });
-            } else {
-                socket.join(roomId);
-                socket.broadcast.to(roomId).emit(SocketEvent.JoinGame, { roomId, playerName: player });
-                this.gameManager.setTimer(roomId);
-                this.gameManager.sendTimer(this.sio, roomId, roomId);
-            }
-        } else {
-            roomId = await this.gameManager.createGame({ player: { name: player.name, id: socket.id }, isMulti: game.isMulti }, mode, game.card);
-            this.multiplayerGameManager.addGameWaiting({ gameId: game.card, mode, roomId, players });
-            socket.broadcast.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
-            socket.emit(SocketEvent.WaitPlayer, { roomId, players });
-            socket.join(roomId);
-            this.gameManager.addPlayer({ name: player.name, id: socket.id }, game.card);
-        }
-    }
-
     // eslint-disable-next-line max-params
     async createClassicGame(player: User, cardId: string, isMulti: boolean, socket: Socket) {
         const roomId = await this.gameManager.createGame(
@@ -350,8 +239,13 @@ export class SocketManagerService {
     async joinClassicGame(player: User, roomId: string, socket: Socket) {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players: this.multiplayerGameManager.getPlayers(roomId) });
-        socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players: this.multiplayerGameManager.getPlayers(roomId) });
+        const players = this.gameManager.getPlayers(roomId) || [];
+        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
+        socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+    }
+
+    async getJoinableGames() {
+        this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
     }
 
     refreshGames() {

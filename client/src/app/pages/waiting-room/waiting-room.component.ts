@@ -48,8 +48,12 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             this.players.push(info.players[info.players.length - 1]);
         });
 
-        this.socketService.once(SocketEvent.JoinGame, (data: { roomId: string; playerName: string }) => {
-            this.gameInformationHandlerService.setPlayerName(data.playerName);
+        this.socketService.once(SocketEvent.JoinGame, (data: { roomId: string }) => {
+            for (const player of this.players) {
+                if (!(player.name === this.gameInformationHandlerService.getPlayer().name)) {
+                    this.gameInformationHandlerService.setPlayerName(player.name);
+                }
+            }
 
             this.socketService.send(SocketEvent.JoinGame, { player: this.gameInformationHandlerService.getPlayer().name, room: data.roomId });
             this.gameInformationHandlerService.roomId = data.roomId;

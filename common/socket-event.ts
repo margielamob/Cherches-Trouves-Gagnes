@@ -37,4 +37,5 @@ export enum SocketEvent {
     SendingJoinableClassicGames = 'sendingJoinableClassicGames',
     ClassicGameCreated = 'ClassicGameCreated',
     GetJoinableGames = 'GetJoinableGames',
+    JoinClassicGame = 'JoinClassicGame',
 }

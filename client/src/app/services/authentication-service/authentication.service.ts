@@ -68,8 +68,6 @@ export class AuthenticationService {
     }
 
     signOut() {
-        const logoutTimeoutInMilliseconds = 10000;
-
         this.afAuth.authState
             .pipe(
                 tap((user) => {
@@ -80,9 +78,9 @@ export class AuthenticationService {
             .pipe(take(1))
             .subscribe(() => {
                 // sign out user
-                setTimeout(() => {
-                    this.afAuth.signOut();
-                }, logoutTimeoutInMilliseconds);
+
+                this.afAuth.signOut();
+
                 localStorage.removeItem('sessionToken');
                 this.router.navigate(['login']);
             });
