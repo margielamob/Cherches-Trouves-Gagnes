@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CanActivate, Router } from '@angular/router';
-import { Observable, map, take } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -11,9 +11,9 @@ export class AuthGuard implements CanActivate {
 
     canActivate(): Observable<boolean> {
         return this.afAuth.authState.pipe(
-            take(1),
             map((user) => {
                 if (!user) {
+                    console.log('user not registred');
                     this.router.navigate(['/login']);
                     return false;
                     // if user is registred but not verified

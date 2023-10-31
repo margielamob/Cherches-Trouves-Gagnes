@@ -92,7 +92,16 @@ export class UserProfilInformationComponent implements OnInit {
     onLanguageChange(event: MatSelectChange) {
         const lang = languageCodeMap.get(event.value) as string;
         console.log('Langue sélectionnée :', lang);
-        this.langService.setlanguage(lang);
+        this.userService.setUserLang(lang).subscribe(() => {
+            // Récupérez et configurez la langue de l'utilisateur
+            this.userService.getUserLang().subscribe((userLang) => {
+                if (userLang) {
+                    console.log('userLang :', userLang);
+                    this.curruntLanguage = userLang;
+                    // this.langService.setlanguage(lang);
+                }
+            });
+        });
         console.log('Langue sélectionnée settings :', this.langService.currunetLanguage);
     }
 

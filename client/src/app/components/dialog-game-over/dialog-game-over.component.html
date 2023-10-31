@@ -1,4 +1,4 @@
-<div [ngClass]="theme">
+<div [ngClass]="{ 'indigo-pink-theme': theme === 'Default', 'deeppurple-amber-theme': theme === 'Alternative' }">
     <div *ngIf="!this.isClassic">
         w
         <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>

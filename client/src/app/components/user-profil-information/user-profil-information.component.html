@@ -37,7 +37,9 @@
                             <mat-form-field>
                                 <mat-label> Selectionne un theme </mat-label>
                                 <mat-select formControlName="theme" (selectionChange)="onThemeChange($event)">
-                                    <mat-option *ngFor="let theme of themes" [value]="theme">{{ theme }}</mat-option>
+                                    <mat-option *ngFor="let theme of themes" [value]="theme">{{
+                                        'THEMES.' + theme.toUpperCase() | translate
+                                    }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>

@@ -214,5 +214,10 @@
         "MESSAGE": "La connection avec la base de donnée n'est pas établie. Veuillez réessayer plus tard.",
         "HOME": "Accueil",
         "WAITING_MESSAGE": "En attente d'un autre joueur..."
+    },
+
+    "THEMES": {
+        "ALTERNATIVE": "Alternative",
+        "DEFAULT": "Par défaut"
     }
 }

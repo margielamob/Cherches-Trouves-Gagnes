@@ -184,4 +184,30 @@ export class UserService {
             }),
         );
     }
+
+    setUserLang(language: string): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user) {
+                    return of(undefined);
+                }
+                const userId = user.uid;
+                const userRef = this.afs.collection('users').doc(userId);
+                return from(userRef.update({ language }));
+            }),
+        );
+    }
+
+    getUserLangue(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.language !== undefined) {
+                    return of(user.language);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
 }

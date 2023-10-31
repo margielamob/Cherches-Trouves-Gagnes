@@ -212,5 +212,10 @@
         "MESSAGE": "The connection with the database is not established. Please try again later.",
         "HOME": "Home page",
         "WAITING_MESSAGE": "Waiting for other players to join the game..."
+    },
+
+    "THEMES": {
+        "ALTERNATIVE": "Alternative",
+        "DEFAULT": "Default"
     }
 }
