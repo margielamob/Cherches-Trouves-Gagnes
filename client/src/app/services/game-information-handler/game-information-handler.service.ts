@@ -8,6 +8,7 @@ import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
 import { GameTimeConstants } from '@common/game-time-constants';
 import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
 import { UserAuth } from '@common/userAuth';
 import { WaitingRoomInfo } from '@common/waiting-room-info';
 import { Subject } from 'rxjs';
@@ -15,7 +16,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class GameInformationHandlerService {
-    playersEX: UserAuth[] = [];
+    playersEX: User[] = [];
     players: { name: string; nbDifferences: number }[] = [];
     roomId: string;
     player: UserAuth = { displayName: '', avatar: '' };
@@ -140,10 +141,9 @@ export class GameInformationHandlerService {
     waitingRoom() {
         this.player.displayName = this.userService.activeUser.displayName;
         this.player.avatar = this.userService.activeUser.photoURL;
-        this.socket.send(SocketEvent.CreateGameMulti, {
-            player: { displayName: this.player.displayName, avatar: this.player.avatar },
-            mode: this.gameMode,
-            game: { card: this.getId(), isMulti: this.isMulti },
+        this.socket.send(SocketEvent.CreateClassicGame, {
+            player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
+            cardId: this.getId(),
         });
         this.handleSocketEvent();
     }

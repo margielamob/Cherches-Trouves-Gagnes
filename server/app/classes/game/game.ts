@@ -8,7 +8,7 @@ import { User } from '@common/user';
 import { v4 } from 'uuid';
 
 export class Game {
-    players: Map<string, string>;
+    players: Map<string, User>;
     timerId: unknown;
     currentIndex: number = 0;
     nbCluesAsked: number = 0;
@@ -26,7 +26,6 @@ export class Game {
         this.isMulti = player.isMulti;
         this.context = new GameContext(game.mode as GameMode, new InitGameState(), player.isMulti);
         this.id = v4();
-        console.log(this.id);
         this.context.next();
         this.addPlayer(player.player);
     }
@@ -84,7 +83,8 @@ export class Game {
     }
 
     isGameFull() {
-        return (!this.isMulti && this.players.size === 1) || (this.isMulti && this.players.size === 2);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        return this.isMulti && this.players.size === 4;
     }
 
     setGameCardDeleted() {
@@ -95,11 +95,14 @@ export class Game {
         if (this.isGameFull()) {
             return;
         }
-        this.players.set(player.id, player.name);
+        this.players.set(player.id, player);
     }
 
     findPlayer(playerId: string) {
         return this.players.get(playerId);
+    }
+    getPlayers() {
+        return this.players;
     }
 
     leaveGame(playerId: string) {

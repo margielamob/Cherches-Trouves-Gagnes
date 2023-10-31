@@ -8,8 +8,8 @@
         <h2>List of players:</h2>
         <ul *ngIf="players.length; else noPlayers">
             <li *ngFor="let player of players">
-                <img [src]="player.avatar" alt="{{ player.displayName }}'s avatar" width="50" height="50" />
-                {{ player.displayName }}
+                <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="50" height="50" />
+                {{ player.name }}
             </li>
         </ul>
         <ng-template #noPlayers><p>No players in the waiting room.</p></ng-template>

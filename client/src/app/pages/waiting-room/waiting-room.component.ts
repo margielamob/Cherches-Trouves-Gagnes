@@ -9,7 +9,6 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { RouterService } from '@app/services/router-service/router.service';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
-import { UserAuth } from '@common/userAuth';
 import { WaitingRoomInfo } from '@common/waiting-room-info';
 @Component({
     selector: 'app-waiting-room',
@@ -18,7 +17,7 @@ import { WaitingRoomInfo } from '@common/waiting-room-info';
 })
 export class WaitingRoomComponent implements OnInit, OnDestroy {
     favoriteTheme: string = Theme.ClassName;
-    players: UserAuth[] = [];
+    players: User[] = [];
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private exitButton: ExitButtonHandlerService,

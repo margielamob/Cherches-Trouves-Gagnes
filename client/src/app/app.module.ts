@@ -61,6 +61,7 @@ import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-er
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 
 /**
  * Main module that is used in main.ts.
@@ -121,6 +122,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserAvatarComponent,
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
+        JoinGameSelectionComponent,
     ],
     imports: [
         AppMaterialModule,

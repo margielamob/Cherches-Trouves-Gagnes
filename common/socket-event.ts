@@ -6,6 +6,7 @@ export enum SocketEvent {
     Connection = 'connection',
     Disconnect = 'disconnect',
     CreateGame = 'createGame',
+    CreateClassicGame = 'createClassicGame',
     CreateGameMulti = 'createGameMulti',
     GameCreated = 'gameCreated',
     GameDeleted = 'gameDeleted',
@@ -33,4 +34,7 @@ export enum SocketEvent {
     WaitingRoom = 'waitingRoom',
     UpdatePlayers = 'updatePlayers',
     Ready = 'ready',
+    SendingJoinableClassicGames = 'sendingJoinableClassicGames',
+    ClassicGameCreated = 'ClassicGameCreated',
+    GetJoinableGames = 'GetJoinableGames',
 }

@@ -7,6 +7,7 @@ import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game
 import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameSelectionPageComponent } from '@app/pages/game-selection-page/game-selection-page.component';
+import { JoinGameSelectionComponent } from '@app/pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MongodbErrorPageComponent } from '@app/pages/mongodb-error-page/mongodb-error-page.component';
@@ -28,6 +29,7 @@ const routes: Routes = [
     { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
     { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
     { path: 'verify-email', component: EmailVerificationComponent },
+    { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
 
     { path: '**', redirectTo: '/home' },
 ];

@@ -7,14 +7,15 @@ import { TimerService } from '@app/services/timer-service/timer.service';
 import { Coordinate } from '@common/coordinate';
 import { DifferenceFound } from '@common/difference';
 import { GameMode } from '@common/game-mode';
+import { JoinableGameCard } from '@common/joinable-game-card';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
 import { Server } from 'socket.io';
 import { Service } from 'typedi';
-
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
+    joinableGames: Map<string, Game> = new Map();
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -37,10 +38,25 @@ export class GameManagerService {
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
+        this.joinableGames.set(game.identifier, game);
         this.difference.setGameDifferences(game.identifier);
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
-
         return game.identifier;
+    }
+
+    getJoinableGames() {
+        return Array.from(this.joinableGames.values());
+    }
+
+    getJoinableGame(roomId: string): JoinableGameCard | undefined {
+        const game = this.joinableGames.get(roomId);
+        if (!game) {
+            return;
+        }
+        const thumbnail = game.information.thumbnail;
+        const nbDifferences = game.information.differences.length;
+        const players = this.getPlayers(roomId) || [];
+        return { players, nbDifferences, thumbnail, roomId };
     }
 
     getGameInfo(gameId: string) {
@@ -157,15 +173,20 @@ export class GameManagerService {
         game.addPlayer(player);
     }
 
+    getPlayers(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : Array.from(game.players.values());
+    }
+
     getNbDifferenceNotFound(gameId: string) {
         const game = this.findGame(gameId);
         return !game ? undefined : this.difference.getAllDifferencesNotFound(game.information.differences, gameId);
     }
 
-    hasSameName(roomId: string, playersName: string) {
-        const game = this.findGame(roomId);
-        return !game ? false : Array.from(game.players.values()).includes(playersName);
-    }
+    // hasSameName(roomId: string, playersName: string) {
+    //     const game = this.findGame(roomId);
+    //     return !game ? false : Array.from(game.players.values()).includes(playersName);
+    // }
 
     isGameMultiplayer(gameId: string) {
         const game = this.findGame(gameId);
