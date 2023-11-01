@@ -6,6 +6,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogFormsErrorComponent } from '@app/components/dialog-forms-error/dialog-forms-error.component';
@@ -33,6 +34,7 @@ import { DialogCreateGameComponent } from './components/dialog-create-game/dialo
 import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
+import { DialogSetUpGameComponent } from './components/dialog-set-up-game/dialog-set-up-game/dialog-set-up-game.component';
 import { DialogUploadFormComponent } from './components/dialog-upload-form/dialog-upload-form.component';
 import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
@@ -56,13 +58,12 @@ import { UserProfilInformationComponent } from './components/user-profil-informa
 import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
+import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -123,6 +124,7 @@ import { JoinGameSelectionComponent } from './pages/join-game-selection/join-gam
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
         JoinGameSelectionComponent,
+        DialogSetUpGameComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -139,6 +141,7 @@ import { JoinGameSelectionComponent } from './pages/join-game-selection/join-gam
         AngularFirestoreModule,
         AngularFireDatabaseModule,
         AngularFireStorageModule,
+        MatCheckboxModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

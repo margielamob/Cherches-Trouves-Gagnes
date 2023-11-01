@@ -48,8 +48,8 @@ export class SocketManagerService {
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
 
-            socket.on(SocketEvent.CreateClassicGame, async (player: User, cardId: string) => {
-                await this.createClassicGame(player, cardId, true, socket);
+            socket.on(SocketEvent.CreateClassicGame, async (player: User, card: { id: string; cheatMode: boolean; timer: number }) => {
+                await this.createClassicGame(player, card, true, socket);
             });
 
             socket.on(SocketEvent.JoinClassicGame, async (player: User, roomId: string) => {
@@ -90,7 +90,6 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.JoinGame, (player: string, gameId: string) => {
                 if (this.gameManager.isClassic(gameId)) {
-                    this.gameManager.setTimer(gameId);
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);
                     this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 } else {
@@ -224,12 +223,15 @@ export class SocketManagerService {
         });
     }
     // eslint-disable-next-line max-params
-    async createClassicGame(player: User, cardId: string, isMulti: boolean, socket: Socket) {
+    async createClassicGame(player: User, card: { id: string; cheatMode: boolean; timer: number }, isMulti: boolean, socket: Socket) {
         const roomId = await this.gameManager.createGame(
             { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
             GameMode.Classic,
-            cardId,
+            card.id,
         );
+        this.gameManager.setCheatMode(roomId, card.cheatMode);
+        console.log(card.timer);
+        this.gameManager.setTimer(roomId, card.timer);
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
         socket.join(roomId);
@@ -240,7 +242,8 @@ export class SocketManagerService {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
+        const isCheatMode = this.gameManager.isCheatMode(roomId);
+        socket.emit(SocketEvent.WaitPlayer, { roomId, players, isCheatMode });
         socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
     }
 

@@ -58,6 +58,9 @@ export class GameCardComponent implements OnInit {
         return this.timeFormatter.formatTime(scoreTime);
     }
 
+    getNbDifferences() {
+        return this.gameCard.gameInformation.nbDifferences;
+    }
     getGameName(): string {
         return this.gameCard.gameInformation.name;
     }
@@ -69,16 +72,7 @@ export class GameCardComponent implements OnInit {
     getMultiplayerScores(): Score[] {
         return this.gameCard.gameInformation.multiplayerScore;
     }
-
-    getSinglePlayerScores(): Score[] {
-        return this.gameCard.gameInformation.soloScore;
-    }
-
     hasMultiplayerScores(): boolean {
         return this.gameCard.gameInformation.multiplayerScore.length > 0;
-    }
-
-    hasSinglePlayerScores(): boolean {
-        return this.gameCard.gameInformation.soloScore.length > 0;
     }
 }

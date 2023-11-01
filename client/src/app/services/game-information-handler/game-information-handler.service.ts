@@ -28,7 +28,8 @@ export class GameInformationHandlerService {
     isReadyToAccept: boolean = true;
     isMulti: boolean = false;
     gameTimeConstants: GameTimeConstants;
-
+    cheatMode: boolean = false;
+    timer: number = 0;
     constructor(
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
@@ -53,6 +54,7 @@ export class GameInformationHandlerService {
             this.roomId = info.roomId;
             this.isMulti = true;
             this.playersEX = info.players;
+            this.cheatMode = info.cheatMode;
             this.routerService.navigateTo('waiting');
         });
     }
@@ -145,9 +147,10 @@ export class GameInformationHandlerService {
     waitingRoom() {
         this.player.displayName = this.userService.activeUser.displayName;
         this.player.avatar = this.userService.activeUser.photoURL;
+        console.log(this.timer);
         this.socket.send(SocketEvent.CreateClassicGame, {
             player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
-            cardId: this.getId(),
+            card: { id: this.getId(), cheatMode: this.cheatMode, timer: this.timer },
         });
         this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();

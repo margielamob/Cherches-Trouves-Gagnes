@@ -5,7 +5,7 @@
     <mat-card-content class="highscores-content" *ngIf="!isJoining">
         <h3 class="highscore-title"><b>Meilleurs scores</b></h3>
         <div class="scores">
-            <app-game-score [title]="'Solo'" [scores]="getSinglePlayerScores()" [isMultiplayer]="false"></app-game-score>
+            <span> Nombre de différences : {{ getNbDifferences() }}</span>
             <app-game-score [title]="'1 vs 1'" [scores]="getMultiplayerScores()" [isMultiplayer]="true"></app-game-score>
         </div>
     </mat-card-content>

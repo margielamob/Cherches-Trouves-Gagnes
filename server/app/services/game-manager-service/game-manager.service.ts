@@ -95,8 +95,9 @@ export class GameManagerService {
         }
     }
 
-    setTimer(gameId: string) {
-        return this.isGameFound(gameId) ? this.timer.setTimer(this.findGame(gameId) as Game) : null;
+    setTimer(gameId: string, initialTime: number) {
+        console.log(initialTime);
+        return this.isGameFound(gameId) ? this.timer.setTimer(this.findGame(gameId) as Game, initialTime) : null;
     }
 
     sendTimer(sio: Server, gameId: string, playerId: string) {
@@ -106,18 +107,19 @@ export class GameManagerService {
         }
 
         game.timerId = setInterval(() => {
-            if (game.gameMode === GameMode.LimitedTime && this.isGameOver(gameId)) {
-                // high scores to handle here
+            const remainingTime = this.timer.calculateTime(game); // Get the remaining time
+
+            if (remainingTime <= 0) {
+                // Game over logic
                 sio.sockets.to(gameId).emit(SocketEvent.Win);
                 this.leaveGame(playerId, gameId);
                 this.deleteTimer(gameId);
             } else {
-                sio.sockets.to(gameId).emit(SocketEvent.Clock, this.getTime(gameId));
+                // Update clients with the new timer value
+                sio.sockets.to(gameId).emit(SocketEvent.Clock, remainingTime);
             }
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- one second is 1000 ms
         }, 1000);
     }
-
     deleteTimer(gameId: string) {
         const game = this.findGame(gameId);
         if (!game) {
@@ -149,6 +151,15 @@ export class GameManagerService {
         return game ? this.timer.seconds(game) : null;
     }
 
+    isCheatMode(gameId: string) {
+        return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isCheatMode : null;
+    }
+    setCheatMode(gameId: string, cheatMode: boolean) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.isCheatMode = cheatMode;
+        }
+    }
     isClassic(gameId: string) {
         return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isClassic() : null;
     }

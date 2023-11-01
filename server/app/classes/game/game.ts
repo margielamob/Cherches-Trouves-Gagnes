@@ -13,6 +13,7 @@ export class Game {
     currentIndex: number = 0;
     nbCluesAsked: number = 0;
     isCardDeleted: boolean = false;
+    isCheatMode: boolean = false;
     private id: string;
     private mode: GameMode;
     private isMulti: boolean;
