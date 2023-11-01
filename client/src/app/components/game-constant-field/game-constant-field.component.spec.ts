@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppMaterialModule } from '@app/modules/material.module';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { GameConstantFieldComponent } from './game-constant-field.component';
 
 describe('GameConstantFieldComponent', () => {
@@ -10,7 +13,17 @@ describe('GameConstantFieldComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [GameConstantFieldComponent],
-            imports: [AppMaterialModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(GameConstantFieldComponent);

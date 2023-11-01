@@ -5,6 +5,9 @@ import { CanvasType } from '@app/enums/canvas-type';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ToolBoxComponent } from './tool-box.component';
 
 describe('ToolBoxComponent', () => {
@@ -21,7 +24,18 @@ describe('ToolBoxComponent', () => {
                 { provide: ToolBoxService, useValue: toolBoxServiceSpyObj },
                 { provide: MatDialog, useValue: dialogSpyObj },
             ],
-            imports: [AppMaterialModule, BrowserAnimationsModule],
+            imports: [
+                AppMaterialModule,
+                BrowserAnimationsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ToolBoxComponent);

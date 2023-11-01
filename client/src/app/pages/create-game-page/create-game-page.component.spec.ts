@@ -1,4 +1,4 @@
-import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -6,6 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { CentralBoxComponent } from '@app/components/central-tool-box/central-tool-box.component';
 import { CommonToolBoxComponent } from '@app/components/common-tool-box/common-tool-box.component';
 import { DialogCreateGameComponent } from '@app/components/dialog-create-game/dialog-create-game.component';
@@ -20,7 +21,9 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { CanvasEventHandlerService } from '@app/services/canvas-event-handler/canvas-event-handler.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { DrawService } from '@app/services/draw-service/draw-service.service';
+import { LanguageService } from '@app/services/language-service/languag.service';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Subject, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CreateGamePageComponent } from './create-game-page.component';
@@ -33,7 +36,7 @@ describe('CreateGamePageComponent', () => {
     let toolBoxServiceSpyObj: jasmine.SpyObj<ToolBoxService>;
     let drawServiceSpyObj: jasmine.SpyObj<DrawService>;
     let canvasEventHandlerSpyObj: jasmine.SpyObj<CanvasEventHandlerService>;
-
+    let langServiceSpyObj: jasmine.SpyObj<LanguageService>;
     beforeEach(async () => {
         const drawImageSubjects = new Map();
         drawImageSubjects.set(CanvasType.Left, new Subject());
@@ -74,6 +77,14 @@ describe('CreateGamePageComponent', () => {
                 RouterTestingModule,
                 HttpClientModule,
                 AngularFireModule.initializeApp(environment.firebase),
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
             ],
             providers: [
                 { provide: MatDialog, useValue: dialogSpyObj },
@@ -81,6 +92,7 @@ describe('CreateGamePageComponent', () => {
                 { provide: ToolBoxService, useValue: toolBoxServiceSpyObj },
                 { provide: DrawService, useValue: drawServiceSpyObj },
                 { provide: CanvasEventHandlerService, useValue: canvasEventHandlerSpyObj },
+                { provide: LanguageService, useValue: langServiceSpyObj },
             ],
         }).compileComponents();
 

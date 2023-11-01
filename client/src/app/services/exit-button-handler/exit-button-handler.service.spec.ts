@@ -1,12 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ExitButtonHandlerService } from './exit-button-handler.service';
 
 describe('ExitButtonHandlerService', () => {
     let service: ExitButtonHandlerService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
+        });
         service = TestBed.inject(ExitButtonHandlerService);
     });
 

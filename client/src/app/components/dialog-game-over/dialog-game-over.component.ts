@@ -3,8 +3,10 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
+// eslint-disable-next-line import/no-unresolved
 import { GameRecord } from '@common/game-record';
-
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+@UntilDestroy()
 @Component({
     selector: 'app-dialog-game-over',
     templateUrl: './dialog-game-over.component.html',
@@ -30,9 +32,12 @@ export class DialogGameOverComponent {
         this.nbPoints = data.nbPoints;
         this.index = data.record ? data.record.index : null;
         this.time = data.record ? this.timeFormatter.formatTimeForScore(data.record.time) : null;
-        this.userService.getUserTheme().subscribe((theme) => {
-            this.theme = theme as string;
-        });
+        this.userService
+            .getUserTheme()
+            .pipe(untilDestroyed(this))
+            .subscribe((theme) => {
+                this.theme = theme as string;
+            });
     }
 
     quitGame() {

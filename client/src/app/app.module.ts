@@ -131,7 +131,6 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
-        HttpClientModule,
         ReactiveFormsModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,

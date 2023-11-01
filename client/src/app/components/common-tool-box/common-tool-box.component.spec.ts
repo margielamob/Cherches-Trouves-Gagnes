@@ -5,6 +5,9 @@ import { Tool } from '@app/enums/tool';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { DrawService } from '@app/services/draw-service/draw-service.service';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CommonToolBoxComponent } from './common-tool-box.component';
 
 describe('CommonToolBoxComponent', () => {
@@ -17,7 +20,18 @@ describe('CommonToolBoxComponent', () => {
         spyDialog = jasmine.createSpyObj('MatDialog', ['open']);
         spyDrawService = jasmine.createSpyObj('DrawService', ['resetBackground']);
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, AppMaterialModule],
+            imports: [
+                MatDialogModule,
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 { provide: MatDialog, useValue: spyDialog },
                 { provide: DrawService, useValue: spyDrawService },

@@ -1,8 +1,9 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { ChatBoxComponent } from '@app/components/chat-box/chat-box.component';
 import { CluesAreaComponent } from '@app/components/clues-area/clues-area.component';
@@ -16,8 +17,10 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { LanguageService } from '@app/services/language-service/languag.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
@@ -33,6 +36,8 @@ describe('GamePageComponent', () => {
     let fixture: ComponentFixture<GamePageComponent>;
     let dialogSpyObj: jasmine.SpyObj<MatDialog>;
     let communicationServiceSpy: jasmine.SpyObj<CommunicationService>;
+    let languageServiceSpy: jasmine.SpyObj<LanguageService>;
+
     let gameInformationHandlerServiceSpy: jasmine.SpyObj<GameInformationHandlerService>;
     let socketHelper: SocketTestHelper;
     let socketServiceMock: SocketClientServiceMock;
@@ -95,11 +100,26 @@ describe('GamePageComponent', () => {
                 TimerStopwatchComponent,
                 CluesAreaComponent,
             ],
-            imports: [RouterTestingModule, HttpClientModule, AppMaterialModule, AngularFireModule.initializeApp(environment.firebase)],
+            imports: [
+                RouterTestingModule,
+                HttpClientModule,
+                AppMaterialModule,
+                AngularFireModule.initializeApp(environment.firebase),
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 { provide: MatDialog, useValue: dialogSpyObj },
                 { provide: CommunicationService, useValue: communicationServiceSpy },
                 { provide: CommunicationSocketService, useValue: socketServiceMock },
+                { provide: LanguageService, useValue: languageServiceSpy },
+
                 { provide: MAT_DIALOG_DATA, useValue: model },
                 {
                     provide: GameInformationHandlerService,

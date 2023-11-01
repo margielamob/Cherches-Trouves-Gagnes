@@ -1,4 +1,4 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameConstantFieldComponent } from '@app/components/game-constant-field/game-constant-field.component';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -6,6 +6,8 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { GameTimeConstants } from '@common/game-time-constants';
 import { of } from 'rxjs';
 
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { GameConstantsSettingsComponent } from './game-constants-settings.component';
 
 describe('GameConstantsSettingsComponent', () => {
@@ -18,7 +20,17 @@ describe('GameConstantsSettingsComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameConstantsSettingsComponent, GameConstantFieldComponent],
             providers: [{ provide: CommunicationService, useValue: spyCommunicationService }],
-            imports: [AppMaterialModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(GameConstantsSettingsComponent);
