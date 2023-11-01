@@ -3,6 +3,9 @@ import { ChatMessage } from '@app/interfaces/chat-message';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateService } from '@ngx-translate/core';
+// eslint-disable-next-line no-restricted-imports
+import { MessageData } from '../../../../../server/app/interface/message-data';
 @Component({
     selector: 'app-chat-box',
     templateUrl: './chat-box.component.html',
@@ -13,7 +16,11 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
     messages: ChatMessage[] = [];
     currentMessage: string;
 
-    constructor(private communicationSocket: CommunicationSocketService, private gameInformation: GameInformationHandlerService) {}
+    constructor(
+        private communicationSocket: CommunicationSocketService,
+        private gameInformation: GameInformationHandlerService,
+        private translate: TranslateService,
+    ) {}
 
     @HostListener('window:keyup', ['$event'])
     onDialogClick(event: KeyboardEvent): void {
@@ -32,8 +39,9 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         this.communicationSocket.on(SocketEvent.Message, (message: string) => {
             this.addMessage(message, 'opponent');
         });
-        this.communicationSocket.on(SocketEvent.EventMessage, (message: string) => {
-            this.addMessage(message, 'gameMaster');
+        this.communicationSocket.on(SocketEvent.EventMessage, (messageData: MessageData) => {
+            const { messageKey, params } = messageData;
+            this.addMessage(messageKey, 'gameMaster', params);
         });
     }
 
@@ -59,9 +67,12 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         this.currentMessage = '';
     }
 
-    addMessage(message: string, senderType: string) {
-        if (message.trim().length !== 0) {
-            this.messages.push({ content: message, type: senderType });
+    addMessage(messageKey: string, senderType: string, params?: MessageData['params']) {
+        if (senderType === 'gameMaster' && messageKey) {
+            const translatedMessage = this.translate.instant(messageKey, params);
+            this.messages.push({ content: translatedMessage, type: senderType });
+        } else if (senderType !== 'gameMaster') {
+            this.messages.push({ content: messageKey, type: senderType });
         }
         this.scrollDown();
     }

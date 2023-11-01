@@ -6,7 +6,9 @@
         "THEME": "Thème",
         "LANGUAGE": "Langue",
         "SAVE": "Enregistrer la configuration",
-        "DELETE": "Supprimer le compte"
+        "DELETE": "Supprimer le compte",
+        "SELECT_THEME": "Selectionner un thème",
+        "SELECT_LANG": "Selectionner une langue"
     },
 
     "STATISTICS": {
@@ -41,7 +43,14 @@
     },
 
     "CHAT-BOX": {
-        "Write_MESSAGE": "Entrez un message..."
+        "Write_MESSAGE": "Entrez un message...",
+        "DIFFERENCE_FOUND": "Différence trouvée à {{time}}",
+        "DIFFERENCE_FOUND_BY": "Différence trouvée par {{userName}} à {{time}}",
+        "ERROR": "Erreur à {{time}}",
+        "ERROR_BY": "Erreur par {{userName}} à {{time}}",
+        "LEAVING_GAME": "{{userName}} a abandonné la partie à {{time}}",
+        "USING_CLUE": "{{time}} - Indice Utilisé",
+        "NEW_HIGH_SCORE": "{{time}} - {{playerName}} obtient la {{recordIndex}} place dans les meilleurs temps du jeu {{gameName}} en {{gameMode}}"
     },
 
     "CLUES-AREA": {
@@ -81,6 +90,7 @@
         "TITLE": "Partie terminée",
         "WON": "Vous avez gagné",
         "LOST": "Vous avez perdu",
+        "LEAVE": "Quitter",
         "RANK": " Vous avez gagné en <b>{{ time }}</b>, vous êtes maintenant à la position <b>{{ index }}</b>.",
         "NOT_CLASSIC": {
             "MESSAGE": " Félicitations, vous avez trouvé <b>{{ nbPoints }}</b> différence(s) !"
@@ -117,7 +127,8 @@
     },
 
     "EXIT_BTN": {
-        "LEAVE": "Quitter"
+        "LEAVE": "Quitter",
+        "CANCEL": "Annuler"
     },
     "GAME_CARD": {
         "BEST_SCORE": "Meilleur score"
@@ -168,7 +179,7 @@
     },
 
     "SIDEBAR": {
-        "GAME_INFO": "GAME INFO",
+        "GAME_INFO": "Informations sur le jeu",
         "NAME": "Nom de jeu: <b>{{ gameName }}</b>",
         "MODE": "Mode de jeu: <b>{{ gameMode }}</b>",
         "PENALTY": "Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>",
@@ -219,5 +230,13 @@
     "THEMES": {
         "ALTERNATIVE": "Alternative",
         "DEFAULT": "Par défaut"
+    },
+
+    "GAME_MODE": {
+        "CLASSIQUE": "Classique",
+        "TEMPSLIMITÉ": "Temps limité",
+        "SOLO": "Solo",
+        "COOP": "Coopération",
+        "MULTIPLAYER": "Multijoueur"
     }
 }

@@ -35,7 +35,7 @@
                     <div class="language-container" [formGroup]="settingsForm">
                         <div class="theme-container">
                             <mat-form-field>
-                                <mat-label> Selectionne un theme </mat-label>
+                                <mat-label>{{ 'CONFIG.SELECT_THEME' | translate }} </mat-label>
                                 <mat-select formControlName="theme" (selectionChange)="onThemeChange($event)">
                                     <mat-option *ngFor="let theme of themes" [value]="theme">{{
                                         'THEMES.' + theme.toUpperCase() | translate
@@ -45,7 +45,7 @@
                         </div>
 
                         <mat-form-field>
-                            <mat-label> Selectionne une langue </mat-label>
+                            <mat-label> {{ 'CONFIG.SELECT_LANG' | translate }}</mat-label>
                             <mat-select formControlName="language" (selectionChange)="onLanguageChange($event)">
                                 <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
                             </mat-select>

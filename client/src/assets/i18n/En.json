@@ -6,7 +6,9 @@
         "THEME": "Theme",
         "LANGUAGE": "Language",
         "SAVE": "Save settings",
-        "DELETE": "Delete account"
+        "DELETE": "Delete account",
+        "SELECT_THEME": "Select a theme",
+        "SELECT_LANG": "Select a language"
     },
     "STATISTICS": {
         "TITLE": "Account statistics",
@@ -39,7 +41,14 @@
     },
 
     "CHAT-BOX": {
-        "Write_MESSAGE": "Write un message..."
+        "Write_MESSAGE": "Write un message...",
+        "DIFFERENCE_FOUND": "Difference found at {{time}}",
+        "DIFFERENCE_FOUND_BY": "Difference found by {{userName}} at {{time}}",
+        "ERROR": "Error at {{time}}",
+        "ERROR_BY": "Error by {{userName}} at {{time}}",
+        "LEAVING_GAME": "{{userName}} left the game at {{time}}",
+        "USING_CLUE": "{{time}} - Clue Used",
+        "NEW_HIGH_SCORE": "{{time}} - {{playerName}} gets the {{recordIndex}} place in the best times of the game {{gameName}} in {{gameMode}}"
     },
 
     "CLUES-AREA": {
@@ -78,6 +87,7 @@
         "TITLE": "Game Over",
         "WON": "You won",
         "LOST": "You lost",
+        "LEAVE": "Leave",
         "RANK": " You Won in <b>{{ time }}</b>, your currunt rank is  <b>{{ index }}</b>.",
         "NOT_CLASSIC": {
             "MESSAGE": "Congratulations, you found <b>{{ nbPoints }}</b> difference(s)!"
@@ -113,7 +123,8 @@
     },
 
     "EXIT_BTN": {
-        "LEAVE": "Leave"
+        "LEAVE": "Leave",
+        "CANCEL": "Cancel"
     },
     "GAME_CARD": {
         "BEST_SCORE": "Best score"
@@ -166,7 +177,7 @@
     },
 
     "SIDEBAR": {
-        "GAME_INFO": "INFOS DU JEU",
+        "GAME_INFO": "Game Information",
         "NAME": "Game name: <b>{{ gameName }}</b>",
         "MODE": "Game mode: <b>{{ gameMode }}</b>",
         "PENALTY": "Penalty time added: <b>{{ penaltyTime }} seconds</b>",
@@ -217,5 +228,13 @@
     "THEMES": {
         "ALTERNATIVE": "Alternative",
         "DEFAULT": "Default"
+    },
+
+    "GAME_MODE": {
+        "CLASSIQUE": "Classic",
+        "TEMPSLIMITÉ": "Limited Time",
+        "SOLO": "Solo",
+        "COOP": "Coop",
+        "MULTIPLAYER": "Multiplayer"
     }
 }

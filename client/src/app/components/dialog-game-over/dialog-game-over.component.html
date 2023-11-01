@@ -1,6 +1,5 @@
 <div [ngClass]="{ 'indigo-pink-theme': theme === 'Default', 'deeppurple-amber-theme': theme === 'Alternative' }">
     <div *ngIf="!this.isClassic">
-        w
         <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>
         <div mat-dialog-content [innerHTML]="'GAME_OVER_DIALOG.NOT_CLASSIC.MESSAGE' | translate: { nbPoints: nbPoints }"></div>
     </div>
@@ -18,6 +17,8 @@
         <div [innerHTML]="'GAME_OVER_DIALOG.RANK' | translate: { time: time, index: index }" mat-dialog-content></div>
     </div>
     <div mat-dialog-actions align="end">
-        <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>Quitter</button>
+        <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>
+            {{ 'GAME_OVER_DIALOG.LEAVE' | translate }}
+        </button>
     </div>
 </div>

@@ -24,22 +24,22 @@ export class ExitButtonHandlerService {
 
     getTitle(): string {
         if (this.currentPage.game) {
-            return 'Quitter la partie ?';
+            return this.langService.getCurrentLanguage() === 'Fr' ? 'Quitter la partie ?' : 'Leave game ?';
         } else if (this.currentPage.createGame) {
-            console.log('Langue exit :', this.langService.getCurrentLanguage());
             return this.langService.getCurrentLanguage() === 'Fr' ? 'Quitter la création de partie ?' : 'Leave game creation ?';
         } else if (this.currentPage.waitingRoom) {
-            return "Quitter la salle d'attente ?";
+            return this.langService.getCurrentLanguage() === 'Fr' ? "Quitter la salle d'attente ?" : 'Leave waiting room ?';
         }
-
         return '';
     }
 
     getMessage(): string {
         if (this.currentPage.waitingRoom) {
-            return 'Êtes-vous certain de vouloir quitter ? Vous serez redirigés vers la page de sélection de jeu.';
+            return this.langService.getCurrentLanguage() === 'Fr'
+                ? "Êtes-vous certain de vouloir quitter la salle d'attente ?"
+                : 'Are you sure you want to leave the waiting room ?';
         }
 
-        return 'Êtes-vous certain de vouloir quitter ? Votre progrès ne sera pas sauvegardé.';
+        return this.langService.getCurrentLanguage() === 'Fr' ? 'Êtes-vous certain de vouloir quitter?' : 'Are you sure you want to leave ?';
     }
 }

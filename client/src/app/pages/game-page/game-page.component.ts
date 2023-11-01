@@ -9,6 +9,7 @@ import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameRecord } from '@common/game-record';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-game-page',
@@ -27,9 +28,16 @@ export class GamePageComponent implements OnDestroy {
         private socket: CommunicationSocketService,
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
+        private translate: TranslateService,
     ) {
         exitButtonService.setGamePage();
-        this.title = 'Mode ' + this.gameInfoHandlerService.gameMode + ' ' + (this.gameInfoHandlerService.isMulti ? 'Multijoueur' : 'Solo');
+        const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
+        const multiplayerKey = this.gameInfoHandlerService.isMulti ? 'GAME_MODE.MULTIPLAYER' : 'GAME_MODE.SOLO';
+
+        const gameModeTranslation = this.translate.instant(gameModeKey);
+        const multiplayerTranslation = this.translate.instant(multiplayerKey);
+
+        this.title = `${gameModeTranslation} ${multiplayerTranslation}`;
         this.handleSocket();
     }
 
@@ -46,7 +54,14 @@ export class GamePageComponent implements OnDestroy {
             this.gameInfoHandlerService.isMulti = false;
             this.openSnackBar();
             this.gameInfoHandlerService.$playerLeft.next();
-            this.title = 'Mode ' + this.gameInfoHandlerService.gameMode + ' Solo';
+
+            const gameModeTranslationKey = `GAME_MODE.${this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase()}`;
+            const gameModeTranslation = this.translate.instant(gameModeTranslationKey);
+            const multiplayerTranslation = this.gameInfoHandlerService.isMulti
+                ? this.translate.instant('GAME_MODE.MULTIPLAYER')
+                : this.translate.instant('GAME_MODE.SOLO');
+
+            this.title = `${gameModeTranslation} ${multiplayerTranslation}`;
         });
     }
 

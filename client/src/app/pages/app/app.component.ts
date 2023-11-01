@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LanguageService } from '@app/services/language-service/languag.service';
 import { UserService } from '@app/services/user-service/user.service';
+import { take } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -14,10 +15,12 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.userService.getUserTheme().subscribe((theme) => {
             this.currentTheme = theme as string;
-            console.log('Theme courant app :', this.currentTheme);
         });
-        this.userService.getUserLang().subscribe((lang) => {
-            this.langService.setAppLanguage(lang as string);
-        });
+        this.userService
+            .getUserLang()
+            .pipe(take(1))
+            .subscribe((lang) => {
+                this.langService.setAppLanguage(lang as string);
+            });
     }
 }

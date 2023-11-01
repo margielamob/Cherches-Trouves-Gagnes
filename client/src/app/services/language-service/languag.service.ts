@@ -13,11 +13,9 @@ export class LanguageService {
         this.translateService.setDefaultLang(lang);
         this.translateService.use(lang);
         this.setCurrentLanguage(lang);
-        console.log('langService', this.currunetLanguage);
     }
 
     setCurrentLanguage(lang: string) {
-        console.log('langue courante :', lang);
         this.currunetLanguage = lang;
     }
 
