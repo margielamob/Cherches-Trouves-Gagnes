@@ -103,13 +103,14 @@ export class UserProfilInformationComponent implements OnInit {
 
     onThemeChange(event: MatSelectChange) {
         const selectedTheme = event.value;
-        this.userService.setUserTheme(selectedTheme).subscribe(() => {
-            // Récupérez et configurez le thème de l'utilisateur
-            this.userService.getUserTheme().subscribe((userTheme) => {
+
+        this.userService
+            .setUserTheme(selectedTheme)
+            .pipe(switchMap(() => this.userService.getUserTheme().pipe(take(1))))
+            .subscribe((userTheme) => {
                 if (userTheme) {
                     this.curruntTheme = userTheme;
                 }
             });
-        });
     }
 }

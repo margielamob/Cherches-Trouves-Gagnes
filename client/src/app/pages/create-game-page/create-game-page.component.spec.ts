@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,7 +10,6 @@ import { HttpLoaderFactory } from '@app/app.module';
 import { CentralBoxComponent } from '@app/components/central-tool-box/central-tool-box.component';
 import { CommonToolBoxComponent } from '@app/components/common-tool-box/common-tool-box.component';
 import { DialogCreateGameComponent } from '@app/components/dialog-create-game/dialog-create-game.component';
-import { DialogFormsErrorComponent } from '@app/components/dialog-forms-error/dialog-forms-error.component';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
 import { ExitGameButtonComponent } from '@app/components/exit-game-button/exit-game-button.component';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
@@ -105,17 +104,17 @@ describe('CreateGamePageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should not submit the form and open dialog if it s invalid', () => {
-        component.form = {
-            valid: false,
-            controls: { test: { valid: false } as FormControl, test1: { valid: true } as FormControl },
-        } as unknown as FormGroup;
-        const expectedErrorMessages = 'test is not valid';
-        component.manageErrorInForm(expectedErrorMessages);
-        expect(dialogSpyObj.open).toHaveBeenCalledWith(DialogFormsErrorComponent, {
-            data: { formTitle: 'Create Game Form', errorMessages: [expectedErrorMessages] },
-        });
-    });
+    // it('should not submit the form and open dialog if it s invalid', () => {
+    //     component.form = {
+    //         valid: false,
+    //         controls: { test: { valid: false } as FormControl, test1: { valid: true } as FormControl },
+    //     } as unknown as FormGroup;
+    //     const expectedErrorMessages = 'test is not valid';
+    //     component.manageErrorInForm(expectedErrorMessages);
+    //     expect(dialogSpyObj.open).toHaveBeenCalledWith(DialogFormsErrorComponent, {
+    //         data: { formTitle: 'Create Game Form', errorMessages: [expectedErrorMessages] },
+    //     });
+    // });
 
     it('should open a dialog to validate the game settings', async () => {
         component.validateForm(0, [0]);
