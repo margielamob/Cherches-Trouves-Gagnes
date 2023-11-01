@@ -52,13 +52,11 @@ export class UserProfilInformationComponent implements OnInit {
         this.userService.getUserLang().subscribe((lang) => {
             this.curruntLanguage = lang === 'Fr' ? 'Français' : 'English';
             this.settingsForm.controls.language.setValue(this.curruntLanguage);
-            console.log('Langue sélectionnée settings :', this.curruntLanguage);
         });
 
         this.userService.getUserTheme().subscribe((theme) => {
             this.curruntTheme = theme == null ? '' : theme;
             this.settingsForm.controls.theme.setValue(this.curruntTheme);
-            console.log('theme sélectionnée settings :', this.curruntTheme);
         });
     }
 
@@ -91,17 +89,14 @@ export class UserProfilInformationComponent implements OnInit {
 
     onLanguageChange(event: MatSelectChange) {
         const lang = languageCodeMap.get(event.value) as string;
-        console.log('Langue sélectionnée :', lang);
 
         this.userService
             .setUserLang(lang)
             .pipe(switchMap(() => this.userService.getUserLang().pipe(take(1))))
             .subscribe((userLang) => {
                 if (userLang) {
-                    console.log('userLang :', userLang);
                     this.curruntLanguage = userLang;
                     this.langService.setAppLanguage(userLang as string);
-                    // La langue a été mise à jour dans Firebase, et vous avez récupéré la nouvelle langue
                 }
             });
     }
@@ -112,14 +107,9 @@ export class UserProfilInformationComponent implements OnInit {
             // Récupérez et configurez le thème de l'utilisateur
             this.userService.getUserTheme().subscribe((userTheme) => {
                 if (userTheme) {
-                    console.log('userTheme :', userTheme);
                     this.curruntTheme = userTheme;
                 }
             });
         });
-    }
-
-    saveChanges() {
-        // change user language on firebase
     }
 }

@@ -1,6 +1,7 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { GameCardButtonsComponent } from '@app/components/game-card-buttons/game-card-buttons.component';
 import { GameScoreComponent } from '@app/components/game-score/game-score.component';
@@ -11,6 +12,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { GameCardComponent } from './game-card.component';
@@ -33,7 +35,18 @@ describe('GameCardComponent', () => {
         socketServiceMock['socket'] = socketHelper as unknown as Socket;
 
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule, RouterTestingModule, HttpClientModule],
+            imports: [
+                AppMaterialModule,
+                RouterTestingModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             declarations: [GameCardComponent, GameScoreComponent, GameCardButtonsComponent],
             providers: [
                 {

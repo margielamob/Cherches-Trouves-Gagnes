@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
@@ -21,7 +22,6 @@ export class DialogGameOverComponent {
         @Inject(MAT_DIALOG_DATA) public data: { win: boolean; winner: string; isClassic: boolean; nbPoints: string; record: GameRecord },
         private readonly timeFormatter: TimeFormatterService,
         public userService: UserService,
-        // private themeService: ThemeService,
         public dialog: MatDialog,
     ) {
         this.isWin = data.win;

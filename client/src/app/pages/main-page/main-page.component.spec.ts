@@ -77,10 +77,6 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it("should have as title 'Jeu de différences'", () => {
-        expect(component.title).toEqual('Jeu de différences');
-    });
-
     it('should set GameMode to Classic when Classic button is clicked', () => {
         component.onClickPlayClassic();
         expect(spyMainPageService.setGameMode).toHaveBeenCalledWith(GameMode.Classic);

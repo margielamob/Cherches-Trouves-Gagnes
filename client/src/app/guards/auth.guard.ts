@@ -13,7 +13,6 @@ export class AuthGuard implements CanActivate {
         return this.afAuth.authState.pipe(
             map((user) => {
                 if (!user) {
-                    console.log('user not registred');
                     this.router.navigate(['/login']);
                     return false;
                     // if user is registred but not verified
