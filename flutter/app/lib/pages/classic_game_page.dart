@@ -4,11 +4,14 @@ import 'package:app/components/modified_game_vignette.dart';
 import 'package:app/components/original_game_vignette.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
+import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
+  final DifferenceDetectionService _differenceDetectionService = Get.find();
+
   final RxDouble x1 = 0.0.obs;
   final RxDouble y1 = 0.0.obs;
   final RxDouble x2 = 0.0.obs;
@@ -16,7 +19,9 @@ class Classic extends StatelessWidget {
   final String bmpOriginalId;
   final String bmpModifiedId;
 
-  Classic({required this.bmpOriginalId, required this.bmpModifiedId});
+  Classic({required this.bmpOriginalId, required this.bmpModifiedId}) {
+    _differenceDetectionService.handleDifferences();
+  }
 
   @override
   Widget build(BuildContext context) {

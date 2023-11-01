@@ -1,8 +1,10 @@
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
+import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
@@ -21,9 +23,11 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  Get.put(SocketService());
   Get.put(UserService());
   Get.put(AuthService());
   Get.put(HttpService());
+  Get.put(DifferenceDetectionService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
   Get.put(ImageDecoderService());
