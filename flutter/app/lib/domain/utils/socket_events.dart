@@ -1,0 +1,9 @@
+class SocketEvent {
+  static String error = 'error';
+  static String message = 'message';
+  static String joinChannel = 'joinChannel';
+  static String leaveChannel = 'leaveChannel';
+  static String difference = 'difference';
+  static String differenceNotFound = 'differenceNotFound';
+  static String differenceFound = 'differenceFound';
+}
