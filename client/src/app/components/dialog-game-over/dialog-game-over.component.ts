@@ -5,8 +5,6 @@ import { TimeFormatterService } from '@app/services/time-formatter/time-formatte
 import { UserService } from '@app/services/user-service/user.service';
 // eslint-disable-next-line import/no-unresolved
 import { GameRecord } from '@common/game-record';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-@UntilDestroy()
 @Component({
     selector: 'app-dialog-game-over',
     templateUrl: './dialog-game-over.component.html',
@@ -34,7 +32,7 @@ export class DialogGameOverComponent {
         this.time = data.record ? this.timeFormatter.formatTimeForScore(data.record.time) : null;
         this.userService
             .getUserTheme()
-            .pipe(untilDestroyed(this))
+
             .subscribe((theme) => {
                 this.theme = theme as string;
             });
