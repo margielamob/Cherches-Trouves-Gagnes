@@ -96,7 +96,6 @@ export class GameManagerService {
     }
 
     setTimer(gameId: string, initialTime: number) {
-        console.log(initialTime);
         return this.isGameFound(gameId) ? this.timer.setTimer(this.findGame(gameId) as Game, initialTime) : null;
     }
 
@@ -118,6 +117,7 @@ export class GameManagerService {
                 // Update clients with the new timer value
                 sio.sockets.to(gameId).emit(SocketEvent.Clock, remainingTime);
             }
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
     }
     deleteTimer(gameId: string) {
@@ -253,8 +253,24 @@ export class GameManagerService {
         return this.findGame(gameId)?.nbCluesAsked;
     }
 
+    removePlayer(roomId: string, playerId: string) {
+        const game = this.findGame(roomId);
+        if (game) {
+            game.removePlayer(playerId);
+        }
+    }
+
+    isGameCreator(roomId: string, playerId: string) {
+        const game = this.findGame(roomId);
+        return game?.isGameCreator(playerId);
+    }
+
     findPlayer(gameId: string, playerId: string) {
         return this.findGame(gameId)?.findPlayer(playerId);
+    }
+
+    removeGame(gameId: string) {
+        this.games.delete(gameId);
     }
 
     private findGame(gameId: string): Game | undefined {

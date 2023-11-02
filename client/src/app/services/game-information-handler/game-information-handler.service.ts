@@ -147,7 +147,6 @@ export class GameInformationHandlerService {
     waitingRoom() {
         this.player.displayName = this.userService.activeUser.displayName;
         this.player.avatar = this.userService.activeUser.photoURL;
-        console.log(this.timer);
         this.socket.send(SocketEvent.CreateClassicGame, {
             player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
             card: { id: this.getId(), cheatMode: this.cheatMode, timer: this.timer },

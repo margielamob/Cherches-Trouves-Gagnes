@@ -50,7 +50,6 @@ export class GameCardButtonsComponent {
                 this.gameInfoHandlerService.setGameInformation(this.gameCard.gameInformation);
                 this.gameInfoHandlerService.isMulti = true;
                 this.gameInfoHandlerService.cheatMode = result.cheatMode;
-                console.log(result.duration);
                 this.gameInfoHandlerService.timer = result.duration;
                 this.gameInfoHandlerService.waitingRoom();
             }

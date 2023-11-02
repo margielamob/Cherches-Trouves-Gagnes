@@ -60,6 +60,10 @@ export class SocketManagerService {
                 await this.getJoinableGames();
             });
 
+            socket.on(SocketEvent.LeaveWaiting, (roomId: string) => {
+                this.leaveWaitingRoom(roomId, socket);
+            });
+
             socket.on(SocketEvent.Message, (message: string, roomId: string) => {
                 socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
             });
@@ -230,7 +234,6 @@ export class SocketManagerService {
             card.id,
         );
         this.gameManager.setCheatMode(roomId, card.cheatMode);
-        console.log(card.timer);
         this.gameManager.setTimer(roomId, card.timer);
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
@@ -247,12 +250,31 @@ export class SocketManagerService {
         socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
     }
 
+    async leaveWaitingRoom(roomId: string, socket: Socket) {
+        if (this.gameManager.isGameCreator(roomId, socket.id)) {
+            const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
+            socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
+            this.gameManager.removeGame(roomId);
+            this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            this.sio.in(roomId).socketsLeave(roomId);
+        } else {
+            this.gameManager.removePlayer(roomId, socket.id);
+            socket.leave(roomId);
+            const players = this.gameManager.getPlayers(roomId) || [];
+            socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+        }
+    }
+
     async getJoinableGames() {
         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
     }
 
     refreshGames() {
         this.sio.emit(SocketEvent.RefreshGames);
+    }
+
+    endGame(roomId: string) {
+        this.gameManager.removeGame(roomId);
     }
 
     private handleEndGame(gameId: string, socket: Socket): void {

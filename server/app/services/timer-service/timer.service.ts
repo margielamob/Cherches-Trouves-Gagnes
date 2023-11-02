@@ -23,7 +23,6 @@ export class TimerService {
     }
 
     setTimer(game: Game, initialTime: number) {
-        console.log(initialTime);
         this.initialTime.set(game.identifier, initialTime); // Store the initial timer value
         game.next();
     }

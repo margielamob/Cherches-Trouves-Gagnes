@@ -14,5 +14,6 @@
         </ul>
         <ng-template #noPlayers><p>No players in the waiting room.</p></ng-template>
     </div>
-    <button (click)="play()">play</button>
+    <button (click)="quit()">Quitter la partie</button>
+    <button (click)="play()" [disabled]="!canStartGame">play</button>
 </main>
