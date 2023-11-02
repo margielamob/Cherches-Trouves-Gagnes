@@ -183,6 +183,11 @@ export class SocketManagerService {
                 this.multiplayerGameManager.deleteRequest(this.multiplayerGameManager.getRoomIdWaiting(gameCard), socket.id);
             });
 
+            socket.on(SocketEvent.GameStarted, (gameId: string) => {
+                console.log('GAMESTARTED');
+                socket.emit(SocketEvent.GameStarted, gameId);
+            });
+
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
                 socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
             });
@@ -212,14 +217,14 @@ export class SocketManagerService {
                 }
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string) => {
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, ctx: CanvasRenderingContext2D) => {
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
                 }
                 const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
                 if (!differences) {
-                    socket.emit(SocketEvent.DifferenceNotFound);
+                    socket.emit(SocketEvent.DifferenceNotFound, differenceCoord, ctx);
                     this.sio
                         .to(gameId)
                         .emit(
@@ -291,8 +296,11 @@ export class SocketManagerService {
                 isMulti: false,
             };
             socket.emit(SocketEvent.Play, { gameId: id, gameCard: gameCardInfo });
+            console.log('emmited play with card');
             return;
         }
+        console.log('emmited play without card');
+
         socket.emit(SocketEvent.Play, { gameId: id });
     }
 

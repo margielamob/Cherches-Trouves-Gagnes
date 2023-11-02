@@ -1,4 +1,4 @@
-import { ReplayEvent } from '@app/interfaces/replay-actions';
+import { ReplayEvent } from './replay-interfaces';
 
 export class EventQueue {
     private queue: ReplayEvent[];

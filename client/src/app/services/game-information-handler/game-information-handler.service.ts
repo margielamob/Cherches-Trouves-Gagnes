@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ReplayActions } from '@app/enums/replay-actions';
-import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
-import { Replay2Service } from '@app/services/replay-service/replay2.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { GameId } from '@common/game-id';
 import { PublicGameInformation } from '@common/game-information';
@@ -32,8 +29,6 @@ export class GameInformationHandlerService {
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
         private readonly communicationService: CommunicationService,
-        private readonly captureService: CaptureService,
-        private readonly replayService: Replay2Service,
     ) {}
 
     propertiesAreUndefined(): boolean {
@@ -46,9 +41,6 @@ export class GameInformationHandlerService {
                 this.setGameInformation(infos.gameCard);
             }
             this.roomId = infos.gameId;
-            this.captureService.saveReplayEvent(ReplayActions.StartGame, infos.gameId);
-            this.replayService.addEvent(ReplayActions.StartGame, infos.gameId);
-            this.replayService.setStartingTime(new Date());
             this.routerService.navigateTo('game');
         });
 

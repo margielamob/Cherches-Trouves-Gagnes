@@ -2,7 +2,7 @@ export enum ReplayActions {
     StartGame = 'StartGame',
     ClickFound = 'ClickFound',
     ClickError = 'ClickError',
-    CaptureMessage = 'CaptureMessage',
+    Message = 'Message',
     ActivateCheat = 'ActivateCheat',
     DeactivateCheat = 'DeactivateCheat',
     UseHint = 'UseHint',
@@ -12,4 +12,5 @@ export enum ReplayActions {
     EndGame = 'EndGame',
     ActivateThirdHint = 'ActivateThirdHint',
     DeactivateThirdHint = 'DeactivateThirdHint',
+    EventMessage = 'EventMessage',
 }

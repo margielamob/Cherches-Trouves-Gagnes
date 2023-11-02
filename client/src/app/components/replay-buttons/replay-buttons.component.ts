@@ -13,7 +13,6 @@ export class ReplayButtonsComponent {
     replay() {
         this.replayService.backupQueue();
         this.replayService.setSate(ReplayState.PLAYING);
-        this.replayService.playEvents();
     }
 
     pause() {

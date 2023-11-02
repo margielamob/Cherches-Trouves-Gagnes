@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Theme } from '@app/enums/theme';
-import { ReplayService } from '@app/services/replay-service/replay.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { GameRecord } from '@common/game-record';
 
@@ -24,7 +23,6 @@ export class DialogGameOverComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { win: boolean; winner: string; isClassic: boolean; nbPoints: string; record: GameRecord },
         private readonly timeFormatter: TimeFormatterService,
-        private readonly replayService: ReplayService,
         public dialog: MatDialog,
     ) {
         this.isReplayPaused = false;
@@ -38,13 +36,11 @@ export class DialogGameOverComponent {
     }
 
     replay() {
-        this.replayService.startReplay();
-        this.replayService.restartTimer();
         this.dialog.closeAll();
     }
 
     leaveGame(): void {
-        this.replayService.resetReplay();
+        // this.replayService.resetReplay();
     }
 
     quitGame() {

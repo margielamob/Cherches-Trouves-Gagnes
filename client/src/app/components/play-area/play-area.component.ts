@@ -8,6 +8,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { Replay2Service } from '@app/services/replay-service/replay2.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
@@ -44,8 +45,11 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         private readonly routerService: RouterService,
         private cheatMode: CheatModeService,
         private readonly clueHandlerService: ClueHandlerService,
+        private replayService: Replay2Service,
     ) {
         this.handleSocketDifferenceFound();
+        this.replayService.listenToEvents();
+        this.communicationSocketService.send(SocketEvent.GameStarted, this.gameId);
     }
 
     get width(): number {
