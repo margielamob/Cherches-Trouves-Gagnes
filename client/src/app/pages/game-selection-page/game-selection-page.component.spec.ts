@@ -1,8 +1,11 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { GameSelectionPageComponent } from './game-selection-page.component';
 
 describe('GameSelectionPageComponent', () => {
@@ -15,7 +18,17 @@ describe('GameSelectionPageComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameSelectionPageComponent, LoadingScreenComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            imports: [AppMaterialModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 {
                     provide: GameCarouselService,

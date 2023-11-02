@@ -64,7 +64,7 @@ export class SignUpPageComponent {
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations
-                        theme: Theme.ClassName,
+                        theme: Theme.Default,
                         language: 'Fr',
                         gameLost: 0,
                         gameWins: 0,

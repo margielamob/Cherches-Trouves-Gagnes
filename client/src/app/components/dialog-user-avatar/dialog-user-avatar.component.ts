@@ -5,6 +5,7 @@ import { Avatar } from '@app/interfaces/avatar';
 import { UserData } from '@app/interfaces/user';
 import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
 import { UserService } from '@app/services/user-service/user.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dialog-user-avatar',
@@ -12,7 +13,6 @@ import { UserService } from '@app/services/user-service/user.service';
     styleUrls: ['./dialog-user-avatar.component.scss'],
 })
 export class DialogUserAvatarComponent implements OnInit {
-    title!: string;
     fileTypeError: string | null = null;
     selectedFileURL: string | null = null;
     selectedFile: File | null = null;
@@ -31,11 +31,11 @@ export class DialogUserAvatarComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: { adding: boolean; currentUserId: string },
         public dialogRef: MatDialogRef<DialogUserAvatarComponent>,
         private imageUploadService: ImageUploadService,
-        private userService: UserService,
+        private userService: UserService, //
+        private translateService: TranslateService,
     ) {}
 
     ngOnInit(): void {
-        this.title = 'Choissis ton avatar';
         this.loadFileNames();
         this.user$.subscribe((user) => {
             this.setUserAvatar(user);
@@ -106,7 +106,9 @@ export class DialogUserAvatarComponent implements OnInit {
                 this.selectedFile = file;
                 this.toggleBorder(this.defaultAvatar);
             } else {
-                this.fileTypeError = 'Invalid file type. Please select a JPG or PNG file.';
+                this.translateService.get('DIALOG_USER.ERROR').subscribe((translation) => {
+                    this.fileTypeError = translation;
+                });
             }
         }
     }

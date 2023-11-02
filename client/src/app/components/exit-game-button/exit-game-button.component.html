@@ -3,7 +3,7 @@
 </button>
 
 <ng-template #exitDialogContent>
-    <div [ngClass]="theme">
+    <div>
         <h1 mat-dialog-title>{{ exitButtonService.getTitle() }}</h1>
         <div *ngIf="exitButtonService.currentPage.waitingRoom; else otherPage">
             <div mat-dialog-content>{{ exitButtonService.getMessage() }}</div>
@@ -12,15 +12,17 @@
             <div mat-dialog-content>{{ exitButtonService.getMessage() }}</div>
         </ng-template>
         <div mat-dialog-actions align="end">
-            <button mat-raised-button mat-dialog-close color="primary">Annuler</button>
+            <button mat-raised-button mat-dialog-close color="primary">{{ 'EXIT_BTN.CANCEL' | translate }}</button>
             <div *ngIf="exitButtonService.currentPage.game">
-                <button color="primary" mat-button routerLink="/home" mat-dialog-close>Quitter</button>
+                <button color="primary" mat-button routerLink="/home" mat-dialog-close>{{ 'EXIT_BTN.LEAVE' | translate }}</button>
             </div>
             <div *ngIf="exitButtonService.currentPage.createGame">
-                <button mat-button routerLink="/admin" mat-dialog-close color="primary">Quitter</button>
+                <button mat-button routerLink="/admin" mat-dialog-close color="primary">{{ 'EXIT_BTN.LEAVE' | translate }}</button>
             </div>
             <div *ngIf="exitButtonService.currentPage.waitingRoom">
-                <button mat-button routerLink="/" mat-dialog-close color="primary" (click)="onLeaveWaiting()">Quitter</button>
+                <button mat-button routerLink="/home" mat-dialog-close color="primary" (click)="onLeaveWaiting()">
+                    {{ 'EXIT_BTN.LEAVE' | translate }}
+                </button>
             </div>
         </div>
     </div>

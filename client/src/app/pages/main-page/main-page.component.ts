@@ -21,8 +21,6 @@ import { Observable } from 'rxjs';
 export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
 
-    readonly title: string = 'Jeu de différences';
-
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly mainPageService: MainPageService,

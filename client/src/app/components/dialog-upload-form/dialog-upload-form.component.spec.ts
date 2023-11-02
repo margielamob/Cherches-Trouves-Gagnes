@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CanvasType } from '@app/enums/canvas-type';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -8,6 +8,9 @@ import { DrawService } from '@app/services/draw-service/draw-service.service';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
 import { Subject } from 'rxjs';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DialogUploadFormComponent } from './dialog-upload-form.component';
 
 describe('DialogUploadFormComponent', () => {
@@ -26,7 +29,20 @@ describe('DialogUploadFormComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: model },
                 { provide: DrawService, useValue: drawServiceSpyObj },
             ],
-            imports: [MatDialogModule, AppMaterialModule, BrowserAnimationsModule, ReactiveFormsModule],
+            imports: [
+                MatDialogModule,
+                AppMaterialModule,
+                BrowserAnimationsModule,
+                ReactiveFormsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(DialogUploadFormComponent);

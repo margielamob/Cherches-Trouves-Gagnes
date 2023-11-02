@@ -1,15 +1,17 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { ChatBoxComponent } from '@app/components/chat-box/chat-box.component';
 import { ChatMessage } from '@app/interfaces/chat-message';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Socket } from 'socket.io-client';
 class SocketClientServiceMock extends CommunicationSocketService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- connect needs to be empty (Nikolay's example)
@@ -30,7 +32,21 @@ describe('ChatBoxComponent', () => {
         spyRouter = jasmine.createSpyObj('Router', ['navigate']);
         await TestBed.configureTestingModule({
             declarations: [ChatBoxComponent],
-            imports: [AppMaterialModule, NoopAnimationsModule, FormsModule, RouterTestingModule, HttpClientModule],
+            imports: [
+                AppMaterialModule,
+                NoopAnimationsModule,
+                FormsModule,
+                RouterTestingModule,
+                HttpClientModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 { provide: CommunicationSocketService, useValue: socketServiceMock },
                 { provide: Router, useValue: spyRouter },

@@ -5,6 +5,9 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { Subject } from 'rxjs';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DifferencesAreaComponent } from './differences-area.component';
 
 describe('DifferencesAreaComponent', () => {
@@ -29,7 +32,17 @@ describe('DifferencesAreaComponent', () => {
         spyGameInfosService.getNbTotalDifferences.and.returnValue(10);
         await TestBed.configureTestingModule({
             declarations: [DifferencesAreaComponent, TimerStopwatchComponent],
-            imports: [AppMaterialModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 {
                     provide: GameInformationHandlerService,

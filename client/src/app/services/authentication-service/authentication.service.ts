@@ -3,9 +3,8 @@ import { FirebaseError } from '@angular/fire/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { Session } from '@app/interfaces/session';
 import { UserService } from '@app/services/user-service/user.service';
-import { Observable, catchError, from, map, of, switchMap, take, tap, throwError } from 'rxjs';
+import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -69,8 +68,6 @@ export class AuthenticationService {
     }
 
     signOut() {
-        const logoutTimeoutInMilliseconds = 10000;
-
         this.afAuth.authState
             .pipe(
                 tap((user) => {
@@ -81,9 +78,8 @@ export class AuthenticationService {
             .pipe(take(1))
             .subscribe(() => {
                 // sign out user
-                setTimeout(() => {
-                    this.afAuth.signOut();
-                }, logoutTimeoutInMilliseconds);
+
+                this.afAuth.signOut();
                 localStorage.removeItem('sessionToken');
                 this.router.navigate(['login']);
             });
@@ -106,52 +102,52 @@ export class AuthenticationService {
 
     // check if session token is the same as the one in firestore, if not, sign out user
 
-    checkSession(): Observable<boolean | undefined> {
-        return this.afAuth.user.pipe(
-            switchMap((user) => {
-                if (user) {
-                    const deviceToken = localStorage.getItem('sessionToken');
-                    return this.afs
-                        .doc<Session>(`session/${user.uid}`)
-                        .valueChanges()
-                        .pipe(
-                            tap((sessionData: Session | undefined) => {
-                                if (sessionData?.token !== deviceToken) {
-                                    this.signOut();
-                                }
-                            }),
-                            map((sessionData: Session | undefined) => sessionData?.token === deviceToken),
-                        );
-                }
-                return of(false);
-            }),
-        );
-    }
+    // checkSession(): Observable<boolean | undefined> {
+    //     return this.afAuth.user.pipe(
+    //         switchMap((user) => {
+    //             if (user) {
+    //                 const deviceToken = localStorage.getItem('sessionToken');
+    //                 return this.afs
+    //                     .doc<Session>(`session/${user.uid}`)
+    //                     .valueChanges()
+    //                     .pipe(
+    //                         tap((sessionData: Session | undefined) => {
+    //                             if (sessionData?.token !== deviceToken) {
+    //                                 this.signOut();
+    //                             }
+    //                         }),
+    //                         map((sessionData: Session | undefined) => sessionData?.token === deviceToken),
+    //                     );
+    //             }
+    //             return of(false);
+    //         }),
+    //     );
+    // }
 
     // listen to session changes, if session token is not the same as the one in firestore, sign out user, else do nothing
 
-    listenToSessionChanges() {
-        this.afAuth.user
-            .pipe(
-                switchMap((user) => {
-                    if (user) {
-                        return this.afs
-                            .doc<Session>(`session/${user.uid}`)
-                            .valueChanges()
-                            .pipe(
-                                tap((sessionData) => {
-                                    const deviceToken = localStorage.getItem('sessionToken');
-                                    if (sessionData?.token !== deviceToken) {
-                                        this.signOut();
-                                    }
-                                }),
-                            );
-                    }
-                    return of(null);
-                }),
-            )
-            .subscribe();
-    }
+    // listenToSessionChanges() {
+    //     this.afAuth.user
+    //         .pipe(
+    //             switchMap((user) => {
+    //                 if (user) {
+    //                     return this.afs
+    //                         .doc<Session>(`session/${user.uid}`)
+    //                         .valueChanges()
+    //                         .pipe(
+    //                             tap((sessionData) => {
+    //                                 const deviceToken = localStorage.getItem('sessionToken');
+    //                                 if (sessionData?.token !== deviceToken) {
+    //                                     this.signOut();
+    //                                 }
+    //                             }),
+    //                         );
+    //                 }
+    //                 return of(null);
+    //             }),
+    //         )
+    //         .subscribe();
+    // }
 
     // log session activity in firestore for each user
     logSessionActivity(userUid: string, activity: string) {
