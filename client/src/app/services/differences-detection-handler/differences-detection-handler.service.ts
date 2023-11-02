@@ -7,6 +7,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { Replay2Service } from '@app/services/replay-service/replay2.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 @Injectable({
@@ -23,6 +24,7 @@ export class DifferencesDetectionHandlerService {
         private readonly socketService: CommunicationSocketService,
         private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly captureService: CaptureService,
+        private readonly replayService: Replay2Service,
     ) {}
 
     setNumberDifferencesFound(isPlayerAction: boolean) {
@@ -58,6 +60,7 @@ export class DifferencesDetectionHandlerService {
         this.playWrongSound();
         const isMainCanvas = false;
         this.captureService.saveReplayEvent(ReplayActions.ClickError, { isMainCanvas, pos: mousePosition });
+        this.replayService.addEvent(ReplayActions.ClickError, { isMainCanvas, pos: mousePosition, ctx });
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);
         this.mouseIsDisabled = true;

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
-import { ReplayService } from '@app/services/replay-service/replay.service';
 
 @Component({
     selector: 'app-differences-area',
@@ -13,33 +12,7 @@ export class DifferencesAreaComponent {
     players: { name: string; nbDifference: string }[];
     private mainPlayer: { name: string; nbDifferences: number };
     private opponentPlayer: { name: string; nbDifferences: number };
-    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService, private replayService: ReplayService) {
-        this.setPlayersInfo();
-        this.replayService.isReplaying$.subscribe((isReplaying) => {
-            console.log('isreplaying');
-            this.isReplayActivated = isReplaying;
-            this.mainPlayer.nbDifferences = 0;
-            this.opponentPlayer.nbDifferences = 0;
-        });
-        this.replayService.replayDifferenceFound$.subscribe((difference) => {
-            if (difference) {
-                console.log('replaydifferencefound', difference);
-                this.isReplayActivated = true;
-                this.mainPlayer.nbDifferences = difference;
-            } else {
-                this.isReplayActivated = false;
-            }
-        });
-        this.replayService.replayOpponentDifferenceFound$.subscribe((difference) => {
-            if (difference) {
-                console.log('replayopponentdifferencefound', difference);
-                this.isReplayActivated = true;
-                this.opponentPlayer.nbDifferences = difference;
-            } else {
-                this.isReplayActivated = false;
-            }
-        });
-    }
+    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService) {}
 
     setPlayersInfo() {
         this.mainPlayer = this.gameInformationHandlerService.getPlayer();

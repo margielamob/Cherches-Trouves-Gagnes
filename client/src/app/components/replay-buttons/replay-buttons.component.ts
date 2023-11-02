@@ -1,70 +1,38 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { REPLAY_SPEEDS, SPEED_X1, WAITING_TIME } from '@app/constants/replay';
-import { ReplayService } from '@app/services/replay-service/replay.service';
+import { Component, Input } from '@angular/core';
+import { Replay2Service, ReplayState } from '@app/services/replay-service/replay2.service';
 
 @Component({
     selector: 'app-replay-buttons',
     templateUrl: './replay-buttons.component.html',
     styleUrls: ['./replay-buttons.component.scss'],
 })
-export class ReplayButtonsComponent implements OnInit, OnDestroy {
+export class ReplayButtonsComponent {
     @Input() isReplayAvailable: boolean;
-    isReplayButtonDisabled: boolean;
-    isReplayPaused: boolean;
-    replaySpeeds: number[];
-    replaySpeed: number;
-    isReplay = false;
-    constructor(private readonly replayService: ReplayService) {
-        this.isReplayAvailable = false;
-        this.isReplayPaused = false;
-        this.replaySpeeds = REPLAY_SPEEDS;
+    constructor(private readonly replayService: Replay2Service) {}
 
-        this.replayService.isReplaying$.subscribe((isReplaying) => {
-            this.isReplay = isReplaying;
-        });
-    }
-
-    ngOnInit() {
-        this.replaySpeed = SPEED_X1;
-    }
-
-    replay(isMidReplay: boolean) {
-        if (isMidReplay) {
-            this.replayService.restartReplay();
-        } else {
-            this.replayService.startReplay();
-        }
-        this.replayService.restartTimer();
-        this.isReplayPaused = false;
-        this.isReplayButtonDisabled = true;
-        setTimeout(() => {
-            this.isReplayButtonDisabled = false;
-        }, WAITING_TIME);
+    replay() {
+        this.replayService.backupQueue();
+        this.replayService.setSate(ReplayState.PLAYING);
+        this.replayService.playEvents();
     }
 
     pause() {
-        this.isReplayPaused = !this.isReplayPaused;
-        this.replayService.pauseReplay();
+        this.replayService.setSate(ReplayState.PAUSED);
     }
 
     resume() {
-        this.isReplayPaused = !this.isReplayPaused;
-        this.replayService.resumeReplay();
+        this.replayService.setSate(ReplayState.PLAYING);
     }
 
     quit() {
-        this.replayService.resetReplay();
+        this.replayService.setSate(ReplayState.STOPPED);
     }
 
     isReplaying(): boolean {
-        return this.isReplay;
+        return this.replayService.state === ReplayState.PLAYING;
     }
 
-    setSpeed(speed: number) {
-        this.replayService.upSpeed(speed);
-    }
-
-    ngOnDestroy() {
-        this.replayService.resetReplay();
+    isPaused(): boolean {
+        return this.replayService.state === ReplayState.PAUSED;
     }
 }

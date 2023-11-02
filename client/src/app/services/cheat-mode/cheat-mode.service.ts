@@ -4,6 +4,7 @@ import { CaptureService } from '@app/services/capture-service/capture.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { Replay2Service } from '@app/services/replay-service/replay2.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 
@@ -21,6 +22,7 @@ export class CheatModeService {
         private socket: CommunicationSocketService,
         private gameInformationHandler: GameInformationHandlerService,
         private captureService: CaptureService,
+        private replayService: Replay2Service,
     ) {}
 
     async manageCheatMode(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D): Promise<void> {
@@ -30,6 +32,7 @@ export class CheatModeService {
     stopCheatModeDifference(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, difference: Coordinate[]) {
         this.findClocksDifference(difference)?.clocks.forEach((clock: number) => clearInterval(clock));
         this.captureService.saveReplayEvent(ReplayActions.DeactivateCheat, difference);
+        this.replayService.addEvent(ReplayActions.DeactivateCheat, difference);
         for (const coord of difference) {
             ctx.clearRect(coord.x, coord.y, 1, 1);
             ctxModified.clearRect(coord.x, coord.y, 1, 1);
