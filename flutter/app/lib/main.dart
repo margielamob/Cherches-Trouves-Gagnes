@@ -73,11 +73,10 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginPage(),
         '/classic': (context) => Classic(
-            bmpOriginalId: "c8bf53b7-2424-4e3f-8362-829410c27332",
-            bmpModifiedId: "37c82484-45b1-4e39-81a5-7d6d7242c127"),
+            bmpOriginalId: "b72c2106-f4f1-4a34-9797-f795ce24e1dd",
+            bmpModifiedId: "0f811652-a757-48d1-b348-51b5db40c9ee"),
         '/gameSelection': (context) => GameSelectionPage(),
         '/create': (context) => CreateGamePage(),
-        '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
         '/signUpPage': (context) => SignUpPage(),
@@ -86,23 +85,6 @@ class MyApp extends StatelessWidget {
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
       },
-    );
-  }
-}
-
-class PageB extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Page B'),
-      ),
-      body: Center(
-        child: Text(
-          'This is Page B',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
     );
   }
 }

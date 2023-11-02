@@ -1,8 +1,9 @@
+import 'package:app/domain/utils/base_url.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
   late IO.Socket socket;
-  String serverUrl = 'http://localhost:3000';
+  String serverUrl = BaseURL.socket;
 
   SocketService() {
     socket = IO.io(serverUrl, <String, dynamic>{
