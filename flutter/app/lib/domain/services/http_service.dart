@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:app/domain/models/carousel_request_model.dart';
 import 'package:app/domain/models/game_image_model.dart';
+import 'package:app/domain/utils/base_url.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
-  final String baseUri = 'http://localhost:3000/api';
+  final String baseUri = BaseURL.httpServer;
 
   Future<CarouselRequestModel> fetchCarouselByPage(int page) async {
     final response =
