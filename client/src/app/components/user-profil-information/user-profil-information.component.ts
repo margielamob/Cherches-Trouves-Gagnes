@@ -50,12 +50,14 @@ export class UserProfilInformationComponent implements OnInit {
         });
 
         this.userService.getUserLang().subscribe((lang) => {
-            this.curruntLanguage = lang === 'Fr' ? 'Français' : 'English';
+            const langValue = lang || 'Fr';
+            this.curruntLanguage = langValue === 'Fr' ? 'Français' : 'English';
             this.settingsForm.controls.language.setValue(this.curruntLanguage);
         });
 
         this.userService.getUserTheme().subscribe((theme) => {
-            this.curruntTheme = theme == null ? '' : theme;
+            const themeValue = theme || 'Default';
+            this.curruntTheme = themeValue as string;
             this.settingsForm.controls.theme.setValue(this.curruntTheme);
         });
     }
