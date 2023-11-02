@@ -63,9 +63,9 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageD');
+                        Navigator.pushNamed(context, '/ProfilePage');
                       },
-                      child: Text('Go to Page D'),
+                      child: Text('Page de profile'),
                     ),
                     SizedBox(height: 30),
                     Column(
