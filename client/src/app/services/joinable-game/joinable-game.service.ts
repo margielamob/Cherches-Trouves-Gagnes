@@ -26,7 +26,6 @@ export class JoinableGameService {
         });
 
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
-            console.log(payload.games.length);
             this._joinableGames.next(payload.games);
         });
     }

@@ -60,7 +60,7 @@ export class SocketManagerService {
                 await this.getJoinableGames();
             });
 
-            socket.on(SocketEvent.LeaveWaiting, (roomId: string) => {
+            socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
                 this.leaveWaitingRoom(roomId, socket);
             });
 
@@ -138,6 +138,9 @@ export class SocketManagerService {
                     socket.leave(gameId);
                     this.gameManager.leaveGame(socket.id, gameId);
                 }
+                this.sio.in(gameId).socketsLeave(gameId);
+                this.gameManager.removeJoinableGame(gameId);
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
@@ -254,7 +257,7 @@ export class SocketManagerService {
         if (this.gameManager.isGameCreator(roomId, socket.id)) {
             const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
             socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
-            this.gameManager.removeGame(roomId);
+            this.gameManager.removeJoinableGame(roomId);
             this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             this.sio.in(roomId).socketsLeave(roomId);
         } else {

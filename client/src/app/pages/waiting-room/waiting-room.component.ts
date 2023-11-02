@@ -72,7 +72,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.socketService.send(SocketEvent.Ready, { roomId: this.gameInformationHandlerService.roomId });
     }
     quit() {
-        this.socketService.send(SocketEvent.LeaveWaiting, {
+        this.socketService.send(SocketEvent.LeaveWaitingRoom, {
             roomId: this.gameInformationHandlerService.roomId,
             name: this.gameInformationHandlerService.getPlayer().name,
         });

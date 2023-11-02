@@ -269,6 +269,9 @@ export class GameManagerService {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
+    removeJoinableGame(gameId: string) {
+        this.joinableGames.delete(gameId);
+    }
     removeGame(gameId: string) {
         this.games.delete(gameId);
     }
