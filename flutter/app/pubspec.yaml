@@ -30,6 +30,7 @@ dependencies:
     lzstring: ^2.0.0+2
     mockito: ^5.4.2
     socket_io_client: ^2.0.3+1
+    audioplayers: ^5.2.0
 
 dev_dependencies:
     flutter_test:
@@ -41,3 +42,5 @@ flutter:
     uses-material-design: true
     assets:
         - assets/
+        - assets/sounds/
+        - assets/avatar-predefini/
