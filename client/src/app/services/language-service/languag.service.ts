@@ -9,7 +9,7 @@ export class LanguageService {
     constructor(private translateService: TranslateService) {}
 
     setAppLanguage(lang: string) {
-        if (!lang) this.currunetLanguage = 'Fr';
+        if (!lang) lang = 'Fr';
         this.translateService.setDefaultLang(lang);
         this.translateService.use(lang);
         this.setCurrentLanguage(lang);
