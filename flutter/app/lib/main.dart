@@ -5,6 +5,7 @@ import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/socket_service.dart';
+import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/user_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
@@ -32,6 +33,7 @@ void registerDependencies() {
   Get.put(CarouselService());
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
+  Get.put(SoundService());
 }
 
 late List<CameraDescription> cameras;

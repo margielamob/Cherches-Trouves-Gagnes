@@ -58,9 +58,9 @@ class Classic extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GameVignetteOriginal(images),
+                          GameVignetteOriginal(images, "fake-game-id"),
                           SizedBox(width: 50),
-                          GameVignetteModified(images),
+                          GameVignetteModified(images, "fake-game-id"),
                         ],
                       ),
                       SizedBox(height: 20),

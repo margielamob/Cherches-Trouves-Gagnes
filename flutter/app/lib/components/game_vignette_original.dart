@@ -1,6 +1,7 @@
 import 'package:app/components/game_vignette.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/utils/test_data.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,10 @@ class _ForegroundPainter extends CustomPainter {
 }
 
 class GameVignetteOriginal extends GameVignette {
-  GameVignetteOriginal(images) : super(images);
+  GameVignetteOriginal(images, this.gameId) : super(images);
+  final DifferenceDetectionService diffService = Get.find();
+  final SoundService soundService = Get.find();
+  final String gameId;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,13 @@ class GameVignetteOriginal extends GameVignette {
                   GameVignette.tabletScalingRatio;
               y.value = details.localPosition.dy.toDouble() /
                   GameVignette.tabletScalingRatio;
+              if (diffService.validate(Vec2(x: x.value, y: y.value), gameId)) {
+                soundService.playDifferenceFound();
+                // blink differences
+              } else {
+                soundService.playDifferenceFound();
+                // write different
+              }
             },
             child: SizedBox(
               width: images.original.width.toDouble() *
