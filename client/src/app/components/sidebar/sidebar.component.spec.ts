@@ -1,5 +1,7 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { CluesAreaComponent } from '@app/components/clues-area/clues-area.component';
 import { DifferencesAreaComponent } from '@app/components/differences-area/differences-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
@@ -8,6 +10,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { ScoreType } from '@common/score-type';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
 describe('SidebarComponent', () => {
@@ -45,7 +48,18 @@ describe('SidebarComponent', () => {
         spyGameInfosService.gameTimeConstants = { gameTime: 30, penaltyTime: 3, successTime: 3 };
         await TestBed.configureTestingModule({
             declarations: [SidebarComponent, DifferencesAreaComponent, TimerStopwatchComponent, CluesAreaComponent],
-            imports: [AppMaterialModule, HttpClientTestingModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientTestingModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 {
                     provide: GameInformationHandlerService,

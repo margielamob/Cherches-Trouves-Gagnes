@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
 import { AdminService } from '@app/services/admin-service/admin.service';
 
 @Component({
@@ -9,11 +8,7 @@ import { AdminService } from '@app/services/admin-service/admin.service';
     styleUrls: ['./confirm-delete-dialog.component.scss'],
 })
 export class ConfirmDeleteDialogComponent {
-    theme: string;
-
-    constructor(@Inject(MAT_DIALOG_DATA) public data: { gameId: string; singleGameDelete: boolean }, private readonly adminService: AdminService) {
-        this.theme = Theme.ClassName;
-    }
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { gameId: string; singleGameDelete: boolean }, private readonly adminService: AdminService) {}
 
     deleteAllGames(): void {
         this.adminService.deleteAllGames();

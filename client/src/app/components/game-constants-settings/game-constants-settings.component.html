@@ -1,9 +1,9 @@
-<section [ngClass]="favoriteTheme">
-    <h2 class="title">Modifier les constantes de jeu</h2>
+<section>
+    <h2 class="title">{{ 'GAME_CONSTANTS.TITLE' | translate }}</h2>
 
     <div class="main-timer-container timer-container">
         <app-game-constant-field
-            [label]="'Temps de base du jeu (secondes)'"
+            [label]="'GAME_CONSTANTS.BASE_TIME' | translate"
             [value]="gameTimeConstants.gameTime"
             (valueChange)="gameTimeConstants.gameTime = $event"
             [min]="gameTimeConstantsParams.gameTimeMin"
@@ -14,7 +14,7 @@
 
     <div class="success-timer-container timer-container">
         <app-game-constant-field
-            [label]="'Temps bonus lors de la détection d\'une différence (secondes)'"
+            [label]="'GAME_CONSTANTS.BONUS_TIME' | translate"
             [value]="gameTimeConstants.successTime"
             (valueChange)="gameTimeConstants.successTime = $event"
             [min]="gameTimeConstantsParams.successTimeMin"
@@ -25,7 +25,7 @@
 
     <div class="penalty-timer-container timer-container">
         <app-game-constant-field
-            [label]="'Temps de pénalité lors de la demande d\'une indice (secondes)'"
+            [label]="'GAME_CONSTANTS.PENALTY_TIME' | translate"
             [value]="gameTimeConstants.penaltyTime"
             (valueChange)="gameTimeConstants.penaltyTime = $event"
             [min]="gameTimeConstantsParams.penaltyTimeMin"
@@ -35,26 +35,34 @@
     </div>
 
     <div class="buttons-controls-container">
-        <button class="close-button control-button" mat-flat-button matTooltip="Fermer le menu" color="primary" mat-dialog-close>Fermer</button>
+        <button
+            class="close-button control-button"
+            mat-flat-button
+            matTooltip="{{ 'GAME_CONSTANTS.CLOSE_MENU' | translate }}"
+            color="primary"
+            mat-dialog-close
+        >
+            {{ 'GAME_CONSTANTS.CLOSE' | translate }}
+        </button>
         <button
             class="default-button control-button"
             mat-flat-button
-            matTooltip="Restaurer les valeurs par défaut"
+            matTooltip="{{ 'GAME_CONSTANTS.DEFAULT' | translate }}"
             color="primary"
             [disabled]="isDefaultValues()"
             (click)="onClickRestoreDefaultValues()"
         >
-            Défaut
+            {{ 'GAME_CONSTANTS.DEFAULT_LABEL' | translate }}
         </button>
         <button
             class="change-button control-button"
             mat-flat-button
-            matTooltip="Appliquer les changements"
+            matTooltip="{{ 'GAME_CONSTANTS.' | translate }}"
             color="primary"
             (click)="setGameTimeConstants()"
             mat-dialog-close
         >
-            Appliquer
+            {{ 'GAME_CONSTANTS.APPLY' | translate }}
         </button>
     </div>
 </section>

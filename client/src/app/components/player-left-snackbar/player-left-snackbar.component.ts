@@ -17,4 +17,12 @@ export class PlayerLeftSnackbarComponent {
             ? 'Le joueur a quitté la partie. Vous jouez maintenant en solo.'
             : 'Le joueur a quitté la partie.';
     }
+
+    //     import { TranslateService } from '@ngx-translate/core';
+
+    // constructor(private translate: TranslateService) { }
+
+    // messageSnackBar() {
+    //     const key = this.gameInfoHandlerService.isLimitedTime() ? 'SOLO_MODE' : 'NORMAL_MODE';
+    //     return this.translate.instant(key);
 }

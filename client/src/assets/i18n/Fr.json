@@ -1,0 +1,242 @@
+{
+    "CONFIG": {
+        "TITLE": "Configuration du compte",
+        "AVATAR": "Avatar",
+        "USERNAME": "Nom d'utilisateur",
+        "THEME": "Thème",
+        "LANGUAGE": "Langue",
+        "SAVE": "Enregistrer la configuration",
+        "DELETE": "Supprimer le compte",
+        "SELECT_THEME": "Selectionner un thème",
+        "SELECT_LANG": "Selectionner une langue"
+    },
+
+    "STATISTICS": {
+        "TITLE": "Statistique du compte",
+        "PLAYED_GAMES": "Parties jouées",
+        "WON_GAMES": "Parties gagnées",
+        "AVERAGE_TIME": "Temps moyen",
+        "AVERAGE_DiFFERENCE": "moyenne des différences trouvé par partie"
+    },
+
+    "MAINPAGE": {
+        "TITLE": "Le jeux de différences",
+        "TEAM": "L'équipe 106 :",
+        "CLASSIC": "Classique",
+        "LIMITED_TIME": "Temps limité",
+        "ADMINISTRATION": "Administration",
+        "SETTINGS": "Paramètres"
+    },
+
+    "ADMIN_COMMANDS": {
+        "CREATE": "Créer un nouveau jeu",
+        "DELETE": "Supprimer un jeu",
+        "RESET": "Réinitialiser les temps record",
+        "UPDATE": "Modifier les paramètres d'un jeu"
+    },
+
+    "APPROUVAL_DIALOG": {
+        "YES": "Oui",
+        "NO": "Non",
+        "PLAYER_FOUND": "Joueur trouvé",
+        "PLAY_AGAINST_PLAYER": "Voulez-vous jouer contre : <b>{{ opponentsName }}</b>"
+    },
+
+    "CHAT-BOX": {
+        "Write_MESSAGE": "Entrez un message...",
+        "DIFFERENCE_FOUND": "Différence trouvée à {{time}}",
+        "DIFFERENCE_FOUND_BY": "Différence trouvée par {{userName}} à {{time}}",
+        "ERROR": "Erreur à {{time}}",
+        "ERROR_BY": "Erreur par {{userName}} à {{time}}",
+        "LEAVING_GAME": "{{userName}} a abandonné la partie à {{time}}",
+        "USING_CLUE": "{{time}} - Indice Utilisé",
+        "NEW_HIGH_SCORE": "{{time}} - {{playerName}} obtient la {{recordIndex}} place dans les meilleurs temps du jeu {{gameName}} en {{gameMode}}"
+    },
+
+    "CLUES-AREA": {
+        "CLUES": "Demander un Indice"
+    },
+
+    "COMMON_TOOL_BOX": {
+        "DELETE": "Supprimer",
+        "DRAW": "Dessiner",
+        "ADD_BACKGROUND": "Ajouter tous les arrière-plans",
+        "RESET_BACKGROUND": "Réinitialiser tous les arrière-plans"
+    },
+
+    "CONFIRM_DELETE_DIALOG": {
+        "TITLE": "Êtes-vous certain de vouloir supprimer ?",
+        "MESSAGE": "La suppression ne peut pas être restaurée.",
+        "DELETE": "Supprimer",
+        "CANCEL": "Annuler"
+    },
+
+    "CONFIRM_CREATE_DIALOG": {
+        "TITLE": "Validation des differences",
+        "MESSAGE": "Il y a {{nbDifference}} differences dans ce jeu",
+        "ERROR": "Le nom du jeu doit contenir des lettres",
+        "CREATE": "Créer la partie",
+        "CANCEL": "Annuler"
+    },
+
+    "DELETE_ACCOUNT_DIALOG": {
+        "TITLE": "Supprimer le compte",
+        "MESSAGE": "Êtes-vous certain de vouloir supprimer votre compte ?",
+        "DELETE": "Supprimer",
+        "CANCEL": "Annuler"
+    },
+
+    "GAME_OVER_DIALOG": {
+        "TITLE": "Partie terminée",
+        "WON": "Vous avez gagné",
+        "LOST": "Vous avez perdu",
+        "LEAVE": "Quitter",
+        "RANK": " Vous avez gagné en <b>{{ time }}</b>, vous êtes maintenant à la position <b>{{ index }}</b>.",
+        "NOT_CLASSIC": {
+            "MESSAGE": " Félicitations, vous avez trouvé <b>{{ nbPoints }}</b> différence(s) !"
+        },
+        "CLASSIC": {
+            "MESSAGE": "Le vainqueur est : {{ winner }}",
+            "WINNER": "Tu es le vainqueur !",
+            "LOOSER": "Le vainqueur est : {{ winner }}."
+        }
+    },
+
+    "LIMNITED_TIME": {
+        "TITLE": "En quel mode de jeu voulez-vous jouer ?",
+        "SOLO": "Solo",
+        "COOP": "Coopération"
+    },
+
+    "UPLOAD_DIALOG": {
+        "TITLE": "Upload a 24-bit BMP image of size 640x480",
+        "NOT_BITMAP": "Le type d'image doit être un bitmap (.bmp)",
+        "NOT_24BITS": "L'image doit être en 24 bits",
+        "SIZE": "La taille d'image doit être de 640x480",
+        "CANCEL": "Annuler",
+        "UPLOAD": "Télécharger"
+    },
+
+    "DIALOG_USER": {
+        "TITLE": "Choissis ton avatar",
+        "ERROR": "Type invalid. Selectionner une image de type  JPG ou PNG."
+    },
+
+    "DIFFERENCE_AREA": {
+        "NAME": "Nom du joueur : {{ name }}"
+    },
+
+    "EXIT_BTN": {
+        "LEAVE": "Quitter",
+        "CANCEL": "Annuler"
+    },
+    "GAME_CARD": {
+        "BEST_SCORE": "Meilleur score"
+    },
+
+    "GAME_CARD_BTN": {
+        "DELETE": "Supprimer le jeu",
+        "RESET": "Réinitialiser les records",
+        "PLAY": "Jouer",
+        "JOIN": "Joindre",
+        "CREATE": "Créer le jeu"
+    },
+    "GAME_CAROUSEL": {
+        "COUNT": "Nombre de jeux : {{ count }}",
+        "EMPTY": "Aucun jeu disponible !",
+        "CREATE": "Créer un jeu"
+    },
+
+    "GAME_CONSTANTS": {
+        "TITLE": "Modifier les constantes de jeu",
+        "BASE_TIME": "Temps de base du jeu (secondes)",
+        "BONUS_TIME": "Temps bonus lors de la détection d'une différence (secondes)",
+        "PENALTY_TIME": "Temps pénalisé lors de la demande d'un indice (secondes)",
+        "CLOSE_MENU": "Fermer le menu",
+        "CLOSE": "Fermer",
+        "DEFAULT": "Restaurer les valeurs par défaut",
+        "DEFAULT_LABEL": "Valeur par défaut",
+        "APPLY": "Appliquer les changements"
+    },
+
+    "NO_GAME_SNACKBAR": {
+        "TITLE": "Aucun jeu disponible !",
+        "CREATE": "Créer un jeu"
+    },
+
+    "PLAY_AREA": {
+        "POSITION": "<strong>La différence se trouve à la position {{ clue }}</strong>"
+    },
+
+    "REFRESH_SNACKBAR": {
+        "TITLE": "Un jeu a été ajouté ou supprimé."
+    },
+
+    "REDIRECT_DIALOG": {
+        "CLASSIC": "Retour sur la page de séléction",
+        "NOT_CLASSIC": "Retour à l'accueil",
+        "REASON": "Vous avez été redirigés car {{ reason }}"
+    },
+
+    "SIDEBAR": {
+        "GAME_INFO": "Informations sur le jeu",
+        "NAME": "Nom de jeu: <b>{{ gameName }}</b>",
+        "MODE": "Mode de jeu: <b>{{ gameMode }}</b>",
+        "PENALTY": "Temps de pénalité ajouté : <b>{{ penaltyTime }} secondes</b>",
+        "BONUS_TIME": "Temps gagné par différence trouvé : <b>{{ differenceTime }} secondes</b>"
+    },
+    "TOOLBOX": {
+        "RESET_FRONT": "Réinitialiser avant-plan",
+        "PASTE": "Coller l'avant-plan externe",
+        "ADD": "Ajouter arrière-plan",
+        "RESET_BACK": "Réinitialiser arrière-plan"
+    },
+
+    "USER_NAME": {
+        "PLACEHOLDER": "Nom d'utilisateur",
+        "ERROR": "Entrez un nom valide",
+        "CANCEL": "Annuler",
+        "CONTINUE": "Continuer"
+    },
+
+    "CREATE_GAME_PAGE": {
+        "HEADER_MESSAGE": "Création de partie",
+        "DRAWING_BOARD": "Tableau de dessin #1",
+        "DRAWING_BOARD_2": "Tableau de dessin #2",
+        "VALIDATE": "Valider",
+        "RADIUS": {
+            "LABEL": "Choisir le rayon d'élargissement",
+            "VALUE0": "0px rayon d'élargissement",
+            "VALUE3": "3px rayon d'élargissement",
+            "VALUE9": "9px rayon d'élargissement",
+            "VALUE15": "15px rayon d'élargissement"
+        }
+    },
+
+    "HEADER": {
+        "GAME_SELECTION": "Sélectionnez votre jeu",
+        "SETTINGS": "Paramètres",
+        "WAITING_ROOM": "Salle d'attente",
+        "HOME": "Accueil"
+    },
+
+    "SERVER": {
+        "ERROR": "Erreur de connexion",
+        "MESSAGE": "La connection avec la base de donnée n'est pas établie. Veuillez réessayer plus tard.",
+        "HOME": "Accueil",
+        "WAITING_MESSAGE": "En attente d'un autre joueur..."
+    },
+
+    "THEMES": {
+        "ALTERNATIVE": "Alternative",
+        "DEFAULT": "Par défaut"
+    },
+
+    "GAME_MODE": {
+        "CLASSIQUE": "Classique",
+        "TEMPSLIMITÉ": "Temps limité",
+        "SOLO": "Solo",
+        "COOP": "Coopération",
+        "MULTIPLAYER": "Multijoueur"
+    }
+}

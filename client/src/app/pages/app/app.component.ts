@@ -1,38 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { Theme } from '@app/enums/theme';
-import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { LanguageService } from '@app/services/language-service/languag.service';
+import { UserService } from '@app/services/user-service/user.service';
+import { Subscription, take } from 'rxjs';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-    favoriteTheme: string = Theme.ClassName;
+export class AppComponent implements OnInit, OnDestroy {
+    currentTheme: string = 'default';
+    userThemeSubscription: Subscription;
 
-    constructor(private auth: AuthenticationService) {}
+    constructor(private langService: LanguageService, public userService: UserService) {}
     ngOnInit(): void {
-        // listen to session changes
-        this.auth.listenToSessionChanges();
+        this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
+            this.currentTheme = theme as string;
+        });
+        this.userService
+            .getUserLang()
+            .pipe(take(1))
+            .subscribe((lang) => {
+                this.langService.setAppLanguage(lang as string);
+            });
+    }
 
-        // i'm not using this for now, but i'll keep it here just in case
-
-        // // automaticly sign out user when page is closed
-        // const closeTabEvent = fromEvent(window, 'beforeunload');
-
-        // closeTabEvent
-        //     .pipe(takeUntil(closeTabEvent))
-        //     .pipe(take(1))
-        //     .subscribe(() => {
-        //         this.auth.signOut();
-        //     });
-
-        // automaticly sign out user when page is reloaded
-
-        // if (localStorage.getItem('isLoadedBefore')) {
-        //     this.auth.signOut();
-        // } else {
-        //     localStorage.setItem('isLoadedBefore', 'true');
-        // }
+    ngOnDestroy(): void {
+        if (this.userThemeSubscription) {
+            this.userThemeSubscription.unsubscribe();
+        }
     }
 }

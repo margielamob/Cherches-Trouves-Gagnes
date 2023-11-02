@@ -1,4 +1,4 @@
 export enum Theme {
-    ClassName = 'deeppurple-amber-theme',
+    Alternative = 'pink-bluegrey-theme',
     Default = 'deeppurple-amber-theme',
 }

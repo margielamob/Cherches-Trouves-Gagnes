@@ -1,11 +1,13 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CluesAreaComponent } from './clues-area.component';
@@ -30,7 +32,18 @@ describe('CluesAreaComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [CluesAreaComponent],
-            imports: [AppMaterialModule, RouterTestingModule, HttpClientModule],
+            imports: [
+                AppMaterialModule,
+                RouterTestingModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 { provide: CommunicationSocketService, useValue: socketServiceMock },
                 { provide: Router, useValue: spyRouter },

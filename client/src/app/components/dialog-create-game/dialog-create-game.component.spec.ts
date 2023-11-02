@@ -1,14 +1,17 @@
-import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { HttpLoaderFactory } from '@app/app.module';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { Canvas } from '@app/enums/canvas';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationService } from '@app/services/communication/communication.service';
+import { UserService } from '@app/services/user-service/user.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { DialogCreateGameComponent } from './dialog-create-game.component';
 
@@ -36,8 +39,23 @@ describe('DialogCreateGameComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: model },
                 { provide: CommunicationService, useValue: spyCommunicationService },
                 { provide: Router, useValue: spyRouter },
+                UserService,
             ],
-            imports: [AppMaterialModule, BrowserAnimationsModule, HttpClientModule, FormsModule, ReactiveFormsModule],
+            imports: [
+                AppMaterialModule,
+                BrowserAnimationsModule,
+                HttpClientModule,
+                FormsModule,
+                ReactiveFormsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
         fixture = TestBed.createComponent(DialogCreateGameComponent);
         component = fixture.componentInstance;
