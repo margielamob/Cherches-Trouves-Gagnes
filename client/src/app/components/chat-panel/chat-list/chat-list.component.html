@@ -10,8 +10,8 @@
     </mat-toolbar>
 
     <mat-list class="list-wrapper">
-        <div class="room" *ngFor="let room of rooms" (click)="selectRoom(room)">
-            <span matListItemTitle class="room-name">{{ room }}</span>
-        </div>
+        <!-- <div class="room" *ngFor="let room of rooms" (click)="selectRoom(room)"> -->
+        <app-room-card class="room" *ngFor="let room of rooms" [room]="room"></app-room-card>
+        <!-- </div> -->
     </mat-list>
 </div>

@@ -3,13 +3,14 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UserService {
     user$: Observable<UserData | undefined>;
+    activeUser: UserData;
     constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
         this.user$ = this.afAuth.authState.pipe(
             switchMap((user) => {
@@ -20,6 +21,10 @@ export class UserService {
                 }
             }),
         );
+        this.user$.subscribe((user) => {
+            console.log('user', user);
+            this.activeUser = user || ({} as UserData);
+        });
     }
 
     adduser(user: UserData) {
@@ -133,5 +138,17 @@ export class UserService {
 
     getCurrentUser(): Observable<UserData | undefined> {
         return this.user$;
+    }
+
+    getCurrentUserUsername(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((userData) => {
+                if (userData) {
+                    return of(userData.displayName);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
     }
 }

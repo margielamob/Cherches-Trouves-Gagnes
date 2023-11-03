@@ -1,12 +1,17 @@
 export interface ChatMessage {
     message: string;
-    user: string;
+    user: string | undefined;
     room: string;
 }
 
 export interface ChatRoom {
-    name: string;
+    info: ChatRoomInfo;
     messages: ChatMessage[];
+}
+
+export interface ChatRoomInfo {
+    name: string;
+    lastMessage?: ChatMessage;
 }
 
 export interface ChatUser {

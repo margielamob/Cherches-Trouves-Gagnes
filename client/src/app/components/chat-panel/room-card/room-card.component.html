@@ -1,0 +1,17 @@
+<div class="content" (click)="selectRoom(room)">
+    <span class="room-name">{{ room }}</span>
+    <span class="spacer"></span>
+</div>
+<button class="more" *ngIf="room !== 'all'" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options">
+    <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="leaveRoom()">
+        <mat-icon>logout</mat-icon>
+        <span>Quitter</span>
+    </button>
+    <button mat-menu-item (click)="deleteRoom()">
+        <mat-icon>delete</mat-icon>
+        <span>Supprimer</span>
+    </button>
+</mat-menu>

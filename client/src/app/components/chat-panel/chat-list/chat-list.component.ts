@@ -8,12 +8,12 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
     styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent implements OnInit {
-    rooms: string[] = this.chatManager.roomList.value;
+    rooms: string[] = this.chatManager.userRoomList.value;
 
     constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
     ngOnInit(): void {
-        this.chatManager.roomList.subscribe((rooms) => {
+        this.chatManager.userRoomList.subscribe((rooms) => {
             this.rooms = rooms;
         });
     }

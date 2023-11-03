@@ -69,6 +69,7 @@ import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
 import { ChatOverlayComponent } from './components/chat-panel/chat-overlay/chat-overlay.component';
 import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-button.component';
+import { RoomCardComponent } from './components/chat-panel/room-card/room-card.component';
 
 /**
  * Main module that is used in main.ts.
@@ -137,6 +138,7 @@ import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-bu
         DialogDeleteAccountComponent,
         ChatOverlayComponent,
         ChatButtonComponent,
+        RoomCardComponent,
     ],
     imports: [
         AppMaterialModule,

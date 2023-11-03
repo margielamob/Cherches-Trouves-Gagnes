@@ -38,4 +38,12 @@ export enum SocketEvent {
     JoinRooms = 'JoinRooms',
     RoomJoined = 'RoomJoined',
     NewRoom = 'NewRoom',
+    LeaveRoom = 'LeaveRoom',
+    DeleteRoom = 'DeleteRoom',
+    UpdateAllRooms = 'UpdateAllRooms',
+    UpdateUserRooms = 'UpdateUserRooms',
+    GetAllRooms = 'GetAllRooms',
+    InitiateChat = 'InitiateChat',
+    InitChat = 'InitChat',
+    RoomDeleted = 'RoomDeleted',
 }

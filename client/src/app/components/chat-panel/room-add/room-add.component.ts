@@ -8,14 +8,14 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
     styleUrls: ['./room-add.component.scss'],
 })
 export class RoomAddComponent implements OnInit {
-    unjoinedRooms: string[] = this.chatManager.allRoomsList.value.filter((room: string) => !this.chatManager.roomList.value.includes(room));
+    unjoinedRooms: string[] = this.chatManager.allRoomsList.value.filter((room: string) => !this.chatManager.userRoomList.value.includes(room));
     selectedRooms: string[] = [];
 
     constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
     ngOnInit(): void {
         this.chatManager.allRoomsList.subscribe((rooms) => {
-            this.unjoinedRooms = rooms.filter((room) => !this.chatManager.roomList.value.includes(room));
+            this.unjoinedRooms = rooms.filter((room) => !this.chatManager.userRoomList.value.includes(room));
         });
     }
 
