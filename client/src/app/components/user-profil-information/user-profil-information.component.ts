@@ -9,6 +9,7 @@ import { UserData } from '@app/interfaces/user';
 import { LanguageService } from '@app/services/language-service/languag.service';
 import { UserService } from '@app/services/user-service/user.service';
 
+import { DialogChangeNameComponent } from '@app/components/dialog-change-name/dialog-change-name.component';
 import { Observable, switchMap, take } from 'rxjs';
 
 @Component({
@@ -86,6 +87,12 @@ export class UserProfilInformationComponent implements OnInit {
                 adding: false,
                 currentUserId: this.currentUserId,
             },
+        });
+    }
+
+    openNameDialog(): void {
+        this.dialog.open(DialogChangeNameComponent, {
+            width: '350px',
         });
     }
 

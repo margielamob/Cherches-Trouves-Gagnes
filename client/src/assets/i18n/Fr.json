@@ -1,8 +1,8 @@
 {
     "CONFIG": {
         "TITLE": "Configuration du compte",
-        "AVATAR": "Avatar",
-        "USERNAME": "Nom d'utilisateur",
+        "AVATAR": "Changer avatar",
+        "USERNAME": "Changer nom d'utilisateur",
         "THEME": "Thème",
         "LANGUAGE": "Langue",
         "SAVE": "Enregistrer la configuration",
@@ -238,5 +238,15 @@
         "SOLO": "Solo",
         "COOP": "Coopération",
         "MULTIPLAYER": "Multijoueur"
+    },
+
+    "CHANGE_NAME_DIALOG": {
+        "TITLE": "Changer le nom d'utilisateur",
+        "MESSAGE": "Entrez votre nouveau nom d'utilisateur",
+        "CANCEL": "Annuler",
+        "CHANGE": "Changer",
+        "ERROR_EMPTY": "Le nom d'utilisateur est requis.",
+        "ERROR_INVALID": "Le nom d'utilisateur peut contenir des lettres, des chiffres et des tirets bas, et doit contenir au moins une lettre",
+        "ERROR_TAKEN": "Ce nom d'utilisateur est déjà pris."
     }
 }

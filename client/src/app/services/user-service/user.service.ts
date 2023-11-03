@@ -210,4 +210,16 @@ export class UserService {
             }),
         );
     }
+
+    changeUserDisplayName(newDisplayName: string): Observable<void> {
+        return this.getCurrentUser().pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user || !user.uid) {
+                    throw new Error('No user logged in or user ID not found');
+                }
+                return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
+            }),
+        );
+    }
 }
