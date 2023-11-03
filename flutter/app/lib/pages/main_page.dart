@@ -1,4 +1,6 @@
+import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,9 +65,9 @@ class MainPage extends StatelessWidget {
                         // Navigator.pushNamed(context, '/pageC');
                         // final gameMode = GameMode("Classique");
                         // gameManagerService.sendGameRequest(gameMode);
-                        gameManagerService.sendCreateGameRequest(
+                        gameManagerService.createSoloGame(
                             'saoul',
-                            'Classic',
+                            GameModeModel(GameMode.classic),
                             '97b430aa-fcd3-451c-8118-18a5e9b18636',
                             false);
                       },
