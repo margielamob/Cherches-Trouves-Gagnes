@@ -27,7 +27,8 @@ class SocketService {
     if (data == null) {
       socket.emit(event);
     } else {
-      socket.emit(event, [data]);
+      socket.emit(event,
+          (data as Map<String, dynamic>).values.map((value) => value).toList());
     }
   }
 
