@@ -20,7 +20,8 @@ class CarouselBottomClassic extends CarouselBottom {
           gameManagerService.isGameJoinable(data.id, gameMode)
               ? FilledButton(
                   onPressed: () {
-                    gameManagerService.createMultiplayerGame();
+                    gameManagerService.sendCreateGameMultiRequest(
+                        'saoul', 'Classic', data.id, true);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,8 +30,8 @@ class CarouselBottomClassic extends CarouselBottom {
                 )
               : FilledButton(
                   onPressed: () {
-                    gameManagerService.joinMultiplayerGame();
-                    // Navigator.pushNamed(context, "/waiting");
+                    gameManagerService.sendCreateGameRequest(
+                        'saoul', 'Classic', data.id, false);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

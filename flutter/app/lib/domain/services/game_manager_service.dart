@@ -27,9 +27,10 @@ class GameManagerService {
       GameInfoRequest data = GameInfoRequest.fromJson(message);
       print("play event received");
       print(data.toJson());
-      // // WaitingGameModel data = WaitingGameModel.fromJson(message);
-      // print("This is the data:");
-      // print(data);
+    });
+    _socket.on(SocketEvent.waitPlayer, (dynamic message) {
+      print("player is waiting");
+      print(message);
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print(message);
@@ -62,6 +63,21 @@ class GameManagerService {
     }
   }
 
+  void sendCreateGameMultiRequest(
+      String player, String mode, String card, bool isMulti) {
+    try {
+      CreateGameRequest data = CreateGameRequest(
+          gameMode: mode,
+          player: player,
+          game: Game(card: card, isMulti: isMulti));
+      print(data.toJson());
+      _socket.send(SocketEvent.createGameMulti, data.toJson());
+      print("CreateGame event sent: $data");
+    } catch (error) {
+      print('Error while sending CreateGame event: $error');
+    }
+  }
+
   bool isGameJoinable(String gameId, GameModeModel gameMode) {
     if (waitingGame == null) return false;
 
@@ -80,10 +96,6 @@ class GameManagerService {
       'game': {card: card, isMulti: isMultiplayer},
     };
     _socket.send(SocketEvent.createGame, data);
-  }
-
-  void createMultiplayerGame() {
-    print("onClickPlayGame");
   }
 
   void joinMultiplayerGame() {
