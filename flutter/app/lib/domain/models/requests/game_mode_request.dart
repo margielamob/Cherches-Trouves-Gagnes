@@ -1,9 +1,9 @@
 // Todo: Define use gameMode instead of String
 
-class GameModeRequestModel {
+class GameModeRequest {
   String gameMode;
 
-  GameModeRequestModel({required this.gameMode});
+  GameModeRequest({required this.gameMode});
 
   Map<String, dynamic> toJson() {
     return {

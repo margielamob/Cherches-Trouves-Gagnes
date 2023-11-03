@@ -1,8 +1,8 @@
-import 'package:app/domain/models/game_model_request.dart';
+import 'package:app/domain/models/game_card_multi_model.dart';
 
 class GameInfoRequest {
   final String gameId;
-  final GameModelRequest? gameCard;
+  final GameCardMultiModel? gameCard;
 
   GameInfoRequest({required this.gameId, this.gameCard});
 
@@ -10,7 +10,7 @@ class GameInfoRequest {
     return GameInfoRequest(
       gameId: json['gameId'],
       gameCard: json['gameCard'] != null
-          ? GameModelRequest.fromJson(json['gameCard'])
+          ? GameCardMultiModel.fromJson(json['gameCard'])
           : null,
     );
   }

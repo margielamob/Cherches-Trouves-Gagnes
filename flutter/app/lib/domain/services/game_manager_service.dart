@@ -1,7 +1,7 @@
-import 'package:app/domain/models/create_game_request.dart';
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/game_mode_request_model.dart';
-import 'package:app/domain/models/game_info_request.dart';
+import 'package:app/domain/models/requests/create_game_request.dart';
+import 'package:app/domain/models/requests/game_info_request.dart';
+import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/game.dart';
@@ -39,7 +39,7 @@ class GameManagerService {
 
   void sendGameRequest(String mode) {
     try {
-      GameModeRequestModel data = GameModeRequestModel(gameMode: mode);
+      GameModeRequest data = GameModeRequest(gameMode: mode);
       _socket.send(SocketEvent.getGamesWaiting, data.toJson());
       print("This is the data sent:");
       print(mode);
@@ -51,7 +51,7 @@ class GameManagerService {
   void sendCreateGameRequest(
       String player, String mode, String card, bool isMulti) {
     try {
-      CreateGameRequestModel data = CreateGameRequestModel(
+      CreateGameRequest data = CreateGameRequest(
           gameMode: mode,
           player: player,
           game: Game(card: card, isMulti: isMulti));

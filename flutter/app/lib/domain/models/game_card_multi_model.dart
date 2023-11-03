@@ -1,6 +1,6 @@
 import 'package:app/domain/models/score_model.dart';
 
-class GameModelRequest {
+class GameCardMultiModel {
   final String id;
   final String name;
   final String thumbnail;
@@ -11,7 +11,7 @@ class GameModelRequest {
   final int nbDifferences;
   final bool isMulti;
 
-  const GameModelRequest({
+  const GameCardMultiModel({
     required this.id,
     required this.name,
     required this.thumbnail,
@@ -23,8 +23,8 @@ class GameModelRequest {
     required this.isMulti,
   });
 
-  factory GameModelRequest.fromJson(Map json) {
-    return GameModelRequest(
+  factory GameCardMultiModel.fromJson(Map json) {
+    return GameCardMultiModel(
       id: json['id'],
       name: json['name'],
       thumbnail: json['thumbnail'],

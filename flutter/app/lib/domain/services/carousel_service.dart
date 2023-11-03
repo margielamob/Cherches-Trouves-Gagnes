@@ -1,5 +1,5 @@
-import 'package:app/domain/models/carousel_request_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
+import 'package:app/domain/models/requests/carousel_request.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,7 @@ class CarouselState {
 class CarouselService extends ChangeNotifier {
   CarouselState state = CarouselState();
 
-  CarouselRequestModel? carouselState;
+  CarouselRequest? carouselState;
   final HttpService _httpService;
 
   CarouselService() : _httpService = Get.find() {

@@ -1,4 +1,4 @@
-import 'package:app/domain/models/carousel_request_model.dart';
+import 'package:app/domain/models/requests/carousel_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'carousel_request_test.data.dart';
@@ -7,7 +7,7 @@ void main() {
   group('CarouselRequestModel Tests', () {
     test('Should create the proper carouselData with fromJson', () {
       final rawJson = carouselInfoJson;
-      CarouselRequestModel carousel = CarouselRequestModel.fromJson(rawJson);
+      CarouselRequest carousel = CarouselRequest.fromJson(rawJson);
       expect(carousel.carouselData.currentPage, 1);
       expect(carousel.carouselData.gamesOnPage, 4);
       expect(carousel.carouselData.nbOfGames, 5);
@@ -18,7 +18,7 @@ void main() {
 
     test('Should create the proper carouselData with fromJson', () {
       final rawJson = carouselInfoJson;
-      CarouselRequestModel carousel = CarouselRequestModel.fromJson(rawJson);
+      CarouselRequest carousel = CarouselRequest.fromJson(rawJson);
       expect(carousel.gameCardData.length, 4);
       final firstGame = carousel.gameCardData[0];
       expect(firstGame.id, "97b430aa-fcd3-451c-8118-18a5e9b18636");
