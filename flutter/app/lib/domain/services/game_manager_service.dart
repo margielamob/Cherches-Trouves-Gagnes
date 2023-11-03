@@ -1,7 +1,7 @@
 import 'package:app/domain/models/create_game_request.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/game_mode_request_model.dart';
-import 'package:app/domain/models/play_game_model.dart';
+import 'package:app/domain/models/game_info_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/game.dart';
@@ -24,7 +24,7 @@ class GameManagerService {
       print("This is the waitingGame data");
     });
     _socket.on(SocketEvent.play, (dynamic message) {
-      PlayGameModel data = PlayGameModel.fromJson(message);
+      GameInfoRequest data = GameInfoRequest.fromJson(message);
       print("play event received");
       print(data.toJson());
       // // WaitingGameModel data = WaitingGameModel.fromJson(message);
