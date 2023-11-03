@@ -31,6 +31,7 @@ import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
@@ -122,6 +123,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserAvatarComponent,
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
+        DialogChangeNameComponent,
     ],
     imports: [
         AppMaterialModule,

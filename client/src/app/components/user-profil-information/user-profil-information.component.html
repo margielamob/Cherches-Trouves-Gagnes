@@ -12,16 +12,16 @@
                         </button>
                     </div>
                     <div class="pseudonym-container">
-                        <button class="profil-btn" mat-raised-button color="primary">
+                        <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openNameDialog()">
                             {{ 'CONFIG.USERNAME' | translate }}
                         </button>
                     </div>
                     <div class="theme-container">
-                        <button class="profil-btn" mat-raised-button color="primary">
+                        <button class="profil-btn unclickable" mat-raised-button color="primary">
                             {{ 'CONFIG.THEME' | translate }}
                         </button>
                     </div>
-                    <div class="language-container">
+                    <div class="language-container unclickable">
                         <button class="profil-btn" mat-raised-button color="primary">
                             {{ 'CONFIG.LANGUAGE' | translate }}
                         </button>
@@ -30,7 +30,11 @@
                 <div class="result-container">
                     <app-user-avatar></app-user-avatar>
                     <div class="pseudonym-container">
-                        <button class="profil-btn" mat-raised-button color="secondary">Pseudonyme</button>
+                        <div class="profil-btn" mat-raised-button color="secondary">
+                            <span class="user-name" *ngIf="user$ | async as user">
+                                <strong>{{ user.displayName }}</strong>
+                            </span>
+                        </div>
                     </div>
                     <div class="language-container" [formGroup]="settingsForm">
                         <div class="theme-container">

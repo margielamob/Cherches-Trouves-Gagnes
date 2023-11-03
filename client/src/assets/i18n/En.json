@@ -1,8 +1,8 @@
 {
     "CONFIG": {
         "TITLE": "Account settings",
-        "AVATAR": "Profil picture",
-        "USERNAME": "Username",
+        "AVATAR": "Change avatar",
+        "USERNAME": "Change username",
         "THEME": "Theme",
         "LANGUAGE": "Language",
         "SAVE": "Save settings",
@@ -236,5 +236,15 @@
         "SOLO": "Solo",
         "COOP": "Coop",
         "MULTIPLAYER": "Multiplayer"
+    },
+
+    "CHANGE_NAME_DIALOG": {
+        "TITLE": "Change username",
+        "MESSAGE": "Enter your new username",
+        "CANCEL": "Cancel",
+        "CHANGE": "Change",
+        "ERROR_EMPTY": "Username cannot be empty",
+        "ERROR_INVALID": "Username is not valid",
+        "ERROR_TAKEN": "Username is already taken"
     }
 }
