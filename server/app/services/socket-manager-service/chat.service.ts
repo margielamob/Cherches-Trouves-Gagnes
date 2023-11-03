@@ -3,6 +3,7 @@
 import { ChatMessage, ChatRoom } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
 import * as io from 'socket.io';
+import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Service } from 'typedi';
 import { SocketServer } from './server-socket-manager.service';
@@ -56,9 +57,7 @@ export class ChatSocketManager {
             console.log(Array.from(this.allRooms.keys()));
             socket.emit(
                 SocketEvent.UpdateAllRooms,
-                Array.from(this.allRooms.values()).map((room: ChatRoom) => {
-                    room.info;
-                }),
+                Array.from(this.allRooms.values()).map((room: ChatRoom) => room.info),
             );
         });
 
@@ -125,7 +124,7 @@ export class ChatSocketManager {
         });
     }
 
-    initializeRooms(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
+    initializeRooms(socket: Socket): void {
         const userRooms = this.userRooms.get(socket.id);
         if (userRooms) {
             userRooms.forEach((room) => {
@@ -138,7 +137,7 @@ export class ChatSocketManager {
         this.allRooms.set(roomName, { info: { name: roomName }, messages: [] });
     }
 
-    addRoomsToUser(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, rooms: string[]): void {
+    addRoomsToUser(socket: Socket, rooms: string[]): void {
         const userRooms = this.userRooms.get(socket.id);
         if (userRooms) {
             this.userRooms.set(socket.id, [...userRooms, ...rooms]);

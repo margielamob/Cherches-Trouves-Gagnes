@@ -11,6 +11,7 @@ import { ScoreType } from '@common/score-type';
 import { SocketEvent } from '@common/socket-event';
 import * as LZString from 'lz-string';
 import * as io from 'socket.io';
+import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Service } from 'typedi';
 import { SocketServer } from './server-socket-manager.service';
@@ -26,25 +27,29 @@ export class GamePlayManager {
         private cluesService: CluesService,
     ) {}
 
+    private get sio(): io.Server {
+        return this.serverSocket.sio;
+    }
+
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
+        socket.on(SocketEvent.FetchDifferences, (gameId: string) => {
+            socket.emit(SocketEvent.FetchDifferences, this.gameManager.getNbDifferenceNotFound(gameId));
+        });
+
         socket.on(SocketEvent.Clue, (gameId: string) => {
             this.gameManager.increaseNbClueAsked(gameId);
             const pixelResult = this.cluesService.findRandomPixel(gameId);
             switch (this.gameManager.getNbClues(gameId)) {
                 case 1:
-                    this.serverSocket.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.firstCluePosition(pixelResult), nbClues: 1 });
+                    this.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.firstCluePosition(pixelResult), nbClues: 1 });
                     break;
                 case 2:
-                    this.serverSocket.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.secondCluePosition(pixelResult), nbClues: 2 });
+                    this.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.secondCluePosition(pixelResult), nbClues: 2 });
                     break;
                 case 3:
-                    this.serverSocket.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.thirdCluePosition(pixelResult), nbClues: 3 });
+                    this.sio.to(gameId).emit(SocketEvent.Clue, { clue: this.cluesService.thirdCluePosition(pixelResult), nbClues: 3 });
             }
-            this.serverSocket.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
-        });
-
-        socket.on(SocketEvent.FetchDifferences, (gameId: string) => {
-            socket.emit(SocketEvent.FetchDifferences, this.gameManager.getNbDifferenceNotFound(gameId));
+            this.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
         });
 
         socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string) => {
@@ -55,23 +60,23 @@ export class GamePlayManager {
             const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
             if (!differences) {
                 socket.emit(SocketEvent.DifferenceNotFound);
-                this.serverSocket.sio
+                this.sio
                     .to(gameId)
                     .emit(
                         SocketEvent.EventMessage,
                         this.eventMessageService.differenceNotFoundMessage(
-                            this.gameManager.findPlayer(gameId, socket.id) as string,
+                            this.gameManager.findPlayer(gameId, socket.id)?.name as string,
                             this.gameManager.isGameMultiplayer(gameId),
                         ),
                     );
                 return;
             }
-            this.serverSocket.sio
+            this.sio
                 .to(gameId)
                 .emit(
                     SocketEvent.EventMessage,
                     this.eventMessageService.differenceFoundMessage(
-                        this.gameManager.findPlayer(gameId, socket.id) as string,
+                        this.gameManager.findPlayer(gameId, socket.id)?.name as string,
                         this.gameManager.isGameMultiplayer(gameId),
                     ),
                 );
@@ -98,14 +103,15 @@ export class GamePlayManager {
                         soloScore: nextGameCard.soloScore,
                         isMulti: false,
                     };
-                    this.serverSocket.sio.to(gameId).emit(SocketEvent.NewGameBoard, gameCardInfo);
+                    this.sio.to(gameId).emit(SocketEvent.NewGameBoard, gameCardInfo);
                 }
             }
         });
     }
-    private handleEndGame(gameId: string, socket: io.Socket): void {
+
+    private handleEndGame(gameId: string, socket: Socket): void {
         const time = this.gameManager.getTime(gameId) as number;
-        const playerName = this.gameManager.findPlayer(gameId, socket.id) as string;
+        const playerName = this.gameManager.findPlayer(gameId, socket.id)?.name as string;
         const gameInfo = this.gameManager.getGameInfo(gameId);
         const isMulti = this.gameManager.isGameMultiplayer(gameId) as boolean;
 
@@ -122,7 +128,7 @@ export class GamePlayManager {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- index is -1 when not added to the list
                     if (index !== -1) {
                         socket.emit(SocketEvent.Win, { index, time });
-                        this.serverSocket.sio.sockets.emit(
+                        this.sio.sockets.emit(
                             SocketEvent.EventMessage,
                             this.eventMessageService.sendNewHighScoreMessage({
                                 record: { index, time },
