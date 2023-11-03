@@ -20,8 +20,8 @@ class CarouselBottomClassic extends CarouselBottom {
           gameManagerService.isGameJoinable(data.id, gameMode)
               ? FilledButton(
                   onPressed: () {
-                    gameManagerService.sendCreateGameMultiRequest(
-                        'saoul', 'Classic', data.id, true);
+                    gameManagerService.createMultiplayerGame('Thierry',
+                        GameModeModel(GameMode.classic), data.id, true);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -30,8 +30,11 @@ class CarouselBottomClassic extends CarouselBottom {
                 )
               : FilledButton(
                   onPressed: () {
-                    gameManagerService.sendCreateGameRequest(
-                        'saoul', 'Classic', data.id, false);
+                    gameManagerService.createMultiplayerGame('Thierry',
+                        GameModeModel(GameMode.classic), data.id, true);
+                    // We won't support solo mode
+                    //gameManagerService.createSoloGame('saoul',
+                    //GameModeModel(GameMode.classic), data.id, false);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

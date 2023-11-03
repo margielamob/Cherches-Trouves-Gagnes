@@ -1,10 +1,10 @@
 import 'package:app/domain/models/game_mode_model.dart';
+import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/create_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
-import 'package:app/domain/utils/game.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,6 @@ class GameManagerService {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
-      print("This is the waitingGame data");
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       GameInfoRequest data = GameInfoRequest.fromJson(message);
@@ -48,13 +47,13 @@ class GameManagerService {
     }
   }
 
-  void sendCreateGameRequest(
-      String player, String mode, String card, bool isMulti) {
+  void createSoloGame(
+      String player, GameModeModel mode, String card, bool isMulti) {
     try {
       CreateGameRequest data = CreateGameRequest(
           gameMode: mode,
           player: player,
-          game: Game(card: card, isMulti: isMulti));
+          game: GameModel(card: card, isMulti: isMulti));
       print(data.toJson());
       _socket.send(SocketEvent.createGame, data.toJson());
       print("CreateGame event sent: $data");
@@ -63,13 +62,13 @@ class GameManagerService {
     }
   }
 
-  void sendCreateGameMultiRequest(
-      String player, String mode, String card, bool isMulti) {
+  void createMultiplayerGame(
+      String player, GameModeModel mode, String card, bool isMulti) {
     try {
       CreateGameRequest data = CreateGameRequest(
           gameMode: mode,
           player: player,
-          game: Game(card: card, isMulti: isMulti));
+          game: GameModel(card: card, isMulti: isMulti));
       print(data.toJson());
       _socket.send(SocketEvent.createGameMulti, data.toJson());
       print("CreateGame event sent: $data");
