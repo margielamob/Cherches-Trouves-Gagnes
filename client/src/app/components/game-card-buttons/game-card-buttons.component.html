@@ -1,17 +1,23 @@
 <mat-card-actions class="game-card-buttons">
-    <div class="admin-buttons" *ngIf="gameCard.isAdminCard; else selectPage">
-        <button mat-fab color="primary" matTooltip="Supprimer le jeu" aria-label="Boutton supprimer" (click)="onClickDeleteGame(gameCard)">
-            <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-fab color="primary" matTooltip="Réinitialiser les records" aria-label="Boutton réinitialiser" (click)="onClickRefreshGame()">
-            <mat-icon>refresh</mat-icon>
-        </button>
-    </div>
+    <!-- Show only if joinableGameCard is defined -->
+    <button *ngIf="joinableGameCard" mat-flat-button color="primary" aria-label="Boutton Joindre" (click)="onClickJoinGame()">Joindre</button>
 
-    <ng-template #selectPage>
-        <button mat-flat-button color="primary" aria-label="Boutton Jouer" (click)="onClickPlayGame()">Jouer</button>
-        <button mat-flat-button color="primary" aria-label="Boutton Créer" (click)="onClickCreateJoinGame()">
-            {{ isMultiplayer() ? 'Joindre' : 'Créer' }}
-        </button>
-    </ng-template>
+    <!-- Show only if gameCard is defined and joinableGameCard is not defined -->
+    <ng-container *ngIf="gameCard && !joinableGameCard">
+        <div class="admin-buttons" *ngIf="gameCard.isAdminCard; else selectPage">
+            <button mat-fab color="primary" matTooltip="Supprimer le jeu" aria-label="Boutton supprimer" (click)="onClickDeleteGame(gameCard)">
+                <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-fab color="primary" matTooltip="Réinitialiser les records" aria-label="Boutton réinitialiser" (click)="onClickRefreshGame()">
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+
+        <ng-template #selectPage>
+            <button mat-flat-button color="primary" aria-label="Boutton Jouer" (click)="onClickPlayGame()">Jouer</button>
+            <button mat-flat-button color="primary" aria-label="Boutton Créer" (click)="onClickCreateJoinGame()">
+                {{ isMultiplayer() ? 'Joindre' : 'Créer' }}
+            </button>
+        </ng-template>
+    </ng-container>
 </mat-card-actions>

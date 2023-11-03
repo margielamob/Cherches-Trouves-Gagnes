@@ -70,7 +70,7 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
-                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent().name,
+                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent()[0].name,
                 isClassic: true,
                 record,
             };

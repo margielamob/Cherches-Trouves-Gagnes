@@ -8,11 +8,13 @@ import { User } from '@common/user';
 import { v4 } from 'uuid';
 
 export class Game {
-    players: Map<string, string>;
+    players: Map<string, User>;
     timerId: unknown;
     currentIndex: number = 0;
     nbCluesAsked: number = 0;
     isCardDeleted: boolean = false;
+    isCheatMode: boolean = false;
+    gameCreator: User = {} as User;
     private id: string;
     private mode: GameMode;
     private isMulti: boolean;
@@ -27,6 +29,7 @@ export class Game {
         this.context = new GameContext(game.mode as GameMode, new InitGameState(), player.isMulti);
         this.id = v4();
         this.context.next();
+        this.gameCreator = player.player;
         this.addPlayer(player.player);
     }
 
@@ -83,7 +86,8 @@ export class Game {
     }
 
     isGameFull() {
-        return (!this.isMulti && this.players.size === 1) || (this.isMulti && this.players.size === 2);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        return this.isMulti && this.players.size === 4;
     }
 
     setGameCardDeleted() {
@@ -94,11 +98,21 @@ export class Game {
         if (this.isGameFull()) {
             return;
         }
-        this.players.set(player.id, player.name);
+        this.players.set(player.id, player);
     }
 
     findPlayer(playerId: string) {
         return this.players.get(playerId);
+    }
+
+    isGameCreator(playerId: string) {
+        return this.gameCreator.id === playerId;
+    }
+    removePlayer(playerId: string) {
+        this.players.delete(playerId);
+    }
+    getPlayers() {
+        return this.players;
     }
 
     leaveGame(playerId: string) {
