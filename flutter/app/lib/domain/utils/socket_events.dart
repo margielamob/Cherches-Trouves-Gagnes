@@ -11,4 +11,7 @@ class SocketEvent {
   static String createGameMulti = "createGameMulti";
   static String play = "play";
   static String waitPlayer = "waitPlayer";
+  static String playerLeft = "playerLeft";
+  static String rejectPlayer = "rejectPlayer";
+  static String joinGame = "joinGame";
 }

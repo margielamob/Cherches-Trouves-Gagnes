@@ -31,12 +31,19 @@ class GameManagerService extends ChangeNotifier {
       print(data.toJson());
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
-      print("player is waiting");
-      print(message);
+      print("SocketEvent.waitPlayer : $message");
     });
     _socket.on(SocketEvent.error, (dynamic message) {
-      print(message);
-      print("SocketEvent.error");
+      print("SocketEvent.error : $message");
+    });
+    _socket.on(SocketEvent.playerLeft, (dynamic message) {
+      print("SocketEvent.playerLeft : $message");
+    });
+    _socket.on(SocketEvent.joinGame, (dynamic message) {
+      print("SocketEvent.joinGame : $message");
+    });
+    _socket.on(SocketEvent.rejectPlayer, (dynamic message) {
+      print("SocketEvent.rejectPlayer : $message");
     });
   }
 
