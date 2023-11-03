@@ -76,9 +76,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
-        '/classic': (context) => Classic(
-            bmpOriginalId: "e51d0d97-b726-4360-938d-d03092ed7951",
-            bmpModifiedId: "e51d0d97-b726-4360-938d-d03092ed7951"),
+        '/classic': (context) => Classic(),
         '/gameSelection': (context) => GameSelectionPage(),
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
