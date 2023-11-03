@@ -7,10 +7,10 @@ class WaitingGameModel {
   WaitingGameModel(this.mode, this.gamesWaiting);
 
   factory WaitingGameModel.fromJson(Map<String, dynamic> json) {
-    return WaitingGameModel(
-      GameModeModel.fromJson(json['mode']),
-      List<String>.from(json['gamesWaiting'] as List),
-    );
+    List<String> content = (json['gamesWaiting'] as List<dynamic>)
+        .map((data) => data.toString())
+        .toList();
+    return WaitingGameModel(GameModeModel.fromJson(json), content);
   }
 
   Map<String, dynamic> toJson() {

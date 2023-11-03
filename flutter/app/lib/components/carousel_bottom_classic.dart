@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 class CarouselBottomClassic extends CarouselBottom {
   CarouselBottomClassic(GameCardModel data) : super(data: data);
   final GameManagerService gameManagerService = Get.find();
-  final String gameId = "1";
   final GameModeModel gameMode = GameModeModel(modeName: "classic");
 
   @override
@@ -17,28 +16,25 @@ class CarouselBottomClassic extends CarouselBottom {
       padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
       child: Row(
         children: [
-          gameManagerService.isGameJoinable(gameId, gameMode)
+          gameManagerService.isGameJoinable(data.id, gameMode)
               ? FilledButton(
                   onPressed: () {
-                    // TODO: Change this to look like heavy client.
-                    gameManagerService.onClickCreateJoinGame();
-                    Navigator.pushNamed(context, "/classic");
+                    gameManagerService.createMultiplayerGame();
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[Text("Créer")],
+                    children: <Widget>[Text("Joindre")],
                   ),
                 )
               : FilledButton(
                   onPressed: () {
-                    // TODO: Change this to look like heavy client.
-                    gameManagerService.onClickPlayGame();
-                    Navigator.pushNamed(context, "/waiting");
+                    gameManagerService.joinMultiplayerGame();
+                    // Navigator.pushNamed(context, "/waiting");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Joindre"),
+                      Text("Créer"),
                     ],
                   ),
                 )

@@ -62,11 +62,13 @@ class GameManagerService {
   }
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {
-    return true;
-  }
+    if (waitingGame == null) return false;
 
-  void onClickCreateJoinGame() {
-    print("onClickCreateJoinGame");
+    List<String> currentGames = waitingGame!.gamesWaiting;
+    for (var game in currentGames) {
+      if (game == gameId) return true;
+    }
+    return false;
   }
 
   void sendCreateGameEvent(
@@ -79,8 +81,12 @@ class GameManagerService {
     _socket.send(SocketEvent.createGame, data);
   }
 
-  void onClickPlayGame() {
+  void createMultiplayerGame() {
     print("onClickPlayGame");
+  }
+
+  void joinMultiplayerGame() {
+    print("onClickCreateJoinGame");
   }
 
   void setGameInformation() {}
