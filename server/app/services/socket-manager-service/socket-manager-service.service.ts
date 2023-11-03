@@ -47,11 +47,9 @@ export class SocketManagerService {
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
 
-            socket.on(
-                SocketEvent.CreateGame,
-                async (player: string, mode: GameMode, game: { card: string; isMulti: boolean }) =>
-                    await this.createGameSolo(player, mode, game, socket),
-            );
+            socket.on(SocketEvent.CreateGame, async (player: string, mode: GameMode, game: { card: string; isMulti: boolean }) => {
+                await this.createGameSolo(player, mode, game, socket);
+            });
 
             socket.on(
                 SocketEvent.CreateGameMulti,
@@ -184,7 +182,8 @@ export class SocketManagerService {
             });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
-                socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
+                const result = { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) };
+                socket.emit(SocketEvent.GetGamesWaiting, result);
             });
 
             socket.on(SocketEvent.GameDeleted, (gameId: string) => {

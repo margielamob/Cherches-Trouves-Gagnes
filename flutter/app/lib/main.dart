@@ -2,6 +2,7 @@ import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/socket_service.dart';
@@ -33,6 +34,7 @@ void registerDependencies() {
   Get.put(CarouselService());
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
+  Get.put(GameManagerService());
   Get.put(SoundService());
 }
 
@@ -75,8 +77,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginPage(),
         '/classic': (context) => Classic(
-            bmpOriginalId: "b72c2106-f4f1-4a34-9797-f795ce24e1dd",
-            bmpModifiedId: "0f811652-a757-48d1-b348-51b5db40c9ee"),
+            bmpOriginalId: "e51d0d97-b726-4360-938d-d03092ed7951",
+            bmpModifiedId: "e51d0d97-b726-4360-938d-d03092ed7951"),
         '/gameSelection': (context) => GameSelectionPage(),
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),

@@ -1,7 +1,10 @@
-import 'package:app/components/classic_game_modal.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MainPage extends StatelessWidget {
+  final GameManagerService gameManagerService = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +40,13 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 70),
                     ElevatedButton(
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ClassicGameModal();
-                          },
-                        );
+                        //   showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return ClassicGameModal();
+                        //     },
+                        //   );
+                        Navigator.pushNamed(context, '/gameSelection');
                       },
                       child: Text('Mode de jeux classique'),
                     ),
@@ -56,9 +60,15 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 100),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageC');
+                        // Navigator.pushNamed(context, '/pageC');
+                        // gameManagerService.sendGameRequest("Classic");
+                        gameManagerService.sendCreateGameRequest(
+                            'saoul',
+                            'Classic',
+                            '97b430aa-fcd3-451c-8118-18a5e9b18636',
+                            false);
                       },
-                      child: Text('Go to Page C'),
+                      child: Text('Go to Page F'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
