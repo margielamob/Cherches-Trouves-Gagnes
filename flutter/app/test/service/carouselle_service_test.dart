@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:app/domain/models/carousel_model.dart';
-import 'package:app/domain/models/carousel_request_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
+import 'package:app/domain/models/requests/carousel_request.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +11,7 @@ import 'package:mockito/mockito.dart';
 
 class MockHttpService extends Mock implements HttpService {
   @override
-  Future<CarouselRequestModel> fetchCarouselByPage(int page) async {
+  Future<CarouselRequest> fetchCarouselByPage(int page) async {
     final carouselModel = CarouselModel(
       currentPage: 1,
       gamesOnPage: 3,
@@ -30,7 +30,7 @@ class MockHttpService extends Mock implements HttpService {
       idOriginalBmp: "idOriginal",
     );
 
-    final carouselRequestModel = CarouselRequestModel(
+    final carouselRequestModel = CarouselRequest(
       carouselData: carouselModel,
       gameCardData: [gameCardModel],
     );

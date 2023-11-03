@@ -1,11 +1,11 @@
 import 'package:app/domain/utils/game.dart';
 
-class CreateGameRequestModel {
+class CreateGameRequest {
   String gameMode;
   String player;
   Game game;
 
-  CreateGameRequestModel(
+  CreateGameRequest(
       {required this.gameMode, required this.player, required this.game});
 
   Map<String, dynamic> toJson() {

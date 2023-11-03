@@ -1,4 +1,4 @@
-import 'package:app/domain/models/game_info_request.dart';
+import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'game_info_request_test.data.dart';
