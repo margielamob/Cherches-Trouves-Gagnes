@@ -37,11 +37,10 @@ class GameManagerService {
     });
   }
 
-  void sendGameRequest(String mode) {
+  void sendGameRequest(GameModeModel mode) {
     try {
-      GameModeRequest data = GameModeRequest(gameMode: mode);
+      GameModeRequest data = GameModeRequest(gameModeModel: mode);
       _socket.send(SocketEvent.getGamesWaiting, data.toJson());
-      print("This is the data sent:");
       print(mode);
     } catch (error) {
       print('Error while sending the request: $error');
