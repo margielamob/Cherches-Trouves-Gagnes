@@ -5,7 +5,7 @@ void main() {
   group('WaitingGameModel Tests', () {
     setUp(() {});
 
-    test('Should create the proper object', () {
+    test('Should create the proper object with fromJson', () {
       final rawJson = {
         "mode": "Classique",
         "gamesWaiting": [
@@ -13,7 +13,7 @@ void main() {
         ],
       };
       WaitingGameModel waitingGames = WaitingGameModel.fromJson(rawJson);
-    
+
       expect(waitingGames.mode.modeName, "Classique");
       expect(waitingGames.gamesWaiting.length, 1);
     });

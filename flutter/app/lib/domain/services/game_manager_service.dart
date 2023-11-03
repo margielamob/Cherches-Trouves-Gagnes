@@ -21,7 +21,6 @@ class GameManagerService {
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
       print("This is the waitingGame data");
-      print(data.toJson());
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       print("play event received");
