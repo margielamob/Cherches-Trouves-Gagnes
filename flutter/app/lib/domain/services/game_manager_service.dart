@@ -6,11 +6,13 @@ import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
-class GameManagerService {
+class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   WaitingGameModel? waitingGame;
+
   bool isMulti = false;
 
   GameManagerService() {
@@ -21,6 +23,7 @@ class GameManagerService {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
+      notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       GameInfoRequest data = GameInfoRequest.fromJson(message);

@@ -55,11 +55,18 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) {
-          CarouselService carouselService = Get.find();
-          return carouselService;
-        })
-        // Add more providers here
+        ChangeNotifierProvider(
+          create: (context) {
+            CarouselService carouselService = Get.find();
+            return carouselService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            GameManagerService gameManagerService = Get.find();
+            return gameManagerService;
+          },
+        ),
       ],
       child: MyApp(),
     ),
