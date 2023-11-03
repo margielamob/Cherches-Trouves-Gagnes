@@ -12,11 +12,4 @@ class WaitingGameModel {
         .toList();
     return WaitingGameModel(GameModeModel.fromJson(json), content);
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'mode': mode.toJson(),
-      'gamesWaiting': gamesWaiting,
-    };
-  }
 }
