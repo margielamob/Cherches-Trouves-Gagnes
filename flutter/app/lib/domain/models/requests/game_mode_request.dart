@@ -1,13 +1,11 @@
-// Todo: Define use gameMode instead of String
+import 'package:app/domain/models/game_mode_model.dart';
 
 class GameModeRequest {
-  String gameMode;
+  GameModeModel gameModeModel;
 
-  GameModeRequest({required this.gameMode});
+  GameModeRequest({required this.gameModeModel});
 
   Map<String, dynamic> toJson() {
-    return {
-      'mode': gameMode,
-    };
+    return gameModeModel.toJson();
   }
 }

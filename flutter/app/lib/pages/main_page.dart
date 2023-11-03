@@ -61,7 +61,8 @@ class MainPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Navigator.pushNamed(context, '/pageC');
-                        // gameManagerService.sendGameRequest("Classic");
+                        // final gameMode = GameMode("Classique");
+                        // gameManagerService.sendGameRequest(gameMode);
                         gameManagerService.sendCreateGameRequest(
                             'saoul',
                             'Classic',
