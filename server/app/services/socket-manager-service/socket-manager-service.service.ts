@@ -174,7 +174,6 @@ export class SocketManagerService {
             });
 
             socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
-                console.log(playerName);
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
@@ -254,7 +253,6 @@ export class SocketManagerService {
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
         const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
-        console.log(cheatMode);
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         socket.broadcast.emit(SocketEvent.UpdatePlayers, data);

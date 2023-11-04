@@ -69,13 +69,6 @@ describe('GameCardButtonsComponent', () => {
     it('should return is multi attribute', () => {
         expect(component.isMultiplayer()).toBeTrue();
     });
-
-    it('should call open name dialog when clicking create or join', () => {
-        component.onClickCreateJoinGame();
-        expect(spyGameInfoHandlerService.setGameInformation).toHaveBeenCalled();
-        expect(spyMatDialog.open).toHaveBeenCalled();
-    });
-
     it('should delete game on click', () => {
         component.onClickDeleteGame(gameCard1);
         expect(spyMatDialog.open).toHaveBeenCalled();

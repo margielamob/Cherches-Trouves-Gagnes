@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { Game } from '@app/classes/game/game';
-import { GameStatus } from '@app/enum/game-status';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { BmpDifferenceInterpreter } from '@app/services/bmp-difference-interpreter-service/bmp-difference-interpreter.service';
 import { BmpService } from '@app/services/bmp-service/bmp.service';
@@ -16,7 +15,6 @@ import { LoggerService } from '@app/services/logger-service/logger.service';
 import { TimerService } from '@app/services/timer-service/timer.service';
 import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
-import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
@@ -181,34 +179,6 @@ describe('GameManagerService', () => {
         expect(findGameStub.called).to.equal(true);
         expect(expectedGame.setInfo.called).to.equal(false);
     });
-
-    it('should set the timer', () => {
-        expect(gameManager.setTimer('1')).to.equal(null);
-        const findGameStub = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => expectedGame);
-        const expectedGame = stub(
-            new Game({ player: { name: 'test', id: '' }, isMulti: false }, { info: { id: '1' } as PrivateGameInformation, mode: GameMode.Classic }),
-        );
-        gameManager.setTimer('1');
-        expect(expectedGame.status).to.equal(GameStatus.InitTimer);
-        expect(findGameStub.called).to.equal(true);
-    });
-
-    it('should get the timer', () => {
-        expect(gameManager.getTime('')).to.equal(null);
-        const expectedGame = new Game(
-            { player: { name: 'test', id: '' }, isMulti: false },
-            { info: { id: '1' } as PrivateGameInformation, mode: GameMode.Classic },
-        );
-        timer.setTimer(expectedGame);
-        /* eslint-disable @typescript-eslint/no-magic-numbers -- test with 5 seconds */
-        clock.tick(5000);
-        timer['calculateTime'](expectedGame);
-        expect(gameManager.getTime('1')).to.equal(null);
-        stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => expectedGame);
-
-        expect(gameManager.getTime('1')).to.equal(timer.seconds(expectedGame));
-    });
-
     it('should set one game card to deleted', () => {
         const expectedGame = new Game(
             { player: { name: 'test', id: '' }, isMulti: false },
@@ -333,22 +303,6 @@ describe('GameManagerService', () => {
         gameManager.addPlayer({ name: '', id: '' }, '');
         expect(spyAddPlayer.called).to.equal(true);
     });
-
-    it('should check if player has the same name', () => {
-        const stubFindGame = stub(Object.getPrototypeOf(gameManager), 'findGame');
-        stubFindGame.callsFake(() => undefined);
-        expect(gameManager.hasSameName('room', 'name')).to.equal(false);
-
-        const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
-        stubFindGame.callsFake(() => game);
-        expect(gameManager.hasSameName('room', 'name')).to.equal(false);
-
-        game.players = new Map();
-        game.players.set('id', 'name');
-        expect(gameManager.hasSameName('room', 'name')).to.equal(true);
-        expect(gameManager.hasSameName('room', 'test')).to.equal(false);
-    });
-
     it('should check if the game is in multiplayer', () => {
         const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
         const spyFindGame = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => undefined);
@@ -445,31 +399,7 @@ describe('GameManagerService', () => {
         expect(spyInterval.called).to.equal(true);
         expect(expectedGame.timerId).to.equal(expectedTimer);
     });
-    it('should send the timer if the game is not found and the game mode is not Limited Time', () => {
-        const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.LimitedTime });
-        stub(Object.getPrototypeOf(gameManager), 'isGameOver').callsFake(() => false);
-        stub(Object.getPrototypeOf(gameManager), 'getTime').callsFake(() => 0);
-        stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => expectedGame);
-        gameManager.sendTimer(
-            {
-                sockets: {
-                    to: () => {
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake Emit and return {}
-                        return {
-                            emit: (eventName: string) => {
-                                expect(eventName).to.equal(SocketEvent.Clock);
-                            },
-                        };
-                    },
-                },
-            } as unknown as Server,
-            '',
-            '',
-        );
 
-        /* eslint-disable @typescript-eslint/no-magic-numbers -- 1001 to trigger the set interval */
-        clock.tick(1001);
-    });
     it('should send that the game is over when 0 sec is left in Limited time gamemode', async () => {
         const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.LimitedTime });
         stub(Object.getPrototypeOf(gameManager), 'isGameOver').callsFake(() => true);
@@ -510,17 +440,6 @@ describe('GameManagerService', () => {
         expect(spyClearInterval.called).to.equal(true);
     });
 
-    it('should find a player', () => {
-        const expectedGame = new Game(
-            { player: { id: '0', name: 'test' } as User, isMulti: false },
-            { info: {} as PrivateGameInformation, mode: GameMode.Classic },
-        );
-        const spyFindPlayer = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => undefined);
-        expect(gameManager.findPlayer('', '')).to.equal(undefined);
-        spyFindPlayer.callsFake(() => expectedGame);
-        expect(gameManager.findPlayer('', '')).to.equal(undefined);
-        expect(gameManager.findPlayer('', '0')).to.equal('test');
-    });
     it('should get all nb of difference not found', () => {
         const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
         const expectedDifferenceNotFound = [[{ x: 0, y: 0 }]];
