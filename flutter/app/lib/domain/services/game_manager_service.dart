@@ -1,14 +1,8 @@
 import 'package:app/domain/models/game_mode_model.dart';
-<<<<<<< HEAD
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/pages/classic_game_page.dart';
-=======
-import 'package:app/domain/models/requests/leave_waiting_request.dart';
-import 'package:app/domain/models/requests/user_request.dart';
->>>>>>> dev
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
@@ -79,11 +73,8 @@ class GameManagerService extends ChangeNotifier {
       userRequest = data;
       print(data.toJson());
       print("SocketEvent.requestToJoin : $message");
-<<<<<<< HEAD
       // Should acceptPlayer but this code should change when game 4 players will be implemented
       // acceptPlayer(roomId, opponentsRoomId, playerName, data.id);
-=======
->>>>>>> dev
     });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
@@ -149,24 +140,15 @@ class GameManagerService extends ChangeNotifier {
     return false;
   }
 
-<<<<<<< HEAD
   void joinGameSend(String playerName, String roomId) {
     JoinGameSendRequest data =
         JoinGameSendRequest(player: playerName, gameId: roomId);
-=======
-  void joinGame(String player, String gameId) {
-    JoinGameRequest data = JoinGameRequest(player: player, gameId: gameId);
->>>>>>> dev
     _socket.send(SocketEvent.joinGame, data.toJson());
     print("joinGame");
   }
 
-<<<<<<< HEAD
   void acceptPlayer(String roomId, String opponentsRoomId, String playerName,
       String socketId) {
-=======
-  void acceptPlayer(String roomId, String opponentsRoomId, String playerName) {
->>>>>>> dev
     AcceptPlayerRequest data = AcceptPlayerRequest(
         roomId: roomId,
         opponentsRoomId: opponentsRoomId,

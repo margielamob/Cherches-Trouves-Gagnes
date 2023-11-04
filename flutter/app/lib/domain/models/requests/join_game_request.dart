@@ -1,5 +1,4 @@
 class JoinGameRequest {
-<<<<<<< HEAD
   String roomId;
   String playerName;
 
@@ -16,17 +15,6 @@ class JoinGameRequest {
     return {
       'roomId': roomId,
       'playerName': playerName,
-=======
-  String player;
-  String gameId;
-
-  JoinGameRequest({required this.player, required this.gameId});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'player': player,
-      'mode': gameId,
->>>>>>> dev
     };
   }
 }
