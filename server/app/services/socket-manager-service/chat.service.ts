@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChatMessage, ChatRoom } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
@@ -11,6 +12,7 @@ import { SocketServer } from './server-socket-manager.service';
 @Service()
 export class ChatSocketManager {
     allRooms: Map<string, ChatRoom> = new Map<string, ChatRoom>();
+    gameRooms: Map<string, ChatRoom> = new Map<string, ChatRoom>();
     userRooms: Map<string, string[]> = new Map<string, string[]>();
 
     constructor(private server: SocketServer) {
@@ -67,7 +69,11 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.GetMessages, (roomId: string) => {
-            socket.emit(SocketEvent.GetMessages, this.allRooms.get(roomId)?.messages);
+            if (this.allRooms.get(roomId)) {
+                socket.emit(SocketEvent.GetMessages, this.allRooms.get(roomId)?.messages);
+            } else if (this.gameRooms.get(roomId)) {
+                socket.emit(SocketEvent.GetMessages, this.gameRooms.get(roomId)?.messages);
+            }
         });
 
         socket.on(SocketEvent.CreateRoom, (roomName: string) => {
@@ -161,6 +167,42 @@ export class ChatSocketManager {
             );
             socket.leave(room);
         }
+    }
+
+    createGameChat(roomId: string, user: User, socket: Socket) {
+        const roomName = 'Game (' + roomId + ')';
+        this.gameRooms.set(roomId, { info: { name: roomName }, messages: [] });
+        socket.join(roomName);
+        if (this.userRooms.get(user.name)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, ...roomName]);
+            socket.join(roomName);
+        }
+        socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name));
+    }
+
+    joinGameChat(roomId: string, user: User, socket: Socket) {
+        const roomName = 'Game (' + roomId + ')';
+        socket.join(roomName);
+        if (this.userRooms.get(user.name)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, ...roomName]);
+            socket.join(roomName);
+        }
+        socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name));
+    }
+
+    deleteGameChat(roomName: string) {
+        this.server.sio.in(roomName).socketsLeave(roomName);
+        this.allRooms.delete(roomName);
+        this.userRooms.forEach((rooms, user) => {
+            this.userRooms.set(
+                user,
+                rooms.filter((r) => r !== roomName),
+            );
+            console.log(this.userRooms.get(user));
+        });
+        this.server.sio.emit(SocketEvent.RoomDeleted);
     }
 
     // deleteRoom(room: string): void {
