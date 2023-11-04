@@ -1,0 +1,250 @@
+{
+    "CONFIG": {
+        "TITLE": "Account settings",
+        "AVATAR": "Change avatar",
+        "USERNAME": "Change username",
+        "THEME": "Theme",
+        "LANGUAGE": "Language",
+        "SAVE": "Save settings",
+        "DELETE": "Delete account",
+        "SELECT_THEME": "Select a theme",
+        "SELECT_LANG": "Select a language"
+    },
+    "STATISTICS": {
+        "TITLE": "Account statistics",
+        "PLAYED_GAMES": "Played games",
+        "WON_GAMES": "Won games",
+        "AVERAGE_TIME": "Average time",
+        "AVERAGE_DiFFERENCE": "Average difference"
+    },
+
+    "MAINPAGE": {
+        "TITLE": "The difference game",
+        "TEAM": "Team 106 :",
+        "CLASSIC": "Classic",
+        "LIMITED_TIME": "Limited Time",
+        "ADMINISTRATION": "Administration",
+        "SETTINGS": "Settings"
+    },
+    "ADMIN_COMMANDS": {
+        "CREATE": "Create a new game",
+        "DELETE": "Delete a game",
+        "RESET": "Reset time record",
+        "UPDATE": "Update game settings"
+    },
+
+    "APPROUVAL_DIALOG": {
+        "YES": "Yes",
+        "NO": "No",
+        "PLAYER_FOUND": "Player found",
+        "PLAY_AGAINST_PLAYER": "Would you like to plays against : <b>{{ opponentsName }}</b>"
+    },
+
+    "CHAT-BOX": {
+        "Write_MESSAGE": "Write un message...",
+        "DIFFERENCE_FOUND": "Difference found at {{time}}",
+        "DIFFERENCE_FOUND_BY": "Difference found by {{userName}} at {{time}}",
+        "ERROR": "Error at {{time}}",
+        "ERROR_BY": "Error by {{userName}} at {{time}}",
+        "LEAVING_GAME": "{{userName}} left the game at {{time}}",
+        "USING_CLUE": "{{time}} - Clue Used",
+        "NEW_HIGH_SCORE": "{{time}} - {{playerName}} gets the {{recordIndex}} place in the best times of the game {{gameName}} in {{gameMode}}"
+    },
+
+    "CLUES-AREA": {
+        "CLUES": "Ask for a clue"
+    },
+
+    "COMMON_TOOL_BOX": {
+        "DELETE": "Delete",
+        "DRAW": "Draw",
+        "ADD_BACKGROUND": "Add background",
+        "RESET_BACKGROUND": " Reset background"
+    },
+
+    "CONFIRM_DELETE_DIALOG": {
+        "TITLE": "Are you sure you want to delete this game ?",
+        "MESSAGE": "Data cannot be restored.",
+        "DELETE": "Delete",
+        "CANCEL": "Cancel"
+    },
+
+    "CONFIRM_CREATE_DIALOG": {
+        "TITLE": "Validation of differences",
+        "MESSAGE": "There are {{nbDifference}} differences in this game",
+        "ERROR": "The game name must contain letters",
+        "CREATE": "Create game",
+        "CANCEL": "Cancel"
+    },
+
+    "DELETE_ACCOUNT_DIALOG": {
+        "TITLE": "Delete account",
+        "MESSAGE": "Are you sure you want to delete your account ?",
+        "DELETE": "Delete",
+        "CANCEL": "Cancel"
+    },
+    "GAME_OVER_DIALOG": {
+        "TITLE": "Game Over",
+        "WON": "You won",
+        "LOST": "You lost",
+        "LEAVE": "Leave",
+        "RANK": " You Won in <b>{{ time }}</b>, your currunt rank is  <b>{{ index }}</b>.",
+        "NOT_CLASSIC": {
+            "MESSAGE": "Congratulations, you found <b>{{ nbPoints }}</b> difference(s)!"
+        },
+        "CLASSIC": {
+            "MESSAGE": "The winner is: {{ winner }}",
+            "WINNER": "You are the winner!",
+            "LOOSER": "The winner is: {{ winner }}."
+        }
+    },
+
+    "LIMNITED_TIME": {
+        "TITLE": "Choose your game mode",
+        "SOLO": "Solo",
+        "COOP": "Coop"
+    },
+    "UPLOAD_DIALOG": {
+        "TITLE": "Upload an image that should be ",
+        "NOT_BITMAP": "Image should be a bitmap",
+        "NOT_24BITS": "Image sould be 24 bits",
+        "SIZE": "Image size should be 640x480",
+        "CANCEL": "Cancel",
+        "UPLOAD": "Upload"
+    },
+
+    "DIALOG_USER": {
+        "TITLE": "Choose your avatar",
+        "ERROR": "Invalid type. Please select JPG or PNG file"
+    },
+
+    "DIFFERENCE_AREA": {
+        "NAME": "Player name : {{ name }} "
+    },
+
+    "EXIT_BTN": {
+        "LEAVE": "Leave",
+        "CANCEL": "Cancel"
+    },
+    "GAME_CARD": {
+        "BEST_SCORE": "Best score"
+    },
+
+    "GAME_CARD_BTN": {
+        "DELETE": "Delete game",
+        "RESET": "Reset record",
+        "PLAY": "Play",
+        "JOIN": "Join",
+        "CREATE": "Create"
+    },
+
+    "GAME_CAROUSEL": {
+        "COUNT": "Number of games : {{ count }}",
+        "EMPTY": "No game found",
+        "CREATE": "Create a new game"
+    },
+
+    "GAME_CONSTANTS": {
+        "TITLE": "Change game constants",
+        "BASE_TIME": " Base time (secondes)",
+        "BONUS_TIME": "Bonus time when detecting a difference (seconds)",
+        "PENALTY_TIME": "Time penalized when requesting a hint (seconds)",
+        "CLOSE_MENU": "Close menu",
+        "CLOSE": "Close",
+        "DEFAULT": "Restore defaults",
+        "DEFAULT_LABEL": "Defaults values",
+
+        "APPLY": "Apply changes"
+    },
+
+    "NO_GAME_SNACKBAR": {
+        "TITLE": "No game found",
+        "CREATE": "Create a new game"
+    },
+
+    "PLAY_AREA": {
+        "POSITION": "<strong>The difference is at the {{ clue }} position</strong>"
+    },
+
+    "REFRESH_SNACKBAR": {
+        "TITLE": "A game has been added or removed."
+    },
+
+    "REDIRECT_DIALOG": {
+        "CLASSIC": "Return to the selection page",
+        "NOT_CLASSIC": "Back to Home Page",
+        "REASON": "You have been redirected because {{ reason }}"
+    },
+
+    "SIDEBAR": {
+        "GAME_INFO": "Game Information",
+        "NAME": "Game name: <b>{{ gameName }}</b>",
+        "MODE": "Game mode: <b>{{ gameMode }}</b>",
+        "PENALTY": "Penalty time added: <b>{{ penaltyTime }} seconds</b>",
+        "BONUS_TIME": "Time saved per difference found: <b>{{ differenceTime }} seconds</b>"
+    },
+
+    "TOOLBOX": {
+        "RESET_FRONT": "Reset foreground",
+        "PASTE": "Paste Outer Foreground",
+        "ADD": "Add background",
+        "RESET_BACK": "Reset background"
+    },
+
+    "USER_NAME": {
+        "PLACEHOLDER": "Username",
+        "ERROR": "Username is not valide",
+        "CANCEL": "Cancel",
+        "CONTINUE": "Continue"
+    },
+
+    "CREATE_GAME_PAGE": {
+        "HEADER_MESSAGE": "Game creation",
+        "DRAWING_BOARD": "Drawing board #1",
+        "DRAWING_BOARD_2": "Drawing board #2",
+        "VALIDATE": "Validate",
+        "RADIUS": {
+            "LABEL": "Choose the enlargement radius",
+            "VALUE0": "0px widening radius",
+            "VALUE3": "3px widening radius",
+            "VALUE9": "9px widening radius",
+            "VALUE15": "15px widening radius"
+        }
+    },
+
+    "HEADER": {
+        "GAME_SELECTION": "Choose a game",
+        "SETTINGS": "Settings",
+        "WAITING_ROOM": "Waiting room"
+    },
+
+    "SERVER": {
+        "ERROR": "Connexion error",
+        "MESSAGE": "The connection with the database is not established. Please try again later.",
+        "HOME": "Home page",
+        "WAITING_MESSAGE": "Waiting for other players to join the game..."
+    },
+
+    "THEMES": {
+        "ALTERNATIVE": "Alternative",
+        "DEFAULT": "Default"
+    },
+
+    "GAME_MODE": {
+        "CLASSIQUE": "Classic",
+        "TEMPSLIMITÉ": "Limited Time",
+        "SOLO": "Solo",
+        "COOP": "Coop",
+        "MULTIPLAYER": "Multiplayer"
+    },
+
+    "CHANGE_NAME_DIALOG": {
+        "TITLE": "Change username",
+        "MESSAGE": "Enter your new username",
+        "CANCEL": "Cancel",
+        "CHANGE": "Change",
+        "ERROR_EMPTY": "Username cannot be empty",
+        "ERROR_INVALID": "Username is not valid",
+        "ERROR_TAKEN": "Username is already taken"
+    }
+}

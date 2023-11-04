@@ -1,4 +1,4 @@
-<main [ngClass]="favoriteTheme">
+<main>
     <app-page-header [headerMessage]="'Sélectionnez votre partie'"></app-page-header>
     <div>
         <app-game-card *ngFor="let game of joinableGames$ | async" [joinableGameCard]="game" [isJoining]="true"></app-game-card>

@@ -1,8 +1,8 @@
 import 'package:app/components/carousel_bottom_classic.dart';
 import 'package:app/components/carousel_bottom_delete.dart';
 import 'package:app/components/image_border.dart';
-import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_card_model.dart';
+import 'package:flutter/material.dart';
 
 class CarouselCard extends StatelessWidget {
   final GameCardModel data;

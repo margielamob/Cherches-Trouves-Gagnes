@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Theme } from '@app/enums/theme';
+import { NoGameSnackbarComponent } from '@app/components/no-game-snackbar/no-game-snackbar.component';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { SocketEvent } from '@common/socket-event';
-import { NoGameSnackbarComponent } from '@app/components/no-game-snackbar/no-game-snackbar.component';
 
 @Component({
     selector: 'app-dialog-limited-time',
@@ -13,8 +12,6 @@ import { NoGameSnackbarComponent } from '@app/components/no-game-snackbar/no-gam
     styleUrls: ['./dialog-limited-time.component.scss'],
 })
 export class DialogLimitedTimeComponent {
-    favoriteTheme: string = Theme.ClassName;
-
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly communicationSocketService: CommunicationSocketService,

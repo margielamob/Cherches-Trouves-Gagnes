@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Theme } from '@app/enums/theme';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
 
 @Component({
@@ -8,8 +7,6 @@ import { GameCarouselService } from '@app/services/carousel/game-carousel.servic
     styleUrls: ['./game-selection-page.component.scss'],
 })
 export class GameSelectionPageComponent {
-    favoriteTheme: string = Theme.ClassName;
-
     constructor(readonly gameCarouselService: GameCarouselService) {}
 
     getNumberOfGames(): number {

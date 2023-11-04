@@ -1,10 +1,10 @@
-<div [ngClass]="favoriteTheme">
-    <app-page-header [headerMessage]="'Configuration'"></app-page-header>
+<div>
+    <app-page-header [headerMessage]="'HEADER.SETTINGS' | translate"></app-page-header>
     <div class="grid-container">
         <app-user-profil-information></app-user-profil-information>
         <app-user-statistic></app-user-statistic>
     </div>
     <div class="btn">
-        <button mat-raised-button color="warn" (click)="deleteAccount()">Supprimer le compte</button>
+        <button mat-raised-button color="warn" (click)="deleteAccount()">{{ 'CONFIG.DELETE' | translate }}</button>
     </div>
 </div>

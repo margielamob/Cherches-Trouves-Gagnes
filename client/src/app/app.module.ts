@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -21,6 +21,8 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
 import { AppLogoComponent } from './components/app-logo/app-logo.component';
@@ -30,6 +32,7 @@ import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
@@ -125,25 +128,37 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         DialogDeleteAccountComponent,
         JoinGameSelectionComponent,
         DialogSetUpGameComponent,
+        DialogChangeNameComponent,
     ],
     imports: [
+        MatCheckboxModule,
         AppMaterialModule,
         AppRoutingModule,
         FormsModule,
-        ReactiveFormsModule,
         BrowserAnimationsModule,
         BrowserModule,
-        FormsModule,
-        HttpClientModule,
         ReactiveFormsModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
         AngularFireDatabaseModule,
         AngularFireStorageModule,
-        MatCheckboxModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient],
+            },
+        }),
     ],
     providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+// ngx-translate and the loader module documentation : http://www.ngx-translate.com/
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions, @typescript-eslint/naming-convention
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}

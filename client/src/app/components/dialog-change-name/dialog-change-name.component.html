@@ -1,0 +1,22 @@
+<h1 mat-dialog-title style="text-align: center; width: 100%; margin-bottom: 50px">{{ 'CHANGE_NAME_DIALOG.TITLE' | translate }}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="changeUserNameForm" (ngSubmit)="onSubmit()">
+        <mat-form-field [style.width]="'100%'">
+            <mat-label>{{ 'CHANGE_NAME_DIALOG.MESSAGE' | translate }}</mat-label>
+            <input matInput formControlName="username" />
+            <mat-error *ngIf="username?.hasError('required')">
+                <p>{{ 'CHANGE_NAME_DIALOG.ERROR.EMPTY' | translate }}</p>
+            </mat-error>
+            <mat-error *ngIf="username?.hasError('pattern')">
+                <p>{{ 'CHANGE_NAME_DIALOG.ERROR.INVALID' | translate }}</p>
+            </mat-error>
+            <mat-error *ngIf="username?.hasError('userNameTaken')">
+                <p>{{ 'CHANGE_NAME_DIALOG.ERROR_TAKEN' | translate }}</p>
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Annuler</button>
+    <button mat-button (click)="onSubmit()">Enregistrer</button>
+</div>

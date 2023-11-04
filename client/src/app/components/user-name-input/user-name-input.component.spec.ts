@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AdminCommandsComponent } from '@app/components/admin-commands/admin-commands.component';
@@ -8,6 +8,9 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { UserNameInputComponent } from './user-name-input.component';
 
 describe('UserNameInputComponent', () => {
@@ -33,7 +36,21 @@ describe('UserNameInputComponent', () => {
         ]);
         await TestBed.configureTestingModule({
             declarations: [UserNameInputComponent, AdminCommandsComponent],
-            imports: [AppMaterialModule, NoopAnimationsModule, FormsModule, RouterTestingModule, ReactiveFormsModule],
+            imports: [
+                AppMaterialModule,
+                NoopAnimationsModule,
+                FormsModule,
+                RouterTestingModule,
+                ReactiveFormsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [
                 {
                     provide: MatDialogRef,

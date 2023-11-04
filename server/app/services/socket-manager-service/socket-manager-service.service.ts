@@ -145,7 +145,8 @@ export class SocketManagerService {
             });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
-                socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
+                const result = { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) };
+                socket.emit(SocketEvent.GetGamesWaiting, result);
             });
 
             socket.on(SocketEvent.GameDeleted, (gameId: string) => {

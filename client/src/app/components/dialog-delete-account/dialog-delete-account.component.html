@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>Supprimer le compte</h2>
-<mat-dialog-content>Êtes-vous sûr de vouloir supprimer votre compte ?</mat-dialog-content>
+<h2 mat-dialog-title>{{ 'DELETE_ACCOUNT_DIALOG.TITLE' | translate }}</h2>
+<mat-dialog-content>{{ 'DELETE_ACCOUNT_DIALOG.MESSAGE' | translate }}</mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button mat-dialog-close>Non</button>
-    <button mat-button [mat-dialog-close]="true">Oui</button>
+    <button mat-button mat-dialog-close>{{ 'DELETE_ACCOUNT_DIALOG.CANCEL' | translate }}</button>
+    <button mat-button [mat-dialog-close]="true">{{ 'DELETE_ACCOUNT_DIALOG.DELETE' | translate }}</button>
 </mat-dialog-actions>

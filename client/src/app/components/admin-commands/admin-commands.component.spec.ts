@@ -1,7 +1,10 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpLoaderFactory } from '@app/app.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminService } from '@app/services/admin-service/admin.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { AdminCommandsComponent } from './admin-commands.component';
 
 describe('AdminCommandsComponent', () => {
@@ -20,7 +23,17 @@ describe('AdminCommandsComponent', () => {
         ]);
         spyDialog = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule],
+            imports: [
+                AppMaterialModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             declarations: [AdminCommandsComponent],
             providers: [
                 {

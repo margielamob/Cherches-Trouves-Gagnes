@@ -1,9 +1,10 @@
+/* eslint-disable max-params */
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
+import { UserService } from '@app/services/user-service/user.service';
+// eslint-disable-next-line import/no-unresolved
 import { GameRecord } from '@common/game-record';
-
 @Component({
     selector: 'app-dialog-game-over',
     templateUrl: './dialog-game-over.component.html',
@@ -20,6 +21,7 @@ export class DialogGameOverComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { win: boolean; winner: string; isClassic: boolean; nbPoints: string; record: GameRecord },
         private readonly timeFormatter: TimeFormatterService,
+        public userService: UserService,
         public dialog: MatDialog,
     ) {
         this.isWin = data.win;
@@ -28,7 +30,12 @@ export class DialogGameOverComponent {
         this.nbPoints = data.nbPoints;
         this.index = data.record ? data.record.index : null;
         this.time = data.record ? this.timeFormatter.formatTimeForScore(data.record.time) : null;
-        this.theme = Theme.ClassName;
+        this.userService
+            .getUserTheme()
+
+            .subscribe((theme) => {
+                this.theme = theme as string;
+            });
     }
 
     quitGame() {

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Theme } from '@app/enums/theme';
 import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
@@ -18,7 +17,6 @@ export class GameCardComponent implements OnInit {
     @Input() gameCard: GameCard;
     @Input() isJoining: boolean = false;
     @Input() joinableGameCard: JoinableGameCard;
-    favoriteTheme: string = Theme.ClassName;
     imageSrc: string;
 
     constructor(

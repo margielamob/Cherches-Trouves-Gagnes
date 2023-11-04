@@ -6,6 +6,9 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameMode } from '@common/game-mode';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpLoaderFactory } from '@app/app.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DialogLimitedTimeComponent } from './dialog-limited-time.component';
 
 describe('DialogLimitedTimeComponent', () => {
@@ -24,7 +27,20 @@ describe('DialogLimitedTimeComponent', () => {
         gameInformationHandlerService.gameMode = GameMode.LimitedTime;
         await TestBed.configureTestingModule({
             declarations: [DialogLimitedTimeComponent],
-            imports: [AppMaterialModule, RouterTestingModule, BrowserAnimationsModule, ReactiveFormsModule],
+            imports: [
+                AppMaterialModule,
+                RouterTestingModule,
+                BrowserAnimationsModule,
+                ReactiveFormsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             providers: [{ provide: GameInformationHandlerService, useValue: gameInformationHandlerService }],
         }).compileComponents();
 

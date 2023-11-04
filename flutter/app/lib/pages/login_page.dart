@@ -102,7 +102,7 @@ class LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/signupPage');
+                            Navigator.pushNamed(context, '/signUpPage');
                           },
                           child: Text("Pas de compte? Inscrivez-vous"),
                         ),
