@@ -26,13 +26,3 @@ class CarouselModel {
     );
   }
 }
-
-/*
-"carouselInfo": {
-    "currentPage": 1,
-    "gamesOnPage": 4,
-    "nbOfGames": 6,
-    "nbOfPages": 2,
-    "hasNext": true,
-    "hasPrevious": false
-*/

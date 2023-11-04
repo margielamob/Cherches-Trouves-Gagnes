@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Theme } from '@app/enums/theme';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
@@ -14,7 +13,6 @@ import { WaitingRoomInfo } from '@common/waiting-room-info';
     styleUrls: ['./waiting-room.component.scss'],
 })
 export class WaitingRoomComponent implements OnInit, OnDestroy {
-    favoriteTheme: string = Theme.ClassName;
     players: User[] = [];
     canStartGame: boolean = false;
     // eslint-disable-next-line max-params -- absolutely need all the imported services

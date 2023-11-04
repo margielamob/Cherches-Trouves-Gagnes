@@ -52,7 +52,7 @@ export class DifferenceService {
         }
         (this.gamesDifferencesTotalFound.get(game.identifier) as Set<Coordinate[]>).add(differenceCoords);
         player.add(differenceCoords);
-        if (this.isAllDifferenceFound(playerId, game) && !game.isGameOver() && game.isClassic()) {
+        if (this.isGameEndConditionMet(game) && !game.isGameOver() && game.isClassic()) {
             game.setEndgame();
         }
     }
@@ -64,7 +64,6 @@ export class DifferenceService {
     isAllDifferenceFound(playerId: string, game: Game): boolean {
         const player = (this.gamesDifferencesFound.get(game.identifier) as Map<string, Set<Coordinate[]>>).get(playerId);
 
-        // if the game is already over all the differences are found and if the game is not initialize, 0 difference found
         if (game.isGameInitialize() || game.isGameOver() || !player) {
             return game.isGameOver();
         }
@@ -74,8 +73,33 @@ export class DifferenceService {
             : player.size === game.information.differences.length;
     }
 
-    getNbDifferencesThreshold(differencesRef: Coordinate[][]) {
+    getNbDifferencesThreshold(differencesRef: Coordinate[][]): number {
         return differencesRef.length % 2 === 0 ? differencesRef.length / 2 : Math.trunc(differencesRef.length / 2) + 1;
+    }
+
+    isGameEndConditionMet(game: Game): boolean {
+        const currentPlayerScore = this.getMaxPlayerScore(game);
+        console.log(currentPlayerScore);
+        // // eslint-disable-next-line no-unused-vars
+        // for (const [, differencesFound] of (this.gamesDifferencesFound.get(game.identifier) ?? new Map()).entries()) {
+        //     if (differencesFound.size + (game.information.differences.length - currentPlayerScore) <= currentPlayerScore) {
+        //         return false;
+        //     }
+        // }
+
+        return game.information.differences.length - currentPlayerScore <= currentPlayerScore;
+    }
+
+    getMaxPlayerScore(game: Game): number {
+        let maxScore = 0;
+        if (this.gamesDifferencesFound.get(game.identifier)?.values()) {
+            for (const differencesFound of (this.gamesDifferencesFound.get(game.identifier) ?? new Map()).values()) {
+                if (differencesFound.size > maxScore) {
+                    maxScore = differencesFound.size;
+                }
+            }
+        }
+        return maxScore;
     }
 
     getAllDifferencesNotFound(differencesRef: Coordinate[][], gameId: string) {

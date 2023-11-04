@@ -3,7 +3,7 @@
     <div class="grid-item">
         <div *ngIf="user$ | async as user">Bienvenue, {{ user.displayName }}!</div>
         <h1 class="game-title">
-            {{ title }}
+            {{ 'MAINPAGE.TITLE' | translate }}
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
         </h1>
         <ul>
@@ -16,18 +16,23 @@
                     <button mat-flat-button color="primary" (click)="navigateTo('/select')">Create a game</button>
                     <button mat-flat-button color="primary" (click)="navigateTo('/join-game')">Join a game</button>
                 </div>
+                <button class="optionsButton" mat-flat-button color="primary" routerLink="/select" (click)="onClickPlayClassic()">
+                    {{ 'MAINPAGE.CLASSIC' | translate }}
+                </button>
             </li>
             <li>
-                <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">Temps limité</button>
+                <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">
+                    {{ 'MAINPAGE.LIMITED_TIME' | translate }}
+                </button>
             </li>
             <li>
-                <button mat-flat-button class="optionsButton" color="primary" routerLink="/admin">Administration</button>
+                <button mat-flat-button class="optionsButton" color="primary" routerLink="/admin">{{ 'MAINPAGE.ADMINISTRATION' | translate }}</button>
             </li>
             <li>
-                <button mat-flat-button class="optionsButton" color="primary" routerLink="/settings">Configuration</button>
+                <button mat-flat-button class="optionsButton" color="primary" routerLink="/settings">{{ 'MAINPAGE.SETTINGS' | translate }}</button>
             </li>
         </ul>
-        <h2 class="team-number">Equipe 106 :</h2>
+        <h2 class="team-number">{{ 'MAINPAGE.TEAM' | translate }}</h2>
         <p><span>Jacob Taylor, </span> <span>Karim El Hosni, </span> <span>Thierry Beaulieu,</span></p>
         <p><span>Laurie Bédard-Côté, </span> <span>Xavier Jouslin.</span></p>
     </div>

@@ -80,7 +80,6 @@ export class AuthenticationService {
                 // sign out user
 
                 this.afAuth.signOut();
-
                 localStorage.removeItem('sessionToken');
                 this.router.navigate(['login']);
             });

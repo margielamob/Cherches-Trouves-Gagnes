@@ -1,55 +1,16 @@
+import 'dart:typed_data';
+
+import 'package:app/domain/models/user_data.dart';
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// interface user
-class UserData {
-  final String uid;
-  final String displayName;
-  final String email;
-  final bool emailVerified;
-  final String? photoURL;
-  final String? phoneNumber;
-  final String? theme;
-  final String? language;
-  final int gameLost;
-  final int gameWins;
-  final int gamePlayed;
-  final String? averageTime;
-
-  UserData({
-    required this.uid,
-    required this.displayName,
-    required this.email,
-    this.emailVerified = false,
-    this.photoURL,
-    this.phoneNumber,
-    this.theme,
-    this.language,
-    this.gameLost = 0,
-    this.gameWins = 0,
-    this.gamePlayed = 0,
-    this.averageTime,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'uid': uid,
-      'displayName': displayName,
-      'email': email,
-      'emailVerified': emailVerified,
-      'photoURL': photoURL,
-      'phoneNumber': phoneNumber,
-      'theme': theme,
-      'language': language,
-      'gameLost': gameLost,
-      'gameWins': gameWins,
-      'gamePlayed': gamePlayed,
-      'averageTime': averageTime,
-    };
-  }
-}
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserService {
+  FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
+
+  UserData? get currentUser => null;
 
   Future<void> addUser(UserData user) async {
     CollectionReference users = db.collection('users');
@@ -79,5 +40,51 @@ class UserService {
     }
 
     return result.docs.first;
+  }
+
+  Future<void> updateUser(UserData user) async {
+    CollectionReference users = db.collection('users');
+    return users
+        .doc(user.uid)
+        .update(user.toMap())
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> deleteUser(UserData user) async {
+    CollectionReference users = db.collection('users');
+    return users
+        .doc(user.uid)
+        .delete()
+        .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  Future<DocumentSnapshot?> getUserByUid(String uid) async {
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+    final QuerySnapshot result = await users.where('uid', isEqualTo: uid).get();
+
+    if (result.docs.isEmpty) {
+      return null;
+    }
+    return result.docs.first;
+  }
+
+  Future<String> getPhotoURL(String uid) async {
+    Reference ref = storage.ref().child('avatars/$uid/avatar.jpg');
+    return ref.getDownloadURL();
+  }
+
+  Future<void> updateUserAvatar(String uid, String photoURL) async {
+    CollectionReference users = db.collection('users');
+    return users.doc(uid).update({'photoURL': photoURL}).catchError(
+        (error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> uploadAvatar(String uid, XFile imagePathXFile) async {
+    Uint8List imageBytes = await imagePathXFile.readAsBytes();
+    Reference ref = storage.ref().child('avatars/$uid/avatar.jpg');
+    UploadTask uploadTask = ref.putData(imageBytes);
+    await uploadTask.whenComplete(() => null);
+    updateUserAvatar(uid, 'avatars/$uid/avatar.jpg');
   }
 }

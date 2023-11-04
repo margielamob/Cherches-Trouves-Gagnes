@@ -1,10 +1,10 @@
-<div [ngClass]="theme" class="dialog">
-    <h2 mat-title>Êtes-vous certain de vouloir supprimer ?</h2>
-    <mat-card-content>La suppression ne peut pas être restaurée.</mat-card-content>
+<div class="dialog">
+    <h2 mat-title>{{ 'CONFIRM_DELETE_DIALOG.TITLE' | translate }}</h2>
+    <mat-card-content>{{ 'CONFIRM_DELETE_DIALOG.MESSAGE' | translate }}</mat-card-content>
     <mat-dialog-actions align="end">
-        <button color="primary" mat-button mat-dialog-close>Annuler</button>
+        <button color="primary" mat-button mat-dialog-close>{{ 'CONFIRM_DELETE_DIALOG.CANCEL' | translate }}</button>
         <button type="button" mat-raised-button mat-dialog-close color="warn" (click)="data.singleGameDelete ? deleteSingleGame() : deleteAllGames()">
-            Supprimer
+            {{ 'CONFIRM_DELETE_DIALOG.DELETE' | translate }}
         </button>
     </mat-dialog-actions>
 </div>

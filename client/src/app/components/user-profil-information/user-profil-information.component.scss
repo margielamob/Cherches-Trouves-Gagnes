@@ -59,6 +59,7 @@
     margin: 10px;
     display: flex;
     justify-content: center;
+    margin-bottom: 18px;
 }
 
 .avatar {
@@ -76,4 +77,20 @@
 
 .error mat-icon {
     margin-top: 4px;
+}
+
+.btn-margin {
+    margin-bottom: 80px;
+}
+
+.button {
+    margin-top: 50px;
+}
+.user-name {
+    margin-top: 10px;
+}
+
+.unclickable {
+    pointer-events: none;
+    opacity: 1;
 }

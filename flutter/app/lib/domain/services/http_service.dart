@@ -1,18 +1,20 @@
-import 'package:app/domain/models/game_image_model.dart';
-import 'package:app/domain/models/carousel_request_model.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
-class HttpService {
-  final String baseUri = 'http://localhost:3000/api';
+import 'package:app/domain/models/game_image_model.dart';
+import 'package:app/domain/models/requests/carousel_request.dart';
+import 'package:app/domain/utils/base_url.dart';
+import 'package:http/http.dart' as http;
 
-  Future<CarouselRequestModel> fetchCarouselByPage(int page) async {
+class HttpService {
+  final String baseUri = BaseURL.httpServer;
+
+  Future<CarouselRequest> fetchCarouselByPage(int page) async {
     final response =
         await http.get(Uri.parse('$baseUri/game/cards/?page=$page'));
     if (response.statusCode == 200) {
       final responseData = await jsonDecode(response.body);
-      final responseApi = CarouselRequestModel.fromJson(responseData);
+      final responseApi = CarouselRequest.fromJson(responseData);
       return responseApi;
     } else {
       throw Exception('Failed to load cards');

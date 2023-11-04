@@ -1,7 +1,7 @@
-<section [ngClass]="favoriteTheme">
+<section>
     <div class="control-buttons">
         <div class="create-game-button control-button">
-            <button mat-fab color="primary" matTooltip="Créer un nouveau jeu" aria-label="Boutton Créer" routerLink="/create">
+            <button mat-fab color="primary" matTooltip="{{ 'ADMIN_COMMANDS.CREATE' | translate }}" aria-label="Boutton Créer" routerLink="/create">
                 <mat-icon>add</mat-icon>
             </button>
         </div>
@@ -10,7 +10,7 @@
             <button
                 mat-fab
                 color="primary"
-                matTooltip="Supprimer tous les jeux"
+                matTooltip="{{ 'ADMIN_COMMANDS.DELETE' | translate }}"
                 [disabled]="!this.hasCards()"
                 aria-label="Boutton supprimer"
                 (click)="onClickDeleteGames()"
@@ -24,7 +24,7 @@
                 mat-fab
                 color="primary"
                 [disabled]="!hasCards()"
-                matTooltip="Réinitialiser les temps records"
+                matTooltip="{{ 'ADMIN_COMMANDS.RESET' | translate }}"
                 aria-label="Boutton réinitialiser"
                 (click)="onClickRefreshGames()"
             >
@@ -36,7 +36,7 @@
             <button
                 mat-fab
                 color="primary"
-                matTooltip="Modifier les paramètres du jeu"
+                matTooltip="{{ 'ADMIN_COMMANDS.UPDATE' | translate }}"
                 aria-label="Boutton Modifier"
                 (click)="onClickModifySettings()"
             >

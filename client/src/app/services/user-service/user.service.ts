@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, take } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -149,6 +149,94 @@ export class UserService {
                 } else {
                     return of(null);
                 }
+            }),
+        );
+    }
+
+    getUserLang(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.language !== undefined) {
+                    return of(user.language);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    getUserTheme(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.theme !== undefined) {
+                    return of(user.theme);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    getUserEmail(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.email !== undefined) {
+                    return of(user.email);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    setUserTheme(theme: string): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user) {
+                    return of(undefined); // Ou gestion d'erreur appropriée
+                }
+                const userId = user.uid;
+                const userRef = this.afs.collection('users').doc(userId);
+                return from(userRef.update({ theme }));
+            }),
+        );
+    }
+
+    setUserLang(language: string): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user) {
+                    return of(undefined);
+                }
+                const userId = user.uid;
+                const userRef = this.afs.collection('users').doc(userId);
+                return from(userRef.update({ language }));
+            }),
+        );
+    }
+
+    getUserLangue(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.language !== undefined) {
+                    return of(user.language);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    changeUserDisplayName(newDisplayName: string): Observable<void> {
+        return this.getCurrentUser().pipe(
+            take(1),
+            switchMap((user) => {
+                if (!user || !user.uid) {
+                    throw new Error('No user logged in or user ID not found');
+                }
+                return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
             }),
         );
     }

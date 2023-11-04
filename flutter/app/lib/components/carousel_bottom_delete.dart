@@ -1,10 +1,10 @@
+import 'package:app/components/carousel_bottom.dart';
 import 'package:app/components/carousel_modal.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:flutter/material.dart';
 
-class CarouselBottomDelete extends StatelessWidget {
-  final GameCardModel data;
-  const CarouselBottomDelete({required this.data});
+class CarouselBottomDelete extends CarouselBottom {
+  CarouselBottomDelete(GameCardModel data) : super(data: data);
 
   @override
   Widget build(BuildContext context) {

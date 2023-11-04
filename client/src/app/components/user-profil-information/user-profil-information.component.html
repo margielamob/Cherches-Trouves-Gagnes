@@ -2,35 +2,58 @@
     <div class="profil-container">
         <div class="user-container">
             <div class="profile">
-                <h1>Profile</h1>
+                <h1>{{ 'CONFIG.TITLE' | translate }}</h1>
             </div>
             <div class="info-container">
                 <div class="btn-container">
                     <div class="user-avatar section">
                         <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openUserAvatarDialog()">
-                            Modifier l'avatar
+                            {{ 'CONFIG.AVATAR' | translate }}
                         </button>
                     </div>
                     <div class="pseudonym-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Pseudonyme</button>
+                        <button class="profil-btn" mat-raised-button color="primary" type="submit" (click)="openNameDialog()">
+                            {{ 'CONFIG.USERNAME' | translate }}
+                        </button>
                     </div>
                     <div class="theme-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Thème visuel</button>
+                        <button class="profil-btn unclickable" mat-raised-button color="primary">
+                            {{ 'CONFIG.THEME' | translate }}
+                        </button>
                     </div>
-                    <div class="language-container">
-                        <button class="profil-btn" mat-raised-button color="primary">Langue</button>
+                    <div class="language-container unclickable">
+                        <button class="profil-btn" mat-raised-button color="primary">
+                            {{ 'CONFIG.LANGUAGE' | translate }}
+                        </button>
                     </div>
                 </div>
                 <div class="result-container">
                     <app-user-avatar></app-user-avatar>
                     <div class="pseudonym-container">
-                        <button class="profil-btn" mat-raised-button color="secondary">Pseudonyme</button>
+                        <div class="profil-btn" mat-raised-button color="secondary">
+                            <span class="user-name" *ngIf="user$ | async as user">
+                                <strong>{{ user.displayName }}</strong>
+                            </span>
+                        </div>
                     </div>
-                    <div class="theme-container">
-                        <button class="profil-btn" mat-raised-button color="secondary">Thème visuel</button>
-                    </div>
-                    <div class="language-container">
-                        <button class="profil-btn" mat-raised-button color="secondary">Langue</button>
+                    <div class="language-container" [formGroup]="settingsForm">
+                        <div class="theme-container">
+                            <mat-form-field>
+                                <mat-label>{{ 'CONFIG.SELECT_THEME' | translate }} </mat-label>
+                                <mat-select formControlName="theme" (selectionChange)="onThemeChange($event)">
+                                    <mat-option *ngFor="let theme of themes" [value]="theme">{{
+                                        'THEMES.' + theme.toUpperCase() | translate
+                                    }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <mat-form-field>
+                            <mat-label> {{ 'CONFIG.SELECT_LANG' | translate }}</mat-label>
+                            <mat-select formControlName="language" (selectionChange)="onLanguageChange($event)">
+                                <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </div>
             </div>

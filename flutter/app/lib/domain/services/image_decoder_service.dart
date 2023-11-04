@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:lzstring/lzstring.dart';
 
 class ImageDecoderService {

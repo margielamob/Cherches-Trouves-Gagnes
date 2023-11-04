@@ -1,17 +1,22 @@
+import 'package:app/components/current_players.dart';
+import 'package:app/components/game_vignette_modified.dart';
+import 'package:app/components/game_vignette_original.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
-import 'package:app/components/game_vignette.dart';
+import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
-  final RxDouble x1 = 0.0.obs;
-  final RxDouble y1 = 0.0.obs;
-  final String bmpOriginalId;
-  final String bmpModifiedId;
+  final DifferenceDetectionService _differenceDetectionService = Get.find();
 
-  Classic({required this.bmpOriginalId, required this.bmpModifiedId});
+  final String bmpOriginalId = "b72c2106-f4f1-4a34-9797-f795ce24e1dd";
+  final String bmpModifiedId = "0f811652-a757-48d1-b348-51b5db40c9ee";
+
+  Classic() {
+    _differenceDetectionService.handleDifferences();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,32 +31,41 @@ class Classic extends StatelessWidget {
                 bmpOriginalId, bmpModifiedId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                final image = snapshot.data;
-                if (image != null) {
-                  return Row(
+                final images = snapshot.data;
+                if (images != null) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTapUp: (details) {
-                              x1.value = details.localPosition.dx;
-                              y1.value = details.localPosition.dy;
-                            },
-                            child: GameVignette(
-                              VignettesModel(
-                                  modified: image.modified,
-                                  original: image.original),
-                              [
-                                Offset(100, 200),
-                                Offset(300, 150),
-                              ],
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            color: Colors.black,
+                            size: 30.0,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "00:00",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
                             ),
                           ),
-                          Obx(() => Text(
-                              "Coordinate x : ${x1.value}, y : ${y1.value}"))
                         ],
                       ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GameVignetteOriginal(images, "fake-game-id"),
+                          SizedBox(width: 50),
+                          GameVignetteModified(images, "fake-game-id"),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      CurrentPlayers(),
+                      SizedBox(height: 30),
                     ],
                   );
                 }

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Theme } from '@app/enums/theme';
+import { GAME_TIME_CONSTANTS_PARAMS } from '@app/constants/game-constants';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameTimeConstants } from '@common/game-time-constants';
-import { GAME_TIME_CONSTANTS_PARAMS } from '@app/constants/game-constants';
 
 @Component({
     selector: 'app-game-constants-settings',
@@ -10,7 +9,6 @@ import { GAME_TIME_CONSTANTS_PARAMS } from '@app/constants/game-constants';
     styleUrls: ['./game-constants-settings.component.scss'],
 })
 export class GameConstantsSettingsComponent implements OnInit {
-    favoriteTheme: string = Theme.ClassName;
     gameTimeConstants: GameTimeConstants = {
         gameTime: GAME_TIME_CONSTANTS_PARAMS.gameTime,
         penaltyTime: GAME_TIME_CONSTANTS_PARAMS.penaltyTime,
