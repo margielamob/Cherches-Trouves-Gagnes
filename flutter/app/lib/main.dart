@@ -1,21 +1,30 @@
-import 'package:app/pages/admin-page.dart';
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/classic_game_service.dart';
+import 'package:app/domain/services/http_service.dart';
+import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/themes/default-theme.dart';
+import 'package:app/pages/admin_page.dart';
+import 'package:app/pages/classic_game_page.dart';
+import 'package:app/pages/create_game.dart';
+import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/sign_up_page.dart';
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/card-feed-service.dart';
-import 'package:app/services/http-client-service.dart';
-import 'package:app/services/user-service.dart';
-import 'package:app/themes/default-theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 void registerDependencies() {
-  GetIt.I.registerSingleton<UserService>(UserService());
-  GetIt.I.registerSingleton<AuthService>(AuthService());
-  GetIt.I.registerSingleton<HttpClientService>(HttpClientService());
-  GetIt.I.registerSingleton<CardFeedService>(CardFeedService());
+  Get.put(UserService());
+  Get.put(AuthService());
+  Get.put(HttpService());
+  Get.put(ClassicGameService());
+  Get.put(CarouselService());
+  Get.put(ImageDecoderService());
+  Get.put(ClassicGameService());
 }
 
 void main() async {
@@ -29,7 +38,18 @@ void main() async {
     storageBucket: 'log3900-103-f3850.appspot.com',
   ));
   registerDependencies();
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) {
+          CarouselService carouselService = Get.find();
+          return carouselService;
+        })
+        // Add more providers here
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -41,30 +61,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
-        '/pageA': (context) => PageA(),
+        '/classic': (context) => Classic(
+            bmpOriginalId: "c8bf53b7-2424-4e3f-8362-829410c27332",
+            bmpModifiedId: "37c82484-45b1-4e39-81a5-7d6d7242c127"),
+        '/gameSelection': (context) => GameSelectionPage(),
+        '/create': (context) => CreateGamePage(),
         '/pageB': (context) => PageB(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/signupPage': (context) => SignUpPage(),
+        '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
       },
-    );
-  }
-}
-
-class PageA extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Page A'),
-      ),
-      body: Center(
-        child: Text(
-          'This is Page A',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
     );
   }
 }

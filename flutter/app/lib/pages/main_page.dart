@@ -1,3 +1,4 @@
+import 'package:app/components/classic_game_modal.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {
@@ -26,7 +27,7 @@ class MainPage extends StatelessWidget {
                           ),
                           SizedBox(width: 20),
                           Image.asset(
-                            'logoJdD.png',
+                            'assets/logoJdD.png',
                             width: 100,
                             height: 100,
                           ),
@@ -36,9 +37,14 @@ class MainPage extends StatelessWidget {
                     SizedBox(height: 70),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/pageA');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ClassicGameModal();
+                          },
+                        );
                       },
-                      child: Text('Go to Page A'),
+                      child: Text('Mode de jeux classique'),
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
@@ -82,18 +88,15 @@ class MainPage extends StatelessWidget {
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'quote.png',
-                          width: 500,
-                          height: 800,
-                        ),
-                      ],
-                    )
+                    Image.asset(
+                      'assets/quote.png',
+                      height: 600,
+                    ),
                   ],
-                )
+                ),
               ],
             )
           ],

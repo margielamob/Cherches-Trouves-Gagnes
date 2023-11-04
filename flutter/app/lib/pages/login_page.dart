@@ -1,4 +1,4 @@
-import 'package:app/services/auth-service.dart';
+import 'package:app/domain/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -7,6 +7,8 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => LoginPageState();
 }
+
+//login page
 
 class LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -61,9 +63,6 @@ class LoginPageState extends State<LoginPage> {
                           if (value == null || value.isEmpty) {
                             return "Veuillez entrer votre adresse e-mail ou nom d'utilisateur.";
                           }
-                          if (value.contains('@')) {
-                            isEmail = true;
-                          }
                           return null;
                         }, (value) => credential = value),
                         SizedBox(height: 30),
@@ -78,6 +77,8 @@ class LoginPageState extends State<LoginPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
+                              isEmail = credential!.contains('@');
+
                               try {
                                 await authService.signInWithUserName(
                                     credential as String,
@@ -88,7 +89,10 @@ class LoginPageState extends State<LoginPage> {
                                 Navigator.pushNamed(context, '/MainPage');
                               } catch (error) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Error: $error')),
+                                  SnackBar(
+                                    content: Text('$error'),
+                                    backgroundColor: Colors.red,
+                                  ),
                                 );
                               }
                             }
@@ -111,8 +115,8 @@ class LoginPageState extends State<LoginPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'quote.png',
-                  fit: BoxFit.cover,
+                  'assets/quote.png',
+                  height: 600,
                 ),
               ),
             ],

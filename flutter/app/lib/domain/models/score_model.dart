@@ -1,15 +1,16 @@
-class Score {
+class ScoreModel {
   final String playerName;
   final int time;
   final String type;
-  const Score({
+
+  const ScoreModel({
     required this.playerName,
     required this.time,
     required this.type,
   });
 
-  factory Score.fromJson(Map json) {
-    return Score(
+  factory ScoreModel.fromJson(Map json) {
+    return ScoreModel(
       playerName: json['playerName'],
       time: json['time'],
       type: json['type'],
