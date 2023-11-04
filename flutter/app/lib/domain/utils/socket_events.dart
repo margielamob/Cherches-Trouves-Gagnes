@@ -12,6 +12,13 @@ class SocketEvent {
   static String play = "play";
   static String waitPlayer = "waitPlayer";
   static String playerLeft = "playerLeft";
+  static String leaveGame = "leaveGame";
   static String rejectPlayer = "rejectPlayer";
+  static String acceptPlayer = "acceptPlayer";
   static String joinGame = "joinGame";
+  static String requestToJoin = "requestToJoin";
+  static String leaveWaiting = "leaveWaiting";
+  static String win = "win";
+  static String lose = "lose";
+  static String refreshGames = "refreshGames";
 }

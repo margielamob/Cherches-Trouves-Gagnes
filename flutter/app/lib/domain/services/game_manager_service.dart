@@ -1,18 +1,30 @@
 import 'package:app/domain/models/game_mode_model.dart';
+import 'package:app/domain/models/requests/leave_waiting_request.dart';
+import 'package:app/domain/models/requests/user_request.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_model.dart';
+import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
+import 'package:app/domain/models/requests/join_game_request.dart';
+import 'package:app/domain/models/requests/leave_game_request.dart';
+import 'package:app/domain/models/requests/reject_player_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/pages/waiting_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   WaitingGameModel? waitingGame;
-
+  UserRequest? userRequest;
+  bool isWaitingRoom = false;
+  bool isModalShown = false;
   bool isMulti = false;
 
   GameManagerService() {
@@ -32,6 +44,7 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
+      Get.to(WaitingPage());
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -44,6 +57,24 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.rejectPlayer, (dynamic message) {
       print("SocketEvent.rejectPlayer : $message");
+    });
+    _socket.on(SocketEvent.requestToJoin, (dynamic message) {
+      UserRequest data = UserRequest.fromJson(message);
+      userRequest = data;
+      print(data.toJson());
+      print("SocketEvent.requestToJoin : $message");
+    });
+    _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
+      print("SocketEvent.leaveWaiting : $message");
+    });
+    _socket.on(SocketEvent.win, (dynamic message) {
+      print("SocketEvent.win : $message");
+    });
+    _socket.on(SocketEvent.lose, (dynamic message) {
+      print("SocketEvent.lose : $message");
+    });
+    _socket.on(SocketEvent.refreshGames, (dynamic message) {
+      print("SocketEvent.refreshGames : $message");
     });
   }
 
@@ -97,18 +128,39 @@ class GameManagerService extends ChangeNotifier {
     return false;
   }
 
-  void sendCreateGameEvent(
-      String player, String mode, String card, bool isMultiplayer) {
-    final data = {
-      'player': player,
-      'mode': mode,
-      'game': {card: card, isMulti: isMultiplayer},
-    };
-    _socket.send(SocketEvent.createGame, data);
+  void joinGame(String player, String gameId) {
+    JoinGameRequest data = JoinGameRequest(player: player, gameId: gameId);
+    _socket.send(SocketEvent.joinGame, data.toJson());
+    print("joinGame");
   }
 
-  void joinMultiplayerGame() {
-    print("onClickCreateJoinGame");
+  void acceptPlayer(String roomId, String opponentsRoomId, String playerName) {
+    AcceptPlayerRequest data = AcceptPlayerRequest(
+        roomId: roomId,
+        opponentsRoomId: opponentsRoomId,
+        playerName: playerName);
+    _socket.send(SocketEvent.acceptPlayer, data.toJson());
+    print("acceptPlayer");
+  }
+
+  void rejectPlayer(String roomId, String opponentsRoomId) {
+    RejectPlayerRequest data =
+        RejectPlayerRequest(roomId: roomId, opponentsRoomId: opponentsRoomId);
+    _socket.send(SocketEvent.rejectPlayer, data.toJson());
+    print("rejectPlayer");
+  }
+
+  void leaveGame(String gameId) {
+    LeaveGameRequest data = LeaveGameRequest(gameId: gameId);
+    _socket.send(SocketEvent.leaveGame, data.toJson());
+    print("leaveGame");
+  }
+
+  void leaveWaiting(String roomId, String gameCard) {
+    LeaveWaitingRequest data =
+        LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
+    _socket.send(SocketEvent.leaveWaiting, data.toJson());
+    print("leaveWaiting");
   }
 
   void setGameInformation() {}
