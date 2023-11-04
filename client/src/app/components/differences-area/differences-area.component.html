@@ -1,4 +1,6 @@
 <section class="gamers-infos">
+    <span> YOU : {{ this.mainPlayer.name }}</span>
+    <div>{{ this.mainPlayer.nbDifferences }}</div>
     <div class="gamer-info" *ngFor="let player of this.players">
         <p class="first-player-name player-name">Nom du joueur : {{ player.name }}</p>
         <section class="differences">

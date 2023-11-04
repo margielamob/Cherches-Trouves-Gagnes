@@ -57,6 +57,7 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.gameInfoHandlerService.resetGameVariables();
     }
 
     openSnackBar() {

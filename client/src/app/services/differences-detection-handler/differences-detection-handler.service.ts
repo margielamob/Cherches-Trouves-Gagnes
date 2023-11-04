@@ -5,6 +5,7 @@ import { FlashTimer } from '@app/constants/game-constants';
 import { Vec2 } from '@app/interfaces/vec2';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 @Injectable({
@@ -19,11 +20,15 @@ export class DifferencesDetectionHandlerService {
         public matDialog: MatDialog,
         private readonly socketService: CommunicationSocketService,
         private readonly gameInfoHandlerService: GameInformationHandlerService,
+        private userService: UserService,
     ) {}
 
-    setNumberDifferencesFound(isPlayerAction: boolean) {
-        this.gameInfoHandlerService.players[isPlayerAction ? 0 : 1].nbDifferences++;
-        this.gameInfoHandlerService.$differenceFound.next(this.gameInfoHandlerService.players[isPlayerAction ? 0 : 1].name);
+    setNumberDifferencesFound(playerName: string) {
+        console.log(playerName);
+        console.log(this.gameInfoHandlerService.players);
+        const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
+        this.gameInfoHandlerService.players[index].nbDifferences++;
+        this.gameInfoHandlerService.$differenceFound.next(playerName);
     }
 
     playWrongSound() {
@@ -40,7 +45,11 @@ export class DifferencesDetectionHandlerService {
     }
 
     getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
-        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, roomId: this.gameInfoHandlerService.roomId });
+        this.socketService.send(SocketEvent.Difference, {
+            differenceCoord: mousePosition,
+            roomId: this.gameInfoHandlerService.roomId,
+            player: this.userService.activeUser.displayName,
+        });
         this.handleSocketDifferenceNotFound(ctx, mousePosition);
     }
 

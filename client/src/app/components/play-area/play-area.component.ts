@@ -39,7 +39,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly communicationService: CommunicationService,
         private readonly mouseHandlerService: MouseHandlerService,
-        private readonly communicationSocketService: CommunicationSocketService,
+        private communicationSocketService: CommunicationSocketService,
         private readonly routerService: RouterService,
         private cheatMode: CheatModeService,
         private readonly clueHandlerService: ClueHandlerService,
@@ -120,14 +120,15 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             this.displayImages();
             this.gameInfoHandlerService.$newGame.next();
         });
-        this.communicationSocketService.on<DifferenceFound>(SocketEvent.DifferenceFound, (data: DifferenceFound) => {
-            this.differencesDetectionHandlerService.setNumberDifferencesFound(!data.isPlayerFoundDifference);
+        this.communicationSocketService.on(SocketEvent.DifferenceFound, (obj: { data: DifferenceFound; playerName: string }) => {
+            console.log('Playarea component : ' + obj.playerName);
+            this.differencesDetectionHandlerService.setNumberDifferencesFound(obj.playerName);
             if (this.cheatMode.isCheatModeActivated) {
-                this.cheatMode.stopCheatModeDifference(this.getContextOriginal(), this.getContextModified(), data.coords);
+                this.cheatMode.stopCheatModeDifference(this.getContextOriginal(), this.getContextModified(), obj.data.coords);
             }
             if (this.gameInfoHandlerService.isClassic()) {
-                this.differencesDetectionHandlerService.differenceDetected(this.getContextOriginal(), this.getContextImgModified(), data.coords);
-                this.differencesDetectionHandlerService.differenceDetected(this.getContextModified(), this.getContextImgModified(), data.coords);
+                this.differencesDetectionHandlerService.differenceDetected(this.getContextOriginal(), this.getContextImgModified(), obj.data.coords);
+                this.differencesDetectionHandlerService.differenceDetected(this.getContextModified(), this.getContextImgModified(), obj.data.coords);
             }
         });
     }

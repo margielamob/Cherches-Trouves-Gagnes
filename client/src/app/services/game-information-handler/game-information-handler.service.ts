@@ -51,6 +51,7 @@ export class GameInformationHandlerService {
         });
 
         this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            console.log(info.cheatMode);
             this.roomId = info.roomId;
             this.isMulti = true;
             this.playersEX = info.players;
@@ -163,5 +164,20 @@ export class GameInformationHandlerService {
         });
         this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();
+    }
+
+    resetGameVariables(): void {
+        this.playersEX = [];
+        this.players = [];
+        this.roomId = '';
+        this.player = { displayName: '', avatar: '' };
+        this.$playerLeft = new Subject<void>();
+        this.$differenceFound = new Subject<string>();
+        this.$newGame = new Subject<void>();
+        this.gameMode = GameMode.Classic;
+        this.isReadyToAccept = true;
+        this.isMulti = false;
+        this.cheatMode = false;
+        this.timer = 0;
     }
 }

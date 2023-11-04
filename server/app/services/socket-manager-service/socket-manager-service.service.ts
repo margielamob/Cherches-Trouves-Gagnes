@@ -13,6 +13,7 @@ import { GameMode } from '@common/game-mode';
 import { ScoreType } from '@common/score-type';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
 import * as http from 'http';
 import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
@@ -172,7 +173,8 @@ export class SocketManagerService {
                 }
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string) => {
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
+                console.log(playerName);
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
@@ -200,8 +202,10 @@ export class SocketManagerService {
                             this.gameManager.isGameMultiplayer(gameId),
                         ),
                     );
-                socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
-                socket.emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId));
+                // socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
+                this.sio
+                    .to(gameId)
+                    .emit(SocketEvent.DifferenceFound, { data: this.gameManager.getNbDifferencesFound(differences, gameId), playerName });
 
                 if (this.gameManager.isGameOver(gameId)) {
                     this.handleEndGame(gameId, socket);
@@ -241,16 +245,19 @@ export class SocketManagerService {
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
         socket.join(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
+        const data: WaitingRoomInfo = { roomId, players, cheatMode: card.cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
     }
 
     async joinClassicGame(player: User, roomId: string, socket: Socket) {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        const isCheatMode = this.gameManager.isCheatMode(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players, isCheatMode });
-        socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        console.log(cheatMode);
+        const data: WaitingRoomInfo = { roomId, players, cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
+        socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
     }
 
     async leaveWaitingRoom(roomId: string, socket: Socket) {
