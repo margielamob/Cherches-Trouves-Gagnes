@@ -1,7 +1,16 @@
 import 'package:app/domain/services/app_bar_service.dart';
+<<<<<<< HEAD
+import 'package:app/domain/services/game_manager_service.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class WaitingPage extends StatelessWidget {
+  final GameManagerService gameManagerService = Get.find();
+=======
 import 'package:flutter/material.dart';
 
 class WaitingPage extends StatelessWidget {
+>>>>>>> dev
   @override
   Widget build(BuildContext context) {
     return Scaffold(
