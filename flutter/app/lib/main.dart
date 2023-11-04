@@ -18,6 +18,7 @@ import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/sign_up_page.dart';
+import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firstCamera = cameras.first;
-    return MaterialApp(
+    return GetMaterialApp(
       theme: appTheme,
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
         '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
+        '/WaitingPage': (context) => WaitingPage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
       },
