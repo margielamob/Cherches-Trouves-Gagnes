@@ -32,6 +32,7 @@ import { CluesAreaComponent } from './components/clues-area/clues-area.component
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
+import { DialogConfirmResetPasswordComponent } from './components/dialog-confirm-reset-password/dialog-confirm-reset-password.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
@@ -61,6 +62,7 @@ import { EmailVerificationComponent } from './pages/email-verification/email-ver
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
@@ -124,6 +126,8 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
         DialogChangeNameComponent,
+        DialogConfirmResetPasswordComponent,
+        ResetPasswordComponent,
     ],
     imports: [
         AppMaterialModule,

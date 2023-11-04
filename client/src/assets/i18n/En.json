@@ -215,7 +215,9 @@
     "HEADER": {
         "GAME_SELECTION": "Choose a game",
         "SETTINGS": "Settings",
-        "WAITING_ROOM": "Waiting room"
+        "WAITING_ROOM": "Waiting room",
+        "HOME": "Home page",
+        "LOGOUT": "Logout"
     },
 
     "SERVER": {

@@ -217,7 +217,8 @@
         "GAME_SELECTION": "Sélectionnez votre jeu",
         "SETTINGS": "Paramètres",
         "WAITING_ROOM": "Salle d'attente",
-        "HOME": "Accueil"
+        "HOME": "Accueil",
+        "LOGOUT": "Déconnexion"
     },
 
     "SERVER": {
