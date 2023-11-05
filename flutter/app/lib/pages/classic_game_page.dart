@@ -11,10 +11,11 @@ class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
   final DifferenceDetectionService _differenceDetectionService = Get.find();
 
-  final String bmpOriginalId = "b72c2106-f4f1-4a34-9797-f795ce24e1dd";
-  final String bmpModifiedId = "0f811652-a757-48d1-b348-51b5db40c9ee";
+  final String bmpOriginalId = "11f182b0-4ee2-4842-b344-1a443e69ac5e";
+  final String bmpModifiedId = "11f182b0-4ee2-4842-b344-1a443e69ac5e";
+  final String gameId;
 
-  Classic() {
+  Classic({required this.gameId}) {
     _differenceDetectionService.handleDifferences();
   }
 
