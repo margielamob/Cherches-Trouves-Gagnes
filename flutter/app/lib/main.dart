@@ -5,6 +5,7 @@ import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/providers/game_manager_provider.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/user_service.dart';
@@ -36,6 +37,7 @@ void registerDependencies() {
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
   Get.put(SoundService());
+  Get.put(GameManagerProvider());
 }
 
 late List<CameraDescription> cameras;
@@ -63,8 +65,8 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            GameManagerService gameManagerService = Get.find();
-            return gameManagerService;
+            GameManagerProvider gameManagerProvider = Get.find();
+            return gameManagerProvider;
           },
         ),
       ],

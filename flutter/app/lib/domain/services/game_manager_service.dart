@@ -12,18 +12,18 @@ import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/reject_player_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
+import 'package:app/domain/services/providers/game_manager_provider.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/waiting_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class GameManagerService extends ChangeNotifier {
+class GameManagerService extends StatelessWidget {
+  final GameManagerProvider gameManagerProvider = Get.find();
   final SocketService _socket = Get.find();
-  WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
   UserRequest? userRequest;
   bool isWaitingRoom = false;
@@ -136,16 +136,6 @@ class GameManagerService extends ChangeNotifier {
     } catch (error) {
       print('Error while sending CreateGame event: $error');
     }
-  }
-
-  bool isGameJoinable(String gameId, GameModeModel gameMode) {
-    if (waitingGame == null) return false;
-
-    List<String> currentGames = waitingGame!.gamesWaiting;
-    for (var game in currentGames) {
-      if (game == gameId) return true;
-    }
-    return false;
   }
 
   void joinGameSend(String playerName, String roomId) {

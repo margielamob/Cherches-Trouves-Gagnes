@@ -2,6 +2,7 @@ import 'package:app/components/carousel_bottom.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/providers/game_manager_provider.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +14,13 @@ class CarouselBottomClassic extends CarouselBottom {
   @override
   Widget build(BuildContext context) {
     final gameManager = Provider.of<GameManagerService>(context);
+    final gameManagerProvider = Provider.of<GameManagerProvider>(context);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
       child: Row(
         children: [
-          gameManager.isGameJoinable(data.id, gameMode)
+          gameManagerProvider.isGameJoinable(data.id, gameMode)
               ? FilledButton(
                   onPressed: () {
                     gameManager.createMultiplayerGame('Thierry',
