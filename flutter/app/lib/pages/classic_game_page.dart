@@ -1,6 +1,7 @@
 import 'package:app/components/current_players.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -11,11 +12,10 @@ class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
   final DifferenceDetectionService _differenceDetectionService = Get.find();
 
-  final String bmpOriginalId = "11f182b0-4ee2-4842-b344-1a443e69ac5e";
-  final String bmpModifiedId = "11f182b0-4ee2-4842-b344-1a443e69ac5e";
   final String gameId;
+  final GameCardModel gameCards;
 
-  Classic({required this.gameId}) {
+  Classic({required this.gameId, required this.gameCards}) {
     _differenceDetectionService.handleDifferences();
   }
 
@@ -29,7 +29,7 @@ class Classic extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
             future: _classicGameService.getImagesFromIds(
-                bmpOriginalId, bmpModifiedId),
+                gameCards.idOriginalBmp, gameCards.idEditedBmp),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;
@@ -59,9 +59,9 @@ class Classic extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GameVignetteOriginal(images, "fake-game-id"),
+                          GameVignetteModified(images, gameId),
                           SizedBox(width: 50),
-                          GameVignetteModified(images, "fake-game-id"),
+                          GameVignetteOriginal(images, gameId),
                         ],
                       ),
                       SizedBox(height: 20),

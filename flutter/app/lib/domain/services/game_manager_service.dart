@@ -1,3 +1,4 @@
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
@@ -23,6 +24,7 @@ import 'package:get/get.dart';
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   WaitingGameModel? waitingGame;
+  GameCardModel? gameCards;
   UserRequest? userRequest;
   bool isWaitingRoom = false;
   bool isModalShown = false;
@@ -30,6 +32,7 @@ class GameManagerService extends ChangeNotifier {
 
   GameManagerService() {
     handleSockets();
+    gameCards = null;
   }
 
   void handleSockets() {
@@ -48,7 +51,11 @@ class GameManagerService extends ChangeNotifier {
         GameInfoRequest data = GameInfoRequest(gameId: message);
         print("play event gameId received");
         print(data.toJson());
-        Get.to(Classic(gameId: data.gameId));
+        if (gameCards != null) {
+          Get.to(Classic(gameId: data.gameId, gameCards: gameCards!));
+        } else {
+          print("Erreur, les gamesCards ne sont pas initialisés");
+        }
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {

@@ -3,8 +3,8 @@ import 'package:app/domain/utils/difference_found_message.dart';
 import 'package:app/domain/utils/difference_found_request.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/domain/utils/vec2.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DifferenceDetectionService {
   final SocketService _socket = Get.find();
@@ -28,6 +28,7 @@ class DifferenceDetectionService {
   bool validate(Vec2 mousePosition, String gameId) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
+      print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
       final data =
           DifferenceFoundRequest(mousePosition: mousePosition, gameId: gameId);
       _socket.send(SocketEvent.difference, data.toJson());
