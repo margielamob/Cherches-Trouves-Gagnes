@@ -23,6 +23,7 @@ class CarouselBottomClassic extends CarouselBottom {
                   onPressed: () {
                     gameManager.createMultiplayerGame('Thierry',
                         GameModeModel(GameMode.classic), data.id, true);
+                    gameManager.gameCards = data;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
