@@ -25,6 +25,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  Get.put(SoundService());
   Get.put(SocketService());
   Get.put(UserService());
   Get.put(AuthService());
@@ -35,7 +36,6 @@ void registerDependencies() {
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
-  Get.put(SoundService());
 }
 
 late List<CameraDescription> cameras;

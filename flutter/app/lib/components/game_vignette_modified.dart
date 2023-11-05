@@ -76,10 +76,8 @@ class GameVignetteModified extends GameVignette {
 
               if (diffService.validate(
                   Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId)) {
-                soundService.playDifferenceFound();
                 // blink differences
               } else {
-                soundService.playDifferenceFound();
                 // write different
               }
             },
