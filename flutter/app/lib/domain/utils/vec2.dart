@@ -1,6 +1,6 @@
 class Vec2 {
-  double x;
-  double y;
+  int x;
+  int y;
 
   Vec2({required this.x, required this.y});
 

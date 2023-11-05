@@ -44,7 +44,8 @@ class DifferenceDetectionService {
 
   _removeOverlayPixels(Canvas canvas, List<Vec2> coordinates) {
     for (Vec2 coordinate in coordinates) {
-      canvas.clipRect(Rect.fromPoints(Offset(coordinate.x, coordinate.x),
+      canvas.clipRect(Rect.fromPoints(
+          Offset(coordinate.x.toDouble(), coordinate.x.toDouble()),
           Offset(coordinate.x + 1, coordinate.y + 1)));
     }
   }
