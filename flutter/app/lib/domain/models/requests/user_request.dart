@@ -1,20 +1,20 @@
 class UserRequest {
-  final String playerId;
-  final String playerName;
+  final String id;
+  final String name;
 
-  UserRequest({required this.playerId, required this.playerName});
+  UserRequest({required this.id, required this.name});
 
   factory UserRequest.fromJson(Map<String, dynamic> json) {
     return UserRequest(
-      playerId: json['id'],
-      playerName: json['name'],
+      id: json['id'],
+      name: json['name'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': playerId,
-      'name': playerName,
+      'id': id,
+      'name': name,
     };
   }
 }

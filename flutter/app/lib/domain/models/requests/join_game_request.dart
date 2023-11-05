@@ -1,13 +1,20 @@
 class JoinGameRequest {
-  String player;
-  String gameId;
+  String roomId;
+  String playerName;
 
-  JoinGameRequest({required this.player, required this.gameId});
+  JoinGameRequest({required this.roomId, required this.playerName});
+
+  factory JoinGameRequest.fromJson(Map<String, dynamic> json) {
+    return JoinGameRequest(
+      roomId: json['roomId'],
+      playerName: json['playerName'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      'player': player,
-      'mode': gameId,
+      'roomId': roomId,
+      'playerName': playerName,
     };
   }
 }
