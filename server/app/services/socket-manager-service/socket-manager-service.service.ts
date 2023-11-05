@@ -174,14 +174,19 @@ export class SocketManagerService {
                 }
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
+            socket.on(SocketEvent.GameStarted, (gameId: string) => {
+                socket.emit(SocketEvent.GameStarted, gameId);
+                console.log('game started ', gameId);
+            });
+
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string, isOriginal) => {
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
                 }
                 const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
                 if (!differences) {
-                    socket.emit(SocketEvent.DifferenceNotFound);
+                    socket.emit(SocketEvent.DifferenceNotFound, isOriginal);
                     this.sio
                         .to(gameId)
                         .emit(

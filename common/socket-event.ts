@@ -41,4 +41,5 @@ export enum SocketEvent {
     PlayerLeftLobby = 'PlayerLeftLobby',
     CreatorLeft = 'CreatorLeft',
     LeaveWaitingRoom = 'LeaveWaitingRoom',
+    GameStarted = 'GameStarted',
 }

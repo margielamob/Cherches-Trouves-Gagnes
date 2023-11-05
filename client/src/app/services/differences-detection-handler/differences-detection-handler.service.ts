@@ -44,11 +44,12 @@ export class DifferencesDetectionHandlerService {
         sound.play();
     }
 
-    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
+    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D, isOriginal: boolean) {
         this.socketService.send(SocketEvent.Difference, {
             differenceCoord: mousePosition,
             roomId: this.gameInfoHandlerService.roomId,
             player: this.userService.activeUser.displayName,
+            isOriginal,
         });
         this.handleSocketDifferenceNotFound(ctx, mousePosition);
     }
@@ -60,6 +61,7 @@ export class DifferencesDetectionHandlerService {
     }
 
     differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
+        console.log('difference not found inside', ctx);
         this.playWrongSound();
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);

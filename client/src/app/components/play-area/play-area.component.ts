@@ -8,6 +8,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { Replay2Service } from '@app/services/replay-service/replay2.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
@@ -43,8 +44,10 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         private readonly routerService: RouterService,
         private cheatMode: CheatModeService,
         private readonly clueHandlerService: ClueHandlerService,
+        private replayService: Replay2Service,
     ) {
         this.handleSocketDifferenceFound();
+        this.replayService.listenToEvents();
     }
 
     get width(): number {
@@ -76,11 +79,13 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
 
     ngOnInit(): void {
         this.handleClue();
+        this.communicationSocketService.send(SocketEvent.GameStarted, { gameId: this.gameInfoHandlerService.roomId });
     }
 
     ngAfterViewInit(): void {
         this.cheatMode.handleSocketEvent(this.getContextOriginal(), this.getContextModified());
         this.displayImages();
+        this.replayService.setContexts(this.getContextImgOriginal(), this.getContextImgModified());
     }
 
     ngOnDestroy() {
@@ -93,7 +98,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     onClick($event: MouseEvent, canvas: string) {
         if (!this.isMouseDisabled()) {
             const ctx: CanvasRenderingContext2D = canvas === 'original' ? this.getContextOriginal() : this.getContextModified();
-            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId);
+            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId, canvas === 'original');
         }
     }
 
