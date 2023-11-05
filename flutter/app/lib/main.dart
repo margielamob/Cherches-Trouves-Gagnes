@@ -67,6 +67,12 @@ void main() async {
             return gameManagerService;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DifferenceDetectionService differenceDetectionService = Get.find();
+            return differenceDetectionService;
+          },
+        ),
       ],
       child: MyApp(),
     ),
