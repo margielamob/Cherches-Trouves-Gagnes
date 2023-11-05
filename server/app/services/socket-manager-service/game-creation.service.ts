@@ -3,6 +3,7 @@ import { GameManagerService } from '@app/services/game-manager-service/game-mana
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
@@ -12,7 +13,7 @@ import { SocketServer } from './server-socket-manager.service';
 
 @Service()
 export class GameCreationManager {
-    constructor(private serverSocket: SocketServer, private gameManager: GameManagerService, chat: ChatSocketManager) {}
+    constructor(private serverSocket: SocketServer, private gameManager: GameManagerService, private chat: ChatSocketManager) {}
 
     private get sio(): io.Server {
         return this.serverSocket.sio;
@@ -20,11 +21,13 @@ export class GameCreationManager {
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         socket.on(SocketEvent.CreateClassicGame, async (player: User, card: { id: string; cheatMode: boolean; timer: number }) => {
             // create new chat room for game
-            await this.createClassicGame(player, card, true, socket);
+            const roomId = await this.createClassicGame(player, card, true, socket);
+            this.chat.createGameChat(roomId, player, socket);
         });
 
         socket.on(SocketEvent.JoinClassicGame, async (player: User, roomId: string) => {
             await this.joinClassicGame(player, roomId, socket);
+            this.chat.joinGameChat(roomId, player, socket);
         });
 
         socket.on(SocketEvent.GetJoinableGames, async () => {
@@ -48,16 +51,19 @@ export class GameCreationManager {
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
         socket.join(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
+        const data: WaitingRoomInfo = { roomId, players, cheatMode: card.cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
+        return roomId;
     }
 
     async joinClassicGame(player: User, roomId: string, socket: Socket) {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        const isCheatMode = this.gameManager.isCheatMode(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players, isCheatMode });
-        socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        const data: WaitingRoomInfo = { roomId, players, cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
+        socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
     }
 
     async leaveWaitingRoom(roomId: string, socket: Socket) {

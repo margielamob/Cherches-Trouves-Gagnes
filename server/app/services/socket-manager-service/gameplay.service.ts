@@ -52,7 +52,7 @@ export class GamePlayManager {
             this.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
         });
 
-        socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string) => {
+        socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
             if (!this.gameManager.isGameFound(gameId)) {
                 socket.emit(SocketEvent.Error);
                 return;
@@ -80,8 +80,8 @@ export class GamePlayManager {
                         this.gameManager.isGameMultiplayer(gameId),
                     ),
                 );
-            socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
-            socket.emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId));
+            // socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
+            this.sio.to(gameId).emit(SocketEvent.DifferenceFound, { data: this.gameManager.getNbDifferencesFound(differences, gameId), playerName });
 
             if (this.gameManager.isGameOver(gameId)) {
                 this.handleEndGame(gameId, socket);

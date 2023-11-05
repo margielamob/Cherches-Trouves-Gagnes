@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 // import { ChatMessage } from '@app/interfaces/chat-message';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
@@ -11,7 +11,7 @@ import { SocketEvent } from '@common/socket-event';
     templateUrl: './chat-feed.component.html',
     styleUrls: ['./chat-feed.component.scss'],
 })
-export class ChatFeedComponent implements AfterViewInit, OnInit {
+export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecked {
     @ViewChild('scroll', { static: true }) private scroll: ElementRef;
     messages: ChatMessage[] = [];
     currentMessage: string;
@@ -27,7 +27,7 @@ export class ChatFeedComponent implements AfterViewInit, OnInit {
     ngOnInit(): void {
         this.chatManager.messages.subscribe((messages) => {
             this.messages = messages;
-            // this.newMessage = true;
+            this.newMessage = true;
         });
         // this.chatManager.fetchMessages();
         this.chatManager.activeRoom.subscribe((room) => {
@@ -45,11 +45,18 @@ export class ChatFeedComponent implements AfterViewInit, OnInit {
         this.scroll.nativeElement.scrollTo(0, this.scroll.nativeElement.scrollHeight);
     }
 
+    ngAfterViewChecked(): void {
+        if (this.newMessage) {
+            this.scrollDown();
+            this.newMessage = false;
+        }
+    }
+
     sendMessage(): void {
         if (this.currentMessage.trim() !== '') {
             this.chatManager.sendMessage(this.currentMessage.trim());
             this.currentMessage = '';
-            // this.newMessage = true;
+            this.newMessage = true;
             // this.myInputField.nativeElement.focus();
         }
 

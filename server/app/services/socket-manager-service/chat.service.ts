@@ -9,10 +9,15 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Service } from 'typedi';
 import { SocketServer } from './server-socket-manager.service';
 
+interface GameChat {
+    chatRoom: ChatRoom;
+    users: string[];
+}
+
 @Service()
 export class ChatSocketManager {
     allRooms: Map<string, ChatRoom> = new Map<string, ChatRoom>();
-    gameRooms: Map<string, ChatRoom> = new Map<string, ChatRoom>();
+    gameRooms: Map<string, GameChat> = new Map<string, GameChat>();
     userRooms: Map<string, string[]> = new Map<string, string[]>();
 
     constructor(private server: SocketServer) {
@@ -51,8 +56,13 @@ export class ChatSocketManager {
 
         socket.on(SocketEvent.Message, (message: ChatMessage) => {
             console.log(message);
-            this.allRooms.get(message.room)?.messages.push(message);
-            this.server.sio.to(message.room).emit(SocketEvent.Message, message);
+            if (this.allRooms.get(message.room)) {
+                this.allRooms.get(message.room)?.messages.push(message);
+                this.server.sio.to(message.room).emit(SocketEvent.Message, message);
+            } else if (this.gameRooms.get(message.room)) {
+                this.gameRooms.get(message.room)?.chatRoom.messages.push(message);
+                this.server.sio.to(message.room).emit(SocketEvent.Message, message);
+            }
         });
 
         socket.on(SocketEvent.GetAllRooms, () => {
@@ -72,7 +82,7 @@ export class ChatSocketManager {
             if (this.allRooms.get(roomId)) {
                 socket.emit(SocketEvent.GetMessages, this.allRooms.get(roomId)?.messages);
             } else if (this.gameRooms.get(roomId)) {
-                socket.emit(SocketEvent.GetMessages, this.gameRooms.get(roomId)?.messages);
+                socket.emit(SocketEvent.GetMessages, this.gameRooms.get(roomId)?.chatRoom.messages);
             }
         });
 
@@ -80,10 +90,6 @@ export class ChatSocketManager {
             console.log(roomName);
             this.createRoom(roomName);
             this.addRoomsToUser(socket, [roomName]);
-            // socket.emit(SocketEvent.RoomCreated, {
-            //     all: Array.from(this.allRooms.keys()),
-            //     user: this.userRooms.get(socket.id),
-            // });
             socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(socket.id));
             socket.broadcast.emit(SocketEvent.UpdateAllRooms, Array.from(this.allRooms.keys()));
         });
@@ -171,7 +177,7 @@ export class ChatSocketManager {
 
     createGameChat(roomId: string, user: User, socket: Socket) {
         const roomName = 'Game (' + roomId + ')';
-        this.gameRooms.set(roomId, { info: { name: roomName }, messages: [] });
+        this.gameRooms.set(roomId, { chatRoom: { info: { name: roomName }, messages: [] }, users: [user.name] });
         socket.join(roomName);
         if (this.userRooms.get(user.name)) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -188,6 +194,24 @@ export class ChatSocketManager {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, ...roomName]);
             socket.join(roomName);
+            this.gameRooms.get(roomId)?.users.push(user.name);
+        }
+        socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name));
+    }
+
+    leaveGameChat(roomId: string, user: User, socket: Socket) {
+        const roomName = 'Game (' + roomId + ')';
+        socket.leave(roomName);
+        if (this.userRooms.get(user.name)) {
+            this.userRooms.set(
+                user.name,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know it exists
+                this.userRooms.get(user.name)!.filter((r) => r !== roomName),
+            );
+            this.gameRooms.get(roomId)?.users.filter((u) => u !== user.name);
+            if (this.gameRooms.get(roomId)?.users.length === 0) {
+                this.gameRooms.delete(roomId);
+            }
         }
         socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name));
     }
