@@ -39,7 +39,8 @@ class _ForegroundPainter extends CustomPainter {
     final path = Path();
     for (var coord in coordinates) {
       path.addRect(Rect.fromPoints(
-          Offset(coord.x, coord.y), Offset(coord.x + 1, coord.y + 1)));
+          Offset(coord.x.toDouble(), coord.y.toDouble()),
+          Offset(coord.x + 1, coord.y + 1)));
     }
     canvas.clipPath(path);
     canvas.drawImage(images.modified, Offset.zero, Paint());
@@ -74,7 +75,8 @@ class GameVignetteOriginal extends GameVignette {
                   GameVignette.tabletScalingRatio;
               y.value = details.localPosition.dy.toDouble() /
                   GameVignette.tabletScalingRatio;
-              if (diffService.validate(Vec2(x: x.value, y: y.value), gameId)) {
+              if (diffService.validate(
+                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId)) {
                 soundService.playDifferenceFound();
                 // blink differences
               } else {
