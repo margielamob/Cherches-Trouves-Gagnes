@@ -1,4 +1,5 @@
 import 'package:app/domain/services/socket_service.dart';
+import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/utils/difference_found_message.dart';
 import 'package:app/domain/utils/difference_found_request.dart';
 import 'package:app/domain/utils/socket_events.dart';
@@ -8,20 +9,23 @@ import 'package:get/get.dart';
 
 class DifferenceDetectionService extends ChangeNotifier {
   final SocketService _socket = Get.find();
+  final SoundService _soundService = Get.find();
 
   List<Vec2> coordinates = [];
 
   void handleDifferences() {
     _socket.on(SocketEvent.differenceNotFound, (dynamic message) {
+      _soundService.playDifferenceNotFound();
       print("difference not found");
     });
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
+      _soundService.playDifferenceFound();
       coordinates.addAll(data.coords);
       notifyListeners();
-      //coordinates = [];
     });
     _socket.on(SocketEvent.error, (dynamic message) {
+      _soundService.playDifferenceNotFound();
       print(message);
       print("SocketEvent.error");
     });
