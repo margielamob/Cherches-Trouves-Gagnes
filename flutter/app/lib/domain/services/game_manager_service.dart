@@ -1,22 +1,22 @@
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/requests/join_game_send_request.dart';
-import 'package:app/domain/models/requests/leave_waiting_request.dart';
-import 'package:app/domain/models/requests/user_request.dart';
-import 'package:app/pages/classic_game_page.dart';
-import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
+import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_game_request.dart';
+import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/reject_player_request.dart';
+import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -43,11 +43,12 @@ class GameManagerService extends ChangeNotifier {
         GameInfoRequest data = GameInfoRequest.fromJson(message);
         print("play event Object received");
         print(data.toJson());
+        // What is the purpose of that
       } else if (message is String) {
         GameInfoRequest data = GameInfoRequest(gameId: message);
         print("play event gameId received");
         print(data.toJson());
-        Get.to(Classic());
+        Get.to(Classic(gameId: data.gameId));
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
