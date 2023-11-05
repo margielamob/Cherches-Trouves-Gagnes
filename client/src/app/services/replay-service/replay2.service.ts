@@ -22,25 +22,9 @@ export class Replay2Service {
 
     constructor(private socket: CommunicationSocketService, private differenceHandler: DifferencesDetectionHandlerService) {}
 
-    setQueue(queue: EventQueue) {
-        this.queue = queue;
-    }
-
-    bindReplay() {
-        this.listenToEvents();
-    }
-
     setContexts(ctxOriginal: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D) {
         this.originalContext = ctxOriginal;
         this.modifiedContext = ctxModified;
-    }
-
-    start(startingTime: Date, evenQueue: EventQueue) {
-        this.startingTime = startingTime.getTime();
-        this.queue = evenQueue;
-        this.isReplaying = true;
-        this.setSate(ReplayState.PLAYING);
-        this.playEvents();
     }
 
     setSate(state: ReplayState) {
