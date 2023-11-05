@@ -49,7 +49,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ) {
         this.handleSocketDifferenceFound();
         this.replayService.listenToEvents();
-        this.communicationSocketService.send(SocketEvent.GameStarted, this.gameId);
+        this.communicationSocketService.send(SocketEvent.GameStarted, this.gameInfoHandlerService.getGameName);
     }
 
     get width(): number {
@@ -86,6 +86,10 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ngAfterViewInit(): void {
         this.cheatMode.handleSocketEvent(this.getContextOriginal(), this.getContextModified());
         this.displayImages();
+        this.replayService.setContexts(
+            this.canvasOriginal.nativeElement.getContext('2d') as CanvasRenderingContext2D,
+            this.canvasModified.nativeElement.getContext('2d') as CanvasRenderingContext2D,
+        );
     }
 
     ngOnDestroy() {
@@ -98,7 +102,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     onClick($event: MouseEvent, canvas: string) {
         if (!this.isMouseDisabled() && !this.isReplayAvailable) {
             const ctx: CanvasRenderingContext2D = canvas === 'original' ? this.getContextOriginal() : this.getContextModified();
-            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId);
+            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId, canvas === 'original');
         }
     }
 

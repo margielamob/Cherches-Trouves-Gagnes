@@ -4,15 +4,15 @@ import { Coordinate } from '@common/coordinate';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
 
-export interface ClickErrorData {
+export interface DifferenceNotFound {
     pos: Coordinate | Vec2;
-    ctx: CanvasRenderingContext2D;
+    isOriginal: boolean;
 }
 
-export interface ClickFound {
+export interface DifferenceFound {
     pos: Coordinate | Vec2;
     coords: Coordinate[] | Vec2[];
-    ctx: CanvasRenderingContext2D;
+    isOriginal: boolean;
 }
 export interface ChatReplay {
     message: string;
@@ -36,4 +36,13 @@ export interface ClueReplay {
     nbClues: number;
 }
 
-export type ReplayPayload = ClueReplay | GameInfosReplay | ChatReplay | ClickFound | Coordinate[] | ClickErrorData | string | number | GameMode;
+export type ReplayPayload =
+    | DifferenceNotFound
+    | ClueReplay
+    | GameInfosReplay
+    | ChatReplay
+    | DifferenceFound
+    | Coordinate[]
+    | string
+    | number
+    | GameMode;

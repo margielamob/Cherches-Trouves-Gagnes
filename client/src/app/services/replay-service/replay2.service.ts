@@ -5,7 +5,7 @@ import { DifferencesDetectionHandlerService } from '@app/services/differences-de
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { EventQueue } from './event-queue';
-import { ChatReplay, ClickErrorData, ClueReplay, ReplayEvent, ReplayPayload } from './replay-interfaces';
+import { ChatReplay, ClueReplay, DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -13,10 +13,13 @@ import { ChatReplay, ClickErrorData, ClueReplay, ReplayEvent, ReplayPayload } fr
 export class Replay2Service {
     isReplaying: boolean = false;
     state: ReplayState = ReplayState.STOPPED;
+    gameId: string;
     private queue: EventQueue = new EventQueue();
     private startingTime: Date;
-    private previousEvent: ReplayEvent = { timestamp: 0 } as ReplayEvent;
-    private timeFactor: number = 1;
+    private previousEvent: ReplayEvent;
+    private timeFactor: number = 10;
+    private originalContext: CanvasRenderingContext2D;
+    private modifiedContext: CanvasRenderingContext2D;
 
     constructor(private socket: CommunicationSocketService, private differenceHandler: DifferencesDetectionHandlerService) {}
 
@@ -26,6 +29,11 @@ export class Replay2Service {
 
     bindReplay() {
         this.listenToEvents();
+    }
+
+    setContexts(ctxOriginal: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D) {
+        this.originalContext = ctxOriginal;
+        this.modifiedContext = ctxModified;
     }
 
     start(startingTime: Date, evenQueue: EventQueue) {
@@ -40,6 +48,10 @@ export class Replay2Service {
         this.state = state;
     }
 
+    getQueue(): EventQueue {
+        return this.queue;
+    }
+
     setStartingTime(time: Date) {
         this.startingTime = time;
         this.queue.startingTime = time;
@@ -49,12 +61,13 @@ export class Replay2Service {
         this.timeFactor = factor;
     }
 
-    playEvents(): void {
-        const TRUE = 1;
-        while (TRUE) {
+    async playEvents() {
+        while (this.state !== ReplayState.DONE) {
+            console.log('state', this.state);
+
             switch (this.state) {
                 case ReplayState.PLAYING:
-                    this.play();
+                    await this.play();
                     break;
                 case ReplayState.PAUSED:
                     return;
@@ -69,6 +82,7 @@ export class Replay2Service {
                     return;
             }
         }
+        console.log('done playing');
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -78,6 +92,12 @@ export class Replay2Service {
             playerName,
             timestamp: this.getEventTime(),
         } as ReplayEvent;
+
+        // adding the first event as previous event
+        if (this.queue.isEmpty()) {
+            this.previousEvent = event;
+        }
+
         this.queue.enqueue(event);
     }
 
@@ -90,42 +110,86 @@ export class Replay2Service {
     }
 
     listenToEvents() {
-        console.log('into listener');
         this.socket.on(SocketEvent.Message, (message: string) => {
-            this.addEvent(ReplayActions.Message, message);
-            console.log('added message to queue');
+            const data: ChatReplay = {
+                message,
+                roomId: this.gameId,
+            };
+            this.addEvent(ReplayActions.Message, data);
         });
 
-        // this.socket.on(SocketEvent.DifferenceFound, () => {
-        //     this.addEvent(ReplayActions.DifferenceFoundUpdate, message);
-        // });
+        this.socket.on(SocketEvent.DifferenceFound, (numberOfDiffs: number) => {
+            this.addEvent(ReplayActions.DifferenceFoundUpdate);
+            console.log('difference found', numberOfDiffs);
+        });
 
-        this.socket.on(SocketEvent.DifferenceNotFound, (payload: { coord: Coordinate; ctx: CanvasRenderingContext2D }) => {
-            const data = { pos: payload.coord, ctx: payload.ctx } as ClickErrorData;
+        this.socket.on(SocketEvent.DifferenceNotFound, (payload: { differenceCoord: Coordinate; isOriginal: boolean }) => {
+            const data = {
+                pos: payload.differenceCoord,
+                isOriginal: payload.isOriginal,
+            } as DifferenceNotFound;
             this.addEvent(ReplayActions.ClickError, data);
-            console.log('added click error to queue');
         });
 
         this.socket.on(SocketEvent.GameStarted, (gameId: string) => {
-            console.log('here');
             this.startingTime = new Date();
+            this.gameId = gameId;
             this.addEvent(ReplayActions.StartGame, gameId);
-            console.log('added start game to queue');
+            console.log('gameId', gameId);
         });
 
         this.socket.on(SocketEvent.EventMessage, (eventMessage: string) => {
             this.addEvent(ReplayActions.EventMessage, eventMessage);
-            console.log('added event message to queue');
         });
 
         this.socket.on(SocketEvent.Clue, (payload: ClueReplay) => {
             this.addEvent(ReplayActions.UseHint, payload);
-            console.log('added clue to queue');
         });
     }
 
-    private play() {
+    private async replayEventMessage(event: ReplayEvent) {
+        const data = event.data as string;
+        const time = this.timeSinceLastEvent(event) * this.timeFactor;
+        await this.delay(time);
+        console.log(data);
+        console.log('event message replayed ');
+    }
+
+    private async replayStartGame(event: ReplayEvent) {
+        const time = this.timeSinceLastEvent(event) * this.timeFactor;
+        await this.delay(time);
+    }
+
+    private async replayMessage(event: ReplayEvent) {
+        const data = event.data as ChatReplay;
+        console.log('message data: ', data);
+        const time = this.timeSinceLastEvent(event) * this.timeFactor;
+        await this.delay(time);
+        console.log('event message replayed ');
+    }
+
+    private async replayDifferenceFound(event: ReplayEvent) {
+        const time = this.timeSinceLastEvent(event) * this.timeFactor;
+        await this.delay(time);
+        this.differenceHandler.playCorrectSound();
+        const data = event.data as DifferenceFound;
+        console.log(data);
+    }
+
+    private async replayDifferenceNotFound(event: ReplayEvent) {
+        const data = event.data as DifferenceNotFound;
+        const time = this.timeSinceLastEvent(event) * this.timeFactor;
+        await this.delay(time);
+        this.differenceHandler.playWrongSound();
+        this.differenceHandler.differenceNotDetected(data.pos, data.isOriginal ? this.originalContext : this.modifiedContext);
+    }
+
+    private async play() {
         const event = this.queue.dequeue() as ReplayEvent;
+        if (!event) {
+            this.setSate(ReplayState.DONE);
+            return;
+        }
         switch (event.action) {
             case ReplayActions.Message:
                 this.replayMessage(event);
@@ -134,40 +198,32 @@ export class Replay2Service {
                 this.replayDifferenceFound(event);
                 break;
             case ReplayActions.ClickError:
-                this.replayError(event);
+                this.replayDifferenceNotFound(event);
+                break;
+            case ReplayActions.StartGame:
+                this.replayStartGame(event);
+                break;
+            case ReplayActions.EventMessage:
+                this.replayEventMessage(event);
                 break;
         }
         this.previousEvent = event;
     }
 
-    private replayMessage(event: ReplayEvent) {
-        const data = event.data as ChatReplay;
-        setTimeout(() => {
-            this.socket.send(SocketEvent.Message, { message: data.message, roomId: data.roomId });
-        }, this.timeSinceLastEvent(event) * this.timeFactor);
-    }
-
-    private replayDifferenceFound(event: ReplayEvent) {
-        setTimeout(() => {
-            this.differenceHandler.playCorrectSound();
-        }, this.timeSinceLastEvent(event) * this.timeFactor);
-    }
-
-    private replayError(event: ReplayEvent) {
-        const data = event.data as ClickErrorData;
-        setTimeout(() => {
-            this.differenceHandler.playWrongSound();
-            this.differenceHandler.differenceNotDetected(data.pos, data.ctx);
-        }, this.timeSinceLastEvent(event) * this.timeFactor);
-    }
-
     private getEventTime() {
-        const seconds = 1000;
-        return Date.now() - this.startingTime.getTime() / seconds;
+        const milliseconds = Date.now() - this.startingTime.getTime();
+        return milliseconds;
     }
 
     private timeSinceLastEvent(event: ReplayEvent) {
+        console.log('timesince', event.timestamp - this.previousEvent.timestamp);
         return event.timestamp - this.previousEvent.timestamp;
+    }
+
+    private async delay(ms: number) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, ms);
+        });
     }
 }
 

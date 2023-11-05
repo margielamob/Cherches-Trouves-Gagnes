@@ -10,9 +10,11 @@ export class ReplayButtonsComponent {
     @Input() isReplayAvailable: boolean;
     constructor(private readonly replayService: Replay2Service) {}
 
-    replay() {
+    async replay() {
         this.replayService.backupQueue();
         this.replayService.setSate(ReplayState.PLAYING);
+        console.log(this.replayService.getQueue().length);
+        await this.replayService.playEvents();
     }
 
     pause() {

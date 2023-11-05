@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { Injectable } from '@angular/core';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 
@@ -7,7 +8,7 @@ import { DifferencesDetectionHandlerService } from '@app/services/differences-de
 export class MouseHandlerService {
     constructor(private readonly differencesDetectionHandlerService: DifferencesDetectionHandlerService) {}
 
-    mouseHitDetect($event: MouseEvent, ctx: CanvasRenderingContext2D, gameId: string) {
-        this.differencesDetectionHandlerService.getDifferenceValidation(gameId, { x: $event.offsetX, y: $event.offsetY }, ctx);
+    mouseHitDetect($event: MouseEvent, ctx: CanvasRenderingContext2D, gameId: string, isOriginalCanvas: boolean) {
+        this.differencesDetectionHandlerService.getDifferenceValidation(gameId, { x: $event.offsetX, y: $event.offsetY }, { ctx, isOriginalCanvas });
     }
 }

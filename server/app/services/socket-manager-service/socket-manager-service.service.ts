@@ -184,7 +184,7 @@ export class SocketManagerService {
             });
 
             socket.on(SocketEvent.GameStarted, (gameId: string) => {
-                console.log('GAMESTARTED');
+                console.log(gameId);
                 socket.emit(SocketEvent.GameStarted, gameId);
             });
 
@@ -217,14 +217,14 @@ export class SocketManagerService {
                 }
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, ctx: CanvasRenderingContext2D) => {
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, isOriginal: boolean) => {
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
                 }
                 const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
                 if (!differences) {
-                    socket.emit(SocketEvent.DifferenceNotFound, differenceCoord, ctx);
+                    socket.emit(SocketEvent.DifferenceNotFound, { differenceCoord, isOriginal });
                     this.sio
                         .to(gameId)
                         .emit(
@@ -296,6 +296,7 @@ export class SocketManagerService {
                 isMulti: false,
             };
             socket.emit(SocketEvent.Play, { gameId: id, gameCard: gameCardInfo });
+            console.log(id);
             console.log('emmited play with card');
             return;
         }

@@ -40,9 +40,11 @@ export class DifferencesDetectionHandlerService {
         sound.play();
     }
 
-    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
-        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, gameId: id, ctx });
-        this.handleSocketDifferenceNotFound(ctx, mousePosition);
+    getDifferenceValidation(id: string, mousePosition: Vec2, context: { ctx: CanvasRenderingContext2D; isOriginalCanvas: boolean }) {
+        const isOriginalCanvas = context.isOriginalCanvas;
+        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, gameId: id, isOriginalCanvas });
+        console.log('context before sending', context.isOriginalCanvas);
+        this.handleSocketDifferenceNotFound(context.ctx, mousePosition);
     }
 
     handleSocketDifferenceNotFound(ctx: CanvasRenderingContext2D, mousePosition: Vec2) {
