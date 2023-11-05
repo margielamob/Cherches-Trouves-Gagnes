@@ -19,7 +19,7 @@ class EndGameDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/gameSelection');
               },
-              child: Text("Quitter"),
+              child: Text("Quitter la page"),
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
