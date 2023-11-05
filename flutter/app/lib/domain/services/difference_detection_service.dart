@@ -6,10 +6,10 @@ import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DifferenceDetectionService {
+class DifferenceDetectionService extends ChangeNotifier {
   final SocketService _socket = Get.find();
 
-  final List<Vec2> coordinates = [];
+  List<Vec2> coordinates = [];
 
   void handleDifferences() {
     _socket.on(SocketEvent.differenceNotFound, (dynamic message) {
@@ -18,6 +18,8 @@ class DifferenceDetectionService {
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
       coordinates.addAll(data.coords);
+      notifyListeners();
+      //coordinates = [];
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print(message);

@@ -2,7 +2,6 @@ import 'package:app/components/game_vignette.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/sound_service.dart';
-import 'package:app/domain/utils/test_data.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,22 +27,21 @@ class _BackgroundPainter extends CustomPainter {
 class _ForegroundPainter extends CustomPainter {
   final DifferenceDetectionService diffService = Get.find();
   final VignettesModel images;
-  List<Vec2> coordinates = TestData.coordinates;
 
   _ForegroundPainter(this.images);
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.scale(
-        GameVignette.tabletScalingRatio, GameVignette.tabletScalingRatio);
-    final path = Path();
-    for (var coord in coordinates) {
-      path.addRect(Rect.fromPoints(
-          Offset(coord.x.toDouble(), coord.y.toDouble()),
-          Offset(coord.x + 1, coord.y + 1)));
-    }
-    canvas.clipPath(path);
-    canvas.drawImage(images.original, Offset.zero, Paint());
+    // canvas.scale(
+    //     GameVignette.tabletScalingRatio, GameVignette.tabletScalingRatio);
+    // final path = Path();
+    // for (var coord in diffService.coordinates) {
+    //   path.addRect(Rect.fromPoints(
+    //       Offset(coord.x.toDouble(), coord.y.toDouble()),
+    //       Offset(coord.x + 1, coord.y + 1)));
+    // }
+    // canvas.clipPath(path);
+    // canvas.drawImage(images.original, Offset.zero, Paint());
   }
 
   @override
