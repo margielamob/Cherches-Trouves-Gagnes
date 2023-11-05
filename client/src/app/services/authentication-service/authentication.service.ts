@@ -200,4 +200,20 @@ export class AuthenticationService {
             }),
         );
     }
+
+    sendPasswordResetEmail(email: string) {
+        return from(this.afAuth.sendPasswordResetEmail(email)).pipe(
+            catchError((error: FirebaseError) => {
+                // Handle errors here
+                let errorMessage = 'Une errerur est survenue lors de la réinitialisation du mot de passe. Merci de réessayer plus tard.';
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = "Aucun compte n'est associé à cette adresse e-mail. Veuillez vérifier vos informations.";
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Email address is invalid.';
+                }
+
+                return throwError(() => new Error(errorMessage));
+            }),
+        );
+    }
 }

@@ -11,7 +11,6 @@ import 'package:app/domain/services/user_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
-import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/create_game.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
@@ -84,7 +83,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
-        '/classic': (context) => Classic(),
         '/gameSelection': (context) => GameSelectionPage(),
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),

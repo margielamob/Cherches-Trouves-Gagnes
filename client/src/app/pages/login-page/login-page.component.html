@@ -16,7 +16,7 @@
                 <button class="form-btn" mat-raised-button color="primary" type="submit">Connexion</button>
             </form>
             <button class="form-btn" mat-raised-button color="primary" (click)="goToSignUpPage()">Enregistre un nouveau compte</button>
-
+            <a routerLink="/reset-password">Mot de passe oublié ?</a>
             <div class="error" *ngIf="errorMessage">
                 <p><mat-icon>error</mat-icon> {{ errorMessage }}</p>
             </div>

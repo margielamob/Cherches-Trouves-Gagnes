@@ -1,21 +1,22 @@
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/requests/leave_waiting_request.dart';
-import 'package:app/domain/models/requests/user_request.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
+import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_game_request.dart';
+import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/reject_player_request.dart';
+import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -38,9 +39,17 @@ class GameManagerService extends ChangeNotifier {
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
-      GameInfoRequest data = GameInfoRequest.fromJson(message);
-      print("play event received");
-      print(data.toJson());
+      if (message is Map<String, dynamic>) {
+        GameInfoRequest data = GameInfoRequest.fromJson(message);
+        print("play event Object received");
+        print(data.toJson());
+        // What is the purpose of that
+      } else if (message is String) {
+        GameInfoRequest data = GameInfoRequest(gameId: message);
+        print("play event gameId received");
+        print(data.toJson());
+        Get.to(Classic(gameId: data.gameId));
+      }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
@@ -54,6 +63,8 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.joinGame, (dynamic message) {
       print("SocketEvent.joinGame : $message");
+      JoinGameRequest data = JoinGameRequest.fromJson(message);
+      joinGameSend(data.playerName, data.roomId);
     });
     _socket.on(SocketEvent.rejectPlayer, (dynamic message) {
       print("SocketEvent.rejectPlayer : $message");
@@ -63,6 +74,8 @@ class GameManagerService extends ChangeNotifier {
       userRequest = data;
       print(data.toJson());
       print("SocketEvent.requestToJoin : $message");
+      // Should acceptPlayer but this code should change when game 4 players will be implemented
+      // acceptPlayer(roomId, opponentsRoomId, playerName, data.id);
     });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
@@ -128,13 +141,15 @@ class GameManagerService extends ChangeNotifier {
     return false;
   }
 
-  void joinGame(String player, String gameId) {
-    JoinGameRequest data = JoinGameRequest(player: player, gameId: gameId);
+  void joinGameSend(String playerName, String roomId) {
+    JoinGameSendRequest data =
+        JoinGameSendRequest(player: playerName, gameId: roomId);
     _socket.send(SocketEvent.joinGame, data.toJson());
     print("joinGame");
   }
 
-  void acceptPlayer(String roomId, String opponentsRoomId, String playerName) {
+  void acceptPlayer(String roomId, String opponentsRoomId, String playerName,
+      String socketId) {
     AcceptPlayerRequest data = AcceptPlayerRequest(
         roomId: roomId,
         opponentsRoomId: opponentsRoomId,
