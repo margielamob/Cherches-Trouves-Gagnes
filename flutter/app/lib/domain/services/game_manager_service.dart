@@ -29,8 +29,6 @@ class GameManagerService extends ChangeNotifier {
   String? currentGameId;
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
-  bool isWaitingRoom = false;
-  bool isModalShown = false;
   bool isMulti = false;
 
   GameManagerService() {
