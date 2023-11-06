@@ -36,9 +36,6 @@ class CarouselBottomClassic extends CarouselBottom {
                     gameManager.createMultiplayerGame('Thierry',
                         GameModeModel(GameMode.classic), data.id, true);
                     gameManager.gameCards = data;
-                    // We won't support solo mode
-                    //gameManagerService.createSoloGame('saoul',
-                    //GameModeModel(GameMode.classic), data.id, false);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
