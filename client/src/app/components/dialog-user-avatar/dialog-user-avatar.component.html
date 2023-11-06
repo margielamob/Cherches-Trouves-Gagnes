@@ -1,4 +1,8 @@
-<div class="containerSpaceBetween">
+<div
+    class="containerSpaceBetween"
+    class="dialog"
+    [ngClass]="{ 'indigo-pink-theme': currentTheme === 'Default', 'deeppurple-amber-theme': currentTheme === 'Alternative' }"
+>
     <div class="header3">{{ 'DIALOG_USER.TITLE' | translate }}</div>
     <div>
         <div class="avatar-container">
