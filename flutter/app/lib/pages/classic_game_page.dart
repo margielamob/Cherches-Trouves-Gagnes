@@ -1,13 +1,16 @@
 import 'package:app/components/current_players.dart';
+import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class Classic extends StatelessWidget {
   final ClassicGameService _classicGameService = Get.find();
@@ -23,6 +26,7 @@ class Classic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final endGameService = Provider.of<EndGameService>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Partie classique'),
@@ -48,6 +52,17 @@ class Classic extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;
                 if (images != null) {
+                  if (endGameService.isGameFinished) {
+                    // Show the dialog when isGameFinished is true
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return EndGameDialog();
+                        },
+                      );
+                    });
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
