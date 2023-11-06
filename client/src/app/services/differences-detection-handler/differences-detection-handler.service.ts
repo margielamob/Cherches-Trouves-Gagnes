@@ -24,8 +24,6 @@ export class DifferencesDetectionHandlerService {
     ) {}
 
     setNumberDifferencesFound(playerName: string) {
-        console.log(playerName);
-        console.log(this.gameInfoHandlerService.players);
         const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
         this.gameInfoHandlerService.players[index].nbDifferences++;
         this.gameInfoHandlerService.$differenceFound.next(playerName);
@@ -61,7 +59,6 @@ export class DifferencesDetectionHandlerService {
     }
 
     differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
-        console.log('difference not found inside', ctx);
         this.playWrongSound();
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);

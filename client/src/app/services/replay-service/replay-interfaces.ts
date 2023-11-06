@@ -1,5 +1,5 @@
 import { Vec2 } from '@app/interfaces/vec2';
-import { ReplayActions } from '@app/services/replay-service/replay2.service';
+import { ReplayActions } from '@app/services/replay-service/replay.service';
 import { Coordinate } from '@common/coordinate';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
@@ -11,6 +11,7 @@ export interface DifferenceNotFound {
 
 export interface DifferenceFound {
     coords: Coordinate[] | Vec2[];
+    pos: Coordinate | Vec2;
 }
 export interface ChatReplay {
     message: string;

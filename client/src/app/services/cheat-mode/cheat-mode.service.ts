@@ -21,6 +21,8 @@ export class CheatModeService {
 
     async manageCheatMode(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D): Promise<void> {
         if (this.gameInformationHandler.cheatMode) {
+            this.socket.send(SocketEvent.Cheat);
+
             this.isCheatModeActivated = this.isCheatModeActivated
                 ? this.stopCheatMode(ctx, ctxModified)
                 : await this.startCheatMode(ctx, ctxModified);

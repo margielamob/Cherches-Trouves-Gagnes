@@ -42,4 +42,8 @@ export enum SocketEvent {
     CreatorLeft = 'CreatorLeft',
     LeaveWaitingRoom = 'LeaveWaitingRoom',
     GameStarted = 'GameStarted',
+    Cheat = 'cheat',
+    ResetGameInfosReplay = 'ResetGameInfosReplay',
+    DifferenceFoundReplay = 'DifferenceFoundReplay',
+    LeavingArena = 'LeavingArena',
 }

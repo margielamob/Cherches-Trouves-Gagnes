@@ -73,6 +73,10 @@ export class SocketManagerService {
                 socket.emit(SocketEvent.FetchDifferences, this.gameManager.getNbDifferenceNotFound(gameId));
             });
 
+            socket.on(SocketEvent.ResetGameInfosReplay, (gameId) => {
+                this.gameManager.resetDifferencesFound(gameId);
+            });
+
             socket.on(SocketEvent.Clue, (gameId: string) => {
                 this.gameManager.increaseNbClueAsked(gameId);
                 const pixelResult = this.cluesService.findRandomPixel(gameId);
@@ -176,17 +180,32 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.GameStarted, (gameId: string) => {
                 socket.emit(SocketEvent.GameStarted, gameId);
-                console.log('game started ', gameId);
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string, isOriginal) => {
+            socket.on(SocketEvent.Cheat, () => {
+                socket.emit(SocketEvent.Cheat);
+            });
+
+            socket.on(SocketEvent.DifferenceFoundReplay, (gameId: string, differenceCoord: Coordinate) => {
+                this.gameManager.isDifference(gameId, socket.id, differenceCoord);
+            });
+
+            socket.on(SocketEvent.LeavingArena, (gameId: string) => {
+                const game = this.gameManager.findGame(gameId);
+                game?.incrementLeftArena();
+                if (game?.isArenaEmpty()) {
+                    this.gameManager.discardGame(gameId);
+                }
+            });
+
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string, isOriginal: boolean) => {
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
                 }
                 const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
                 if (!differences) {
-                    socket.emit(SocketEvent.DifferenceNotFound, isOriginal);
+                    socket.emit(SocketEvent.DifferenceNotFound, { isOriginal, differenceCoord });
                     this.sio
                         .to(gameId)
                         .emit(
@@ -208,9 +227,11 @@ export class SocketManagerService {
                         ),
                     );
                 // socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
-                this.sio
-                    .to(gameId)
-                    .emit(SocketEvent.DifferenceFound, { data: this.gameManager.getNbDifferencesFound(differences, gameId), playerName });
+                this.sio.to(gameId).emit(SocketEvent.DifferenceFound, {
+                    data: this.gameManager.getNbDifferencesFound(differences, gameId),
+                    playerName,
+                    differenceCoord,
+                });
 
                 if (this.gameManager.isGameOver(gameId)) {
                     this.handleEndGame(gameId, socket);
@@ -296,6 +317,7 @@ export class SocketManagerService {
         const playerName = this.gameManager.findPlayer(gameId, socket.id)?.name as string;
         const gameInfo = this.gameManager.getGameInfo(gameId);
         const isMulti = this.gameManager.isGameMultiplayer(gameId) as boolean;
+        this.gameManager.findGame(gameId)?.incrementPlayers();
 
         if (!this.gameManager.isGameCardDeleted(gameId)) {
             this.scoresHandlerService

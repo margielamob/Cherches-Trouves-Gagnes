@@ -12,6 +12,13 @@ export class DifferenceService {
         this.gamesDifferencesTotalFound = new Map();
     }
 
+    resetDifferencesFound(gameId: string) {
+        this.gamesDifferencesFound.get(gameId)?.forEach((diffsFound) => {
+            diffsFound.clear();
+        });
+        this.gamesDifferencesTotalFound.get(gameId)?.clear();
+    }
+
     totalDifferenceFound(gameId: string) {
         return this.gamesDifferencesTotalFound.get(gameId);
     }
@@ -32,7 +39,7 @@ export class DifferenceService {
 
     findDifference(differenceCoords: Coordinate, differencesRef: Coordinate[][]): Coordinate[] | undefined {
         return differencesRef.find((difference: Coordinate[]) =>
-            difference.find((coord: Coordinate) => coord.x === differenceCoords.x && coord.y === differenceCoords.y),
+            difference.find((coord: Coordinate) => coord.x === differenceCoords?.x && coord.y === differenceCoords?.y),
         );
     }
 
@@ -79,7 +86,6 @@ export class DifferenceService {
 
     isGameEndConditionMet(game: Game): boolean {
         const currentPlayerScore = this.getMaxPlayerScore(game);
-        console.log(currentPlayerScore);
         // // eslint-disable-next-line no-unused-vars
         // for (const [, differencesFound] of (this.gamesDifferencesFound.get(game.identifier) ?? new Map()).entries()) {
         //     if (differencesFound.size + (game.information.differences.length - currentPlayerScore) <= currentPlayerScore) {

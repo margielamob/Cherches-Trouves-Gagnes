@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Replay2Service, ReplayState } from '@app/services/replay-service/replay2.service';
+import { ReplayService, ReplayState } from '@app/services/replay-service/replay.service';
 
 @Component({
     selector: 'app-replay-buttons',
@@ -9,13 +9,13 @@ import { Replay2Service, ReplayState } from '@app/services/replay-service/replay
 })
 export class ReplayButtonsComponent {
     isReplayAvailable: boolean = true;
-    constructor(private readonly replayService: Replay2Service, public dialog: MatDialog) {}
+    constructor(private readonly replayService: ReplayService, public dialog: MatDialog) {}
 
     async replay() {
         this.dialog.closeAll();
         this.replayService.backupQueue();
         this.replayService.setSate(ReplayState.PLAYING);
-        console.log(this.replayService.getQueue().length);
+        // eslint-disable-next-line deprecation/deprecation
         await this.replayService.playEvents();
     }
 
@@ -23,8 +23,9 @@ export class ReplayButtonsComponent {
         this.replayService.setSate(ReplayState.PAUSED);
     }
 
-    resume() {
+    async resume() {
         this.replayService.setSate(ReplayState.PLAYING);
+        await this.replayService.playEvents();
     }
 
     quit() {
