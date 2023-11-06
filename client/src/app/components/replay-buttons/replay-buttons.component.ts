@@ -13,7 +13,7 @@ export class ReplayButtonsComponent {
 
     async replay() {
         this.dialog.closeAll();
-        console.log(this.replayService.getQueueLength());
+        this.replayService.backupQueue();
         this.replayService.setSate(ReplayState.PLAYING);
         // eslint-disable-next-line deprecation/deprecation
         await this.replayService.playEvents();

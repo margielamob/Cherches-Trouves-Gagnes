@@ -42,9 +42,7 @@ export class EventQueue {
     }
 
     backupQueue(): void {
-        for (const event of this.queue) {
-            this.queueBackup.push(event);
-        }
+        this.queueBackup = JSON.parse(JSON.stringify(this.queue));
     }
 
     resetQueue(): void {

@@ -219,6 +219,8 @@ export class ReplayService {
         if (!event) {
             this.setSate(ReplayState.DONE);
             console.log('queue is empty');
+            this.resetQueue();
+
             return;
         }
         await this.delay(this.timeSinceLastEvent(event) * this.timeFactor);
