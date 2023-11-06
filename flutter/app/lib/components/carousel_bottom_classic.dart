@@ -32,11 +32,10 @@ class CarouselBottomClassic extends CarouselBottom {
                 )
               : FilledButton(
                   onPressed: () {
+                    gameManager.currentGameId = data.id;
                     gameManager.createMultiplayerGame('Thierry',
                         GameModeModel(GameMode.classic), data.id, true);
-                    // We won't support solo mode
-                    //gameManagerService.createSoloGame('saoul',
-                    //GameModeModel(GameMode.classic), data.id, false);
+                    gameManager.gameCards = data;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
