@@ -3,6 +3,7 @@
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
 import { LimitedTimeGame } from '@app/services/limited-time-game-service/limited-time-game.service';
 import { MultiplayerGameManager } from '@app/services/multiplayer-game-manager/multiplayer-game-manager.service';
+import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
 import { Server, Socket } from 'socket.io';
@@ -89,10 +90,34 @@ export class SocketManagerService {
                     this.multiplayerGameManager.deleteAllRequests(roomId);
                 }
             });
+
+            socket.on(SocketEvent.GameStarted, (gameId: string) => {
+                socket.emit(SocketEvent.GameStarted, gameId);
+            });
+
+            socket.on(SocketEvent.Cheat, () => {
+                socket.emit(SocketEvent.Cheat);
+            });
+
+            socket.on(SocketEvent.DifferenceFoundReplay, (gameId: string, differenceCoord: Coordinate) => {
+                this.gameManager.isDifference(gameId, socket.id, differenceCoord);
+            });
+
+            socket.on(SocketEvent.LeavingArena, (gameId: string) => {
+                const game = this.gameManager.findGame(gameId);
+                game?.incrementLeftArena();
+                if (game?.isArenaEmpty()) {
+                    this.gameManager.discardGame(gameId);
+                }
+            });
         });
     }
 
     refreshGames() {
         this.sio.emit(SocketEvent.RefreshGames);
+    }
+
+    endGame(roomId: string) {
+        this.gameManager.removeGame(roomId);
     }
 }

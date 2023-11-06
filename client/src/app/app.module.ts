@@ -64,6 +64,7 @@ import { PageHeaderComponent } from './components/page-header/page-header.compon
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
+import { ReplayButtonsComponent } from './components/replay-buttons/replay-buttons.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
@@ -78,7 +79,6 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -152,6 +152,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         DialogChangeNameComponent,
         DialogConfirmResetPasswordComponent,
         ResetPasswordComponent,
+        ReplayButtonsComponent,
     ],
     imports: [
         MatCheckboxModule,

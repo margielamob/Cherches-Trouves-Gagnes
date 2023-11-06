@@ -108,7 +108,7 @@ export class GameManagerService {
         game.timerId = setInterval(() => {
             const remainingTime = this.timer.calculateTime(game); // Get the remaining time
 
-            if (remainingTime <= 0) {
+            if (remainingTime <= 0 || game.isGameOver()) {
                 // Game over logic
                 sio.sockets.to(gameId).emit(SocketEvent.Win);
                 this.leaveGame(playerId, gameId);
@@ -186,6 +186,10 @@ export class GameManagerService {
         return this.isGameFound(gameId) ? this.difference.nbDifferencesLeft((game as Game).information.differences, gameId) : null;
     }
 
+    resetDifferencesFound(gameId: string) {
+        this.difference.resetDifferencesFound(gameId);
+    }
+
     isGameAlreadyFull(gameId: string) {
         const game = this.findGame(gameId);
         return !game || game.isGameFull();
@@ -224,9 +228,10 @@ export class GameManagerService {
         const game = this.findGame(gameId);
         game?.leaveGame(playerId);
         this.deleteTimer(gameId);
-        if (game && game.hasNoPlayer()) {
-            this.games.delete(gameId);
-        }
+    }
+
+    discardGame(gameId: string) {
+        this.games.delete(gameId);
     }
 
     getNbDifferencesFound(differenceCoords: Coordinate[], gameId: string, isPlayerFoundDifference?: boolean): DifferenceFound {
@@ -276,7 +281,7 @@ export class GameManagerService {
         this.games.delete(gameId);
     }
 
-    private findGame(gameId: string): Game | undefined {
+    findGame(gameId: string): Game | undefined {
         return this.games.get(gameId);
     }
 }

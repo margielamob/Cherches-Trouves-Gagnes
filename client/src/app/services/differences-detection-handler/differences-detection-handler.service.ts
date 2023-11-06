@@ -24,8 +24,6 @@ export class DifferencesDetectionHandlerService {
     ) {}
 
     setNumberDifferencesFound(playerName: string) {
-        console.log(playerName);
-        console.log(this.gameInfoHandlerService.players);
         const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
         this.gameInfoHandlerService.players[index].nbDifferences++;
         this.gameInfoHandlerService.$differenceFound.next(playerName);
@@ -44,11 +42,12 @@ export class DifferencesDetectionHandlerService {
         sound.play();
     }
 
-    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
+    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D, isOriginal: boolean) {
         this.socketService.send(SocketEvent.Difference, {
             differenceCoord: mousePosition,
             roomId: this.gameInfoHandlerService.roomId,
             player: this.userService.activeUser.displayName,
+            isOriginal,
         });
         this.handleSocketDifferenceNotFound(ctx, mousePosition);
     }

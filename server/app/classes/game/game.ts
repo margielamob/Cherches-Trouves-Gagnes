@@ -15,6 +15,9 @@ export class Game {
     isCardDeleted: boolean = false;
     isCheatMode: boolean = false;
     gameCreator: User = {} as User;
+
+    private numberOfPlayers: number = 0;
+    private numberOfPlayersLeftArena: number = 0;
     private id: string;
     private mode: GameMode;
     private isMulti: boolean;
@@ -51,6 +54,18 @@ export class Game {
 
     get status(): GameStatus {
         return this.context.gameState();
+    }
+
+    incrementPlayers() {
+        this.numberOfPlayers++;
+    }
+
+    incrementLeftArena() {
+        this.numberOfPlayersLeftArena++;
+    }
+
+    isArenaEmpty() {
+        return this.numberOfPlayers === this.numberOfPlayersLeftArena;
     }
 
     setEndgame() {
