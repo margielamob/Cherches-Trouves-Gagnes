@@ -2,7 +2,7 @@
     <span class="room-name">{{ room }}</span>
     <span class="spacer"></span>
 </div>
-<button class="more" *ngIf="room !== 'all'" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options">
+<button class="more" *ngIf="room !== 'all' && !room.startsWith('Game')" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options">
     <mat-icon>more_vert</mat-icon>
 </button>
 <mat-menu #menu="matMenu">

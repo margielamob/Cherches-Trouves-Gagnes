@@ -91,7 +91,7 @@ export class ChatManagerService {
     }
 
     createRoom(roomName: string) {
-        this.socket.send(SocketEvent.CreateRoom, { roomName });
+        this.socket.send(SocketEvent.CreateRoom, { roomName, userName: this.userService.activeUser.displayName });
     }
 
     joinRooms(roomNames: string[]) {

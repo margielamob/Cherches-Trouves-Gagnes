@@ -87,9 +87,12 @@ export class ChatSocketManager {
         socket.on(SocketEvent.CreateRoom, (roomName: string, userName: string) => {
             console.log('createRoom : ' + roomName);
             this.createRoom(roomName);
+            console.log(userName);
             if (this.userRooms.get(userName)) {
+                // const rooms = [roomName];
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.userRooms.set(userName, [...this.userRooms.get(userName)!, ...[roomName]]);
+                this.userRooms.get(userName)!.push(roomName);
+                console.log(this.userRooms.get(userName));
                 socket.join(roomName);
             } else {
                 this.userRooms.set(userName, [roomName]);

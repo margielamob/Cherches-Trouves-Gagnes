@@ -10,7 +10,9 @@ import { debounceTime, of, startWith, switchMap } from 'rxjs';
     styleUrls: ['./room-add.component.scss'],
 })
 export class RoomAddComponent implements OnInit {
-    unjoinedRooms: string[] = this.chatManager.allRoomsList.value.filter((room: string) => !this.chatManager.userRoomList.value.includes(room));
+    unjoinedRooms: string[] = this.chatManager.allRoomsList.value.filter(
+        (room: string) => room !== 'all' || !this.chatManager.userRoomList.value.includes(room),
+    );
     selectedRooms: string[] = [];
     search = new FormControl();
     $search = this.search.valueChanges.pipe(
