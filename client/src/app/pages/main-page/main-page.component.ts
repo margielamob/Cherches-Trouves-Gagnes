@@ -6,6 +6,7 @@ import { UserNameInputComponent } from '@app/components/user-name-input/user-nam
 import { CarouselResponse } from '@app/interfaces/carousel-response';
 import { UserData } from '@app/interfaces/user';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
 import { RouterService } from '@app/services/router-service/router.service';
@@ -30,10 +31,12 @@ export class MainPageComponent implements OnInit {
         private readonly carouselService: GameCarouselService,
         private readonly router: RouterService,
         private userService: UserService,
+        private chatManager: ChatManagerService,
     ) {}
 
     ngOnInit(): void {
         this.user$ = this.userService.getCurrentUser();
+        this.chatManager.initChat();
     }
 
     onClickPlayClassic(): void {

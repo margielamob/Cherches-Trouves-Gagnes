@@ -1,5 +1,10 @@
+<mat-form-field class="search">
+    <mat-label class="search-label">Search</mat-label>
+    <input matInput [formControl]="search" class="search-input" />
+</mat-form-field>
+
 <mat-selection-list #list [(ngModel)]="selectedRooms">
-    <mat-list-option *ngFor="let room of unjoinedRooms" [value]="room">
+    <mat-list-option *ngFor="let room of $search | async" [value]="room">
         {{ room }}
     </mat-list-option>
 </mat-selection-list>

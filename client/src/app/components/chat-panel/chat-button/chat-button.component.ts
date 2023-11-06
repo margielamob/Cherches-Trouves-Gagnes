@@ -18,5 +18,6 @@ export class ChatButtonComponent implements OnInit {
 
     toggleChat() {
         this.chatDisplay.toggleChat();
+        this.chatDisplay.deselectRoom();
     }
 }

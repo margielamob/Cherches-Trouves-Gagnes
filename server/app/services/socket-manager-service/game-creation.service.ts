@@ -34,8 +34,12 @@ export class GameCreationManager {
             await this.getJoinableGames();
         });
 
-        socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
+        socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string, name: string) => {
+            console.log('leave waiting room');
+            console.log(roomId);
+            console.log(name);
             this.leaveWaitingRoom(roomId, socket);
+            // this.chat.leaveGameChat(roomId, name, socket);
         });
     }
 

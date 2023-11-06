@@ -1,6 +1,7 @@
 /* eslint-disable max-params */
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
 // eslint-disable-next-line import/no-unresolved
@@ -23,6 +24,7 @@ export class DialogGameOverComponent {
         private readonly timeFormatter: TimeFormatterService,
         public userService: UserService,
         public dialog: MatDialog,
+        private chatManager: ChatManagerService,
     ) {
         this.isWin = data.win;
         this.winner = data.winner;
@@ -39,6 +41,7 @@ export class DialogGameOverComponent {
     }
 
     quitGame() {
+        this.chatManager.leaveGameChat();
         this.dialog.closeAll();
     }
 }

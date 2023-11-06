@@ -12,6 +12,7 @@ import { GameCreationManager } from './game-creation.service';
 import { GameStateManager } from './game-state.service';
 import { GamePlayManager } from './gameplay.service';
 import { SocketServer } from './server-socket-manager.service';
+import { UserManager } from './user-manager.service';
 @Service()
 export class SocketManagerService {
     // eslint-disable-next-line max-params -- all services are needed
@@ -24,6 +25,7 @@ export class SocketManagerService {
         private gameCreationManager: GameCreationManager,
         private gameStateManager: GameStateManager,
         private gamePlayManager: GamePlayManager,
+        private userManager: UserManager,
     ) {}
 
     private get sio(): Server {
@@ -45,6 +47,7 @@ export class SocketManagerService {
             this.gameCreationManager.handleSockets(socket);
             this.gameStateManager.handleSockets(socket);
             this.gamePlayManager.handleSockets(socket);
+            this.userManager.handleSockets(socket);
 
             socket.on(SocketEvent.Disconnect, () => {
                 // eslint-disable-next-line no-console

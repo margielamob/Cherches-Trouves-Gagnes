@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
@@ -22,6 +23,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         private readonly routerService: RouterService,
         private readonly gameInformationHandlerService: GameInformationHandlerService,
+        private chatManager: ChatManagerService,
     ) {
         this.exitButton.setWaitingRoom();
     }
@@ -70,6 +72,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.socketService.send(SocketEvent.Ready, { roomId: this.gameInformationHandlerService.roomId });
     }
     quit() {
+        this.chatManager.leaveGameChat();
         this.socketService.send(SocketEvent.LeaveWaitingRoom, {
             roomId: this.gameInformationHandlerService.roomId,
             name: this.gameInformationHandlerService.getPlayer().name,

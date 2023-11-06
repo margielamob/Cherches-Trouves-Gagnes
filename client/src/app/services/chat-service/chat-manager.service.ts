@@ -5,6 +5,7 @@ import { UserService } from '@app/services/user-service/user.service';
 import { ChatMessage } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ChatDisplayService } from './chat-display.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -17,12 +18,11 @@ export class ChatManagerService {
     messages: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
     user$: Observable<UserData | undefined>;
 
-    constructor(private socket: CommunicationSocketService, private userService: UserService) {
-        this.addListeners();
+    constructor(private socket: CommunicationSocketService, private userService: UserService, private display: ChatDisplayService) {
+        // this.addListeners();
         // this.fetchUserRooms();
         // this.fetchAllRooms();
-
-        this.initChat();
+        // this.initChat();
     }
     selectRoom(room: string) {
         this.activeRoom.next(room);
@@ -53,7 +53,7 @@ export class ChatManagerService {
             this.allRoomsList.next(rooms);
         });
         this.socket.on(SocketEvent.UpdateUserRooms, (rooms: string[]) => {
-            console.log(rooms);
+            console.log('update user rooms : ' + rooms);
             this.userRoomList.next(rooms);
         });
         this.socket.on(SocketEvent.RoomCreated, (rooms: { all: string[]; user: string[] }) => {
@@ -71,6 +71,7 @@ export class ChatManagerService {
     }
 
     initChat() {
+        this.addListeners();
         this.socket.send(SocketEvent.InitChat, { userName: this.userService.activeUser.displayName });
     }
     getCurrentRoom() {
@@ -111,5 +112,13 @@ export class ChatManagerService {
 
     deleteRoom(roomName: string) {
         this.socket.send(SocketEvent.DeleteRoom, { roomName });
+    }
+
+    leaveGameChat() {
+        if (this.activeRoom.value.startsWith('Game')) {
+            this.display.deselectRoom();
+        }
+        const gameChat = this.userRoomList.value.find((room) => room.startsWith('Game'));
+        this.socket.send(SocketEvent.LeaveRoom, { roomName: gameChat, userName: this.userService.activeUser.displayName });
     }
 }
