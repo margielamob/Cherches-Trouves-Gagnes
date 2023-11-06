@@ -36,6 +36,10 @@ export class GamePlayManager {
             socket.emit(SocketEvent.FetchDifferences, this.gameManager.getNbDifferenceNotFound(gameId));
         });
 
+        socket.on(SocketEvent.ResetGameInfosReplay, (gameId) => {
+            this.gameManager.resetDifferencesFound(gameId);
+        });
+
         socket.on(SocketEvent.Clue, (gameId: string) => {
             this.gameManager.increaseNbClueAsked(gameId);
             const pixelResult = this.cluesService.findRandomPixel(gameId);
@@ -52,14 +56,14 @@ export class GamePlayManager {
             this.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
         });
 
-        socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
+        socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string, isOriginal: boolean) => {
             if (!this.gameManager.isGameFound(gameId)) {
                 socket.emit(SocketEvent.Error);
                 return;
             }
             const differences = this.gameManager.isDifference(gameId, socket.id, differenceCoord);
             if (!differences) {
-                socket.emit(SocketEvent.DifferenceNotFound);
+                socket.emit(SocketEvent.DifferenceNotFound, { isOriginal, differenceCoord });
                 this.sio
                     .to(gameId)
                     .emit(
@@ -81,7 +85,11 @@ export class GamePlayManager {
                     ),
                 );
             // socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
-            this.sio.to(gameId).emit(SocketEvent.DifferenceFound, { data: this.gameManager.getNbDifferencesFound(differences, gameId), playerName });
+            this.sio.to(gameId).emit(SocketEvent.DifferenceFound, {
+                data: this.gameManager.getNbDifferencesFound(differences, gameId),
+                playerName,
+                differenceCoord,
+            });
 
             if (this.gameManager.isGameOver(gameId)) {
                 this.handleEndGame(gameId, socket);
@@ -109,11 +117,16 @@ export class GamePlayManager {
         });
     }
 
+    endGame(roomId: string) {
+        this.gameManager.removeGame(roomId);
+    }
+
     private handleEndGame(gameId: string, socket: Socket): void {
         const time = this.gameManager.getTime(gameId) as number;
         const playerName = this.gameManager.findPlayer(gameId, socket.id)?.name as string;
         const gameInfo = this.gameManager.getGameInfo(gameId);
         const isMulti = this.gameManager.isGameMultiplayer(gameId) as boolean;
+        this.gameManager.findGame(gameId)?.incrementPlayers();
 
         if (!this.gameManager.isGameCardDeleted(gameId)) {
             this.scoresHandlerService

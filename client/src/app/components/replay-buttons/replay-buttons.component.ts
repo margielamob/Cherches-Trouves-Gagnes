@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { ReplayService, ReplayState } from '@app/services/replay-service/replay.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class ReplayButtonsComponent {
     currentSpeed = 1;
     isReplayAvailable: boolean = true;
     replaySpeeds = [0.5, 1, 2, 3];
-    constructor(private readonly replayService: ReplayService, public dialog: MatDialog) {}
+    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 
     async replay() {
         this.dialog.closeAll();
@@ -32,6 +33,7 @@ export class ReplayButtonsComponent {
     }
 
     quit() {
+        this.chat.leaveGameChat();
         this.replayService.setSate(ReplayState.STOPPED);
     }
 
