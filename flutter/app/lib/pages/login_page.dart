@@ -1,5 +1,7 @@
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -85,8 +87,7 @@ class LoginPageState extends State<LoginPage> {
                                     password as String,
                                     isEmail);
                                 _formKey.currentState!.reset();
-
-                                Navigator.pushNamed(context, '/MainPage');
+                                Get.offAll(MainPage());
                               } catch (error) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

@@ -1,4 +1,5 @@
 import 'package:app/components/current_players.dart';
+import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
@@ -28,21 +29,7 @@ class Classic extends StatelessWidget {
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Partie classique'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              gameManagerService.leaveGame(gameId);
-              Navigator.pushNamed(context, '/gameSelection');
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Quitter la partie'),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar.buildDefaultBar(context, 'Partie classique'),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(

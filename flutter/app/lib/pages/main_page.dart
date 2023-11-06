@@ -1,3 +1,4 @@
+import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
@@ -10,6 +11,19 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Menu principal"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LogoutDialog();
+                }),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
