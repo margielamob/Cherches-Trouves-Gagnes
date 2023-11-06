@@ -35,6 +35,7 @@ class _ForegroundPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.scale(
         GameVignette.tabletScalingRatio, GameVignette.tabletScalingRatio);
+
     final path = Path();
     for (var coord in diffService.coordinates) {
       path.addRect(Rect.fromPoints(
@@ -43,6 +44,11 @@ class _ForegroundPainter extends CustomPainter {
     }
     canvas.clipPath(path);
     canvas.drawImage(images.modified, Offset.zero, Paint());
+
+    if (diffService.blinkingDifference != null) {
+      canvas.drawPath(
+          diffService.blinkingDifference!, diffService.defaultBlinkingColor);
+    }
   }
 
   @override
@@ -76,12 +82,8 @@ class GameVignetteOriginal extends GameVignette {
                   GameVignette.tabletScalingRatio;
               y.value = details.localPosition.dy.toDouble() /
                   GameVignette.tabletScalingRatio;
-              if (diffService.validate(
-                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId)) {
-                // blink differences
-              } else {
-                // write different
-              }
+              diffService.validate(
+                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId);
             },
             child: SizedBox(
               width: images.original.width.toDouble() *
