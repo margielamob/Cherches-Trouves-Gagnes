@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class _PlayersCard extends StatelessWidget {
-  final String fname;
-  final String lname;
-  const _PlayersCard({required this.fname, required this.lname});
+  final String firstName;
+  final String lastName;
+  int nbDifferences = 0;
+
+  _PlayersCard({required this.firstName, required this.lastName});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class _PlayersCard extends StatelessWidget {
                 children: [
                   FlutterLogo(size: 30.0),
                   SizedBox(width: 10),
-                  Text('$fname $lname', style: TextStyle(fontSize: 16))
+                  Text('$firstName $lastName', style: TextStyle(fontSize: 16))
                 ],
               ),
               SizedBox(height: 5),
@@ -36,24 +38,7 @@ class _PlayersCard extends StatelessWidget {
   }
 }
 
-/*
-        Container(
-          width: 800,
-          color: Colors.deepPurple, // Set the background color for the bar
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            "Current players",
-            style: TextStyle(
-              color: Colors.white, // Set the text color
-              fontSize: 20, // Adjust the font size as needed
-              ,
-            ),
-          ),
-        ),
-*/
 class CurrentPlayers extends StatelessWidget {
-  const CurrentPlayers({super.key});
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -63,11 +48,11 @@ class CurrentPlayers extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          children: const <Widget>[
-            _PlayersCard(fname: "Thierry", lname: "Beaulieu"),
-            _PlayersCard(fname: "Sulayman", lname: "Hosna"),
-            _PlayersCard(fname: "Ahmed", lname: "Ben-Othman"),
-            _PlayersCard(fname: "Samy", lname: "Labassi"),
+          children: <Widget>[
+            _PlayersCard(firstName: "Thierry", lastName: "Beaulieu"),
+            _PlayersCard(firstName: "Sulayman", lastName: "Hosna"),
+            _PlayersCard(firstName: "Ahmed", lastName: "Ben-Othman"),
+            _PlayersCard(firstName: "Samy", lastName: "Labassi"),
           ],
         ),
       ),
