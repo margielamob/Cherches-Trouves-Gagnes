@@ -24,9 +24,6 @@
         </div>
 
         <ng-template #selectPage>
-            <button mat-flat-button color="primary" aria-label="Boutton Jouer" (click)="onClickPlayGame()">
-                {{ 'GAME_CARD_BTN.PLAY' | translate }}
-            </button>
             <button mat-flat-button color="primary" aria-label="Boutton Créer" (click)="onClickCreateJoinGame()">
                 {{ isMultiplayer() ? ('GAME_CARD_BTN.JOIN' | translate) : ('GAME_CARD_BTN.CREATE' | translate) }}
             </button>
