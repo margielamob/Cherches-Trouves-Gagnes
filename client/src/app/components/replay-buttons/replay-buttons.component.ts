@@ -8,12 +8,15 @@ import { ReplayService, ReplayState } from '@app/services/replay-service/replay.
     styleUrls: ['./replay-buttons.component.scss'],
 })
 export class ReplayButtonsComponent {
+    currentSpeed = 1;
     isReplayAvailable: boolean = true;
+    replaySpeeds = [0.5, 1, 2, 3];
     constructor(private readonly replayService: ReplayService, public dialog: MatDialog) {}
 
     async replay() {
         this.dialog.closeAll();
         this.replayService.backupQueue();
+        this.replayService.resetQueue();
         this.replayService.setSate(ReplayState.PLAYING);
         // eslint-disable-next-line deprecation/deprecation
         await this.replayService.playEvents();
@@ -38,5 +41,10 @@ export class ReplayButtonsComponent {
 
     isPaused(): boolean {
         return this.replayService.state === ReplayState.PAUSED;
+    }
+
+    setSpeed(speed: number) {
+        this.currentSpeed = speed;
+        this.replayService.setTimeFactor(this.currentSpeed);
     }
 }

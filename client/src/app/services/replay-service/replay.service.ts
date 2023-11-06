@@ -65,7 +65,12 @@ export class ReplayService {
     }
 
     setTimeFactor(factor: number) {
+        console.log('new factor', factor);
         this.timeFactor = factor;
+    }
+
+    getTimeFactor() {
+        return this.timeFactor;
     }
 
     async playEvents() {
@@ -77,10 +82,8 @@ export class ReplayService {
                 case ReplayState.PAUSED:
                     return;
                 case ReplayState.STOPPED:
-                    this.resetQueue();
                     return;
                 case ReplayState.REDO:
-                    this.resetQueue();
                     this.state = ReplayState.PLAYING;
                     break;
                 default:
@@ -218,12 +221,10 @@ export class ReplayService {
         const event = this.queue.dequeue() as ReplayEvent;
         if (!event) {
             this.setSate(ReplayState.DONE);
-            console.log('queue is empty');
             this.resetQueue();
-
             return;
         }
-        await this.delay(this.timeSinceLastEvent(event) * this.timeFactor);
+        await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
         switch (event.action) {
             case ReplayActions.Message:
                 this.replayMessage(event);
