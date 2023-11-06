@@ -47,6 +47,10 @@ export class ReplayService {
         this.differencesContext = ctxDifferences;
     }
 
+    getQueueLength() {
+        return this.queue.length;
+    }
+
     setImageContexts(ctxImgOriginal: CanvasRenderingContext2D, ctxImgModified: CanvasRenderingContext2D) {
         this.imgOriginalContext = ctxImgOriginal;
         this.imgModifiedContext = ctxImgModified;
@@ -133,7 +137,6 @@ export class ReplayService {
                     coords: obj.data.coords,
                     pos: obj.differenceCoord,
                 } as DifferenceFound;
-                console.log('difference found at: ', obj.differenceCoord);
                 this.addEvent(ReplayActions.DifferenceFoundUpdate, data);
             },
         );
@@ -156,7 +159,6 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.Clue, (payload: ClueReplay) => {
-            console.log('captured clue event');
             this.addEvent(ReplayActions.UseHint, payload);
         });
 
@@ -216,6 +218,7 @@ export class ReplayService {
         const event = this.queue.dequeue() as ReplayEvent;
         if (!event) {
             this.setSate(ReplayState.DONE);
+            console.log('queue is empty');
             return;
         }
         await this.delay(this.timeSinceLastEvent(event) * this.timeFactor);

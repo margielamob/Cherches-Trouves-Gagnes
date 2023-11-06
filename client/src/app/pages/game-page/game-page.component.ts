@@ -19,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GamePageComponent implements OnDestroy {
     title: string;
     clock: string;
+    isReplayToggled: boolean = false;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
@@ -96,7 +97,18 @@ export class GamePageComponent implements OnDestroy {
                 nbPoints: this.findNbDifferences(),
             };
         }
-        this.dialog.open(DialogGameOverComponent, dialogConfig);
+        const dialogRef = this.dialog.open(DialogGameOverComponent, dialogConfig);
+
+        if (this.gameInfoHandlerService.isClassic()) {
+            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
+                this.isReplayToggled = isReplayToggled;
+                console.log('received toggle', this.isReplayToggled);
+            });
+        }
+    }
+
+    canReplay() {
+        return this.isReplayToggled && this.gameInfoHandlerService.isClassic();
     }
 
     private findNbDifferences(): string {

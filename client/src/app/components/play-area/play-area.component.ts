@@ -48,6 +48,13 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ) {
         this.handleSocketDifferenceFound();
         this.replayService.listenToEvents();
+        this.replayService.cheatActivated$.subscribe(async (isActive) => {
+            if (isActive) {
+                await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
+                this.replayService.cheatActivated.next(false);
+                console.log('ici');
+            }
+        });
     }
 
     get width(): number {
@@ -69,6 +76,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             return;
         }
         if (event.key === 't') {
+            this.communicationSocketService.send(SocketEvent.Cheat);
             await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
         }
 
@@ -84,13 +92,6 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             if (hasStarted) {
                 await this.resetCanvases();
                 this.replayService.imagesLoaded.next(true);
-            }
-        });
-
-        this.replayService.cheatActivated$.subscribe(async (isActive) => {
-            if (isActive) {
-                await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
-                this.replayService.cheatActivated.next(false);
             }
         });
     }

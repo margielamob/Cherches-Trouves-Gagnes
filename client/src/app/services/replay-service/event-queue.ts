@@ -2,7 +2,7 @@ import { ReplayEvent } from './replay-interfaces';
 
 export class EventQueue {
     private queue: ReplayEvent[];
-    private queueBackup: ReplayEvent[];
+    private queueBackup: ReplayEvent[] = [];
     private startingTime$: Date;
 
     constructor() {
@@ -42,7 +42,9 @@ export class EventQueue {
     }
 
     backupQueue(): void {
-        this.queueBackup = this.queue;
+        for (const event of this.queue) {
+            this.queueBackup.push(event);
+        }
     }
 
     resetQueue(): void {
