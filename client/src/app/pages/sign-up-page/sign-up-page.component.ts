@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Theme } from '@app/enums/theme';
 import { UserData } from '@app/interfaces/user';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
 import { UserService } from '@app/services/user-service/user.service';
@@ -64,7 +63,7 @@ export class SignUpPageComponent {
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations
-                        theme: Theme.ClassName,
+                        theme: 'Default',
                         language: 'Fr',
                         gameLost: 0,
                         gameWins: 0,

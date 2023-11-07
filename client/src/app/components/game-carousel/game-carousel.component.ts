@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RefreshSnackbarComponent } from '@app/components/refresh-snackbar/refresh-snackbar.component';
-import { Theme } from '@app/enums/theme';
 import { GameCard } from '@app/interfaces/game-card';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
@@ -21,7 +20,6 @@ export class GameCarouselComponent implements OnInit, OnDestroy {
     @Input() isJoining: boolean = false;
     isLoaded: boolean;
     games: GameCard[] = [];
-    favoriteTheme: string = Theme.ClassName;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(

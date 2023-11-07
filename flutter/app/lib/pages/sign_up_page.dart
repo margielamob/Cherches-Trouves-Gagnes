@@ -1,7 +1,8 @@
-import 'package:app/services/auth-service.dart';
-import 'package:app/services/user-service.dart';
+import 'package:app/domain/models/user_data.dart';
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({
@@ -17,8 +18,8 @@ class SignUpPageState extends State<SignUpPage> {
   String? email = "";
   String? userName = "";
   String? password = "";
-  final AuthService authService = GetIt.I.get<AuthService>();
-  final UserService userService = GetIt.I.get<UserService>();
+  final AuthService authService = Get.find();
+  final UserService userService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +76,9 @@ class SignUpPageState extends State<SignUpPage> {
                           if (value == null || value.isEmpty) {
                             return "Veuillez entrer un nom d'utilisateur.";
                           }
+                          if (value.contains('@') || value.contains(' ')) {
+                            return "Le nom d'utilisateur ne doit pas contenir d'espaces ou de caractères spéciaux.";
+                          }
                           return null;
                         }, (value) => userName = value),
                         SizedBox(height: 30),
@@ -89,33 +93,52 @@ class SignUpPageState extends State<SignUpPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
+                              bool isAvailable = await userService
+                                  .isUserNameAvailable(userName as String);
 
-                              try {
-                                final firebaseCredential =
-                                    await authService.signUp(email as String,
-                                        password as String, userName as String);
-
-                                UserData user = UserData(
-                                  uid: firebaseCredential.user!.uid,
-                                  displayName: userName as String,
-                                  email: email as String,
-                                  emailVerified: false,
-                                  photoURL: '',
-                                  phoneNumber: '',
-                                  theme: '',
-                                  language: '',
-                                  gameLost: 0,
-                                  gameWins: 0,
-                                  gamePlayed: 0,
-                                  averageTime: '',
+                              if (!isAvailable) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Ce nom d\'utilisateur est déjà pris.'),
+                                    backgroundColor: Colors.red,
+                                  ),
                                 );
+                                return;
+                              } else {
+                                try {
+                                  final firebaseCredential =
+                                      await authService.signUp(
+                                          email as String,
+                                          password as String,
+                                          userName as String);
 
-                                await userService.addUser(user);
-                                print('User added');
-                                _formKey.currentState!.reset();
-                                Navigator.pushNamed(context, '/loginPage');
-                              } catch (error) {
-                                print(error);
+                                  UserData user = UserData(
+                                    uid: firebaseCredential.user!.uid,
+                                    displayName: userName as String,
+                                    email: email as String,
+                                    photoURL: '',
+                                    phoneNumber: '',
+                                    theme: '',
+                                    language: '',
+                                    gameLost: 0,
+                                    gameWins: 0,
+                                    gamePlayed: 0,
+                                    averageTime: '',
+                                  );
+
+                                  await userService.addUser(user);
+                                  _formKey.currentState!.reset();
+                                  Navigator.pushNamed(context, '/loginPage');
+                                } catch (error) {
+                                  print(error);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('$error'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               }
                             }
                           },
@@ -137,8 +160,8 @@ class SignUpPageState extends State<SignUpPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'quote.png',
-                  fit: BoxFit.cover,
+                  'assets/quote.png',
+                  width: 600,
                 ),
               ),
             ],

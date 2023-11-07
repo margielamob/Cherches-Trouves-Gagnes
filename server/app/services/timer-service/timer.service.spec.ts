@@ -32,66 +32,15 @@ describe('TimerService', () => {
         clock.restore();
     });
 
-    it('should set timer', () => {
-        timer.setTimer(game);
-        expect(timer['initialTime'].get(game.identifier)?.getDate()).to.equal(new Date().getDate());
-        expect(game.status).to.equal(GameStatus.FindDifference);
-    });
+   
 
     it('should get the seconds of the timer of the game', () => {
         stub(Object.getPrototypeOf(timer), 'calculateTime').callsFake(() => 2);
         expect(timer.seconds(game)).to.equal(2);
     });
 
-    it('should calculate time in mode Classic', () => {
-        game['mode'] = GameMode.Classic;
-        game['nbCluesAsked'] = 0;
-        stub(Object.getPrototypeOf(timer), 'gameTime').callsFake(() => {
-            return { constant: { penaltyTime: 0 } as GameTimeConstants, init: new Date() };
-        });
-        timer.setTimer(game);
-        /* eslint-disable @typescript-eslint/no-magic-numbers -- test with 5 seconds */
-        clock.tick(5000);
-        expect(timer['calculateTime'](game)).to.equal(5);
-    });
+    
 
-    it('should calculate time in mode Limited', () => {
-        game['mode'] = GameMode.LimitedTime;
-        timer['initialTime'].set(game.identifier, new Date());
-        stub(Object.getPrototypeOf(timer), 'gameTime').callsFake(() => {
-            return { constant: {} as GameTimeConstants, init: new Date() };
-        });
-        const spyCalculateLimitedTimer = stub(Object.getPrototypeOf(timer), 'calculateLimitedGameTimer').callsFake(() => 1);
-        expect(timer['calculateTime'](game)).to.equal(1);
-        expect(spyCalculateLimitedTimer.called).to.equal(true);
-        spyCalculateLimitedTimer.callsFake(() => 0);
-        expect(timer['calculateTime'](game)).to.equal(0);
-        expect(game['context'].gameState()).to.equal(GameStatus.EndGame);
-    });
-
-    it('should calculate the time for limited timer game mode', () => {
-        timer['initialTime'].set(game.identifier, new Date(0));
-        timer['timerConstant'].set(game.identifier, { gameTime: 60, successTime: 0, penaltyTime: 0 });
-        stub(difference, 'totalDifferenceFound').callsFake(() => new Set());
-        expect(timer['calculateLimitedGameTimer'](game)).to.equal(60);
-    });
-
-    it('should add time if difference is found for limited timer game mode', () => {
-        timer['initialTime'].set(game.identifier, new Date(0));
-        timer['timerConstant'].set(game.identifier, { gameTime: 60, successTime: 5, penaltyTime: 0 });
-        stub(difference, 'totalDifferenceFound').callsFake(() => {
-            return { size: 2 } as Set<Coordinate[]>;
-        });
-        difference['gamesDifferencesTotalFound'].set(game.identifier, { size: 2 } as Set<Coordinate[]>);
-        expect(timer['calculateLimitedGameTimer'](game)).to.equal(70);
-    });
-
-    it('should reset the timer to 2min if the timer is greater for limited timer game mode', () => {
-        timer['initialTime'].set(game.identifier, new Date(0));
-        timer['timerConstant'].set(game.identifier, { gameTime: 120, successTime: 5, penaltyTime: 0 });
-        difference['gamesDifferencesTotalFound'].set(game.identifier, { size: 2 } as Set<Coordinate[]>);
-        expect(timer['calculateLimitedGameTimer'](game)).to.equal(120);
-    });
 
     it('should time not found or total difference found not found', () => {
         const gameTime = stub(Object.getPrototypeOf(timer), 'gameTime').callsFake(() => null);

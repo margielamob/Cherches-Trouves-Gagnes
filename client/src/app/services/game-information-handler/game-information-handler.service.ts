@@ -28,7 +28,8 @@ export class GameInformationHandlerService {
     isReadyToAccept: boolean = true;
     isMulti: boolean = false;
     gameTimeConstants: GameTimeConstants;
-
+    cheatMode: boolean = false;
+    timer: number = 0;
     constructor(
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
@@ -50,9 +51,11 @@ export class GameInformationHandlerService {
         });
 
         this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            console.log(info.cheatMode);
             this.roomId = info.roomId;
             this.isMulti = true;
             this.playersEX = info.players;
+            this.cheatMode = info.cheatMode;
             this.routerService.navigateTo('waiting');
         });
     }
@@ -147,7 +150,7 @@ export class GameInformationHandlerService {
         this.player.avatar = this.userService.activeUser.photoURL;
         this.socket.send(SocketEvent.CreateClassicGame, {
             player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
-            cardId: this.getId(),
+            card: { id: this.getId(), cheatMode: this.cheatMode, timer: this.timer },
         });
         this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();
@@ -161,5 +164,20 @@ export class GameInformationHandlerService {
         });
         this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();
+    }
+
+    resetGameVariables(): void {
+        this.playersEX = [];
+        this.players = [];
+        this.roomId = '';
+        this.player = { displayName: '', avatar: '' };
+        this.$playerLeft = new Subject<void>();
+        this.$differenceFound = new Subject<string>();
+        this.$newGame = new Subject<void>();
+        this.gameMode = GameMode.Classic;
+        this.isReadyToAccept = true;
+        this.isMulti = false;
+        this.cheatMode = false;
+        this.timer = 0;
     }
 }

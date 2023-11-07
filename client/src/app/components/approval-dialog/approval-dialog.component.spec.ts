@@ -1,13 +1,15 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Socket } from 'socket.io-client';
 import { ApprovalDialogComponent } from './approval-dialog.component';
 
@@ -43,7 +45,18 @@ describe('ApprovalDialogComponent', () => {
                 { provide: RouterService, useValue: routerSpyObj },
                 { provide: GameInformationHandlerService, useValue: gameInformationHandlerService },
             ],
-            imports: [RouterTestingModule, HttpClientModule, AppMaterialModule],
+            imports: [
+                RouterTestingModule,
+                HttpClientModule,
+                AppMaterialModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ApprovalDialogComponent);

@@ -1,10 +1,11 @@
-import { HttpClientModule, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { CarouselResponse } from '@app/interfaces/carousel-response';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
@@ -13,6 +14,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { MainPageService } from '@app/services/main-page/main-page.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { GameMode } from '@common/game-mode';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -42,6 +44,14 @@ describe('MainPageComponent', () => {
                 ReactiveFormsModule,
                 HttpClientModule,
                 AngularFireModule.initializeApp(environment.firebase),
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
             ],
             providers: [
                 { provide: MatDialog, useValue: spyMatDialog },
@@ -75,10 +85,6 @@ describe('MainPageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it("should have as title 'Jeu de différences'", () => {
-        expect(component.title).toEqual('Jeu de différences');
     });
 
     it('should set GameMode to Classic when Classic button is clicked', () => {

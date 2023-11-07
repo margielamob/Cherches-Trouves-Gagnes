@@ -13,6 +13,8 @@ export class Game {
     currentIndex: number = 0;
     nbCluesAsked: number = 0;
     isCardDeleted: boolean = false;
+    isCheatMode: boolean = false;
+    gameCreator: User = {} as User;
     private id: string;
     private mode: GameMode;
     private isMulti: boolean;
@@ -27,6 +29,7 @@ export class Game {
         this.context = new GameContext(game.mode as GameMode, new InitGameState(), player.isMulti);
         this.id = v4();
         this.context.next();
+        this.gameCreator = player.player;
         this.addPlayer(player.player);
     }
 
@@ -100,6 +103,13 @@ export class Game {
 
     findPlayer(playerId: string) {
         return this.players.get(playerId);
+    }
+
+    isGameCreator(playerId: string) {
+        return this.gameCreator.id === playerId;
+    }
+    removePlayer(playerId: string) {
+        this.players.delete(playerId);
     }
     getPlayers() {
         return this.players;

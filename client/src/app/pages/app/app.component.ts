@@ -1,11 +1,33 @@
-import { Component } from '@angular/core';
-import { Theme } from '@app/enums/theme';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { LanguageService } from '@app/services/language-service/languag.service';
+import { UserService } from '@app/services/user-service/user.service';
+import { Subscription, take } from 'rxjs';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-    favoriteTheme: string = Theme.ClassName;
+export class AppComponent implements OnInit, OnDestroy {
+    currentTheme: string = 'default';
+    userThemeSubscription: Subscription;
+
+    constructor(private langService: LanguageService, public userService: UserService) {}
+    ngOnInit(): void {
+        this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
+            this.currentTheme = theme as string;
+        });
+        this.userService
+            .getUserLang()
+            .pipe(take(1))
+            .subscribe((lang) => {
+                this.langService.setAppLanguage(lang as string);
+            });
+    }
+
+    ngOnDestroy(): void {
+        if (this.userThemeSubscription) {
+            this.userThemeSubscription.unsubscribe();
+        }
+    }
 }

@@ -13,6 +13,7 @@ import { GameMode } from '@common/game-mode';
 import { ScoreType } from '@common/score-type';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
 import * as http from 'http';
 import * as LZString from 'lz-string';
 import { Server, Socket } from 'socket.io';
@@ -48,8 +49,8 @@ export class SocketManagerService {
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
 
-            socket.on(SocketEvent.CreateClassicGame, async (player: User, cardId: string) => {
-                await this.createClassicGame(player, cardId, true, socket);
+            socket.on(SocketEvent.CreateClassicGame, async (player: User, card: { id: string; cheatMode: boolean; timer: number }) => {
+                await this.createClassicGame(player, card, true, socket);
             });
 
             socket.on(SocketEvent.JoinClassicGame, async (player: User, roomId: string) => {
@@ -58,6 +59,10 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.GetJoinableGames, async () => {
                 await this.getJoinableGames();
+            });
+
+            socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
+                this.leaveWaitingRoom(roomId, socket);
             });
 
             socket.on(SocketEvent.Message, (message: string, roomId: string) => {
@@ -90,7 +95,6 @@ export class SocketManagerService {
 
             socket.on(SocketEvent.JoinGame, (player: string, gameId: string) => {
                 if (this.gameManager.isClassic(gameId)) {
-                    this.gameManager.setTimer(gameId);
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);
                     this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 } else {
@@ -135,10 +139,14 @@ export class SocketManagerService {
                     socket.leave(gameId);
                     this.gameManager.leaveGame(socket.id, gameId);
                 }
+                this.sio.in(gameId).socketsLeave(gameId);
+                this.gameManager.removeJoinableGame(gameId);
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
-                socket.emit(SocketEvent.GetGamesWaiting, { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) });
+                const result = { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) };
+                socket.emit(SocketEvent.GetGamesWaiting, result);
             });
 
             socket.on(SocketEvent.GameDeleted, (gameId: string) => {
@@ -166,7 +174,7 @@ export class SocketManagerService {
                 }
             });
 
-            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string) => {
+            socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string) => {
                 if (!this.gameManager.isGameFound(gameId)) {
                     socket.emit(SocketEvent.Error);
                     return;
@@ -194,8 +202,10 @@ export class SocketManagerService {
                             this.gameManager.isGameMultiplayer(gameId),
                         ),
                     );
-                socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
-                socket.emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId));
+                // socket.broadcast.to(gameId).emit(SocketEvent.DifferenceFound, this.gameManager.getNbDifferencesFound(differences, gameId, true));
+                this.sio
+                    .to(gameId)
+                    .emit(SocketEvent.DifferenceFound, { data: this.gameManager.getNbDifferencesFound(differences, gameId), playerName });
 
                 if (this.gameManager.isGameOver(gameId)) {
                     this.handleEndGame(gameId, socket);
@@ -224,24 +234,44 @@ export class SocketManagerService {
         });
     }
     // eslint-disable-next-line max-params
-    async createClassicGame(player: User, cardId: string, isMulti: boolean, socket: Socket) {
+    async createClassicGame(player: User, card: { id: string; cheatMode: boolean; timer: number }, isMulti: boolean, socket: Socket) {
         const roomId = await this.gameManager.createGame(
             { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
             GameMode.Classic,
-            cardId,
+            card.id,
         );
+        this.gameManager.setCheatMode(roomId, card.cheatMode);
+        this.gameManager.setTimer(roomId, card.timer);
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
         socket.join(roomId);
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
+        const data: WaitingRoomInfo = { roomId, players, cheatMode: card.cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
     }
 
     async joinClassicGame(player: User, roomId: string, socket: Socket) {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        socket.emit(SocketEvent.WaitPlayer, { roomId, players });
-        socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        const data: WaitingRoomInfo = { roomId, players, cheatMode };
+        socket.emit(SocketEvent.WaitPlayer, data);
+        socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
+    }
+
+    async leaveWaitingRoom(roomId: string, socket: Socket) {
+        if (this.gameManager.isGameCreator(roomId, socket.id)) {
+            const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
+            socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
+            this.gameManager.removeJoinableGame(roomId);
+            this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            this.sio.in(roomId).socketsLeave(roomId);
+        } else {
+            this.gameManager.removePlayer(roomId, socket.id);
+            socket.leave(roomId);
+            const players = this.gameManager.getPlayers(roomId) || [];
+            socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
+        }
     }
 
     async getJoinableGames() {
@@ -250,6 +280,10 @@ export class SocketManagerService {
 
     refreshGames() {
         this.sio.emit(SocketEvent.RefreshGames);
+    }
+
+    endGame(roomId: string) {
+        this.gameManager.removeGame(roomId);
     }
 
     private handleEndGame(gameId: string, socket: Socket): void {

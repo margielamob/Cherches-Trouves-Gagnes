@@ -1,5 +1,5 @@
-import { Service } from 'typedi';
 import { MessageRecord } from '@common/message-record';
+import { Service } from 'typedi';
 
 @Service()
 export class EventMessageService {

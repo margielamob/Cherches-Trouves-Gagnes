@@ -1,22 +1,34 @@
 <mat-card-actions class="game-card-buttons">
-    <!-- Show only if joinableGameCard is defined -->
     <button *ngIf="joinableGameCard" mat-flat-button color="primary" aria-label="Boutton Joindre" (click)="onClickJoinGame()">Joindre</button>
 
-    <!-- Show only if gameCard is defined and joinableGameCard is not defined -->
     <ng-container *ngIf="gameCard && !joinableGameCard">
         <div class="admin-buttons" *ngIf="gameCard.isAdminCard; else selectPage">
-            <button mat-fab color="primary" matTooltip="Supprimer le jeu" aria-label="Boutton supprimer" (click)="onClickDeleteGame(gameCard)">
+            <button
+                mat-fab
+                color="primary"
+                matTooltip="{{ 'GAME_CARD_BTN.DELETE' | translate }}"
+                aria-label="Boutton supprimer"
+                (click)="onClickDeleteGame(gameCard)"
+            >
                 <mat-icon>delete</mat-icon>
             </button>
-            <button mat-fab color="primary" matTooltip="Réinitialiser les records" aria-label="Boutton réinitialiser" (click)="onClickRefreshGame()">
+            <button
+                mat-fab
+                color="primary"
+                matTooltip="{{ 'GAME_CARD_BTN.RESET' | translate }}"
+                aria-label="Boutton réinitialiser"
+                (click)="onClickRefreshGame()"
+            >
                 <mat-icon>refresh</mat-icon>
             </button>
         </div>
 
         <ng-template #selectPage>
-            <button mat-flat-button color="primary" aria-label="Boutton Jouer" (click)="onClickPlayGame()">Jouer</button>
+            <button mat-flat-button color="primary" aria-label="Boutton Jouer" (click)="onClickPlayGame()">
+                {{ 'GAME_CARD_BTN.PLAY' | translate }}
+            </button>
             <button mat-flat-button color="primary" aria-label="Boutton Créer" (click)="onClickCreateJoinGame()">
-                {{ isMultiplayer() ? 'Joindre' : 'Créer' }}
+                {{ isMultiplayer() ? ('GAME_CARD_BTN.JOIN' | translate) : ('GAME_CARD_BTN.CREATE' | translate) }}
             </button>
         </ng-template>
     </ng-container>

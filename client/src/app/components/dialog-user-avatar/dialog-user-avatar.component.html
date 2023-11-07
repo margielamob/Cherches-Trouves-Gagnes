@@ -1,5 +1,5 @@
 <div class="containerSpaceBetween">
-    <div class="header3">{{ title }}</div>
+    <div class="header3">{{ 'DIALOG_USER.TITLE' | translate }}</div>
     <div>
         <div class="avatar-container">
             <div *ngFor="let avatarImage of avatarImages">
@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="error" *ngIf="fileTypeError">
-        <p><mat-icon>error</mat-icon> {{ fileTypeError }}</p>
+        <p><mat-icon>error</mat-icon>{{ 'DIALOG_USER.ERROR' | translate }}</p>
     </div>
     <div class="submit-btn">
         <button mat-raised-button color="primary" (click)="onSubmit()">Enregistrer</button>

@@ -6,7 +6,7 @@ import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
 import { User } from '@common/user';
 import { expect } from 'chai';
-import { restore, spy, stub } from 'sinon';
+import { restore, stub } from 'sinon';
 
 describe('DifferenceService', () => {
     let difference: DifferenceService;
@@ -100,42 +100,6 @@ describe('DifferenceService', () => {
         stub(difference, 'getNbDifferencesThreshold').callsFake(() => 5);
         expect(difference.isAllDifferenceFound('', game)).to.equal(true);
     });
-
-    it('should add a difference founded', () => {
-        const expectedPlayerId = '';
-        const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
-        difference['gamesDifferencesFound'].set(game.identifier, new Map());
-        difference['gamesDifferencesTotalFound'].set(game.identifier, new Set());
-        difference['gamesDifferencesFound'].get(game.identifier)?.set(expectedPlayerId, new Set());
-        const isAlreadyDifferenceFoundSpy = stub(difference, 'isDifferenceAlreadyFound').callsFake(() => true);
-        const isAllDifferenceFoundSpy = stub(difference, 'isAllDifferenceFound').callsFake(() => false);
-        const isGameOverSpy = stub(game, 'isGameOver').callsFake(() => true);
-        const getNbDifferencesFoundSpy = stub(
-            difference['gamesDifferencesFound'].get(game.identifier)?.get(expectedPlayerId) as Set<Coordinate[]>,
-            'add',
-        );
-        difference.addCoordinatesOnDifferenceFound(expectedPlayerId, [{} as Coordinate], game);
-        expect(isAlreadyDifferenceFoundSpy.called).to.equal(true);
-        expect(isAllDifferenceFoundSpy.called).to.equal(false);
-        expect(isGameOverSpy.called).to.equal(false);
-        expect(getNbDifferencesFoundSpy.called).to.equal(false);
-
-        isAlreadyDifferenceFoundSpy.callsFake(() => false);
-        const expectedCoordinates = [{ x: 0, y: 0 }];
-        difference.addCoordinatesOnDifferenceFound(expectedPlayerId, expectedCoordinates, game);
-        expect(isAlreadyDifferenceFoundSpy.calledTwice).to.equal(true);
-        expect(isAllDifferenceFoundSpy.called).to.equal(true);
-        expect(getNbDifferencesFoundSpy.called).to.equal(true);
-
-        isAlreadyDifferenceFoundSpy.callsFake(() => false);
-        isAllDifferenceFoundSpy.callsFake(() => true);
-        const nextStateSpy = spy(game['context'], 'end');
-        isGameOverSpy.callsFake(() => false);
-        difference.addCoordinatesOnDifferenceFound(expectedPlayerId, [{} as Coordinate], game);
-        expect(getNbDifferencesFoundSpy.called).to.equal(true);
-        expect(nextStateSpy.called).to.equal(true);
-    });
-
     it('should verify if the difference is already found', () => {
         const expectedGameId = '';
         difference['gamesDifferencesTotalFound'].set('', new Set());

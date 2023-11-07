@@ -11,6 +11,7 @@ import { JoinGameSelectionComponent } from '@app/pages/join-game-selection/join-
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MongodbErrorPageComponent } from '@app/pages/mongodb-error-page/mongodb-error-page.component';
+import { ResetPasswordComponent } from '@app/pages/reset-password/reset-password.component';
 import { SettingsPageComponent } from '@app/pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from '@app/pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from '@app/pages/waiting-room/waiting-room.component';
@@ -31,6 +32,7 @@ const routes: Routes = [
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
 
+    { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

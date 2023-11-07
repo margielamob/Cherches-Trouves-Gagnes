@@ -8,7 +8,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 })
 export class DifferencesAreaComponent {
     players: { name: string; nbDifference: string }[];
-    private mainPlayer: { name: string; nbDifferences: number };
+    mainPlayer: { name: string; nbDifferences: number };
     private opponentPlayers: { name: string; nbDifferences: number }[] = [];
     constructor(private readonly gameInformationHandlerService: GameInformationHandlerService) {
         this.setPlayersInfo();
@@ -30,8 +30,7 @@ export class DifferencesAreaComponent {
             nbDifference: this.setNbDifferencesFound(opponent.name) as string,
         }));
 
-        this.players = [{ name: this.mainPlayer.name, nbDifference: this.setNbDifferencesFound(this.mainPlayer.name) as string }, ...opponents];
-
+        this.players = [...opponents];
         this.gameInformationHandlerService.$differenceFound.subscribe((playerName: string) => {
             const notFindIndex = -1;
             if (this.getPlayerIndex(playerName) === notFindIndex) {

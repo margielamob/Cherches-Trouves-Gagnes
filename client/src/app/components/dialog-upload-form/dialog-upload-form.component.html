@@ -1,13 +1,15 @@
-<h1 mat-dialog-title>Téléverser une image BMP 24-bit de taille 640x480</h1>
+<h1 mat-dialog-title>{{ 'UPLOAD_DIALOG.TITLE' | translate }}</h1>
 <form (ngSubmit)="onSubmit()">
     <mat-dialog-content>
         <input mat-fab type="file" color="primary" accept=".bmp" (change)="this.uploadImage($event)" />
-        <mat-error *ngIf="!this.isPropertiesImageCorrect.type">Le type d'image doit être un bitmap</mat-error>
-        <mat-error *ngIf="!this.isPropertiesImageCorrect.format">Le format d'image doit être 24-bits</mat-error>
-        <mat-error *ngIf="!this.isPropertiesImageCorrect.size">La taille d'image doit être de 640x480</mat-error>
+        <mat-error *ngIf="!this.isPropertiesImageCorrect.type">{{ 'UPLOAD_DIALOG.NOT_BITMAP' | translate }}</mat-error>
+        <mat-error *ngIf="!this.isPropertiesImageCorrect.format">{{ 'UPLOAD_DIALOG.NOT_24BITS' | translate }}</mat-error>
+        <mat-error *ngIf="!this.isPropertiesImageCorrect.size">{{ 'UPLOAD_DIALOG.SIZE' | translate }}</mat-error>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button type="button" mat-button mat-dialog-close>Annuler</button>
-        <button mat-button [mat-dialog-close]="true" [disabled]="this.isFormSubmitted ? null : 'disabled'" type="submit">Téléverser</button>
+        <button type="button" mat-button mat-dialog-close>{{ 'UPLOAD_DIALOG.CANCEL' | translate }}</button>
+        <button mat-button [mat-dialog-close]="true" [disabled]="this.isFormSubmitted ? null : 'disabled'" type="submit">
+            {{ 'UPLOAD_DIALOG.UPLOAD' | translate }}
+        </button>
     </mat-dialog-actions>
 </form>

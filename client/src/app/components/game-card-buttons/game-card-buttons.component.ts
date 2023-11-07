@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteDialogComponent } from '@app/components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { DialogSetUpGameComponent } from '@app/components/dialog-set-up-game/dialog-set-up-game/dialog-set-up-game.component';
 import { UserNameInputComponent } from '@app/components/user-name-input/user-name-input.component';
 import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationService } from '@app/services/communication/communication.service';
@@ -16,6 +17,7 @@ import { JoinableGameCard } from '@common/joinable-game-card';
 export class GameCardButtonsComponent {
     @Input() gameCard: GameCard;
     @Input() joinableGameCard: JoinableGameCard;
+
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly gameInfoHandlerService: GameInformationHandlerService,
@@ -39,9 +41,20 @@ export class GameCardButtonsComponent {
     }
 
     onClickCreateJoinGame(): void {
-        this.gameInfoHandlerService.setGameInformation(this.gameCard.gameInformation);
-        this.gameInfoHandlerService.isMulti = true;
-        this.gameInfoHandlerService.waitingRoom();
+        const dialogRef = this.matDialog.open(DialogSetUpGameComponent, {
+            width: '300px',
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this.gameInfoHandlerService.setGameInformation(this.gameCard.gameInformation);
+                this.gameInfoHandlerService.isMulti = true;
+                this.gameInfoHandlerService.cheatMode = result.cheatMode;
+                this.gameInfoHandlerService.timer = result.duration;
+                this.gameInfoHandlerService.waitingRoom();
+            }
+        });
+
         // this.openNameDialog(true);
     }
 

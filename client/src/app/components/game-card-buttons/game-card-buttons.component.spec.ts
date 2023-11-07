@@ -1,13 +1,15 @@
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpLoaderFactory } from '@app/app.module';
 import { gameCard1 } from '@app/constants/game-card-constant.spec';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { GameCardButtonsComponent } from './game-card-buttons.component';
 
@@ -25,7 +27,19 @@ describe('GameCardButtonsComponent', () => {
         spyGameInfoHandlerService = jasmine.createSpyObj('GameInformationHandlerService', ['setGameInformation']);
         spyMatDialog = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule, RouterTestingModule, NoopAnimationsModule],
+            imports: [
+                AppMaterialModule,
+                RouterTestingModule,
+                NoopAnimationsModule,
+                HttpClientModule,
+                TranslateModule.forRoot({
+                    loader: {
+                        provide: TranslateLoader,
+                        useFactory: HttpLoaderFactory,
+                        deps: [HttpClient],
+                    },
+                }),
+            ],
             declarations: [GameCardButtonsComponent],
             providers: [
                 HttpHandler,
@@ -69,13 +83,6 @@ describe('GameCardButtonsComponent', () => {
     it('should return is multi attribute', () => {
         expect(component.isMultiplayer()).toBeTrue();
     });
-
-    it('should call open name dialog when clicking create or join', () => {
-        component.onClickCreateJoinGame();
-        expect(spyGameInfoHandlerService.setGameInformation).toHaveBeenCalled();
-        expect(spyMatDialog.open).toHaveBeenCalled();
-    });
-
     it('should delete game on click', () => {
         component.onClickDeleteGame(gameCard1);
         expect(spyMatDialog.open).toHaveBeenCalled();

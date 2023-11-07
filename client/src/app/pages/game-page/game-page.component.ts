@@ -3,13 +3,13 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogGameOverComponent } from '@app/components/dialog-game-over/dialog-game-over.component';
 import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
-import { Theme } from '@app/enums/theme';
 import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameRecord } from '@common/game-record';
 import { SocketEvent } from '@common/socket-event';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-game-page',
@@ -17,7 +17,6 @@ import { SocketEvent } from '@common/socket-event';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnDestroy {
-    favoriteTheme: string = Theme.ClassName;
     title: string;
     clock: string;
 
@@ -29,9 +28,16 @@ export class GamePageComponent implements OnDestroy {
         private socket: CommunicationSocketService,
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
+        private translate: TranslateService,
     ) {
         exitButtonService.setGamePage();
-        this.title = 'Mode ' + this.gameInfoHandlerService.gameMode + ' ' + (this.gameInfoHandlerService.isMulti ? 'Multijoueur' : 'Solo');
+        const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
+        const multiplayerKey = this.gameInfoHandlerService.isMulti ? 'GAME_MODE.MULTIPLAYER' : 'GAME_MODE.SOLO';
+
+        const gameModeTranslation = this.translate.instant(gameModeKey);
+        const multiplayerTranslation = this.translate.instant(multiplayerKey);
+
+        this.title = `${gameModeTranslation} ${multiplayerTranslation}`;
         this.handleSocket();
     }
 
@@ -48,7 +54,14 @@ export class GamePageComponent implements OnDestroy {
             this.gameInfoHandlerService.isMulti = false;
             this.openSnackBar();
             this.gameInfoHandlerService.$playerLeft.next();
-            this.title = 'Mode ' + this.gameInfoHandlerService.gameMode + ' Solo';
+
+            const gameModeTranslationKey = `GAME_MODE.${this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase()}`;
+            const gameModeTranslation = this.translate.instant(gameModeTranslationKey);
+            const multiplayerTranslation = this.gameInfoHandlerService.isMulti
+                ? this.translate.instant('GAME_MODE.MULTIPLAYER')
+                : this.translate.instant('GAME_MODE.SOLO');
+
+            this.title = `${gameModeTranslation} ${multiplayerTranslation}`;
         });
     }
 
@@ -57,6 +70,7 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.gameInfoHandlerService.resetGameVariables();
     }
 
     openSnackBar() {

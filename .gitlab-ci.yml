@@ -67,6 +67,15 @@ install:server:
             - server/.npm/
         policy: pull-push
 
+install:flutter:
+    image: ghcr.io/cirruslabs/flutter:3.13.8
+    script:
+        - cd flutter/app
+        - flutter --version
+        - flutter packages get
+        - flutter test
+        # - flutter build apk
+
 lint:client:
     stage: lint
     needs: ['install:client']

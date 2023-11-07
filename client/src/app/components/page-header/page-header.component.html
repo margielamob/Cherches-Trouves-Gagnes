@@ -1,13 +1,13 @@
 <mat-toolbar class="header-toolbar" color="primary">
-    <button class="home-button" mat-fab color="primary" routerLink="/home" *ngIf="isHomeButtonEnabled">
+    <button matTooltip="{{ 'HEADER.HOME' | translate }}" class="home-button" mat-fab color="primary" routerLink="/home" *ngIf="isHomeButtonEnabled">
         <mat-icon>home</mat-icon>
     </button>
     {{ headerMessage }}
     <span class="filler"></span>
 
-    <button (click)="signOut()" class="home-button" mat-fab color="primary">
-        <mat-icon>vpn_key</mat-icon>
+    <button matTooltip="{{ 'HEADER.LOGOUT' | translate }}" (click)="signOut()" class="home-button" mat-fab color="primary">
+        <mat-icon>exit_to_app</mat-icon>
     </button>
-    <app-user-avatar></app-user-avatar>
+    <app-user-avatar matTooltip="{{ 'HEADER.SETTINGS' | translate }}"></app-user-avatar>
     <app-exit-game-button *ngIf="isExitButtonEnabled"></app-exit-game-button>
 </mat-toolbar>
