@@ -16,6 +16,7 @@ export class DifferencesDetectionHandlerService {
     correctSound = new Audio('assets/correctanswer.wav');
     wrongSound = new Audio('assets/wronganswer.wav');
 
+    // eslint-disable-next-line max-params
     constructor(
         public matDialog: MatDialog,
         private readonly socketService: CommunicationSocketService,

@@ -30,6 +30,8 @@ export class GameInformationHandlerService {
     gameTimeConstants: GameTimeConstants;
     cheatMode: boolean = false;
     timer: number = 0;
+
+    // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
