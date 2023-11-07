@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
@@ -9,7 +9,7 @@ import { SocketEvent } from '@common/socket-event';
     templateUrl: './timer-stopwatch.component.html',
     styleUrls: ['./timer-stopwatch.component.scss'],
 })
-export class TimerStopwatchComponent implements OnInit {
+export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
     private time: number;
 
@@ -33,5 +33,9 @@ export class TimerStopwatchComponent implements OnInit {
     needFeedbackAnimation() {
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- animation when 5 seconds is left to the game
         return this.gameInfoService.isLimitedTime() && this.time <= 5;
+    }
+
+    ngOnDestroy(): void {
+        this.socketService.off(SocketEvent.Clock);
     }
 }

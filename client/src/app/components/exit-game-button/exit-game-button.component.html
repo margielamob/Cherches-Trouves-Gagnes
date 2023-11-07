@@ -14,10 +14,14 @@
         <div mat-dialog-actions align="end">
             <button mat-raised-button mat-dialog-close color="primary">{{ 'EXIT_BTN.CANCEL' | translate }}</button>
             <div *ngIf="exitButtonService.currentPage.game">
-                <button color="primary" mat-button routerLink="/home" mat-dialog-close>{{ 'EXIT_BTN.LEAVE' | translate }}</button>
+                <button color="primary" mat-button routerLink="/home" mat-dialog-close (click)="onQuiteGame()">
+                    {{ 'EXIT_BTN.LEAVE' | translate }}
+                </button>
             </div>
             <div *ngIf="exitButtonService.currentPage.createGame">
-                <button mat-button routerLink="/admin" mat-dialog-close color="primary">{{ 'EXIT_BTN.LEAVE' | translate }}</button>
+                <button mat-button routerLink="/admin" mat-dialog-close color="primary" (click)="onQuiteGame()">
+                    {{ 'EXIT_BTN.LEAVE' | translate }}
+                </button>
             </div>
             <div *ngIf="exitButtonService.currentPage.waitingRoom">
                 <button mat-button routerLink="/home" mat-dialog-close color="primary" (click)="onLeaveWaiting()">
