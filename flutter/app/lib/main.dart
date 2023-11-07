@@ -2,6 +2,7 @@ import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
@@ -25,6 +26,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  Get.put(SoundService());
   Get.put(SocketService());
   Get.put(UserService());
   Get.put(AuthService());
@@ -35,7 +37,7 @@ void registerDependencies() {
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
-  Get.put(SoundService());
+  Get.put(EndGameService());
 }
 
 late List<CameraDescription> cameras;
@@ -65,6 +67,18 @@ void main() async {
           create: (context) {
             GameManagerService gameManagerService = Get.find();
             return gameManagerService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DifferenceDetectionService differenceDetectionService = Get.find();
+            return differenceDetectionService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            EndGameService endGameService = Get.find();
+            return endGameService;
           },
         ),
       ],
