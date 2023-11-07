@@ -5,6 +5,7 @@ import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class _BackgroundPainter extends CustomPainter {
   final VignettesModel images;
@@ -25,23 +26,19 @@ class _BackgroundPainter extends CustomPainter {
 }
 
 class _ForegroundPainter extends CustomPainter {
-  final DifferenceDetectionService diffService = Get.find();
+  final DifferenceDetectionService diffService;
   final VignettesModel images;
 
-  _ForegroundPainter(this.images);
+  _ForegroundPainter(this.images, this.diffService);
 
   @override
   void paint(Canvas canvas, Size size) {
-    // canvas.scale(
-    //     GameVignette.tabletScalingRatio, GameVignette.tabletScalingRatio);
-    // final path = Path();
-    // for (var coord in diffService.coordinates) {
-    //   path.addRect(Rect.fromPoints(
-    //       Offset(coord.x.toDouble(), coord.y.toDouble()),
-    //       Offset(coord.x + 1, coord.y + 1)));
-    // }
-    // canvas.clipPath(path);
-    // canvas.drawImage(images.original, Offset.zero, Paint());
+    if (diffService.blinkingDifference != null) {
+      canvas.scale(
+          GameVignette.tabletScalingRatio, GameVignette.tabletScalingRatio);
+      canvas.drawPath(
+          diffService.blinkingDifference!, diffService.defaultBlinkingColor);
+    }
   }
 
   @override
@@ -51,13 +48,13 @@ class _ForegroundPainter extends CustomPainter {
 }
 
 class GameVignetteModified extends GameVignette {
-  final DifferenceDetectionService diffService = Get.find();
   final SoundService soundService = Get.find();
   GameVignetteModified(images, this.gameId) : super(images);
   final String gameId;
 
   @override
   Widget build(BuildContext context) {
+    final diffService = Provider.of<DifferenceDetectionService>(context);
     return Column(
       children: <Widget>[
         Container(
@@ -73,13 +70,8 @@ class GameVignetteModified extends GameVignette {
                   GameVignette.tabletScalingRatio;
               y.value = details.localPosition.dy.toDouble() /
                   GameVignette.tabletScalingRatio;
-
-              if (diffService.validate(
-                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId)) {
-                // blink differences
-              } else {
-                // write different
-              }
+              diffService.validate(
+                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId);
             },
             child: SizedBox(
               width: images.original.width.toDouble() *
@@ -88,7 +80,7 @@ class GameVignetteModified extends GameVignette {
                   GameVignette.tabletScalingRatio,
               child: CustomPaint(
                 painter: _BackgroundPainter(images),
-                foregroundPainter: _ForegroundPainter(images),
+                foregroundPainter: _ForegroundPainter(images, diffService),
               ),
             ),
           ),

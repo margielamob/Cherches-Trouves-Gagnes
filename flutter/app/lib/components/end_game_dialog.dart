@@ -1,4 +1,5 @@
 import 'package:app/domain/services/end_game_service.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,12 +18,12 @@ class EndGameDialog extends StatelessWidget {
             SizedBox(width: 30),
             FilledButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/gameSelection');
+                Get.offAll(MainPage());
               },
-              child: Text("Quitter la page"),
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
+              child: Text("Quitter la page"),
             ),
             SizedBox(width: 30),
           ],

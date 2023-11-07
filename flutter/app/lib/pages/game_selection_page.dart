@@ -1,6 +1,6 @@
-import 'package:app/domain/services/app_bar_service.dart';
-import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/components/carousel.dart';
+import 'package:app/components/custom_app_bar.dart';
+import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,10 +11,8 @@ class GameSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarService.buildBar(
-        context,
-        'Page de sélection de vignettes',
-      ),
+      appBar: CustomAppBar.buildLogoutOnly(
+          context, 'Page de sélection de vignettes'),
       body: Column(
         children: [
           SizedBox(height: 30),

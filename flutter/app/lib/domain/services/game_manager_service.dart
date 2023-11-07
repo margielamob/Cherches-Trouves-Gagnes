@@ -58,7 +58,7 @@ class GameManagerService extends ChangeNotifier {
         print("play event gameId received");
         print(data.toJson());
         if (gameCards != null) {
-          Get.to(Classic(gameId: data.gameId, gameCards: gameCards!));
+          Get.offAll(Classic(gameId: data.gameId, gameCards: gameCards!));
         } else {
           print("Erreur, les gamesCards ne sont pas initialisés");
         }

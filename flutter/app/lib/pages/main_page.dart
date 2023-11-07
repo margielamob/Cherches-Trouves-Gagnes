@@ -1,3 +1,4 @@
+import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
@@ -10,6 +11,19 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Menu principal"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LogoutDialog();
+                }),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -41,6 +55,10 @@ class MainPage extends StatelessWidget {
                     ),
                     SizedBox(height: 70),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                      ),
                       onPressed: () {
                         //   showDialog(
                         //     context: context,
@@ -52,19 +70,24 @@ class MainPage extends StatelessWidget {
                       },
                       child: Text('Mode de jeux classique'),
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 30),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                      ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/adminPage');
                       },
                       child: Text('Go to admin'),
                     ),
-                    SizedBox(height: 100),
+                    SizedBox(height: 60),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                      ),
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/pageC');
-                        // final gameMode = GameMode("Classique");
-                        // gameManagerService.sendGameRequest(gameMode);
                         gameManagerService.createSoloGame(
                             'saoul',
                             GameModeModel(GameMode.classic),
@@ -73,14 +96,18 @@ class MainPage extends StatelessWidget {
                       },
                       child: Text('Go to Page F'),
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 30),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                      ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/ProfilePage');
                       },
                       child: Text('Page de profile'),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [

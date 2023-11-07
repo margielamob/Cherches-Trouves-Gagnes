@@ -1,4 +1,4 @@
-import 'package:app/domain/services/app_bar_service.dart';
+import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +8,7 @@ class WaitingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
     return Scaffold(
-      appBar: AppBarService.buildBar(context, 'Waiting Room'),
+      appBar: CustomAppBar.buildDefaultBar(context, 'Waiting Room'),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
