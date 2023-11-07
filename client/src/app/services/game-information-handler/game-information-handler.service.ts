@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { CommunicationService } from '@app/services/communication/communication.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { UserService } from '@app/services/user-service/user.service';
+import { GameId } from '@common/game-id';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
-import { SocketEvent } from '@common/socket-event';
-import { Subject } from 'rxjs';
-import { GameId } from '@common/game-id';
 import { GameTimeConstants } from '@common/game-time-constants';
-import { CommunicationService } from '@app/services/communication/communication.service';
-
+import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
+import { UserAuth } from '@common/userAuth';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
+import { Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
 export class GameInformationHandlerService {
+    playersEX: User[] = [];
     players: { name: string; nbDifferences: number }[] = [];
     roomId: string;
+    player: UserAuth = { displayName: '', avatar: '' };
     $playerLeft: Subject<void> = new Subject();
     $differenceFound: Subject<string> = new Subject();
     $newGame: Subject<void> = new Subject();
@@ -23,11 +28,13 @@ export class GameInformationHandlerService {
     isReadyToAccept: boolean = true;
     isMulti: boolean = false;
     gameTimeConstants: GameTimeConstants;
-
+    cheatMode: boolean = false;
+    timer: number = 0;
     constructor(
         private readonly routerService: RouterService,
         private readonly socket: CommunicationSocketService,
         private readonly communicationService: CommunicationService,
+        private readonly userService: UserService,
     ) {}
 
     propertiesAreUndefined(): boolean {
@@ -43,13 +50,18 @@ export class GameInformationHandlerService {
             this.routerService.navigateTo('game');
         });
 
-        this.socket.on(SocketEvent.WaitPlayer, (roomId: string) => {
-            this.roomId = roomId;
+        this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            this.roomId = info.roomId;
             this.isMulti = true;
+            this.playersEX = info.players;
+            this.cheatMode = info.cheatMode;
             this.routerService.navigateTo('waiting');
         });
     }
 
+    getPlayersEX() {
+        return this.playersEX;
+    }
     getConstants(): void {
         this.communicationService.getGameTimeConstants().subscribe((gameTimeConstants) => {
             if (gameTimeConstants && gameTimeConstants.body) {
@@ -116,8 +128,12 @@ export class GameInformationHandlerService {
         return this.players[0];
     }
 
-    getOpponent(): { name: string; nbDifferences: number } {
-        return this.players[1];
+    getOpponent(): { name: string; nbDifferences: number }[] {
+        return this.players.filter((player) => player.name !== this.player.displayName);
+    }
+
+    getOpponents(): { name: string; nbDifferences: number }[] {
+        return this.players.filter((player) => player.name !== this.player.displayName);
     }
 
     isClassic() {
@@ -126,5 +142,41 @@ export class GameInformationHandlerService {
 
     isLimitedTime() {
         return this.gameMode === GameMode.LimitedTime;
+    }
+
+    waitingRoom() {
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
+        this.socket.send(SocketEvent.CreateClassicGame, {
+            player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
+            card: { id: this.getId(), cheatMode: this.cheatMode, timer: this.timer },
+        });
+        this.setPlayerName(this.player.displayName);
+        this.handleSocketEvent();
+    }
+    joinGame(roomId: string) {
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
+        this.socket.send(SocketEvent.JoinClassicGame, {
+            player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
+            roomId,
+        });
+        this.setPlayerName(this.player.displayName);
+        this.handleSocketEvent();
+    }
+
+    resetGameVariables(): void {
+        this.playersEX = [];
+        this.players = [];
+        this.roomId = '';
+        this.player = { displayName: '', avatar: '' };
+        this.$playerLeft = new Subject<void>();
+        this.$differenceFound = new Subject<string>();
+        this.$newGame = new Subject<void>();
+        this.gameMode = GameMode.Classic;
+        this.isReadyToAccept = true;
+        this.isMulti = false;
+        this.cheatMode = false;
+        this.timer = 0;
     }
 }

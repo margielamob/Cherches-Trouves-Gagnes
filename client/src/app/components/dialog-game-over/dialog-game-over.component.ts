@@ -1,6 +1,7 @@
 /* eslint-disable max-params */
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
 // eslint-disable-next-line import/no-unresolved
@@ -11,6 +12,7 @@ import { GameRecord } from '@common/game-record';
     styleUrls: ['./dialog-game-over.component.scss'],
 })
 export class DialogGameOverComponent {
+    @Output() isReplayToggled = new EventEmitter<boolean>();
     isWin: boolean;
     winner: string;
     nbPoints: string;
@@ -23,6 +25,7 @@ export class DialogGameOverComponent {
         private readonly timeFormatter: TimeFormatterService,
         public userService: UserService,
         public dialog: MatDialog,
+        private chatManager: ChatManagerService,
     ) {
         this.isWin = data.win;
         this.winner = data.winner;
@@ -38,7 +41,14 @@ export class DialogGameOverComponent {
             });
     }
 
+    toggleReplay() {
+        this.isReplayToggled.emit(true);
+        this.dialog.closeAll();
+        console.log('emmited');
+    }
+
     quitGame() {
+        this.chatManager.leaveGameChat();
         this.dialog.closeAll();
     }
 }

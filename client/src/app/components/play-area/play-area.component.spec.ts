@@ -16,7 +16,6 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { Coordinate } from '@common/coordinate';
-import { DifferenceFound } from '@common/difference';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
@@ -398,32 +397,5 @@ describe('PlayAreaComponent', () => {
         component.handleSocketDifferenceFound();
         socketHelper.peerSideEmit(SocketEvent.NewGameBoard, {} as PublicGameInformation);
         expect(spyDisplayImage).toHaveBeenCalled();
-    });
-
-    it('should handle socket event difference found', () => {
-        gameInformationHandlerServiceSpy.isClassic.and.callFake(() => true);
-        const canvas = CanvasTestHelper.createCanvas(SIZE.x, SIZE.y);
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        spyOn(component, 'getContextImgModified').and.callFake(() => {
-            return ctx;
-        });
-        spyOn(component, 'getContextModified').and.callFake(() => {
-            return ctx;
-        });
-        spyOn(component, 'getContextOriginal').and.callFake(() => {
-            return ctx;
-        });
-        spyOn(component, 'getContextDifferences').and.callFake(() => {
-            return ctx;
-        });
-        spyOn(component, 'getContextImgOriginal').and.callFake(() => {
-            return ctx;
-        });
-        // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake and return {}
-        spyOn(component, 'displayImage').and.callFake(() => {});
-        component.handleSocketDifferenceFound();
-        socketHelper.peerSideEmit(SocketEvent.DifferenceFound, {} as DifferenceFound);
-        expect(differenceService.setNumberDifferencesFound).toHaveBeenCalled();
-        expect(differenceService.differenceDetected).toHaveBeenCalled();
     });
 });

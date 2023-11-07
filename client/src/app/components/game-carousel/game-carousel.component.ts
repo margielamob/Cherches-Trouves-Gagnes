@@ -17,6 +17,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class GameCarouselComponent implements OnInit, OnDestroy {
     @Input() isAdmin: boolean = false;
+    @Input() isJoining: boolean = false;
     isLoaded: boolean;
     games: GameCard[] = [];
 

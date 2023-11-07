@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Configure Game</h2>
+
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Game Duration (seconds)</mat-label>
+        <input matInput type="number" [(ngModel)]="duration" name="duration" />
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="cheatMode" name="cheatMode">Activate Cheat Mode</mat-checkbox>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button cdkFocusInitial (click)="onConfirm()">Confirm</button>
+</mat-dialog-actions>
