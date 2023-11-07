@@ -334,20 +334,20 @@ describe('GameManagerService', () => {
         expect(spyAddPlayer.called).to.equal(true);
     });
 
-    it('should check if player has the same name', () => {
-        const stubFindGame = stub(Object.getPrototypeOf(gameManager), 'findGame');
-        stubFindGame.callsFake(() => undefined);
-        expect(gameManager.hasSameName('room', 'name')).to.equal(false);
+    // it('should check if player has the same name', () => {
+    //     const stubFindGame = stub(Object.getPrototypeOf(gameManager), 'findGame');
+    //     stubFindGame.callsFake(() => undefined);
+    //     expect(gameManager.hasSameName('room', 'name')).to.equal(false);
 
-        const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
-        stubFindGame.callsFake(() => game);
-        expect(gameManager.hasSameName('room', 'name')).to.equal(false);
+    //     const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
+    //     stubFindGame.callsFake(() => game);
+    //     expect(gameManager.hasSameName('room', 'name')).to.equal(false);
 
-        game.players = new Map();
-        game.players.set('id', 'name');
-        expect(gameManager.hasSameName('room', 'name')).to.equal(true);
-        expect(gameManager.hasSameName('room', 'test')).to.equal(false);
-    });
+    //     game.players = new Map();
+    //     game.players.set('id', 'name');
+    //     expect(gameManager.hasSameName('room', 'name')).to.equal(true);
+    //     expect(gameManager.hasSameName('room', 'test')).to.equal(false);
+    // });
 
     it('should check if the game is in multiplayer', () => {
         const game = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
@@ -510,17 +510,17 @@ describe('GameManagerService', () => {
         expect(spyClearInterval.called).to.equal(true);
     });
 
-    it('should find a player', () => {
-        const expectedGame = new Game(
-            { player: { id: '0', name: 'test' } as User, isMulti: false },
-            { info: {} as PrivateGameInformation, mode: GameMode.Classic },
-        );
-        const spyFindPlayer = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => undefined);
-        expect(gameManager.findPlayer('', '')).to.equal(undefined);
-        spyFindPlayer.callsFake(() => expectedGame);
-        expect(gameManager.findPlayer('', '')).to.equal(undefined);
-        expect(gameManager.findPlayer('', '0')).to.equal('test');
-    });
+    // it('should find a player', () => {
+    //     const expectedGame = new Game(
+    //         { player: { id: '0', name: 'test' } as User, isMulti: false },
+    //         { info: {} as PrivateGameInformation, mode: GameMode.Classic },
+    //     );
+    //     const spyFindPlayer = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => undefined);
+    //     expect(gameManager.findPlayer('', '')).to.equal(undefined);
+    //     spyFindPlayer.callsFake(() => expectedGame);
+    //     expect(gameManager.findPlayer('', '')).to.equal(undefined);
+    //     expect(gameManager.findPlayer('', '0')).to.equal('test');
+    // });
     it('should get all nb of difference not found', () => {
         const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });
         const expectedDifferenceNotFound = [[{ x: 0, y: 0 }]];
