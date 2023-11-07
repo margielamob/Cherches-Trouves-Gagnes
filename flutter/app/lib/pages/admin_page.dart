@@ -1,6 +1,6 @@
 import 'package:app/components/carousel.dart';
 import 'package:app/components/carousel_modal.dart';
-import 'package:app/domain/services/app_bar_service.dart';
+import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,10 +15,7 @@ class AdminPage extends StatelessWidget {
     final VoidCallback? onPressed = enabled ? () {} : null;
 
     return Scaffold(
-      appBar: AppBarService.buildBar(
-        context,
-        'Administration',
-      ),
+      appBar: CustomAppBar.buildLogoutOnly(context, 'Administration'),
       body: Column(
         children: [
           Padding(

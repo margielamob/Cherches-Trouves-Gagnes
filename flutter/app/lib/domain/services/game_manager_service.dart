@@ -1,3 +1,4 @@
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
@@ -23,19 +24,27 @@ import 'package:get/get.dart';
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   WaitingGameModel? waitingGame;
+  GameCardModel? gameCards;
   UserRequest? userRequest;
-  bool isWaitingRoom = false;
-  bool isModalShown = false;
+  String? currentGameId;
+  String? currentRoomId;
+  List<String> playerInWaitingRoom = [];
   bool isMulti = false;
 
   GameManagerService() {
     handleSockets();
+    gameCards = null;
   }
 
   void handleSockets() {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
+      if (data.gamesWaiting.isNotEmpty) {
+        data.gamesWaiting.forEach((element) {
+          print(element);
+        });
+      }
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
@@ -48,12 +57,19 @@ class GameManagerService extends ChangeNotifier {
         GameInfoRequest data = GameInfoRequest(gameId: message);
         print("play event gameId received");
         print(data.toJson());
-        Get.to(Classic(gameId: data.gameId));
+        if (gameCards != null) {
+          Get.offAll(Classic(gameId: data.gameId, gameCards: gameCards!));
+        } else {
+          print("Erreur, les gamesCards ne sont pas initialisés");
+        }
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
       Get.to(WaitingPage());
+      if (message != null) {
+        currentRoomId = message;
+      }
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -72,10 +88,13 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.requestToJoin, (dynamic message) {
       UserRequest data = UserRequest.fromJson(message);
       userRequest = data;
+      playerInWaitingRoom.add(data.name);
       print(data.toJson());
       print("SocketEvent.requestToJoin : $message");
-      // Should acceptPlayer but this code should change when game 4 players will be implemented
-      // acceptPlayer(roomId, opponentsRoomId, playerName, data.id);
+      notifyListeners();
+      print("SocketEvent.acceptPlayerSend");
+      print({currentRoomId!, data.id, data.name});
+      acceptPlayerSend(currentRoomId!, data.id, data.name);
     });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
@@ -148,13 +167,14 @@ class GameManagerService extends ChangeNotifier {
     print("joinGame");
   }
 
-  void acceptPlayer(String roomId, String opponentsRoomId, String playerName,
-      String socketId) {
+  void acceptPlayerSend(
+      String roomId, String opponentsRoomId, String playerName) {
     AcceptPlayerRequest data = AcceptPlayerRequest(
         roomId: roomId,
         opponentsRoomId: opponentsRoomId,
         playerName: playerName);
     _socket.send(SocketEvent.acceptPlayer, data.toJson());
+    playerInWaitingRoom = [];
     print("acceptPlayer");
   }
 
@@ -162,12 +182,14 @@ class GameManagerService extends ChangeNotifier {
     RejectPlayerRequest data =
         RejectPlayerRequest(roomId: roomId, opponentsRoomId: opponentsRoomId);
     _socket.send(SocketEvent.rejectPlayer, data.toJson());
+    playerInWaitingRoom = [];
     print("rejectPlayer");
   }
 
   void leaveGame(String gameId) {
     LeaveGameRequest data = LeaveGameRequest(gameId: gameId);
     _socket.send(SocketEvent.leaveGame, data.toJson());
+    playerInWaitingRoom = [];
     print("leaveGame");
   }
 
@@ -175,6 +197,7 @@ class GameManagerService extends ChangeNotifier {
     LeaveWaitingRequest data =
         LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
     _socket.send(SocketEvent.leaveWaiting, data.toJson());
+    playerInWaitingRoom = [];
     print("leaveWaiting");
   }
 
