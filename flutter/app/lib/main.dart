@@ -6,6 +6,7 @@ import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/user_service.dart';
@@ -17,6 +18,7 @@ import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
+import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/sign_up_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
@@ -38,6 +40,7 @@ void registerDependencies() {
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
   Get.put(EndGameService());
+  Get.put(ReachableGameManager());
 }
 
 late List<CameraDescription> cameras;
@@ -81,6 +84,12 @@ void main() async {
             return endGameService;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            ReachableGameManager reachableGameManager = Get.find();
+            return reachableGameManager;
+          },
+        ),
       ],
       child: MyApp(),
     ),
@@ -104,7 +113,8 @@ class MyApp extends StatelessWidget {
         '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
-        '/WaitingPage': (context) => WaitingPage(),
+        // '/WaitingPage': (context) => WaitingPage(),
+        '/ReachableGamePage': (context) => ReachableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
       },

@@ -1,27 +1,34 @@
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/requests/carousel_request.dart';
 import 'package:app/domain/services/http_service.dart';
+import 'package:app/domain/services/socket_service.dart';
+import 'package:app/domain/utils/socket_events.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CarouselState {
-  int currentPage = 1;
-}
-
 class CarouselService extends ChangeNotifier {
-  CarouselState state = CarouselState();
+  final SocketService _socket = Get.find();
+  int currentPage = 1;
 
   CarouselRequest? carouselState;
   final HttpService _httpService;
 
   CarouselService() : _httpService = Get.find() {
+    handleSockets();
     getCurrentPageCards();
+  }
+
+  void handleSockets() {
+    _socket.on(SocketEvent.refreshGames, (dynamic message) {
+      notifyListeners();
+      // TODO: afficher un snakBar pour dire qu'on update les jeux
+    });
   }
 
   Future<List<GameCardModel>> getCurrentPageCards() async {
     try {
       final carouselRequest =
-          await _httpService.fetchCarouselByPage(state.currentPage);
+          await _httpService.fetchCarouselByPage(currentPage);
       carouselState = carouselRequest;
       return carouselRequest.gameCardData;
     } catch (error) {
@@ -31,12 +38,12 @@ class CarouselService extends ChangeNotifier {
   }
 
   void getNextPageCards() {
-    state.currentPage++;
+    currentPage++;
     notifyListeners();
   }
 
   void getPreviousPageCards() {
-    state.currentPage--;
+    currentPage--;
     notifyListeners();
   }
 

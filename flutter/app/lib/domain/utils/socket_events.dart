@@ -9,6 +9,7 @@ class SocketEvent {
   static String getGamesWaiting = 'getGamesWaiting';
   static String createGame = "createGame";
   static String createGameMulti = "createGameMulti";
+  static String createClassicGame = "createClassicGame";
   static String play = "play";
   static String waitPlayer = "waitPlayer";
   static String playerLeft = "playerLeft";
@@ -21,4 +22,8 @@ class SocketEvent {
   static String win = "win";
   static String lose = "lose";
   static String refreshGames = "refreshGames";
+  static String classicGameCreated = 'ClassicGameCreated';
+  static String sendingJoinableClassicGames = 'sendingJoinableClassicGames';
+  static String updatePlayers = 'updatePlayers';
+  static String getJoinableGames = 'GetJoinableGames';
 }
