@@ -1,8 +1,8 @@
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/game_model.dart';
+import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
-import 'package:app/domain/models/requests/create_game_request.dart';
+import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
@@ -11,7 +11,10 @@ import 'package:app/domain/models/requests/leave_game_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/reject_player_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
+import 'package:app/domain/models/requests/waiting_room_request.dart';
+import 'package:app/domain/models/user.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
+import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/classic_game_page.dart';
@@ -23,9 +26,11 @@ import 'package:get/get.dart';
 
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
+  final AuthService _authService = AuthService();
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
   UserRequest? userRequest;
+  UserFormat? user;
   String? currentGameId;
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
@@ -66,10 +71,9 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
+      WaitingRoomInfoRequest data = WaitingRoomInfoRequest.fromJson(message);
+      print(data.toJson());
       Get.to(WaitingPage());
-      if (message != null) {
-        currentRoomId = message;
-      }
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -120,34 +124,26 @@ class GameManagerService extends ChangeNotifier {
     }
   }
 
-  void createSoloGame(
-      String player, GameModeModel mode, String card, bool isMulti) {
-    try {
-      CreateGameRequest data = CreateGameRequest(
-          gameMode: mode,
-          player: player,
-          game: GameModel(card: card, isMulti: isMulti));
-      print(data.toJson());
-      _socket.send(SocketEvent.createGame, data.toJson());
-      print("CreateGame event sent: $data");
-    } catch (error) {
-      print('Error while sending CreateGame event: $error');
-    }
-  }
-
   void createMultiplayerGame(
-      String player, GameModeModel mode, String card, bool isMulti) {
-    try {
-      CreateGameRequest data = CreateGameRequest(
-          gameMode: mode,
-          player: player,
-          game: GameModel(card: card, isMulti: isMulti));
-      print(data.toJson());
-      _socket.send(SocketEvent.createGameMulti, data.toJson());
-      print("CreateGame event sent: $data");
-    } catch (error) {
-      print('Error while sending CreateGame event: $error');
-    }
+      String cardId, bool cheatModeActivated, int timer) async {
+    await _authService.getCurrentUser().then((value) {
+      user = UserFormat(
+        id: value!.uid,
+        name: value.displayName,
+        avatar: value.photoURL,
+      );
+      try {
+        CreateClassicGameRequest data = CreateClassicGameRequest(
+            user: user!,
+            card: ClassicGameModel(
+                id: cardId, cheatMode: cheatModeActivated, timer: timer));
+        print(data.toJson());
+        _socket.send(SocketEvent.createClassicGame, data.toJson());
+        print("CreateGame event sent: $data");
+      } catch (error) {
+        print('Error while sending CreateGame event: $error');
+      }
+    });
   }
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {

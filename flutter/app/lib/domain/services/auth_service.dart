@@ -3,10 +3,12 @@ import 'package:app/domain/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:app/domain/models/user.dart';
 
 class AuthService {
   UserService userService = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
+  UserFormat? currentUser;
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
