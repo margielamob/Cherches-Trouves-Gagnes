@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '@app/services/authentication-service/authentication.service';
+import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { SocketEvent } from '@common/socket-event';
 import { take } from 'rxjs';
 
 @Component({
@@ -13,7 +15,7 @@ export class LoginPageComponent {
     loginForm: FormGroup;
     errorMessage: string = '';
 
-    constructor(private auth: AuthenticationService, private router: Router) {
+    constructor(private auth: AuthenticationService, private router: Router, private socket: CommunicationSocketService) {
         this.loginForm = new FormGroup({
             credential: new FormControl('', Validators.required),
             password: new FormControl('', Validators.required),
@@ -41,6 +43,7 @@ export class LoginPageComponent {
             .pipe(take(1))
             .subscribe({
                 next: () => {
+                    this.socket.send(SocketEvent.Login, { user: credentialValue });
                     this.router.navigate(['home']);
                 },
                 error: (error: Error) => {

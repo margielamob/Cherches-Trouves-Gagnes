@@ -1,0 +1,17 @@
+<div class="main-wrapper">
+    <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+            <span> Chat </span>
+            <span class="spacer"></span>
+            <button mat-icon-button color="primary" (click)="goToSearch()" class="plus-button">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-list class="list-wrapper">
+        <!-- <div class="room" *ngFor="let room of rooms" (click)="selectRoom(room)"> -->
+        <app-room-card class="room" *ngFor="let room of rooms" [room]="room"></app-room-card>
+        <!-- </div> -->
+    </mat-list>
+</div>

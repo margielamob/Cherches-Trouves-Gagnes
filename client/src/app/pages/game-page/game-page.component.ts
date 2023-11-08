@@ -19,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GamePageComponent implements OnDestroy {
     title: string;
     clock: string;
+    isReplayToggled: boolean = false;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
@@ -70,6 +71,7 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.gameInfoHandlerService.resetGameVariables();
     }
 
     openSnackBar() {
@@ -83,7 +85,7 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
-                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent().name,
+                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent()[0].name,
                 isClassic: true,
                 record,
             };
@@ -95,7 +97,19 @@ export class GamePageComponent implements OnDestroy {
                 nbPoints: this.findNbDifferences(),
             };
         }
-        this.dialog.open(DialogGameOverComponent, dialogConfig);
+        const dialogRef = this.dialog.open(DialogGameOverComponent, dialogConfig);
+
+        if (this.gameInfoHandlerService.isClassic()) {
+            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
+                this.isReplayToggled = isReplayToggled;
+                // eslint-disable-next-line no-console
+                console.log('received toggle', this.isReplayToggled);
+            });
+        }
+    }
+
+    canReplay() {
+        return this.isReplayToggled && this.gameInfoHandlerService.isClassic();
     }
 
     private findNbDifferences(): string {
