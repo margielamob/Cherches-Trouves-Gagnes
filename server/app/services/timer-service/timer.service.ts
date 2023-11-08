@@ -8,10 +8,11 @@ import { Service } from 'typedi';
 export class TimerService {
     private timerConstant: Map<string, GameTimeConstants>;
     private initialTime: Map<string, number>;
-
+    private timerStarted: Map<string, boolean>;
     constructor(private timeConstant: GameTimeConstantService) {
         this.timerConstant = new Map();
         this.initialTime = new Map();
+        this.timerStarted = new Map();
     }
 
     seconds(game: Game) {
@@ -27,6 +28,12 @@ export class TimerService {
         game.next();
     }
 
+    started(gameId: string) {
+        this.timerStarted.set(gameId, true);
+    }
+    isStartedTimer(gameId: string) {
+        return this.timerStarted.get(gameId);
+    }
     gameTime(gameId: string) {
         const constant = this.timerConstant.get(gameId);
         const init = this.initialTime.get(gameId);
