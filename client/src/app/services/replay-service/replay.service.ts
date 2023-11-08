@@ -1,13 +1,12 @@
 /* eslint-disable no-console */
 import { Injectable } from '@angular/core';
-import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject } from 'rxjs';
 import { EventQueue } from './event-queue';
-import { ChatReplay, ClueReplay, DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
+import { ChatReplay, DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -36,11 +35,7 @@ export class ReplayService {
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
 
-    constructor(
-        private socket: CommunicationSocketService,
-        private differenceHandler: DifferencesDetectionHandlerService,
-        private clueHandler: ClueHandlerService,
-    ) {}
+    constructor(private socket: CommunicationSocketService, private differenceHandler: DifferencesDetectionHandlerService) {}
 
     setContexts(ctxOriginal: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, ctxDifferences: CanvasRenderingContext2D) {
         this.originalContext = ctxOriginal;
@@ -162,10 +157,6 @@ export class ReplayService {
             this.addEvent(ReplayActions.EventMessage, eventMessage);
         });
 
-        this.socket.on(SocketEvent.Clue, (payload: ClueReplay) => {
-            this.addEvent(ReplayActions.UseHint, payload);
-        });
-
         this.socket.on(SocketEvent.Cheat, () => {
             this.addEvent(ReplayActions.ActivateCheat);
         });
@@ -202,22 +193,6 @@ export class ReplayService {
         this.cheatActivated.next(true);
     }
 
-    // this function can be deleted if cheat mode was updated on purpose
-    private async replayClue(event: ReplayEvent) {
-        const data = event.data as ClueReplay;
-        if (data.nbClues === 3) {
-            this.isThirdClue = true;
-            this.clue = '(' + data.clue[0].x.toString() + ', ' + data.clue[0].y.toString() + ')';
-            setInterval(() => {
-                this.isThirdClue = false;
-                // eslint-disable-next-line @typescript-eslint/no-magic-numbers  -- time to show third clue coordinates
-            }, 5000);
-            return;
-        }
-        await this.clueHandler.showClue(this.originalContext, data.clue);
-        await this.clueHandler.showClue(this.modifiedContext, data.clue);
-    }
-
     private async play() {
         const event = this.queue.dequeue() as ReplayEvent;
         if (!event) {
@@ -241,9 +216,6 @@ export class ReplayService {
                 break;
             case ReplayActions.EventMessage:
                 this.replayEventMessage(event);
-                break;
-            case ReplayActions.UseHint:
-                await this.replayClue(event);
                 break;
             case ReplayActions.ActivateCheat:
                 this.replayCheating();
