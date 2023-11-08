@@ -29,7 +29,7 @@ export class UserManager {
     }
 
     logout(socket: Socket) {
-        this.chat.leaveGameChat(this.users.get(socket.id)?.name || '', socket);
+        this.chat.leaveGameChat(this.users.get(socket.id)?.name || '');
         this.users.delete(socket.id);
     }
 }
