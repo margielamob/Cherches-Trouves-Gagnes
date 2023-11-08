@@ -1,6 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CreateJoinGameDialogueComponent } from '@app/components/create-join-game-dialogue/create-join-game-dialogue.component';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { UserNameInputComponent } from '@app/components/user-name-input/user-name-input.component';
 import { CarouselResponse } from '@app/interfaces/carousel-response';
@@ -21,7 +22,6 @@ import { Observable } from 'rxjs';
 })
 export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
-    showGameOptions: boolean = false;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
@@ -40,6 +40,7 @@ export class MainPageComponent implements OnInit {
     }
 
     onClickPlayClassic(): void {
+        this.matDialog.open(CreateJoinGameDialogueComponent);
         this.mainPageService.setGameMode(GameMode.Classic);
     }
 
@@ -54,7 +55,7 @@ export class MainPageComponent implements OnInit {
                     this.matDialog.closeAll();
                     this.carouselService.setCarouselInformation(response.body.carouselInfo);
                     this.mainPageService.setGameMode(GameMode.LimitedTime);
-                    this.openNameDialog();
+                    this.openCreateJoinGameDialog();
                 }
             },
             error: () => {
@@ -66,7 +67,6 @@ export class MainPageComponent implements OnInit {
 
     toggleGameOptions(): void {
         this.onClickPlayClassic();
-        this.showGameOptions = !this.showGameOptions;
     }
 
     navigateTo(path: string): void {
@@ -76,5 +76,8 @@ export class MainPageComponent implements OnInit {
 
     openNameDialog(isMulti: boolean = false) {
         this.matDialog.open(UserNameInputComponent, { data: { isMulti } });
+    }
+    openCreateJoinGameDialog() {
+        this.matDialog.open(CreateJoinGameDialogueComponent);
     }
 }

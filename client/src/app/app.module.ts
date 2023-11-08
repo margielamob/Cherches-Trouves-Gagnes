@@ -79,6 +79,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -153,6 +154,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         DialogConfirmResetPasswordComponent,
         ResetPasswordComponent,
         ReplayButtonsComponent,
+        CreateJoinGameDialogueComponent,
     ],
     imports: [
         MatCheckboxModule,

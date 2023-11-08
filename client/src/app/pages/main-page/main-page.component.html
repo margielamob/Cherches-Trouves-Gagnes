@@ -7,16 +7,7 @@
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
         </h1>
         <ul>
-            <li>
-                <button *ngIf="!showGameOptions" class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">
-                    Classique
-                </button>
-
-                <div *ngIf="showGameOptions">
-                    <button mat-flat-button color="primary" (click)="navigateTo('/select')">Create a game</button>
-                    <button mat-flat-button color="primary" (click)="navigateTo('/join-game')">Join a game</button>
-                </div>
-            </li>
+            <button class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">Classique</button>
             <li>
                 <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">
                     {{ 'MAINPAGE.LIMITED_TIME' | translate }}
