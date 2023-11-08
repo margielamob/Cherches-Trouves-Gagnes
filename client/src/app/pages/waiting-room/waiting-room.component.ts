@@ -14,6 +14,7 @@ import { WaitingRoomInfo } from '@common/waiting-room-info';
     styleUrls: ['./waiting-room.component.scss'],
 })
 export class WaitingRoomComponent implements OnInit, OnDestroy {
+    isCreator: boolean = false;
     players: User[] = [];
     canStartGame: boolean = false;
     // eslint-disable-next-line max-params -- absolutely need all the imported services
@@ -29,6 +30,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.isCreator = this.gameInformationHandlerService.isCreator;
         this.players = this.gameInformationHandlerService.playersEX;
         if (this.players.length < 2) {
             this.canStartGame = false;
