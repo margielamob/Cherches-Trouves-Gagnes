@@ -4,6 +4,8 @@ import { ChatDisplayService } from '@app/services/chat-service/chat-display.serv
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { debounceTime, of, startWith, switchMap } from 'rxjs';
 
+const time = 200;
+
 @Component({
     selector: 'app-room-add',
     templateUrl: './room-add.component.html',
@@ -17,7 +19,7 @@ export class RoomAddComponent implements OnInit {
     search = new FormControl();
     $search = this.search.valueChanges.pipe(
         startWith(null),
-        debounceTime(200),
+        debounceTime(time),
         switchMap((res: string) => {
             if (!res) return of(this.unjoinedRooms);
             res = res.toLowerCase();

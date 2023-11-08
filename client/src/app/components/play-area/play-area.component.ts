@@ -52,6 +52,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             if (isActive) {
                 await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
                 this.replayService.cheatActivated.next(false);
+                // eslint-disable-next-line no-console
                 console.log('ici');
             }
         });

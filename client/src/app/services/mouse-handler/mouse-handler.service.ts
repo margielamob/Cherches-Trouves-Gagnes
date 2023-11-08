@@ -7,6 +7,7 @@ import { DifferencesDetectionHandlerService } from '@app/services/differences-de
 export class MouseHandlerService {
     constructor(private readonly differencesDetectionHandlerService: DifferencesDetectionHandlerService) {}
 
+    // eslint-disable-next-line max-params
     mouseHitDetect($event: MouseEvent, ctx: CanvasRenderingContext2D, gameId: string, isOriginal: boolean) {
         this.differencesDetectionHandlerService.getDifferenceValidation(gameId, { x: $event.offsetX, y: $event.offsetY }, ctx, isOriginal);
     }

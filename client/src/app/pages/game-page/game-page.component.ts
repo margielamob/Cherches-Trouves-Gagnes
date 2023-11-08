@@ -102,6 +102,7 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
                 this.isReplayToggled = isReplayToggled;
+                // eslint-disable-next-line no-console
                 console.log('received toggle', this.isReplayToggled);
             });
         }

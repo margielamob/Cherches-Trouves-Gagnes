@@ -11,6 +11,7 @@ import { ReplayService, ReplayState } from '@app/services/replay-service/replay.
 export class ReplayButtonsComponent {
     currentSpeed = 1;
     isReplayAvailable: boolean = true;
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     replaySpeeds = [0.5, 1, 2, 3];
     constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 

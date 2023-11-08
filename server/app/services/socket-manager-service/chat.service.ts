@@ -204,7 +204,7 @@ export class ChatSocketManager {
         socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name));
     }
 
-    leaveGameChat(user: string, socket: Socket) {
+    leaveGameChat(user: string) {
         console.log('leaveGameChat');
         if (this.userRooms.get(user)) {
             this.userRooms.get(user)?.filter((r) => !r.startsWith('Game'));

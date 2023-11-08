@@ -56,6 +56,7 @@ export class GamePlayManager {
             this.sio.to(gameId).emit(SocketEvent.EventMessage, this.eventMessageService.usingClueMessage());
         });
 
+        // eslint-disable-next-line max-params
         socket.on(SocketEvent.Difference, (differenceCoord: Coordinate, gameId: string, playerName: string, isOriginal: boolean) => {
             if (!this.gameManager.isGameFound(gameId)) {
                 socket.emit(SocketEvent.Error);

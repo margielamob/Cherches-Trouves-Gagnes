@@ -16,6 +16,7 @@ export class DifferencesDetectionHandlerService {
     correctSound = new Audio('assets/correctanswer.wav');
     wrongSound = new Audio('assets/wronganswer.wav');
 
+    // eslint-disable-next-line max-params
     constructor(
         public matDialog: MatDialog,
         private readonly socketService: CommunicationSocketService,
@@ -42,6 +43,7 @@ export class DifferencesDetectionHandlerService {
         sound.play();
     }
 
+    // eslint-disable-next-line max-params
     getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D, isOriginal: boolean) {
         this.socketService.send(SocketEvent.Difference, {
             differenceCoord: mousePosition,

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { UserData } from '@app/interfaces/user';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
@@ -49,6 +50,7 @@ export class ChatManagerService {
         // });
 
         this.socket.on(SocketEvent.UpdateAllRooms, (rooms: string[]) => {
+            // eslint-disable-next-line no-console
             console.log('all rooms : ' + rooms);
             this.allRoomsList.next(rooms);
         });
