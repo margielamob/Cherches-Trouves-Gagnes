@@ -1,12 +1,19 @@
 import 'package:app/components/custom_app_bar.dart';
+import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WaitingPage extends StatelessWidget {
+  final WaitingRoomInfoRequest waitingRoomInfoRequest;
+
+  WaitingPage({Key? key, required this.waitingRoomInfoRequest})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
+    print(waitingRoomInfoRequest.toJson());
     return Scaffold(
       appBar: CustomAppBar.buildDefaultBar(context, 'Waiting Room'),
       body: Center(

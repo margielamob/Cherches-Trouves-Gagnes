@@ -35,22 +35,6 @@ class _PlayersCard extends StatelessWidget {
     );
   }
 }
-
-/*
-        Container(
-          width: 800,
-          color: Colors.deepPurple, // Set the background color for the bar
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            "Current players",
-            style: TextStyle(
-              color: Colors.white, // Set the text color
-              fontSize: 20, // Adjust the font size as needed
-              ,
-            ),
-          ),
-        ),
-*/
 class CurrentPlayers extends StatelessWidget {
   const CurrentPlayers({super.key});
 
