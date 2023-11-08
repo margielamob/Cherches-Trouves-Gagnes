@@ -51,6 +51,7 @@ export class GameCardButtonsComponent {
                 this.gameInfoHandlerService.isMulti = true;
                 this.gameInfoHandlerService.cheatMode = result.cheatMode;
                 this.gameInfoHandlerService.timer = result.duration;
+                this.gameInfoHandlerService.isCreator = true;
                 this.gameInfoHandlerService.waitingRoom();
             }
         });
