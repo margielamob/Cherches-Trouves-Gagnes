@@ -8,6 +8,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { ReplayService } from '@app/services/replay-service/replay.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
@@ -39,12 +40,22 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly communicationService: CommunicationService,
         private readonly mouseHandlerService: MouseHandlerService,
-        private readonly communicationSocketService: CommunicationSocketService,
+        private communicationSocketService: CommunicationSocketService,
         private readonly routerService: RouterService,
         private cheatMode: CheatModeService,
         private readonly clueHandlerService: ClueHandlerService,
+        private replayService: ReplayService,
     ) {
         this.handleSocketDifferenceFound();
+        this.replayService.listenToEvents();
+        this.replayService.cheatActivated$.subscribe(async (isActive) => {
+            if (isActive) {
+                await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
+                this.replayService.cheatActivated.next(false);
+                // eslint-disable-next-line no-console
+                console.log('ici');
+            }
+        });
     }
 
     get width(): number {
@@ -66,6 +77,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             return;
         }
         if (event.key === 't') {
+            this.communicationSocketService.send(SocketEvent.Cheat);
             await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
         }
 
@@ -74,16 +86,35 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         }
     }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.handleClue();
+        this.communicationSocketService.send(SocketEvent.GameStarted, { gameId: this.gameInfoHandlerService.roomId });
+        this.replayService.hasReplayStarted$.subscribe(async (hasStarted) => {
+            if (hasStarted) {
+                await this.resetCanvases();
+                this.replayService.imagesLoaded.next(true);
+            }
+        });
+    }
+
+    async resetCanvases(): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        return new Promise((resolve) => {
+            this.clearCanvases();
+            this.displayImages();
+            resolve();
+        });
     }
 
     ngAfterViewInit(): void {
         this.cheatMode.handleSocketEvent(this.getContextOriginal(), this.getContextModified());
         this.displayImages();
+        this.replayService.setContexts(this.getContextOriginal(), this.getContextModified(), this.getContextDifferences());
+        this.replayService.setImageContexts(this.getContextImgOriginal(), this.getContextImgModified());
     }
 
     ngOnDestroy() {
+        this.communicationSocketService.send(SocketEvent.LeavingArena, { gameId: this.gameInfoHandlerService.roomId });
         this.communicationSocketService.off(SocketEvent.DifferenceFound);
         this.communicationSocketService.off(SocketEvent.NewGameBoard);
         this.communicationSocketService.off(SocketEvent.Clue);
@@ -93,7 +124,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     onClick($event: MouseEvent, canvas: string) {
         if (!this.isMouseDisabled()) {
             const ctx: CanvasRenderingContext2D = canvas === 'original' ? this.getContextOriginal() : this.getContextModified();
-            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId);
+            this.mouseHandlerService.mouseHitDetect($event, ctx, this.gameInfoHandlerService.roomId, canvas === 'original');
         }
     }
 
@@ -120,14 +151,14 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             this.displayImages();
             this.gameInfoHandlerService.$newGame.next();
         });
-        this.communicationSocketService.on<DifferenceFound>(SocketEvent.DifferenceFound, (data: DifferenceFound) => {
-            this.differencesDetectionHandlerService.setNumberDifferencesFound(!data.isPlayerFoundDifference);
+        this.communicationSocketService.on(SocketEvent.DifferenceFound, (obj: { data: DifferenceFound; playerName: string }) => {
+            this.differencesDetectionHandlerService.setNumberDifferencesFound(obj.playerName);
             if (this.cheatMode.isCheatModeActivated) {
-                this.cheatMode.stopCheatModeDifference(this.getContextOriginal(), this.getContextModified(), data.coords);
+                this.cheatMode.stopCheatModeDifference(this.getContextOriginal(), this.getContextModified(), obj.data.coords);
             }
             if (this.gameInfoHandlerService.isClassic()) {
-                this.differencesDetectionHandlerService.differenceDetected(this.getContextOriginal(), this.getContextImgModified(), data.coords);
-                this.differencesDetectionHandlerService.differenceDetected(this.getContextModified(), this.getContextImgModified(), data.coords);
+                this.differencesDetectionHandlerService.differenceDetected(this.getContextOriginal(), this.getContextImgModified(), obj.data.coords);
+                this.differencesDetectionHandlerService.differenceDetected(this.getContextModified(), this.getContextImgModified(), obj.data.coords);
             }
         });
     }
@@ -189,5 +220,11 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
 
     private decompressImage(base64String: string) {
         return LZString.decompressFromUTF16(base64String) as string;
+    }
+
+    private clearCanvases() {
+        this.getContextOriginal().clearRect(0, 0, this.canvasImgOriginal.nativeElement.width, this.canvasImgOriginal.nativeElement.height);
+        this.getContextImgModified().clearRect(0, 0, this.canvasImgModified.nativeElement.width, this.canvasImgModified.nativeElement.height);
+        this.getContextDifferences().clearRect(0, 0, this.canvasImgDifference.nativeElement.width, this.canvasImgDifference.nativeElement.height);
     }
 }

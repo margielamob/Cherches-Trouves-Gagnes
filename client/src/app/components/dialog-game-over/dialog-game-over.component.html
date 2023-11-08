@@ -16,9 +16,16 @@
     <div *ngIf="this.index && this.time">
         <div [innerHTML]="'GAME_OVER_DIALOG.RANK' | translate: { time: time, index: index }" mat-dialog-content></div>
     </div>
-    <div mat-dialog-actions align="end">
-        <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>
-            {{ 'GAME_OVER_DIALOG.LEAVE' | translate }}
-        </button>
+    <div class="bottom-buttons">
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button (click)="toggleReplay()" color="primary" mat-primary>
+                {{ 'GAME_OVER_DIALOG.REPLAY' | translate }}
+            </button>
+        </div>
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>
+                {{ 'GAME_OVER_DIALOG.LEAVE' | translate }}
+            </button>
+        </div>
     </div>
 </div>

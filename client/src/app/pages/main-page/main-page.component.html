@@ -8,9 +8,14 @@
         </h1>
         <ul>
             <li>
-                <button class="optionsButton" mat-flat-button color="primary" routerLink="/select" (click)="onClickPlayClassic()">
-                    {{ 'MAINPAGE.CLASSIC' | translate }}
+                <button *ngIf="!showGameOptions" class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">
+                    Classique
                 </button>
+
+                <div *ngIf="showGameOptions">
+                    <button mat-flat-button color="primary" (click)="navigateTo('/select')">Create a game</button>
+                    <button mat-flat-button color="primary" (click)="navigateTo('/join-game')">Join a game</button>
+                </div>
             </li>
             <li>
                 <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">

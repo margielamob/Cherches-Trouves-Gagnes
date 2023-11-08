@@ -5,6 +5,8 @@
     {{ headerMessage }}
     <span class="filler"></span>
 
+    <app-chat-button></app-chat-button>
+
     <button matTooltip="{{ 'HEADER.LOGOUT' | translate }}" (click)="signOut()" class="home-button" mat-fab color="primary">
         <mat-icon>exit_to_app</mat-icon>
     </button>

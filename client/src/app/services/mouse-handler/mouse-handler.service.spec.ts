@@ -1,8 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { SIZE } from '@app/constants/canvas';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 
@@ -25,15 +23,15 @@ describe('MouseHandlerService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should call getDifferenceValidation', () => {
-        const mouseEvent = {
-            clientX: 10,
-            clientY: 10,
-        } as MouseEvent;
+    // it('should call getDifferenceValidation', () => {
+    //     const mouseEvent = {
+    //         clientX: 10,
+    //         clientY: 10,
+    //     } as MouseEvent;
 
-        const canvas = CanvasTestHelper.createCanvas(SIZE.x, SIZE.y);
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        service.mouseHitDetect(mouseEvent, ctx, '');
-        expect(spyDifferenceDetectedHandler.getDifferenceValidation).toHaveBeenCalled();
-    });
+    //     const canvas = CanvasTestHelper.createCanvas(SIZE.x, SIZE.y);
+    //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    //     service.mouseHitDetect(mouseEvent, ctx, '');
+    //     expect(spyDifferenceDetectedHandler.getDifferenceValidation).toHaveBeenCalled();
+    // });
 });

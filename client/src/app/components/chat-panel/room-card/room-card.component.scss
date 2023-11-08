@@ -1,0 +1,37 @@
+.room-name {
+    font-weight: bold;
+    font-size: 1em;
+    justify-self: center;
+    color: black;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 70%;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    padding: 2%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.content:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+}
+
+.more {
+    position: absolute;
+    right: 10%;
+    color: black;
+}
+
+.more:hover {
+    background-color: #bfbfbf;
+    cursor: pointer;
+}

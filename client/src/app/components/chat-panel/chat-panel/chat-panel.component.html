@@ -1,0 +1,7 @@
+<div class="main-wrapper">
+    <app-chat-list class="room-list" *ngIf="!showFeed && !showSearch"></app-chat-list>
+
+    <app-chat-feed class="chat-feed" *ngIf="showFeed && !showSearch"></app-chat-feed>
+
+    <app-room-search class="room-search" *ngIf="showSearch && !showFeed"></app-room-search>
+</div>

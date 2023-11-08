@@ -20,7 +20,11 @@ export class CheatModeService {
     ) {}
 
     async manageCheatMode(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D): Promise<void> {
-        this.isCheatModeActivated = this.isCheatModeActivated ? this.stopCheatMode(ctx, ctxModified) : await this.startCheatMode(ctx, ctxModified);
+        if (this.gameInformationHandler.cheatMode) {
+            this.isCheatModeActivated = this.isCheatModeActivated
+                ? this.stopCheatMode(ctx, ctxModified)
+                : await this.startCheatMode(ctx, ctxModified);
+        }
     }
 
     stopCheatModeDifference(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, difference: Coordinate[]) {

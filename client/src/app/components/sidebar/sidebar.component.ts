@@ -19,8 +19,8 @@ export class SidebarComponent {
     setInfos() {
         this.gameMode = this.gameInformationHandlerService.getGameMode();
         this.gameName = this.gameInformationHandlerService.getGameName();
-        this.penaltyTime = this.gameInformationHandlerService.gameTimeConstants.penaltyTime;
-        this.differenceTime = this.gameInformationHandlerService.gameTimeConstants.successTime;
+        // this.penaltyTime = this.gameInformationHandlerService.gameTimeConstants.penaltyTime;
+        // this.differenceTime = this.gameInformationHandlerService.gameTimeConstants.successTime;
         this.gameInformationHandlerService.$newGame.subscribe(() => {
             this.gameMode = this.gameInformationHandlerService.getGameMode();
             this.gameName = this.gameInformationHandlerService.getGameName();

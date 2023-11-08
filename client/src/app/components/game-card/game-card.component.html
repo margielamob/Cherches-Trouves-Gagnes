@@ -1,15 +1,30 @@
 <mat-card class="card-container">
-    <mat-card-title class="game-name-title">{{ getGameName() }}</mat-card-title>
+    <mat-card-title *ngIf="!isJoining" class="game-name-title">{{ getGameName() }}</mat-card-title>
     <img class="game-image" mat-card-lg-image [src]="imageSrc" />
 
-    <mat-card-content class="highscores-content">
+    <mat-card-content class="highscores-content" *ngIf="!isJoining">
         <h3 class="highscore-title">
             <b>{{ 'GAME_CARD.BEST_SCORE' | translate }}</b>
         </h3>
         <div class="scores">
-            <app-game-score [title]="'Solo'" [scores]="getSinglePlayerScores()" [isMultiplayer]="false"></app-game-score>
+            <span> Nombre de différences : {{ getNbDifferences() }}</span>
             <app-game-score [title]="'1 vs 1'" [scores]="getMultiplayerScores()" [isMultiplayer]="true"></app-game-score>
         </div>
     </mat-card-content>
-    <app-game-card-buttons [gameCard]="gameCard"></app-game-card-buttons>
+    <mat-card-content *ngIf="isJoining">
+        <span *ngFor="let player of joinableGameCard.players">
+            <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
+            {{ player.name }} <br />
+        </span>
+        <div>{{ joinableGameCard.nbDifferences }}</div>
+    </mat-card-content>
+    <ng-container *ngIf="isJoining; then joiningTemplate; else notJoiningTemplate"></ng-container>
+
+    <ng-template #joiningTemplate>
+        <app-game-card-buttons [joinableGameCard]="joinableGameCard"></app-game-card-buttons>
+    </ng-template>
+
+    <ng-template #notJoiningTemplate>
+        <app-game-card-buttons [gameCard]="gameCard"></app-game-card-buttons>
+    </ng-template>
 </mat-card>

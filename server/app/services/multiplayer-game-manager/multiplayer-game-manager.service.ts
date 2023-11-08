@@ -7,12 +7,15 @@ import { Service } from 'typedi';
 export class MultiplayerGameManager {
     requestsOnHold: Map<string, User[]> = new Map();
     rejectMessages = {} as RejectMessages;
-    private gamesWaiting: { gameId: string; mode: GameMode; roomId: string }[] = [];
+    private gamesWaiting: { gameId: string; mode: GameMode; roomId: string; players: User[] }[] = [];
 
     constructor() {
         this.initializeRejectMessages();
     }
 
+    addPlayerToRoom(roomId: string, player: User) {
+        this.findGameByRoomId(roomId)?.players.push(player);
+    }
     theresOneRequest(roomId: string) {
         return this.requestsOnHold.get(roomId)?.length === 1;
     }
@@ -100,12 +103,20 @@ export class MultiplayerGameManager {
         return !gameWaiting ? '' : gameWaiting.roomId;
     }
 
-    addGameWaiting(infos: { gameId: string; mode: GameMode; roomId: string }): void {
+    addGameWaiting(infos: { gameId: string; mode: GameMode; roomId: string; players: User[] }): void {
         this.gamesWaiting.push(infos);
     }
 
     removeGameWaiting(roomId: string) {
         this.gamesWaiting = this.gamesWaiting.filter((game: { gameId: string; roomId: string }) => game.roomId !== roomId);
+    }
+
+    getPlayers(roomId: string) {
+        return this.findGameByRoomId(roomId)?.players;
+    }
+
+    private findGameByRoomId(roomId: string): { gameId: string; mode: GameMode; roomId: string; players: User[] } | undefined {
+        return this.gamesWaiting.find((game) => game.roomId === roomId);
     }
 
     private initializeRejectMessages() {
