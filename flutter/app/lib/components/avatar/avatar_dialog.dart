@@ -1,7 +1,7 @@
 import 'package:app/components/avatar/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +15,7 @@ class AvatarDialog extends StatefulWidget {
 }
 
 class AvatarDialogState extends State<AvatarDialog> {
-  final UserService userService = Get.find();
+  final PersonalUserService userService = Get.find();
   final AuthService authService = Get.find();
   UserData? currentUser;
   String? avatar;

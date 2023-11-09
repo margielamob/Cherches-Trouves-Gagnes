@@ -1,9 +1,9 @@
-class UserFormat {
+class UserModel {
   final String id;
   final String name;
   final String? avatar;
 
-  UserFormat({
+  UserModel({
     required this.id,
     required this.name,
     this.avatar,
@@ -17,8 +17,8 @@ class UserFormat {
     };
   }
 
-  factory UserFormat.fromMap(Map<String, dynamic> data) {
-    return UserFormat(
+  factory UserModel.fromMap(Map<String, dynamic> data) {
+    return UserModel(
       id: data['id'] ?? '',
       name: data['name'] ?? '',
       avatar: data['avatar'] ?? '',

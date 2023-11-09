@@ -2,20 +2,18 @@ import 'package:app/components/avatar/avatar.dart';
 import 'package:app/components/avatar/avatar_dialog.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({
-    Key? key
-  }) : super(key: key);
+  ProfilePage({Key? key}) : super(key: key);
   @override
   State<ProfilePage> createState() => ProfilePageState();
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  final UserService userService = Get.find();
+  final PersonalUserService userService = Get.find();
   final AuthService authService = Get.find();
   UserData? currentUser;
   String? avatar;
@@ -150,8 +148,8 @@ class ProfilePageState extends State<ProfilePage> {
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
                                                           Color>(Colors.black)),
-                                          child: Text(
-                                              "${currentUser?.displayName}")),
+                                          child:
+                                              Text("${currentUser?.displayName}")),
                                     ],
                                   ),
                                   SizedBox(height: 5.0),
@@ -195,10 +193,8 @@ class ProfilePageState extends State<ProfilePage> {
                                                               .primaryColorLight),
                                                   foregroundColor:
                                                       MaterialStateProperty.all<
-                                                          Color>(Colors.black)
-                                                    ),
-                                          child: Text("${currentUser?.theme}")
-                                        ),
+                                                          Color>(Colors.black)),
+                                          child: Text("${currentUser?.theme}")),
                                     ],
                                   ),
                                   SizedBox(height: 5.0),
