@@ -28,7 +28,6 @@ export class ReplayBarComponent implements OnChanges {
     }
 
     async seekToEvent(position: number) {
-        console.log('calling play with index', position);
         this.replayService.setSate(ReplayState.START);
         await this.replayService.playFromIndex(position);
     }
