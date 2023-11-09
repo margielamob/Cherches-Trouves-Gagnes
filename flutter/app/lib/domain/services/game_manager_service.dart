@@ -1,6 +1,6 @@
+import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/game_info_request.dart';
@@ -27,6 +27,7 @@ import 'package:get/get.dart';
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
+  WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
   UserRequest? userRequest;
@@ -71,8 +72,13 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
-      WaitingRoomInfoRequest data = WaitingRoomInfoRequest.fromJson(message);
-      Get.to(WaitingPage(waitingRoomInfoRequest: data));
+      waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      Get.to(WaitingPage());
+    });
+    _socket.on(SocketEvent.updatePlayers, (dynamic message) {
+      print("SocketEvent.updatePlayers : $message");
+      waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      notifyListeners();
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -193,5 +199,7 @@ class GameManagerService extends ChangeNotifier {
     print("leaveWaiting");
   }
 
-  void setGameInformation() {}
+  void startGame() {
+    _socket.send(SocketEvent.gameStarted, waitingRoomInfoRequest!.roomId);
+  }
 }
