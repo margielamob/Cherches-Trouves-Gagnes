@@ -26,4 +26,6 @@ class WaitingRoomInfoRequest {
       'cheatMode': cheatMode,
     };
   }
+
+  void forEach(bool? Function(dynamic element) param0) {}
 }

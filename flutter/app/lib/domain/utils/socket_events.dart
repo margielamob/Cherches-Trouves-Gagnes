@@ -18,6 +18,7 @@ class SocketEvent {
   static String joinGame = "joinGame";
   static String requestToJoin = "requestToJoin";
   static String leaveWaiting = "leaveWaiting";
+  static String leaveWaitingRoom = "LeaveWaitingRoom";
   static String win = "win";
   static String lose = "lose";
   static String refreshGames = "refreshGames";
@@ -26,4 +27,5 @@ class SocketEvent {
   static String updatePlayers = 'updatePlayers';
   static String getJoinableGames = 'GetJoinableGames';
   static String joinClassicGame = 'JoinClassicGame';
+  static String creatorLeft = 'CreatorLeft';
 }

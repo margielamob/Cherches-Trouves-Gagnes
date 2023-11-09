@@ -23,15 +23,12 @@ class CarouselBottomClassic extends CarouselBottom {
           gameManager.isGameJoinable(data.id, gameMode)
               ? FilledButton(
                   onPressed: () async {
-                    /*
-                    TODO: Refactor for 4 joueurs
                     try {
                       gameManager.createMultiplayerGame(data.id, true, 0);
-                      gameManager.gameCards = data;
+                      // gameManager.gameCards = data;
                     } catch (error) {
                       print(error);
                     }
-                    */
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,16 +37,13 @@ class CarouselBottomClassic extends CarouselBottom {
                 )
               : FilledButton(
                   onPressed: () async {
-                    /*
-                    TODO: refactor for 4 joueurs
                     try {
                       gameManager.createMultiplayerGame(data.id, true, 0);
                       gameManager.currentGameId = data.id;
-                      gameManager.gameCards = data;
+                      // gameManager.gameCards = data;
                     } catch (error) {
                       print(error);
                     }
-                    */
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -9,6 +9,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    gameManagerService.setCurrentUser();
     return Scaffold(
       appBar: AppBar(
         title: Text("Menu principal"),
