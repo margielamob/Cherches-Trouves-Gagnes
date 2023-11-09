@@ -1,6 +1,8 @@
 import 'package:app/components/image_border.dart';
 import 'package:app/domain/models/requests/joinable_games_request.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Players extends StatelessWidget {
   final List<PlayerModel> players;
@@ -37,9 +39,10 @@ class Players extends StatelessWidget {
 }
 
 class ReachableGamesCard extends StatelessWidget {
+  final GameManagerService gameManagerService = Get.find();
   final JoinableGamesModel game;
 
-  const ReachableGamesCard({required this.game});
+  ReachableGamesCard({required this.game});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +93,10 @@ class ReachableGamesCard extends StatelessWidget {
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      gameManagerService.gameInfo = game.gameInformation;
+                      gameManagerService.joinGame(game.roomId);
+                    },
                     child: Text("Joindre"),
                   ),
                 ],

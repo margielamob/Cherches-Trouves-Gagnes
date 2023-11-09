@@ -1,16 +1,16 @@
-import 'package:app/domain/models/user.dart';
+import 'package:app/domain/models/user_model.dart';
 
 class WaitingRoomInfoRequest {
   String roomId;
-  List<UserFormat> players;
+  List<UserModel> players;
   bool cheatMode;
 
   WaitingRoomInfoRequest(
       {required this.roomId, required this.players, required this.cheatMode});
 
   factory WaitingRoomInfoRequest.fromJson(Map<String, dynamic> json) {
-    List<UserFormat> players = List<UserFormat>.from(
-        json['players'].map((playerJson) => UserFormat.fromMap(playerJson)));
+    List<UserModel> players = List<UserModel>.from(
+        json['players'].map((playerJson) => UserModel.fromMap(playerJson)));
 
     return WaitingRoomInfoRequest(
       roomId: json['roomId'],

@@ -25,4 +25,5 @@ class SocketEvent {
   static String sendingJoinableClassicGames = 'sendingJoinableClassicGames';
   static String updatePlayers = 'updatePlayers';
   static String getJoinableGames = 'GetJoinableGames';
+  static String joinClassicGame = 'JoinClassicGame';
 }

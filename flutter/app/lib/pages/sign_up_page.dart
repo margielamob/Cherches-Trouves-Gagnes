@@ -1,6 +1,6 @@
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class SignUpPageState extends State<SignUpPage> {
   String? userName = "";
   String? password = "";
   final AuthService authService = Get.find();
-  final UserService userService = Get.find();
+  final PersonalUserService userService = Get.find();
 
   @override
   Widget build(BuildContext context) {

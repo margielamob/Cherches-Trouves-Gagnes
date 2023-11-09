@@ -1,8 +1,8 @@
 import 'package:app/domain/models/classic_game_model.dart';
-import 'package:app/domain/models/user.dart';
+import 'package:app/domain/models/user_model.dart';
 
 class CreateClassicGameRequest {
-  UserFormat user;
+  UserModel user;
   ClassicGameModel card;
 
   CreateClassicGameRequest({required this.user, required this.card});
