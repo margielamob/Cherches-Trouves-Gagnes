@@ -22,7 +22,7 @@ class ReachableGamesCarrousel extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
     }
 
-    if (gameManager.joinableGames!.games.length == 0) {
+    if (gameManager.joinableGames!.games.isEmpty) {
       return Center(child: NoGameReachable());
     }
 

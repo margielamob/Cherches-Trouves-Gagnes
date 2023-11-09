@@ -18,7 +18,16 @@ class ReachableGameManager extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.classicGameCreated, (dynamic message) {
-      print("SocketEvent.classicGameCreated");
+      print("classicGameCreated was called");
+      JoinableGamesModel request = JoinableGamesModel.fromJson(message);
+      if (joinableGames == null) {
+        final List<JoinableGamesModel> games = [];
+        games.add(request);
+        joinableGames = JoinableGamesRequest(games: games);
+      } else {
+        joinableGames!.games.add(request);
+      }
+      notifyListeners();
     });
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {

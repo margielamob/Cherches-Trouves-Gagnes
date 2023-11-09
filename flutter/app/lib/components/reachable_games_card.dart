@@ -9,7 +9,30 @@ class Players extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("list des joueurs");
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        SizedBox(
+          height: 100,
+          width: 300,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: players.length,
+            itemBuilder: (BuildContext context, int index) {
+              final playerName = players[index].name;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FlutterLogo(size: 30.0),
+                  SizedBox(width: 10),
+                  Text(playerName, style: TextStyle(fontSize: 16))
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -28,7 +51,7 @@ class ReachableGamesCard extends StatelessWidget {
             shadowColor: Color.fromARGB(255, 46, 46, 46),
             margin: EdgeInsets.all(8.0),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 12.0),
               child: Column(
                 children: [
                   Text(
@@ -63,6 +86,13 @@ class ReachableGamesCard extends StatelessWidget {
                     players: game.players,
                   ),
                   SizedBox(height: 10),
+                  FilledButton(
+                    style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+                    ),
+                    onPressed: () {},
+                    child: Text("Joindre"),
+                  ),
                 ],
               ),
             ),
