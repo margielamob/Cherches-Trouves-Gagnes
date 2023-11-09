@@ -3,12 +3,15 @@ import 'package:app/domain/models/game_card_multi_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
+import 'package:app/domain/models/requests/creator_left_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_game_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_request.dart';
+import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
+import 'package:app/domain/models/requests/play_receive_request.dart';
 import 'package:app/domain/models/requests/reject_player_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/requests/waiting_room_request.dart';
@@ -17,6 +20,8 @@ import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/pages/classic_game_page.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +95,10 @@ class GameManagerService extends ChangeNotifier {
       //  print("Erreur, les gamesCards ne sont pas initialisés");
       //}
       //}
+      print(message);
+      PlayReceiveRequest data = PlayReceiveRequest.fromJson(message);
+      print(data.toJson());
+      // Get.to(Classic(gameId: data.gameId, gameCards: data.gameCard!));
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
@@ -100,6 +109,9 @@ class GameManagerService extends ChangeNotifier {
       print("SocketEvent.updatePlayers : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       notifyListeners();
+    });
+    _socket.on(SocketEvent.gameStarted, (dynamic message) {
+      print("SocketEvent.updatePlayers : $message");
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -112,20 +124,6 @@ class GameManagerService extends ChangeNotifier {
       JoinGameRequest request = JoinGameRequest.fromJson(message);
       joinGameSend(request.roomId);
     });
-    _socket.on(SocketEvent.rejectPlayer, (dynamic message) {
-      print("SocketEvent.rejectPlayer : $message");
-    });
-    _socket.on(SocketEvent.requestToJoin, (dynamic message) {
-      UserRequest data = UserRequest.fromJson(message);
-      userRequest = data;
-      playerInWaitingRoom.add(data.name);
-      print(data.toJson());
-      print("SocketEvent.requestToJoin : $message");
-      notifyListeners();
-      print("SocketEvent.acceptPlayerSend");
-      print({currentRoomId!, data.id, data.name});
-      acceptPlayerSend(currentRoomId!, data.id, data.name);
-    });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
     });
@@ -135,15 +133,16 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.lose, (dynamic message) {
       print("SocketEvent.lose : $message");
     });
+    _socket.on(SocketEvent.creatorLeft, (dynamic message) {
+      print(message);
+      Get.offAll(MainPage());
+    });
   }
 
   void joinGame(String roomId) {
-    // TODO: handle Current user information
-    final UserModel user = UserModel(id: "2134", name: "Thierry");
-
     // TODO: vérifier si le ID du socket est bon
     JoinClassicGameRequest request = JoinClassicGameRequest(
-        user: user, roomId: roomId, socketId: _socket.socket.id!);
+        user: currentUser!, roomId: roomId, socketId: _socket.socket.id!);
     _socket.send(SocketEvent.joinClassicGame, request.toJson());
   }
 
@@ -158,25 +157,18 @@ class GameManagerService extends ChangeNotifier {
   }
 
   void createMultiplayerGame(
-      String cardId, bool cheatModeActivated, int timer) async {
-    await _authService.getCurrentUser().then((value) {
-      currentUser = UserModel(
-        id: value!.uid,
-        name: value.displayName,
-        avatar: value.photoURL,
-      );
-      try {
-        CreateClassicGameRequest data = CreateClassicGameRequest(
-            user: currentUser!,
-            card: ClassicGameModel(
-                id: cardId, cheatMode: cheatModeActivated, timer: timer));
-        print(data.toJson());
-        _socket.send(SocketEvent.createClassicGame, data.toJson());
-        print("CreateGame event sent: $data");
-      } catch (error) {
-        print('Error while sending CreateGame event: $error');
-      }
-    });
+      String cardId, bool cheatModeActivated, int timer) {
+    try {
+      CreateClassicGameRequest data = CreateClassicGameRequest(
+          user: currentUser!,
+          card: ClassicGameModel(
+              id: cardId, cheatMode: cheatModeActivated, timer: timer));
+      print(data.toJson());
+      _socket.send(SocketEvent.createClassicGame, data.toJson());
+      print("CreateGame event sent: $data");
+    } catch (error) {
+      print('Error while sending CreateGame event: $error');
+    }
   }
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {
@@ -194,25 +186,6 @@ class GameManagerService extends ChangeNotifier {
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 
-  void acceptPlayerSend(
-      String roomId, String opponentsRoomId, String playerName) {
-    AcceptPlayerRequest data = AcceptPlayerRequest(
-        roomId: roomId,
-        opponentsRoomId: opponentsRoomId,
-        playerName: playerName);
-    _socket.send(SocketEvent.acceptPlayer, data.toJson());
-    playerInWaitingRoom = [];
-    print("acceptPlayer");
-  }
-
-  void rejectPlayer(String roomId, String opponentsRoomId) {
-    RejectPlayerRequest data =
-        RejectPlayerRequest(roomId: roomId, opponentsRoomId: opponentsRoomId);
-    _socket.send(SocketEvent.rejectPlayer, data.toJson());
-    playerInWaitingRoom = [];
-    print("rejectPlayer");
-  }
-
   void leaveGame(String gameId) {
     LeaveGameRequest data = LeaveGameRequest(gameId: gameId);
     _socket.send(SocketEvent.leaveGame, data.toJson());
@@ -220,15 +193,39 @@ class GameManagerService extends ChangeNotifier {
     print("leaveGame");
   }
 
-  void leaveWaiting(String roomId, String gameCard) {
-    LeaveWaitingRequest data =
-        LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
-    _socket.send(SocketEvent.leaveWaiting, data.toJson());
-    playerInWaitingRoom = [];
-    print("leaveWaiting");
+  // void leaveWaiting(String roomId, String gameCard) {
+  //   LeaveWaitingRequest data =
+  //       LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
+  //   _socket.send(SocketEvent.leaveWaiting, data.toJson());
+  //   playerInWaitingRoom = [];
+  //   print("leaveWaiting");
+  // }
+
+  void leaveWaitingRoom() {
+    LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
+        roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);
+    _socket.send(SocketEvent.leaveWaitingRoom, data.toJson());
+    Get.to(MainPage());
   }
 
   void startGame() {
     _socket.send(SocketEvent.gameStarted, waitingRoomInfoRequest!.roomId);
+  }
+
+  void setCurrentUser() {
+    _authService.getCurrentUser().then((value) {
+      currentUser = UserModel(
+        id: value!.uid,
+        name: value.displayName,
+        avatar: value.photoURL,
+      );
+    });
+  }
+
+  bool doesPlayerLaunchGame() {
+    return ((waitingRoomInfoRequest!.players.length > 1 &&
+            waitingRoomInfoRequest!.players[0].name == currentUser?.name)
+        ? true
+        : false);
   }
 }

@@ -14,11 +14,13 @@ import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game.dart';
+import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/sign_up_page.dart';
+import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -104,14 +106,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
-        // '/gameSelection': (context) => GameSelectionPage(),
+        '/gameSelection': (context) => GameSelectionPage(),
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
         '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
-        // '/WaitingPage': (context) => WaitingPage(),
+        '/WaitingPage': (context) => WaitingPage(),
         '/ReachableGamePage': (context) => ReachableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),

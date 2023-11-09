@@ -7,7 +7,6 @@ class WaitingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
-    print(gameManagerService.waitingRoomInfoRequest?.toJson());
     return Scaffold(
       appBar: CustomAppBar.buildDefaultBar(context, 'Waiting Room'),
       body: Center(
@@ -35,23 +34,45 @@ class WaitingPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          gameManagerService.waitingRoomInfoRequest!.players.length > 1
-              ? TextButton(
-                  onPressed: () {
-                    gameManagerService.startGame();
-                  },
-                  style: ButtonStyle(
-                    alignment: Alignment.center,
-                    minimumSize: MaterialStateProperty.all<Size>(Size(300, 50)),
-                  ).copyWith(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).primaryColor),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                  ),
-                  child: Text("Lancer la partie"),
-                )
-              : Text("En attente d'un autre joueur"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  gameManagerService.leaveWaitingRoom();
+                },
+                style: ButtonStyle(
+                  alignment: Alignment.center,
+                  minimumSize: MaterialStateProperty.all<Size>(Size(200, 50)),
+                ).copyWith(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).primaryColor),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                child: Text("Quitter la partie"),
+              ),
+              SizedBox(width: 10),
+              gameManagerService.doesPlayerLaunchGame()
+                  ? TextButton(
+                      onPressed: () {
+                        gameManagerService.startGame();
+                      },
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                        minimumSize:
+                            MaterialStateProperty.all<Size>(Size(200, 50)),
+                      ).copyWith(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).primaryColor),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text("Lancer la partie"),
+                    )
+                  : Text(""),
+            ],
+          ),
         ],
       )),
     );
