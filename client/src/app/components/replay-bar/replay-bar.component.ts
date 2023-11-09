@@ -1,27 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { ReplayService, ReplayState } from '@app/services/replay-service/replay.service';
 
 @Component({
-    selector: 'app-replay-buttons',
-    templateUrl: './replay-buttons.component.html',
-    styleUrls: ['./replay-buttons.component.scss'],
+    selector: 'app-replay-bar',
+    templateUrl: './replay-bar.component.html',
+    styleUrls: ['./replay-bar.component.scss'],
 })
-export class ReplayButtonsComponent {
+export class ReplayBarComponent implements OnChanges {
     currentSpeed = 1;
     isReplayAvailable: boolean = true;
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     replaySpeeds = [0.5, 1, 2, 3];
     constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 
+    get sliderPosition() {
+        return this.replayService.getCurrentIndex();
+    }
+
+    set sliderPosition(pos: number) {
+        this.replayService.setCurrentIndex(pos);
+    }
+
+    ngOnChanges() {
+        this.seekToEvent(this.sliderPosition);
+    }
+
+    async seekToEvent(position: number) {
+        console.log('calling play with index', position);
+        this.replayService.setSate(ReplayState.START);
+        await this.replayService.playFromIndex(position);
+    }
+
     async replay() {
         this.dialog.closeAll();
-        this.replayService.backupQueue();
-        this.replayService.resetQueue();
-        this.replayService.setSate(ReplayState.PLAYING);
-        // eslint-disable-next-line deprecation/deprecation
-        await this.replayService.playEvents();
+        this.replayService.setSate(ReplayState.START);
+        await this.replayService.playFromIndex(0);
     }
 
     pause() {
@@ -30,16 +45,16 @@ export class ReplayButtonsComponent {
 
     async resume() {
         this.replayService.setSate(ReplayState.PLAYING);
-        await this.replayService.playEvents();
+        await this.replayService.playFromIndex(this.sliderPosition);
     }
 
     quit() {
         this.chat.leaveGameChat();
-        this.replayService.setSate(ReplayState.STOPPED);
+        this.replayService.setSate(ReplayState.DONE);
     }
 
     isReplaying(): boolean {
-        return this.replayService.state === ReplayState.PLAYING;
+        return this.replayService.state === ReplayState.START;
     }
 
     isPaused(): boolean {
@@ -49,5 +64,9 @@ export class ReplayButtonsComponent {
     setSpeed(speed: number) {
         this.currentSpeed = speed;
         this.replayService.setTimeFactor(this.currentSpeed);
+    }
+
+    totalEvents() {
+        return this.replayService.length();
     }
 }

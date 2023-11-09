@@ -5,7 +5,7 @@ import { DifferencesDetectionHandlerService } from '@app/services/differences-de
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject } from 'rxjs';
-import { EventQueue } from './event-queue';
+import { EventArray } from './event-array';
 import { ChatReplay, DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ReplayService {
     isThirdClue: boolean = false;
     clue: string;
     // private props
-    private queue: EventQueue = new EventQueue();
+    private array: EventArray = new EventArray();
     private previousEvent: ReplayEvent;
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
@@ -43,8 +43,8 @@ export class ReplayService {
         this.differencesContext = ctxDifferences;
     }
 
-    getQueueLength() {
-        return this.queue.length;
+    length() {
+        return this.array.length;
     }
 
     setImageContexts(ctxImgOriginal: CanvasRenderingContext2D, ctxImgModified: CanvasRenderingContext2D) {
@@ -56,8 +56,8 @@ export class ReplayService {
         this.state = state;
     }
 
-    getQueue(): EventQueue {
-        return this.queue;
+    getArray(): EventArray {
+        return this.array;
     }
 
     setTimeFactor(factor: number) {
@@ -69,23 +69,12 @@ export class ReplayService {
         return this.timeFactor;
     }
 
-    async playEvents() {
-        while (this.state !== ReplayState.DONE) {
-            switch (this.state) {
-                case ReplayState.PLAYING:
-                    await this.play();
-                    break;
-                case ReplayState.PAUSED:
-                    return;
-                case ReplayState.STOPPED:
-                    return;
-                case ReplayState.REDO:
-                    this.state = ReplayState.PLAYING;
-                    break;
-                default:
-                    return;
-            }
-        }
+    getCurrentIndex() {
+        return this.array.currentIndex;
+    }
+
+    setCurrentIndex(pos: number) {
+        this.array.currentIndex = pos;
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -96,20 +85,49 @@ export class ReplayService {
             timestamp: Date.now(),
         } as ReplayEvent;
 
-        // adding the first event as previous event
-        if (this.queue.isEmpty()) {
+        if (this.array.isEmpty()) {
             this.previousEvent = event;
         }
 
-        this.queue.enqueue(event);
+        this.array.push(event);
     }
 
-    backupQueue(): void {
-        this.queue.backupQueue();
-    }
+    async playFromIndex(index: number = this.array.currentIndex) {
+        this.array.currentIndex = index;
 
-    resetQueue(): void {
-        this.queue.resetQueue();
+        while (this.state !== ReplayState.DONE) {
+            if (this.array.end()) {
+                this.setSate(ReplayState.DONE);
+                return;
+            }
+
+            const event = this.array.getCurrentEvent();
+            await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
+            switch (event.action) {
+                case ReplayActions.Message:
+                    this.replayMessage(event);
+                    break;
+                case ReplayActions.DifferenceFoundUpdate:
+                    this.replayDifferenceFound(event);
+                    break;
+                case ReplayActions.ClickError:
+                    this.replayDifferenceNotFound(event);
+                    break;
+                case ReplayActions.StartGame:
+                    this.replayStartGame();
+                    break;
+                case ReplayActions.EventMessage:
+                    this.replayEventMessage(event);
+                    break;
+                case ReplayActions.ActivateCheat:
+                    this.replayCheating();
+                    break;
+                default:
+                    throw Error('could not handle this event');
+            }
+            this.previousEvent = event;
+            this.array.currentIndex++;
+        }
     }
 
     listenToEvents() {
@@ -179,52 +197,20 @@ export class ReplayService {
 
     private replayDifferenceFound(event: ReplayEvent) {
         const data = event.data as DifferenceFound;
-        this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords);
-        this.differenceHandler.differenceDetected(this.modifiedContext, this.imgModifiedContext, data.coords);
+        this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords, this.timeFactor);
+        this.differenceHandler.differenceDetected(this.modifiedContext, this.imgModifiedContext, data.coords, this.timeFactor);
         this.socket.send(SocketEvent.DifferenceFoundReplay, { gameId: this.gameId, differenceCoord: data.pos });
     }
 
     private replayDifferenceNotFound(event: ReplayEvent) {
         const data = event.data as DifferenceNotFound;
-        this.differenceHandler.differenceNotDetected(data.pos, data.isOriginal ? this.originalContext : this.modifiedContext);
+        this.differenceHandler.differenceNotDetected(data.pos, data.isOriginal ? this.originalContext : this.modifiedContext, this.timeFactor);
     }
 
     private replayCheating() {
         this.cheatActivated.next(true);
     }
 
-    private async play() {
-        const event = this.queue.dequeue() as ReplayEvent;
-        if (!event) {
-            this.setSate(ReplayState.DONE);
-            this.resetQueue();
-            return;
-        }
-        await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
-        switch (event.action) {
-            case ReplayActions.Message:
-                this.replayMessage(event);
-                break;
-            case ReplayActions.DifferenceFoundUpdate:
-                this.replayDifferenceFound(event);
-                break;
-            case ReplayActions.ClickError:
-                this.replayDifferenceNotFound(event);
-                break;
-            case ReplayActions.StartGame:
-                this.replayStartGame();
-                break;
-            case ReplayActions.EventMessage:
-                this.replayEventMessage(event);
-                break;
-            case ReplayActions.ActivateCheat:
-                this.replayCheating();
-                break;
-            default:
-                throw Error('could not handle this event');
-        }
-        this.previousEvent = event;
-    }
     private timeSinceLastEvent(event: ReplayEvent) {
         return event.timestamp - this.previousEvent.timestamp;
     }
@@ -246,6 +232,7 @@ export enum ReplayState {
     STOPPED,
     REDO,
     DONE,
+    START,
 }
 
 export enum ReplayActions {

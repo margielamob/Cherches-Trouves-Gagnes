@@ -1,0 +1,49 @@
+.replay-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgb(212, 14, 206) 333;
+    color: #fff;
+}
+
+input[type='range'] {
+    width: 100%;
+}
+
+button.mat-button {
+    background-color: transparent;
+    color: #000000;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    margin: 0 10px;
+}
+
+.home-button {
+    font-size: 24px;
+}
+
+.replay-button,
+.pause-button,
+.resume-button {
+    font-size: 28px;
+}
+
+.resume-button {
+    display: none;
+}
+
+.speed-radio {
+    color: black;
+    margin: 0 5px;
+}
+
+.router-link-active {
+    background-color: rgb(212, 14, 206) 333;
+}
+
+/* Show the resume button when paused */
+.replay-container.play-paused button.resume-button {
+    display: inline-block;
+}
