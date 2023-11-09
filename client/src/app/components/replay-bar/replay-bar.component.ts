@@ -29,13 +29,13 @@ export class ReplayBarComponent implements OnChanges {
 
     async seekToEvent(position: number) {
         this.replayService.setSate(ReplayState.START);
+        this.replayService.setCurrentTime(position);
         await this.replayService.playFromIndex(position);
     }
 
     async replay() {
         this.dialog.closeAll();
-        this.replayService.setSate(ReplayState.START);
-        await this.replayService.playFromIndex(0);
+        await this.seekToEvent(0);
     }
 
     pause() {

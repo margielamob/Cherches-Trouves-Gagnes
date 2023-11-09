@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
+import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject } from 'rxjs';
 import { EventArray } from './event-array';
-import { ChatReplay, DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
+import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -20,13 +24,11 @@ export class ReplayService {
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
     // public props
-    isReplaying: boolean = false;
     state: ReplayState = ReplayState.STOPPED;
     gameId: string;
     differencesContext: CanvasRenderingContext2D;
     imgOriginalContext: CanvasRenderingContext2D;
-    isThirdClue: boolean = false;
-    clue: string;
+    timerRef: any;
     // private props
     private array: EventArray = new EventArray();
     private previousEvent: ReplayEvent;
@@ -34,8 +36,14 @@ export class ReplayService {
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
+    private currentTime: number;
 
-    constructor(private socket: CommunicationSocketService, private differenceHandler: DifferencesDetectionHandlerService) {}
+    constructor(
+        private socket: CommunicationSocketService,
+        private differenceHandler: DifferencesDetectionHandlerService,
+        private gameHandler: GameInformationHandlerService,
+        private timeFormatter: TimeFormatterService,
+    ) {}
 
     setContexts(ctxOriginal: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, ctxDifferences: CanvasRenderingContext2D) {
         this.originalContext = ctxOriginal;
@@ -77,6 +85,17 @@ export class ReplayService {
         this.array.currentIndex = pos;
     }
 
+    setCurrentTime(index: number) {
+        if (this.timerRef) {
+            this.clearTimer();
+        }
+        const factor = this.getElapsedSeconds(this.array.getEvent(index));
+
+        const time = this.gameHandler.timer - factor;
+
+        this.setTimer(time);
+    }
+
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
         const event = {
             action,
@@ -92,6 +111,10 @@ export class ReplayService {
         this.array.push(event);
     }
 
+    getFormattedTime() {
+        return this.timeFormatter.formatTime(this.currentTime);
+    }
+
     async playFromIndex(index: number = this.array.currentIndex) {
         this.array.currentIndex = index;
 
@@ -104,9 +127,6 @@ export class ReplayService {
             const event = this.array.getCurrentEvent();
             await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
             switch (event.action) {
-                case ReplayActions.Message:
-                    this.replayMessage(event);
-                    break;
                 case ReplayActions.DifferenceFoundUpdate:
                     this.replayDifferenceFound(event);
                     break;
@@ -115,9 +135,6 @@ export class ReplayService {
                     break;
                 case ReplayActions.StartGame:
                     this.replayStartGame();
-                    break;
-                case ReplayActions.EventMessage:
-                    this.replayEventMessage(event);
                     break;
                 case ReplayActions.ActivateCheat:
                     this.replayCheating();
@@ -131,14 +148,6 @@ export class ReplayService {
     }
 
     listenToEvents() {
-        this.socket.on(SocketEvent.Message, (message: string) => {
-            const data: ChatReplay = {
-                message,
-                roomId: this.gameId,
-            };
-            this.addEvent(ReplayActions.Message, data);
-        });
-
         this.socket.on(
             SocketEvent.DifferenceFound,
             (obj: {
@@ -171,28 +180,28 @@ export class ReplayService {
             this.addEvent(ReplayActions.StartGame, gameId);
         });
 
-        this.socket.on(SocketEvent.EventMessage, (eventMessage: string) => {
-            this.addEvent(ReplayActions.EventMessage, eventMessage);
-        });
-
         this.socket.on(SocketEvent.Cheat, () => {
             this.addEvent(ReplayActions.ActivateCheat);
         });
     }
 
-    private replayEventMessage(event: ReplayEvent) {
-        const data = event.data as string;
-        console.log(data);
+    private setTimer(time: number) {
+        this.currentTime = time;
+        this.timerRef = setInterval(() => {
+            this.currentTime--;
+            if (this.currentTime <= this.gameHandler.endedTime) {
+                clearInterval(this.timerRef);
+            }
+        }, 1000);
+    }
+
+    private clearTimer() {
+        clearInterval(this.timerRef);
     }
 
     private replayStartGame() {
-        this.resetGameInfos();
+        this.sendReplayToServer();
         this.hasReplayStarted.next(true);
-    }
-
-    private replayMessage(event: ReplayEvent) {
-        const data = event.data as ChatReplay;
-        console.log(data.message);
     }
 
     private replayDifferenceFound(event: ReplayEvent) {
@@ -221,8 +230,12 @@ export class ReplayService {
         });
     }
 
-    private resetGameInfos() {
+    private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
+    }
+
+    private getElapsedSeconds(event: ReplayEvent) {
+        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
     }
 }
 
