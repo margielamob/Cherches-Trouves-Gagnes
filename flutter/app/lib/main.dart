@@ -1,4 +1,5 @@
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/camera_manager.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -22,7 +23,6 @@ import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/sign_up_page.dart';
 import 'package:app/pages/waiting_page.dart';
-import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,9 +43,8 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(CameraManager());
 }
-
-late List<CameraDescription> cameras;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +57,6 @@ void main() async {
     storageBucket: 'log3900-103-f3850.appspot.com',
   ));
   registerDependencies();
-  cameras = await availableCameras();
   runApp(
     MultiProvider(
       providers: [
@@ -107,7 +105,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final firstCamera = cameras.first;
     return GetMaterialApp(
       theme: appTheme,
       initialRoute: '/',
@@ -123,8 +120,7 @@ class MyApp extends StatelessWidget {
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),
         '/ReachableGamePage': (context) => ReachableGamePage(),
-        '/TakePictureScreen': (context) =>
-            TakePictureScreen(camera: firstCamera),
+        '/TakePictureScreen': (context) => TakePictureScreen(),
       },
     );
   }
