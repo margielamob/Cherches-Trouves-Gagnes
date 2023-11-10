@@ -275,20 +275,3 @@ class UserPersonalInfo extends StatelessWidget {
     );
   }
 }
-
-/*
-MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: Avatar(
-                              photoURL: avatar,
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AvatarDialog();
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-*/
