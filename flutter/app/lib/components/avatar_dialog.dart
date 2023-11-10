@@ -1,6 +1,7 @@
 import 'package:app/components/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/camera_manager.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/profile_page.dart';
@@ -31,6 +32,7 @@ class AvatarDialog extends StatefulWidget {
 }
 
 class AvatarDialogState extends State<AvatarDialog> {
+  final CameraManager cameraManager = Get.find();
   final PersonalUserService userService = Get.find();
   final AuthService authService = Get.find();
   UserData? currentUser;
@@ -188,9 +190,10 @@ class AvatarDialogState extends State<AvatarDialog> {
                         isLoading = true;
                       });
                       if (selectedAvatar != null) {
-                        if (selectedAvatar == widget.imagePath) {
+                        if (selectedAvatar == widget.imagePath &&
+                            cameraManager.image != null) {
                           await userService.uploadAvatar(
-                              currentUser!.uid, widget.imageFile!);
+                              currentUser!.uid, cameraManager.image!);
                           await userService.updateUserAvatar(currentUser!.uid,
                               'avatars/${currentUser?.uid}/avatar.jpg');
                         } else {
