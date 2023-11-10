@@ -24,8 +24,9 @@ class CarouselBottomClassic extends CarouselBottom {
               ? FilledButton(
                   onPressed: () async {
                     try {
-                      gameManager.createMultiplayerGame(data.id, true, 0);
-                      // gameManager.gameCards = data;
+                      gameManager.createMultiplayerGame(data.id, true, 100);
+                      gameManager.currentGameId = data.id;
+                      gameManager.gameCards = data;
                     } catch (error) {
                       print(error);
                     }
@@ -38,7 +39,7 @@ class CarouselBottomClassic extends CarouselBottom {
               : FilledButton(
                   onPressed: () async {
                     try {
-                      gameManager.createMultiplayerGame(data.id, true, 0);
+                      gameManager.createMultiplayerGame(data.id, true, 100);
                       gameManager.currentGameId = data.id;
                       // gameManager.gameCards = data;
                     } catch (error) {
