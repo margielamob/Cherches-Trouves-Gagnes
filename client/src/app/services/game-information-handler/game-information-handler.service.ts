@@ -31,6 +31,8 @@ export class GameInformationHandlerService {
     cheatMode: boolean = false;
     timer: number = 0;
     isCreator: boolean = false;
+    endedTime: number;
+    isGameDone: boolean = false;
     // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,

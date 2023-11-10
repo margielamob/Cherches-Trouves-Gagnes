@@ -41,6 +41,7 @@ import { RoomSearchComponent } from './components/chat-panel/room-search/room-se
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
 import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogConfirmResetPasswordComponent } from './components/dialog-confirm-reset-password/dialog-confirm-reset-password.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
@@ -64,7 +65,7 @@ import { PageHeaderComponent } from './components/page-header/page-header.compon
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
-import { ReplayButtonsComponent } from './components/replay-buttons/replay-buttons.component';
+import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
@@ -79,7 +80,6 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -153,8 +153,8 @@ import { CreateJoinGameDialogueComponent } from './components/create-join-game-d
         DialogChangeNameComponent,
         DialogConfirmResetPasswordComponent,
         ResetPasswordComponent,
-        ReplayButtonsComponent,
         CreateJoinGameDialogueComponent,
+        ReplayBarComponent,
     ],
     imports: [
         MatCheckboxModule,
