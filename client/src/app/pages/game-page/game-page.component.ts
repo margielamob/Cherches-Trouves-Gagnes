@@ -5,6 +5,7 @@ import { DialogGameOverComponent } from '@app/components/dialog-game-over/dialog
 import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
 import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameRecord } from '@common/game-record';
@@ -30,6 +31,7 @@ export class GamePageComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
         private translate: TranslateService,
+        private differenceHandler: DifferencesDetectionHandlerService,
     ) {
         exitButtonService.setGamePage();
         const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
@@ -46,10 +48,14 @@ export class GamePageComponent implements OnDestroy {
         this.socket.once(SocketEvent.Win, (record?: GameRecord) => {
             this.openGameOverDialog(true, record);
             this.clueHandlerService.resetNbClue();
+            this.differenceHandler.mouseIsDisabled = true;
+            this.gameInfoHandlerService.isGameDone = true;
         });
         this.socket.once(SocketEvent.Lose, () => {
             this.openGameOverDialog(false);
             this.clueHandlerService.resetNbClue();
+            this.differenceHandler.mouseIsDisabled = true;
+            this.gameInfoHandlerService.isGameDone = true;
         });
         this.socket.once(SocketEvent.PlayerLeft, () => {
             this.gameInfoHandlerService.isMulti = false;
