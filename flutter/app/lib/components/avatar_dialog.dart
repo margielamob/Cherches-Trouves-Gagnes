@@ -2,7 +2,6 @@ import 'package:app/components/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
-import 'package:app/pages/profile_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -188,7 +187,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                           }
                           // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
-                          Get.off(ProfilePage());
+                          //Get.off(ProfilePage());
                         },
                         child: Text("Sauvegarder votre choix")),
               ],
