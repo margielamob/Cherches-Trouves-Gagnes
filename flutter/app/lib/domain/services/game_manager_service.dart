@@ -77,31 +77,12 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
-      //if (message is Map<String, dynamic>) {
-      //GameInfoRequest data = GameInfoRequest.fromJson(message);
-      //print("play event Object received");
-      //print(data.toJson());
-      // What is the purpose of that
-      //} else if (message is String) {
-      //GameInfoRequest data = GameInfoRequest(gameId: message);
-      //print("play event gameId received");
-      //print(data.toJson());
-      // TODO : use GameInfoMulti instead of game
-      //if (gameCards != null) {
-      //  Get.offAll(Classic(gameId: data.gameId, gameCards: gameCards!));
-      //} else {
-      //  print("Erreur, les gamesCards ne sont pas initialisés");
-      //}
-      //}
-      if (message is Map<String, dynamic>) {
-      } else {
-        print(message);
-        currentRoomId = message;
-        print(currentRoomId!);
-        print(gameCards!);
-        Get.to(Classic(gameId: currentRoomId!, gameCards: gameCards!));
-      }
+      // on a déjà l'info quand on veut joindre une game.
+      // on ne reçoit plus l'info à cette requête.
+      currentRoomId = message;
+      Get.to(Classic(gameId: currentRoomId!, gameInfo: gameInfo!));
     });
+
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
