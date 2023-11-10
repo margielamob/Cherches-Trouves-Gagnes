@@ -1,11 +1,13 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CreateJoinGameDialogueComponent } from '@app/components/create-join-game-dialogue/create-join-game-dialogue.component';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { UserNameInputComponent } from '@app/components/user-name-input/user-name-input.component';
 import { CarouselResponse } from '@app/interfaces/carousel-response';
 import { UserData } from '@app/interfaces/user';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
 import { RouterService } from '@app/services/router-service/router.service';
@@ -29,13 +31,16 @@ export class MainPageComponent implements OnInit {
         private readonly carouselService: GameCarouselService,
         private readonly router: RouterService,
         private userService: UserService,
+        private chatManager: ChatManagerService,
     ) {}
 
     ngOnInit(): void {
         this.user$ = this.userService.getCurrentUser();
+        this.chatManager.initChat();
     }
 
     onClickPlayClassic(): void {
+        this.matDialog.open(CreateJoinGameDialogueComponent);
         this.mainPageService.setGameMode(GameMode.Classic);
     }
 
@@ -50,7 +55,7 @@ export class MainPageComponent implements OnInit {
                     this.matDialog.closeAll();
                     this.carouselService.setCarouselInformation(response.body.carouselInfo);
                     this.mainPageService.setGameMode(GameMode.LimitedTime);
-                    this.openNameDialog();
+                    this.openCreateJoinGameDialog();
                 }
             },
             error: () => {
@@ -60,7 +65,19 @@ export class MainPageComponent implements OnInit {
         });
     }
 
+    toggleGameOptions(): void {
+        this.onClickPlayClassic();
+    }
+
+    navigateTo(path: string): void {
+        this.router.navigateTo(path);
+        this.toggleGameOptions(); // Hide the options after selection
+    }
+
     openNameDialog(isMulti: boolean = false) {
         this.matDialog.open(UserNameInputComponent, { data: { isMulti } });
+    }
+    openCreateJoinGameDialog() {
+        this.matDialog.open(CreateJoinGameDialogueComponent);
     }
 }

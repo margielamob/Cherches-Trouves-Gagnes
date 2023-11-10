@@ -7,11 +7,7 @@
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
         </h1>
         <ul>
-            <li>
-                <button class="optionsButton" mat-flat-button color="primary" routerLink="/select" (click)="onClickPlayClassic()">
-                    {{ 'MAINPAGE.CLASSIC' | translate }}
-                </button>
-            </li>
+            <button class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">Classique</button>
             <li>
                 <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">
                     {{ 'MAINPAGE.LIMITED_TIME' | translate }}

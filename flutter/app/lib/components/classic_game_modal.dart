@@ -11,7 +11,6 @@ class ClassicGameModal extends StatelessWidget {
           children: [
             FilledButton(
               onPressed: () {
-                Navigator.of(context).pop();
                 Navigator.pushNamed(context, '/gameSelection');
               },
               child: Text("Créer"),
@@ -21,9 +20,7 @@ class ClassicGameModal extends StatelessWidget {
             ),
             SizedBox(width: 30),
             FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () {},
               child: Text("Joindre"),
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),

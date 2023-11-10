@@ -9,6 +9,7 @@ import { Observable, catchError, from, map, of, switchMap, take } from 'rxjs';
     providedIn: 'root',
 })
 export class UserService {
+    activeUser: UserData;
     user$: Observable<UserData | undefined>;
     constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
         this.user$ = this.afAuth.authState.pipe(
@@ -20,6 +21,11 @@ export class UserService {
                 }
             }),
         );
+        this.user$.subscribe((user) => {
+            if (user) {
+                this.activeUser = user;
+            }
+        });
     }
 
     adduser(user: UserData) {
@@ -133,6 +139,18 @@ export class UserService {
 
     getCurrentUser(): Observable<UserData | undefined> {
         return this.user$;
+    }
+
+    getCurrentUserUsername(): Observable<string | null> {
+        return this.user$.pipe(
+            switchMap((userData) => {
+                if (userData) {
+                    return of(userData.displayName);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
     }
 
     getUserLang(): Observable<string | null> {

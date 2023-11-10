@@ -1,20 +1,24 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { Game } from '@app/classes/game/game';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { DifferenceService } from '@app/services/difference-service/difference.service';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { LimitedTimeGame } from '@app/services/limited-time-game-service/limited-time-game.service';
 import { TimerService } from '@app/services/timer-service/timer.service';
+import { BASE_64_HEADER } from '@common/base64';
 import { Coordinate } from '@common/coordinate';
 import { DifferenceFound } from '@common/difference';
 import { GameMode } from '@common/game-mode';
+import { JoinableGameCard } from '@common/joinable-game-card';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
 import { Server } from 'socket.io';
 import { Service } from 'typedi';
-
+import LZString = require('lz-string');
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
+    joinableGames: Map<string, Game> = new Map();
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -37,9 +41,38 @@ export class GameManagerService {
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
+        this.joinableGames.set(game.identifier, game);
         this.difference.setGameDifferences(game.identifier);
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
         return game.identifier;
+    }
+
+    getJoinableGames(): JoinableGameCard[] {
+        return Array.from(this.joinableGames.keys())
+            .map((roomId) => this.getJoinableGame(roomId))
+            .filter((game) => game !== undefined) as JoinableGameCard[];
+    }
+
+    getJoinableGame(roomId: string): JoinableGameCard | undefined {
+        const game = this.joinableGames.get(roomId);
+        if (!game) {
+            return;
+        }
+        const thumbnail = BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail);
+        const nbDifferences = game.information.differences.length;
+        const players = this.getPlayers(roomId) || [];
+        const gameCardInfo = {
+            id: game.information.id,
+            name: game.information.name,
+            thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail),
+            nbDifferences: game.information.differences.length,
+            idEditedBmp: game.information.idEditedBmp,
+            idOriginalBmp: game.information.idOriginalBmp,
+            multiplayerScore: game.information.multiplayerScore,
+            soloScore: game.information.soloScore,
+            isMulti: false,
+        };
+        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
     }
 
     getGameInfo(gameId: string) {
@@ -62,8 +95,8 @@ export class GameManagerService {
         }
     }
 
-    setTimer(gameId: string) {
-        return this.isGameFound(gameId) ? this.timer.setTimer(this.findGame(gameId) as Game) : null;
+    setTimer(gameId: string, initialTime: number) {
+        return this.isGameFound(gameId) ? this.timer.setTimer(this.findGame(gameId) as Game, initialTime) : null;
     }
 
     sendTimer(sio: Server, gameId: string, playerId: string) {
@@ -71,20 +104,23 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-
+        if (this.timer.isStartedTimer(gameId)) {
+            return;
+        }
+        this.timer.started(gameId);
         game.timerId = setInterval(() => {
-            if (game.gameMode === GameMode.LimitedTime && this.isGameOver(gameId)) {
-                // high scores to handle here
+            const remainingTime = this.timer.calculateTime(game); // Get the remaining time
+
+            if (remainingTime <= 0 || game.isGameOver()) {
                 sio.sockets.to(gameId).emit(SocketEvent.Win);
                 this.leaveGame(playerId, gameId);
                 this.deleteTimer(gameId);
             } else {
-                sio.sockets.to(gameId).emit(SocketEvent.Clock, this.getTime(gameId));
+                sio.sockets.to(gameId).emit(SocketEvent.Clock, remainingTime);
             }
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- one second is 1000 ms
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
     }
-
     deleteTimer(gameId: string) {
         const game = this.findGame(gameId);
         if (!game) {
@@ -116,6 +152,15 @@ export class GameManagerService {
         return game ? this.timer.seconds(game) : null;
     }
 
+    isCheatMode(gameId: string) {
+        return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isCheatMode : null;
+    }
+    setCheatMode(gameId: string, cheatMode: boolean) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.isCheatMode = cheatMode;
+        }
+    }
     isClassic(gameId: string) {
         return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isClassic() : null;
     }
@@ -142,6 +187,10 @@ export class GameManagerService {
         return this.isGameFound(gameId) ? this.difference.nbDifferencesLeft((game as Game).information.differences, gameId) : null;
     }
 
+    resetDifferencesFound(gameId: string) {
+        this.difference.resetDifferencesFound(gameId);
+    }
+
     isGameAlreadyFull(gameId: string) {
         const game = this.findGame(gameId);
         return !game || game.isGameFull();
@@ -156,15 +205,20 @@ export class GameManagerService {
         game.addPlayer(player);
     }
 
+    getPlayers(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : Array.from(game.players.values());
+    }
+
     getNbDifferenceNotFound(gameId: string) {
         const game = this.findGame(gameId);
         return !game ? undefined : this.difference.getAllDifferencesNotFound(game.information.differences, gameId);
     }
 
-    hasSameName(roomId: string, playersName: string) {
-        const game = this.findGame(roomId);
-        return !game ? false : Array.from(game.players.values()).includes(playersName);
-    }
+    // hasSameName(roomId: string, playersName: string) {
+    //     const game = this.findGame(roomId);
+    //     return !game ? false : Array.from(game.players.values()).includes(playersName);
+    // }
 
     isGameMultiplayer(gameId: string) {
         const game = this.findGame(gameId);
@@ -175,9 +229,10 @@ export class GameManagerService {
         const game = this.findGame(gameId);
         game?.leaveGame(playerId);
         this.deleteTimer(gameId);
-        if (game && game.hasNoPlayer()) {
-            this.games.delete(gameId);
-        }
+    }
+
+    discardGame(gameId: string) {
+        this.games.delete(gameId);
     }
 
     getNbDifferencesFound(differenceCoords: Coordinate[], gameId: string, isPlayerFoundDifference?: boolean): DifferenceFound {
@@ -204,11 +259,30 @@ export class GameManagerService {
         return this.findGame(gameId)?.nbCluesAsked;
     }
 
+    removePlayer(roomId: string, playerId: string) {
+        const game = this.findGame(roomId);
+        if (game) {
+            game.removePlayer(playerId);
+        }
+    }
+
+    isGameCreator(roomId: string, playerId: string) {
+        const game = this.findGame(roomId);
+        return game?.isGameCreator(playerId);
+    }
+
     findPlayer(gameId: string, playerId: string) {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
-    private findGame(gameId: string): Game | undefined {
+    removeJoinableGame(gameId: string) {
+        this.joinableGames.delete(gameId);
+    }
+    removeGame(gameId: string) {
+        this.games.delete(gameId);
+    }
+
+    findGame(gameId: string): Game | undefined {
         return this.games.get(gameId);
     }
 }

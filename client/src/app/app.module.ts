@@ -6,6 +6,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogFormsErrorComponent } from '@app/components/dialog-forms-error/dialog-forms-error.component';
@@ -28,15 +29,26 @@ import { AppLogoComponent } from './components/app-logo/app-logo.component';
 import { ApprovalDialogComponent } from './components/approval-dialog/approval-dialog.component';
 import { CentralBoxComponent } from './components/central-tool-box/central-tool-box.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
+import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-button.component';
+import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
+import { ChatListComponent } from './components/chat-panel/chat-list/chat-list.component';
+import { ChatOverlayComponent } from './components/chat-panel/chat-overlay/chat-overlay.component';
+import { ChatPanelComponent } from './components/chat-panel/chat-panel/chat-panel.component';
+import { RoomAddComponent } from './components/chat-panel/room-add/room-add.component';
+import { RoomCardComponent } from './components/chat-panel/room-card/room-card.component';
+import { RoomCreateComponent } from './components/chat-panel/room-create/room-create.component';
+import { RoomSearchComponent } from './components/chat-panel/room-search/room-search.component';
 import { CluesAreaComponent } from './components/clues-area/clues-area.component';
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
 import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogConfirmResetPasswordComponent } from './components/dialog-confirm-reset-password/dialog-confirm-reset-password.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
 import { DialogDeleteAccountComponent } from './components/dialog-delete-account/dialog-delete-account.component';
 import { DialogGameOverComponent } from './components/dialog-game-over/dialog-game-over.component';
 import { DialogLimitedTimeComponent } from './components/dialog-limited-time/dialog-limited-time.component';
+import { DialogSetUpGameComponent } from './components/dialog-set-up-game/dialog-set-up-game/dialog-set-up-game.component';
 import { DialogUploadFormComponent } from './components/dialog-upload-form/dialog-upload-form.component';
 import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
@@ -53,6 +65,7 @@ import { PageHeaderComponent } from './components/page-header/page-header.compon
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
+import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
@@ -60,6 +73,7 @@ import { UserProfilInformationComponent } from './components/user-profil-informa
 import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
+import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
@@ -118,6 +132,12 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         LoginPageComponent,
         SignUpPageComponent,
         AppLogoComponent,
+        ChatPanelComponent,
+        ChatListComponent,
+        ChatFeedComponent,
+        RoomSearchComponent,
+        RoomCreateComponent,
+        RoomAddComponent,
         SettingsPageComponent,
         UserProfilInformationComponent,
         DialogUserAvatarComponent,
@@ -125,18 +145,24 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         UserAvatarComponent,
         EmailVerificationComponent,
         DialogDeleteAccountComponent,
+        ChatOverlayComponent,
+        ChatButtonComponent,
+        RoomCardComponent,
+        JoinGameSelectionComponent,
+        DialogSetUpGameComponent,
         DialogChangeNameComponent,
         DialogConfirmResetPasswordComponent,
         ResetPasswordComponent,
+        CreateJoinGameDialogueComponent,
+        ReplayBarComponent,
     ],
     imports: [
+        MatCheckboxModule,
         AppMaterialModule,
         AppRoutingModule,
         FormsModule,
-        ReactiveFormsModule,
         BrowserAnimationsModule,
         BrowserModule,
-        FormsModule,
         ReactiveFormsModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
@@ -158,7 +184,6 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
 export class AppModule {}
 
 // ngx-translate and the loader module documentation : http://www.ngx-translate.com/
-
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions, @typescript-eslint/naming-convention
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');

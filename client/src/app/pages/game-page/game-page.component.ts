@@ -5,6 +5,7 @@ import { DialogGameOverComponent } from '@app/components/dialog-game-over/dialog
 import { PlayerLeftSnackbarComponent } from '@app/components/player-left-snackbar/player-left-snackbar.component';
 import { ClueHandlerService } from '@app/services/clue-handler-service/clue-handler.service';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameRecord } from '@common/game-record';
@@ -19,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GamePageComponent implements OnDestroy {
     title: string;
     clock: string;
+    isReplayToggled: boolean = false;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
@@ -29,6 +31,7 @@ export class GamePageComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
         private translate: TranslateService,
+        private differenceHandler: DifferencesDetectionHandlerService,
     ) {
         exitButtonService.setGamePage();
         const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
@@ -45,10 +48,14 @@ export class GamePageComponent implements OnDestroy {
         this.socket.once(SocketEvent.Win, (record?: GameRecord) => {
             this.openGameOverDialog(true, record);
             this.clueHandlerService.resetNbClue();
+            this.differenceHandler.mouseIsDisabled = true;
+            this.gameInfoHandlerService.isGameDone = true;
         });
         this.socket.once(SocketEvent.Lose, () => {
             this.openGameOverDialog(false);
             this.clueHandlerService.resetNbClue();
+            this.differenceHandler.mouseIsDisabled = true;
+            this.gameInfoHandlerService.isGameDone = true;
         });
         this.socket.once(SocketEvent.PlayerLeft, () => {
             this.gameInfoHandlerService.isMulti = false;
@@ -70,6 +77,7 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.gameInfoHandlerService.resetGameVariables();
     }
 
     openSnackBar() {
@@ -83,7 +91,7 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
-                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent().name,
+                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent()[0].name,
                 isClassic: true,
                 record,
             };
@@ -95,7 +103,19 @@ export class GamePageComponent implements OnDestroy {
                 nbPoints: this.findNbDifferences(),
             };
         }
-        this.dialog.open(DialogGameOverComponent, dialogConfig);
+        const dialogRef = this.dialog.open(DialogGameOverComponent, dialogConfig);
+
+        if (this.gameInfoHandlerService.isClassic()) {
+            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
+                this.isReplayToggled = isReplayToggled;
+                // eslint-disable-next-line no-console
+                console.log('received toggle', this.isReplayToggled);
+            });
+        }
+    }
+
+    canReplay() {
+        return this.isReplayToggled && this.gameInfoHandlerService.isClassic();
     }
 
     private findNbDifferences(): string {

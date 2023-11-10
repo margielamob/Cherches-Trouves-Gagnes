@@ -7,8 +7,9 @@ class SocketEvent {
   static String differenceNotFound = 'differenceNotFound';
   static String differenceFound = 'differenceFound';
   static String getGamesWaiting = 'getGamesWaiting';
-  static String createGame = "createGame";
-  static String createGameMulti = "createGameMulti";
+  static String createClassicGame = "createClassicGame";
+  static String ready = "ready";
+  static String gameStarted = "GameStarted";
   static String play = "play";
   static String waitPlayer = "waitPlayer";
   static String playerLeft = "playerLeft";
@@ -18,7 +19,14 @@ class SocketEvent {
   static String joinGame = "joinGame";
   static String requestToJoin = "requestToJoin";
   static String leaveWaiting = "leaveWaiting";
+  static String leaveWaitingRoom = "LeaveWaitingRoom";
   static String win = "win";
   static String lose = "lose";
   static String refreshGames = "refreshGames";
+  static String classicGameCreated = 'ClassicGameCreated';
+  static String sendingJoinableClassicGames = 'sendingJoinableClassicGames';
+  static String updatePlayers = 'updatePlayers';
+  static String getJoinableGames = 'GetJoinableGames';
+  static String joinClassicGame = 'JoinClassicGame';
+  static String creatorLeft = 'CreatorLeft';
 }

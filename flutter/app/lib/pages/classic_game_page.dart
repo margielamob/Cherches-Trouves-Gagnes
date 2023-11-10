@@ -3,7 +3,7 @@ import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
-import 'package:app/domain/models/game_card_model.dart';
+import 'package:app/domain/models/game_card_multi_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -19,9 +19,9 @@ class Classic extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
 
   final String gameId;
-  final GameCardModel gameCards;
+  final GameCardMultiModel gameInfo;
 
-  Classic({required this.gameId, required this.gameCards}) {
+  Classic({required this.gameId, required this.gameInfo}) {
     _differenceDetectionService.handleDifferences();
   }
 
@@ -34,7 +34,7 @@ class Classic extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
             future: _classicGameService.getImagesFromIds(
-                gameCards.idOriginalBmp, gameCards.idEditedBmp),
+                gameInfo.idOriginalBmp, gameInfo.idEditedBmp),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;

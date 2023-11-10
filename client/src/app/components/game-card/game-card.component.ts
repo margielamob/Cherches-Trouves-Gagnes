@@ -4,6 +4,7 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { GamesWaitingInfo } from '@common/games-waiting-info';
+import { JoinableGameCard } from '@common/joinable-game-card';
 import { Score } from '@common/score';
 import { SocketEvent } from '@common/socket-event';
 
@@ -14,6 +15,8 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class GameCardComponent implements OnInit {
     @Input() gameCard: GameCard;
+    @Input() isJoining: boolean = false;
+    @Input() joinableGameCard: JoinableGameCard;
     imageSrc: string;
 
     constructor(
@@ -42,6 +45,10 @@ export class GameCardComponent implements OnInit {
     }
 
     setImagesSrc(): void {
+        if (this.isJoining) {
+            this.imageSrc = this.joinableGameCard.thumbnail;
+            return;
+        }
         this.imageSrc = this.gameCard.gameInformation.thumbnail;
     }
 
@@ -49,6 +56,9 @@ export class GameCardComponent implements OnInit {
         return this.timeFormatter.formatTime(scoreTime);
     }
 
+    getNbDifferences() {
+        return this.gameCard.gameInformation.nbDifferences;
+    }
     getGameName(): string {
         return this.gameCard.gameInformation.name;
     }
@@ -60,16 +70,7 @@ export class GameCardComponent implements OnInit {
     getMultiplayerScores(): Score[] {
         return this.gameCard.gameInformation.multiplayerScore;
     }
-
-    getSinglePlayerScores(): Score[] {
-        return this.gameCard.gameInformation.soloScore;
-    }
-
     hasMultiplayerScores(): boolean {
         return this.gameCard.gameInformation.multiplayerScore.length > 0;
-    }
-
-    hasSinglePlayerScores(): boolean {
-        return this.gameCard.gameInformation.soloScore.length > 0;
     }
 }

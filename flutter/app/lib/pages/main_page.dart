@@ -1,7 +1,6 @@
+import 'package:app/components/classic_game_dialog.dart';
 import 'package:app/components/logout_dialog.dart';
-import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
-import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +9,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    gameManagerService.setCurrentUser();
     return Scaffold(
       appBar: AppBar(
         title: Text("Menu principal"),
@@ -60,13 +60,12 @@ class MainPage extends StatelessWidget {
                             MaterialStateProperty.all(Size(160.0, 60.0)),
                       ),
                       onPressed: () {
-                        //   showDialog(
-                        //     context: context,
-                        //     builder: (BuildContext context) {
-                        //       return ClassicGameModal();
-                        //     },
-                        //   );
-                        Navigator.pushNamed(context, '/gameSelection');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ClassicGameDialog();
+                          },
+                        );
                       },
                       child: Text('Mode de jeux classique'),
                     ),
@@ -87,13 +86,7 @@ class MainPage extends StatelessWidget {
                         minimumSize:
                             MaterialStateProperty.all(Size(160.0, 60.0)),
                       ),
-                      onPressed: () {
-                        gameManagerService.createSoloGame(
-                            'saoul',
-                            GameModeModel(GameMode.classic),
-                            '97b430aa-fcd3-451c-8118-18a5e9b18636',
-                            false);
-                      },
+                      onPressed: () {},
                       child: Text('Go to Page F'),
                     ),
                     SizedBox(height: 30),

@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-magic-numbers -- display on canvas with settings*/
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -5,6 +6,7 @@ import { FlashTimer } from '@app/constants/game-constants';
 import { Vec2 } from '@app/interfaces/vec2';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 @Injectable({
@@ -15,15 +17,18 @@ export class DifferencesDetectionHandlerService {
     correctSound = new Audio('assets/correctanswer.wav');
     wrongSound = new Audio('assets/wronganswer.wav');
 
+    // eslint-disable-next-line max-params
     constructor(
         public matDialog: MatDialog,
         private readonly socketService: CommunicationSocketService,
         private readonly gameInfoHandlerService: GameInformationHandlerService,
+        private userService: UserService,
     ) {}
 
-    setNumberDifferencesFound(isPlayerAction: boolean) {
-        this.gameInfoHandlerService.players[isPlayerAction ? 0 : 1].nbDifferences++;
-        this.gameInfoHandlerService.$differenceFound.next(this.gameInfoHandlerService.players[isPlayerAction ? 0 : 1].name);
+    setNumberDifferencesFound(playerName: string) {
+        const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
+        this.gameInfoHandlerService.players[index].nbDifferences++;
+        this.gameInfoHandlerService.$differenceFound.next(playerName);
     }
 
     playWrongSound() {
@@ -39,8 +44,14 @@ export class DifferencesDetectionHandlerService {
         sound.play();
     }
 
-    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
-        this.socketService.send(SocketEvent.Difference, { differenceCoord: mousePosition, gameId: id });
+    // eslint-disable-next-line max-params
+    getDifferenceValidation(id: string, mousePosition: Vec2, ctx: CanvasRenderingContext2D, isOriginal: boolean) {
+        this.socketService.send(SocketEvent.Difference, {
+            differenceCoord: mousePosition,
+            roomId: this.gameInfoHandlerService.roomId,
+            player: this.userService.activeUser.displayName,
+            isOriginal,
+        });
         this.handleSocketDifferenceNotFound(ctx, mousePosition);
     }
 
@@ -50,7 +61,7 @@ export class DifferencesDetectionHandlerService {
         });
     }
 
-    differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
+    differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D, timeFactor: number = 1) {
         this.playWrongSound();
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);
@@ -59,16 +70,17 @@ export class DifferencesDetectionHandlerService {
         setTimeout(() => {
             this.mouseIsDisabled = false;
             ctx.clearRect(mousePosition.x, mousePosition.y, 30, -30);
-        }, 1000);
+        }, 1000 / timeFactor);
     }
 
-    differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
+    differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[], timeFactor: number = 1) {
         this.playCorrectSound();
-        this.displayDifferenceTemp(ctx, coords, false);
+        this.displayDifferenceTemp(ctx, coords, false, timeFactor);
         this.clearDifference(ctxModified, coords);
     }
 
-    displayDifferenceTemp(ctx: CanvasRenderingContext2D, coords: Coordinate[], isCheatMode: boolean): number {
+    // eslint-disable-next-line max-params
+    displayDifferenceTemp(ctx: CanvasRenderingContext2D, coords: Coordinate[], isCheatMode: boolean, timeFactor: number = 1): number {
         let counter = 0;
         const interval = setInterval(
             () => {
@@ -86,7 +98,7 @@ export class DifferencesDetectionHandlerService {
                 }
                 counter++;
             },
-            isCheatMode ? FlashTimer.CheatMode : FlashTimer.Classic,
+            isCheatMode ? FlashTimer.CheatMode : FlashTimer.Classic / timeFactor,
         ) as unknown as number;
         return interval;
     }

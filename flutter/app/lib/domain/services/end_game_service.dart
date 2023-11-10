@@ -28,8 +28,5 @@ class EndGameService extends ChangeNotifier {
       isGameFinished = true;
       notifyListeners();
     });
-    _socket.on(SocketEvent.refreshGames, (dynamic message) {
-      print("SocketEvent.refreshGames : $message");
-    });
   }
 }
