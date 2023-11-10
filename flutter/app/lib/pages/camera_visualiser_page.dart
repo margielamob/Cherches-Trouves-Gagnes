@@ -61,6 +61,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             final image = await _controller.takePicture();
             if (!mounted) return;
 
+            cameraManager.currentImage = image;
+
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => AvatarDialog(

@@ -96,6 +96,12 @@ void main() async {
             return profilePageManager;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            CameraManager cameraManager = Get.find();
+            return cameraManager;
+          },
+        ),
       ],
       child: MyApp(),
     ),
