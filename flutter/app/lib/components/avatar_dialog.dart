@@ -2,6 +2,7 @@ import 'package:app/components/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +161,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                       child: Avatar(
                         photoURL: 'assets/camera.png',
                         onTap: () async {
-                          Navigator.pushNamed(context, '/TakePictureScreen');
+                          Get.to(TakePictureScreen());
                         },
                       ),
                     ),
