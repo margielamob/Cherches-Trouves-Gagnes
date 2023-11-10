@@ -14,7 +14,7 @@ export class ChatManagerService {
     activeRoom: BehaviorSubject<string> = new BehaviorSubject<string>('all');
     userRoomList: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     allRoomsList: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-    activeUser: string;
+    // activeUser: string;
 
     messages: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
     user$: Observable<UserData | undefined>;

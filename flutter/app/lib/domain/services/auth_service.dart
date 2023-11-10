@@ -4,11 +4,14 @@ import 'package:app/domain/services/personal_user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AuthService {
   PersonalUserService userService = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
   UserModel? currentUser;
+
+  BehaviorSubject<UserModel?> userSubject = BehaviorSubject<UserModel?>();
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
@@ -17,6 +20,10 @@ class AuthService {
         email: email,
         password: password,
       );
+      getCurrentUser().then((value) {
+        currentUser = value;
+        userSubject.add(currentUser);
+      });
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;
