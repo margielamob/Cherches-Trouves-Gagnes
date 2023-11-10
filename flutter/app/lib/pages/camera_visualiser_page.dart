@@ -1,5 +1,5 @@
-import 'package:app/components/avatar_dialog.dart';
 import 'package:app/domain/services/camera_manager.dart';
+import 'package:app/pages/profile_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,16 +61,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             final image = await _controller.takePicture();
             if (!mounted) return;
 
-            cameraManager.currentImage = image;
-
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AvatarDialog(
-                  imagePath: image.path,
-                  imageFile: image,
-                ),
-              ),
-            );
+            cameraManager.updateCurrentImage(image);
+            Navigator.of(context).pop();
+            Get.off(ProfilePage());
           } catch (e) {
             print(e);
           }

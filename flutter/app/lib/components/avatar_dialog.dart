@@ -8,6 +8,20 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/*
+Faire en sorte que la logique de : marche
+
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AvatarDialog(
+                  imagePath: image.path,
+                  imageFile: image,
+                ),
+              ),
+            );
+
+*/
+
 class AvatarDialog extends StatefulWidget {
   final String? imagePath;
   final XFile? imageFile;
@@ -49,150 +63,150 @@ class AvatarDialogState extends State<AvatarDialog> {
 
   Widget build(BuildContext context) {
     return Dialog(
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Choissisez votre avatar',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 15),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  'Choissisez votre avatar',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color:
+                              selectedAvatar == 'assets/default-user-icon.jpg'
+                                  ? Colors.deepPurple
+                                  : Colors.transparent,
+                          width: 3.0),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    child: Avatar(
+                      photoURL: 'assets/default-user-icon.jpg',
+                      onTap: () async {
+                        selectedAvatar = 'assets/default-user-icon.jpg';
+                        setState(() {});
+                      },
+                    ),
                   ),
                 ),
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: selectedAvatar ==
-                                      'assets/default-user-icon.jpg'
-                                  ? Colors.deepPurple
-                                  : Colors.transparent,
-                              width: 3.0),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Avatar(
-                          photoURL: 'assets/default-user-icon.jpg',
-                          onTap: () async {
-                            selectedAvatar = 'assets/default-user-icon.jpg';
-                            setState(() {});
-                          },
-                        ),
-                      ),
+                SizedBox(width: 10.0),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: selectedAvatar ==
+                                  'assets/avatar-predefini/avatar2.png'
+                              ? Colors.deepPurple
+                              : Colors.transparent,
+                          width: 3.0),
+                      borderRadius: BorderRadius.circular(50.0),
                     ),
-                    SizedBox(width: 10.0),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: selectedAvatar ==
-                                      'assets/avatar-predefini/avatar2.png'
-                                  ? Colors.deepPurple
-                                  : Colors.transparent,
-                              width: 3.0),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Avatar(
-                          photoURL: 'assets/avatar-predefini/avatar2.png',
-                          onTap: () async {
-                            selectedAvatar =
-                                'assets/avatar-predefini/avatar2.png';
-                            setState(() {});
-                          },
-                        ),
-                      ),
+                    child: Avatar(
+                      photoURL: 'assets/avatar-predefini/avatar2.png',
+                      onTap: () async {
+                        selectedAvatar = 'assets/avatar-predefini/avatar2.png';
+                        setState(() {});
+                      },
                     ),
-                    SizedBox(width: 10.0),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: selectedAvatar ==
-                                      'assets/avatar-predefini/avatar3.png'
-                                  ? Colors.deepPurple
-                                  : Colors.transparent,
-                              width: 3.0),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Avatar(
-                          photoURL: 'assets/avatar-predefini/avatar3.png',
-                          onTap: () async {
-                            selectedAvatar =
-                                'assets/avatar-predefini/avatar3.png';
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                    widget.imagePath == null
-                        ? SizedBox(width: 10.0)
-                        : MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: selectedAvatar == widget.imagePath
-                                        ? Colors.deepPurple
-                                        : Colors.transparent,
-                                    width: 3.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              child: Avatar(
-                                photoURL: widget.imagePath,
-                                onTap: () async {
-                                  selectedAvatar = widget.imagePath;
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          ),
-                    SizedBox(width: 10.0),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Avatar(
-                        photoURL: 'assets/camera.png',
-                        onTap: () async {
-                          Get.to(TakePictureScreen());
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: 20.0),
-                isLoading
-                    ? CircularProgressIndicator()
-                    : FilledButton(
-                        onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          if (selectedAvatar != null) {
-                            if (selectedAvatar == widget.imagePath) {
-                              await userService.uploadAvatar(
-                                  currentUser!.uid, widget.imageFile!);
-                              await userService.updateUserAvatar(
-                                  currentUser!.uid,
-                                  'avatars/${currentUser?.uid}/avatar.jpg');
-                            } else {
-                              await userService.updateUserAvatar(
-                                  currentUser!.uid, selectedAvatar!);
-                            }
-                          }
-                          // ignore: use_build_context_synchronously
-                          Navigator.of(context).pop();
-                          Get.off(ProfilePage());
-                        },
-                        child: Text("Sauvegarder votre choix")),
+                SizedBox(width: 10.0),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: selectedAvatar ==
+                                  'assets/avatar-predefini/avatar3.png'
+                              ? Colors.deepPurple
+                              : Colors.transparent,
+                          width: 3.0),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    child: Avatar(
+                      photoURL: 'assets/avatar-predefini/avatar3.png',
+                      onTap: () async {
+                        selectedAvatar = 'assets/avatar-predefini/avatar3.png';
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ),
+                widget.imagePath == null
+                    ? SizedBox(width: 10.0)
+                    : MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: selectedAvatar == widget.imagePath
+                                    ? Colors.deepPurple
+                                    : Colors.transparent,
+                                width: 3.0),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          child: Avatar(
+                            photoURL: widget.imagePath,
+                            onTap: () async {
+                              selectedAvatar = widget.imagePath;
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ),
+                SizedBox(width: 10.0),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Avatar(
+                    photoURL: 'assets/camera.png',
+                    onTap: () async {
+                      Get.to(TakePictureScreen());
+                    },
+                  ),
+                ),
               ],
-            )));
+            ),
+            SizedBox(height: 20.0),
+            isLoading
+                ? CircularProgressIndicator()
+                : FilledButton(
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      if (selectedAvatar != null) {
+                        if (selectedAvatar == widget.imagePath) {
+                          await userService.uploadAvatar(
+                              currentUser!.uid, widget.imageFile!);
+                          await userService.updateUserAvatar(currentUser!.uid,
+                              'avatars/${currentUser?.uid}/avatar.jpg');
+                        } else {
+                          await userService.updateUserAvatar(
+                              currentUser!.uid, selectedAvatar!);
+                        }
+                      }
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop();
+                      Get.off(ProfilePage());
+                    },
+                    child: Text("Sauvegarder votre choix"),
+                  ),
+          ],
+        ),
+      ),
+    );
   }
 }
