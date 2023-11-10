@@ -1,4 +1,4 @@
-import 'package:app/components/avatar/avatar_dialog.dart';
+import 'package:app/components/avatar_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 

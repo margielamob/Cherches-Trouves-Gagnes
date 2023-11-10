@@ -7,6 +7,7 @@ import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
@@ -41,6 +42,7 @@ void registerDependencies() {
   Get.put(GameManagerService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
+  Get.put(ProfilePageManager());
 }
 
 late List<CameraDescription> cameras;
@@ -88,6 +90,12 @@ void main() async {
           create: (context) {
             ReachableGameManager reachableGameManager = Get.find();
             return reachableGameManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            ProfilePageManager profilePageManager = Get.find();
+            return profilePageManager;
           },
         ),
       ],
