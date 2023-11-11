@@ -5,7 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class ThemeService {
     appTheme: string = 'Default';
-    setappTheme(theme: string): void {
+    setAppTheme(theme: string): void {
         this.appTheme = theme;
+    }
+    getAppTheme(): string {
+        return this.appTheme;
     }
 }
