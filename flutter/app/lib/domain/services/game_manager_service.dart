@@ -1,6 +1,5 @@
 import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
-import 'package:app/domain/models/game_card_multi_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
@@ -30,7 +29,6 @@ class GameManagerService extends ChangeNotifier {
   final AuthService _authService = AuthService();
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
-  GameCardMultiModel? gameInfo;
   GameCardModel? gameCards;
   UserRequest? userRequest;
   UserModel? currentUser;
@@ -42,26 +40,6 @@ class GameManagerService extends ChangeNotifier {
   GameManagerService() {
     handleSockets();
   }
-
-  /*
-    handleSocketEvent() {
-        this.socket.once(SocketEvent.Play, (infos: GameId) => {
-            if (infos.gameCard) {
-                this.setGameInformation(infos.gameCard);
-            }
-            this.roomId = infos.gameId;
-            this.routerService.navigateTo('game');
-        });
-
-        this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
-            this.roomId = info.roomId;
-            this.isMulti = true;
-            this.playersEX = info.players;
-            this.cheatMode = info.cheatMode;
-            this.routerService.navigateTo('waiting');
-        });
-    }
-  */
 
   void handleSockets() {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
@@ -77,10 +55,8 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
-      // on a déjà l'info quand on veut joindre une game.
-      // on ne reçoit plus l'info à cette requête.
       currentRoomId = message;
-      Get.to(Classic(gameId: currentRoomId!, gameInfo: gameInfo!));
+      Get.to(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
@@ -93,7 +69,7 @@ class GameManagerService extends ChangeNotifier {
       notifyListeners();
     });
     _socket.on(SocketEvent.gameStarted, (dynamic message) {
-      print("SocketEvent.updatePlayers : $message");
+      print("SocketEvent.gameStarted : $message");
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
