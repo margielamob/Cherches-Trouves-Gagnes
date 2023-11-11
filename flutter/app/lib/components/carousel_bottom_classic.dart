@@ -38,10 +38,16 @@ class CarouselBottomClassic extends CarouselBottom {
                 )
               : FilledButton(
                   onPressed: () async {
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (BuildContext context) {
+                    //     return GameConstantsDialog();
+                    //   },
+                    // );
                     try {
                       gameManager.createMultiplayerGame(data.id, true, 100);
                       gameManager.currentGameId = data.id;
-                      // gameManager.gameCards = data;
+                      gameManager.gameCards = data;
                     } catch (error) {
                       print(error);
                     }
