@@ -94,7 +94,8 @@ class ReachableGamesCard extends StatelessWidget {
                       minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                     ),
                     onPressed: () {
-                      gameManagerService.gameInfo = game.gameInformation;
+                      gameManagerService.gameCards =
+                          game.gameInformation.toGameCardModel();
                       gameManagerService.joinGame(game.roomId);
                     },
                     child: Text("Joindre"),
