@@ -1,7 +1,7 @@
+import 'package:app/domain/models/requests/difference_found_message.dart';
+import 'package:app/domain/models/requests/difference_found_request.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
-import 'package:app/domain/utils/difference_found_message.dart';
-import 'package:app/domain/utils/difference_found_request.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +25,9 @@ class DifferenceDetectionService extends ChangeNotifier {
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
       _soundService.playDifferenceFound();
-      coordinates.addAll(data.coords);
+      coordinates.addAll(data.data.coordinates);
       notifyListeners();
-      startBlinking(data.coords);
+      startBlinking(data.data.coordinates);
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       _soundService.playDifferenceNotFound();
@@ -82,8 +82,12 @@ class DifferenceDetectionService extends ChangeNotifier {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
       print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
-      final data =
-          DifferenceFoundRequest(mousePosition: mousePosition, gameId: gameId);
+      final data = DifferenceFoundRequest(
+          differenceCoord: mousePosition,
+          gameId: gameId,
+          isOriginal: false,
+          playerName: "Thierry");
+
       _socket.send(SocketEvent.difference, data.toJson());
     } catch (error) {
       print('Error while sending the request: $error');
