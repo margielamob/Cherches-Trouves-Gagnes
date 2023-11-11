@@ -1,0 +1,10 @@
+<mat-form-field class="search">
+    <mat-label class="search-label">Search</mat-label>
+    <input matInput [formControl]="search" class="search-input" />
+</mat-form-field>
+
+<mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile *ngFor="let user of $search | async">
+        <app-friend-card [friend]="user"></app-friend-card>
+    </mat-grid-tile>
+</mat-grid-list>

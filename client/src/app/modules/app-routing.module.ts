@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
+import { FriendListComponent } from '@app/components/friend-list/friend-list/friend-list.component';
 import { AuthGuard } from '@app/guards/auth.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
@@ -32,6 +33,7 @@ const routes: Routes = [
     { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
+    { path: 'friends', component: FriendListComponent },
 
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', redirectTo: '/home' },

@@ -80,6 +80,11 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { FriendListComponent } from './components/friend-list/friend-list/friend-list.component';
+import { FriendPanelComponent } from './components/friend-list/friend-panel/friend-panel.component';
+import { FriendCardComponent } from './components/friend-list/friend-card/friend-card.component';
+import { AddFriendComponent } from './components/friend-list/add-friend/add-friend.component';
+import { HeaderButtonComponent } from './components/friend-list/header-button/header-button.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -155,6 +160,11 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         ResetPasswordComponent,
         CreateJoinGameDialogueComponent,
         ReplayBarComponent,
+        FriendListComponent,
+        FriendPanelComponent,
+        FriendCardComponent,
+        AddFriendComponent,
+        HeaderButtonComponent,
     ],
     imports: [
         MatCheckboxModule,

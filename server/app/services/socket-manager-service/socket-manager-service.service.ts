@@ -9,6 +9,7 @@ import { SocketEvent } from '@common/socket-event';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { ChatSocketManager } from './chat.service';
+import { FriendListManager } from './friend-list.service';
 import { GameCreationManager } from './game-creation.service';
 import { GameStateManager } from './game-state.service';
 import { GamePlayManager } from './gameplay.service';
@@ -27,6 +28,7 @@ export class SocketManagerService {
         private gameStateManager: GameStateManager,
         private gamePlayManager: GamePlayManager,
         private userManager: UserManager,
+        private friendManager: FriendListManager,
     ) {}
 
     private get sio(): Server {
@@ -49,6 +51,7 @@ export class SocketManagerService {
             this.gameStateManager.handleSockets(socket);
             this.gamePlayManager.handleSockets(socket);
             this.userManager.handleSockets(socket);
+            this.friendManager.handleSockets(socket);
 
             socket.on(SocketEvent.Disconnect, () => {
                 // eslint-disable-next-line no-console

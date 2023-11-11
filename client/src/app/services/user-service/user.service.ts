@@ -66,6 +66,21 @@ export class UserService {
             );
     }
 
+    getUserByUid(uid: string) {
+        return this.afs
+            .collection('users', (ref) => ref.where('uid', '==', uid))
+            .get()
+            .pipe(
+                map((resut) => {
+                    if (!resut.empty) {
+                        return resut.docs[0].data() as UserData;
+                    } else {
+                        return null;
+                    }
+                }),
+            );
+    }
+
     updateUser(user: UserData) {
         return from(this.afs.collection('users').doc(user.uid).update(user)).pipe(
             catchError((error) => {

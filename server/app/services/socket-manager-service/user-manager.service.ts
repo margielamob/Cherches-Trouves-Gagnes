@@ -10,7 +10,7 @@ import { ChatSocketManager } from './chat.service';
 
 @Service()
 export class UserManager {
-    users: Map<string, User> = new Map<string, User>();
+    usersSocket: Map<string, User> = new Map<string, User>();
 
     constructor(private chat: ChatSocketManager) {}
 
@@ -25,11 +25,11 @@ export class UserManager {
     }
 
     login(user: User, socket: Socket) {
-        this.users.set(socket.id, user);
+        this.usersSocket.set(socket.id, user);
     }
 
     logout(socket: Socket) {
-        this.chat.leaveGameChat(this.users.get(socket.id)?.name || '');
-        this.users.delete(socket.id);
+        this.chat.leaveGameChat(this.usersSocket.get(socket.id)?.name || '');
+        this.usersSocket.delete(socket.id);
     }
 }
