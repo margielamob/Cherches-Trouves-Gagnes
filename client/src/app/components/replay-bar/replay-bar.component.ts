@@ -13,24 +13,22 @@ export class ReplayBarComponent implements OnChanges {
     isReplayAvailable: boolean = true;
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     replaySpeeds = [0.5, 1, 2, 3];
-    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
-
-    get sliderPosition() {
-        return this.replayService.getCurrentIndex();
+    sliderPosition = 0;
+    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {
+        this.replayService.slider$.subscribe((ratio) => {
+            this.sliderPosition = ratio;
+        });
     }
 
-    set sliderPosition(pos: number) {
-        this.replayService.setCurrentIndex(pos);
-    }
-
-    ngOnChanges() {
+    async ngOnChanges() {
         this.seekToEvent(this.sliderPosition);
     }
 
-    async seekToEvent(position: number) {
+    async seekToEvent(percentage: number) {
+        console.log(percentage);
         this.replayService.setSate(ReplayState.START);
-        this.replayService.setCurrentTime(position);
-        await this.replayService.playFromIndex(position);
+        this.replayService.setCurrentTime(percentage);
+        await this.replayService.playFromIndex(percentage);
     }
 
     async replay() {
@@ -43,8 +41,8 @@ export class ReplayBarComponent implements OnChanges {
     }
 
     async resume() {
-        this.replayService.setSate(ReplayState.PLAYING);
-        await this.replayService.playFromIndex(this.sliderPosition);
+        // this.replayService.setSate(ReplayState.PLAYING);
+        // await this.replayService.playFromIndex(this.sliderPosition);
     }
 
     quit() {
@@ -67,5 +65,9 @@ export class ReplayBarComponent implements OnChanges {
 
     totalEvents() {
         return this.replayService.length();
+    }
+
+    totalTime() {
+        return this.replayService.getTotalSeconds();
     }
 }

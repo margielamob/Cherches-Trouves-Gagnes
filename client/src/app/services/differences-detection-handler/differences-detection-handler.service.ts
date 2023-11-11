@@ -75,8 +75,9 @@ export class DifferencesDetectionHandlerService {
 
     differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[], timeFactor: number = 1) {
         this.playCorrectSound();
-        this.displayDifferenceTemp(ctx, coords, false, timeFactor);
+        const interval = this.displayDifferenceTemp(ctx, coords, false, timeFactor);
         this.clearDifference(ctxModified, coords);
+        return interval;
     }
 
     // eslint-disable-next-line max-params
