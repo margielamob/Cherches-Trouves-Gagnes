@@ -15,6 +15,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
     hasReplayStarted = false;
     private time: number;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly socketService: CommunicationSocketService,
         private readonly timeFormatter: TimeFormatterService,
