@@ -242,7 +242,6 @@ export class UserService {
     }
 
     addToActiveUser(userId: string): Observable<void> {
-        // Créer un document dans la collection 'activeUser' avec le userId comme clé.
         return from(this.afs.collection('activeUser').doc(userId).set({ userId })).pipe(
             catchError(() => {
                 return throwError(() => new Error("Erreur lors de l'ajout de l'utilisateur aux utilisateurs actifs"));
