@@ -5,9 +5,14 @@
     {{ headerMessage }}
     <span class="filler"></span>
 
-    <app-chat-button></app-chat-button>
-
-    <button matTooltip="{{ 'HEADER.LOGOUT' | translate }}" (click)="signOut()" class="home-button" mat-fab color="primary">
+    <button
+        matTooltip="{{ 'HEADER.LOGOUT' | translate }}"
+        (click)="signOut()"
+        class="home-button"
+        mat-fab
+        color="primary"
+        *ngIf="isSignOutButtonEnabled"
+    >
         <mat-icon>exit_to_app</mat-icon>
     </button>
     <app-user-avatar matTooltip="{{ 'HEADER.SETTINGS' | translate }}"></app-user-avatar>

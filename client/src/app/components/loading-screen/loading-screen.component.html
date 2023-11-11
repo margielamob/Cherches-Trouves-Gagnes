@@ -1,3 +1,6 @@
-<div class="spinner-container">
+<div
+    class="spinner-container"
+    [ngClass]="{ 'indigo-pink-theme': currentTheme === 'Default', 'deeppurple-amber-theme': currentTheme === 'Alternative' }"
+>
     <mat-progress-spinner class="progress-spinner" [mode]="'indeterminate'" [diameter]="150" [strokeWidth]="10"></mat-progress-spinner>
 </div>
