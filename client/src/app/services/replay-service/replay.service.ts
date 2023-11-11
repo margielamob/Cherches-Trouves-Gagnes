@@ -38,6 +38,7 @@ export class ReplayService {
     private imgModifiedContext: CanvasRenderingContext2D;
     private currentTime: number;
 
+    // eslint-disable-next-line max-params
     constructor(
         private socket: CommunicationSocketService,
         private differenceHandler: DifferencesDetectionHandlerService,

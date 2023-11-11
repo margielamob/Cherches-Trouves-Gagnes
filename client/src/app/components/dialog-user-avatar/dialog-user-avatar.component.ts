@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Avatar } from '@app/interfaces/avatar';
 import { UserData } from '@app/interfaces/user';
 import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -36,6 +37,7 @@ export class DialogUserAvatarComponent implements OnInit, OnDestroy {
         private imageUploadService: ImageUploadService,
         private userService: UserService, //
         private translateService: TranslateService,
+        private themeService: ThemeService,
     ) {}
     ngOnDestroy(): void {
         if (this.userThemeSubscription) {
@@ -48,10 +50,7 @@ export class DialogUserAvatarComponent implements OnInit, OnDestroy {
         this.user$.subscribe((user) => {
             this.setUserAvatar(user);
         });
-
-        this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
-            this.currentTheme = theme as string;
-        });
+        this.currentTheme = this.themeService.getAppTheme();
     }
 
     toggleBorder(avatar: Avatar) {

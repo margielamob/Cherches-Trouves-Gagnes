@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GAME_TIME_CONSTANTS_PARAMS } from '@app/constants/game-constants';
 import { CommunicationService } from '@app/services/communication/communication.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { GameTimeConstants } from '@common/game-time-constants';
 import { Subscription } from 'rxjs';
@@ -20,13 +21,11 @@ export class GameConstantsSettingsComponent implements OnInit, OnDestroy {
     userThemeSubscription: Subscription;
     currentTheme: string;
 
-    constructor(private readonly communicationService: CommunicationService, public userService: UserService) {}
+    constructor(private readonly communicationService: CommunicationService, public userService: UserService, private themeServie: ThemeService) {}
 
     ngOnInit(): void {
         this.getConstants();
-        this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
-            this.currentTheme = theme as string;
-        });
+        this.currentTheme = this.themeServie.getAppTheme();
     }
 
     onClickRestoreDefaultValues(): void {

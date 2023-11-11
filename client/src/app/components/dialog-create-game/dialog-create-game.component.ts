@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { LoadingScreenComponent } from '@app/components/loading-screen/loading-screen.component';
 import { Canvas } from '@app/enums/canvas';
 import { CommunicationService } from '@app/services/communication/communication.service';
-import { UserService } from '@app/services/user-service/user.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -36,13 +36,11 @@ export class DialogCreateGameComponent implements AfterViewInit, OnInit, OnDestr
         public dialog: MatDialog,
         private communication: CommunicationService,
         private router: Router,
-        public userService: UserService,
+        private themeService: ThemeService,
     ) {}
 
     ngOnInit(): void {
-        this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
-            this.currentTheme = theme as string;
-        });
+        this.currentTheme = this.themeService.getAppTheme();
     }
 
     ngOnDestroy(): void {
