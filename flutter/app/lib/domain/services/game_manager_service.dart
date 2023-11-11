@@ -1,18 +1,15 @@
 import 'package:app/domain/models/classic_game_model.dart';
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_card_multi_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
-import 'package:app/domain/models/requests/accept_player_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
-import 'package:app/domain/models/requests/creator_left_request.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_game_request.dart';
-import 'package:app/domain/models/requests/leave_waiting_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
-import 'package:app/domain/models/requests/play_receive_request.dart';
-import 'package:app/domain/models/requests/reject_player_request.dart';
+import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
@@ -34,6 +31,7 @@ class GameManagerService extends ChangeNotifier {
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
   GameCardMultiModel? gameInfo;
+  GameCardModel? gameCards;
   UserRequest? userRequest;
   UserModel? currentUser;
   String? currentGameId;
@@ -41,7 +39,7 @@ class GameManagerService extends ChangeNotifier {
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
 
-  GameManagerService() : gameInfo = null {
+  GameManagerService() {
     handleSockets();
   }
 
@@ -79,34 +77,18 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
-      //if (message is Map<String, dynamic>) {
-      //GameInfoRequest data = GameInfoRequest.fromJson(message);
-      //print("play event Object received");
-      //print(data.toJson());
-      // What is the purpose of that
-      //} else if (message is String) {
-      //GameInfoRequest data = GameInfoRequest(gameId: message);
-      //print("play event gameId received");
-      //print(data.toJson());
-      // TODO : use GameInfoMulti instead of game
-      //if (gameCards != null) {
-      //  Get.offAll(Classic(gameId: data.gameId, gameCards: gameCards!));
-      //} else {
-      //  print("Erreur, les gamesCards ne sont pas initialisés");
-      //}
-      //}
-      print(message);
-      PlayReceiveRequest data = PlayReceiveRequest.fromJson(message);
-      print(data.toJson());
-      // Get.to(Classic(gameId: data.gameId, gameCards: data.gameCard!));
+      // on a déjà l'info quand on veut joindre une game.
+      // on ne reçoit plus l'info à cette requête.
+      currentRoomId = message;
+      Get.to(Classic(gameId: currentRoomId!, gameInfo: gameInfo!));
     });
+
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       Get.to(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
-      print("SocketEvent.updatePlayers : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       notifyListeners();
     });
@@ -209,7 +191,9 @@ class GameManagerService extends ChangeNotifier {
   }
 
   void startGame() {
-    _socket.send(SocketEvent.gameStarted, waitingRoomInfoRequest!.roomId);
+    ReadyGameRequest data =
+        ReadyGameRequest(gameId: waitingRoomInfoRequest!.roomId);
+    _socket.send(SocketEvent.ready, data.toJson());
   }
 
   void setCurrentUser() {

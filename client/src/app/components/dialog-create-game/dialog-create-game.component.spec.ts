@@ -1,6 +1,7 @@
 import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +14,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { UserService } from '@app/services/user-service/user.service';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { DialogCreateGameComponent } from './dialog-create-game.component';
 
 describe('DialogCreateGameComponent', () => {
@@ -48,6 +50,8 @@ describe('DialogCreateGameComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 HttpClientModule,
+                AngularFireModule.initializeApp(environment.firebase),
+
                 TranslateModule.forRoot({
                     loader: {
                         provide: TranslateLoader,

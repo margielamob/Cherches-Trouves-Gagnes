@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, of, switchMap, take } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, take, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +17,7 @@ export class UserService {
                 if (user) {
                     return this.afs.collection('users').doc<UserData>(user.uid).valueChanges();
                 } else {
-                    return [];
+                    return of(undefined);
                 }
             }),
         );
@@ -171,7 +171,7 @@ export class UserService {
                 if (user && user.theme !== undefined) {
                     return of(user.theme);
                 } else {
-                    return of(null);
+                    return of('Default');
                 }
             }),
         );
@@ -234,9 +234,33 @@ export class UserService {
             take(1),
             switchMap((user) => {
                 if (!user || !user.uid) {
-                    throw new Error('No user logged in or user ID not found');
+                    throw new Error('Aucun utilisateur connecté ou UID non disponible');
                 }
                 return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
+            }),
+        );
+    }
+
+    addToActiveUser(userId: string): Observable<void> {
+        return from(this.afs.collection('activeUser').doc(userId).set({ userId })).pipe(
+            catchError(() => {
+                return throwError(() => new Error("Erreur lors de l'ajout de l'utilisateur aux utilisateurs actifs"));
+            }),
+        );
+    }
+
+    deleteFromActiveUser(): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (user && user.uid) {
+                    return from(this.afs.collection('activeUser').doc(user.uid).delete());
+                } else {
+                    return throwError(() => new Error('No user logged in or UID not available'));
+                }
+            }),
+            catchError(() => {
+                return throwError(() => new Error('Error removing user from active users'));
             }),
         );
     }

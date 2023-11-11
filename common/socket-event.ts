@@ -63,4 +63,5 @@ export enum SocketEvent {
     ResetGameInfosReplay = 'ResetGameInfosReplay',
     DifferenceFoundReplay = 'DifferenceFoundReplay',
     LeavingArena = 'LeavingArena',
+    Timer = 'Timer',
 }
