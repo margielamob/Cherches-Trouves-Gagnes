@@ -40,7 +40,6 @@ class Classic extends StatelessWidget {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
-                    // Show the dialog when isGameFinished is true
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
