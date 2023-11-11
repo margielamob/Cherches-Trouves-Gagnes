@@ -27,10 +27,14 @@ export class AuthenticationService {
                     .pipe(
                         switchMap((doc) => {
                             if (doc.exists) {
-                                this.afAuth.signOut();
-                                throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
+                                return this.afAuth.signOut().then(() => {
+                                    throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
+                                });
                             }
                             return this.userService.addToActiveUser(user.uid);
+                        }),
+                        switchMap(() => {
+                            return this.logSessionActivity(user.uid, 'connect');
                         }),
                     );
             }),
@@ -39,13 +43,15 @@ export class AuthenticationService {
                 if (error instanceof Error && error.message.includes('Vous avez déjà une session ouverte')) {
                     errorMessage = error.message;
                 } else if (error instanceof FirebaseError) {
-                    if (error.code === 'auth/user-not-found') {
-                        errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
-                    } else if (error.code === 'auth/wrong-password') {
-                        errorMessage = 'Votre mot de passe est incorrect.';
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage = 'Votre mot de passe est incorrect.';
+                            break;
                     }
                 }
-
                 return throwError(() => new Error(errorMessage));
             }),
         );
@@ -109,6 +115,7 @@ export class AuthenticationService {
     logSessionActivity(userUid: string, activity: string) {
         const log = {
             activity,
+            client: 'desktop',
             timestamp: new Date(),
         };
         return from(this.afs.collection('users').doc(userUid).collection('activityLogs').add(log));
