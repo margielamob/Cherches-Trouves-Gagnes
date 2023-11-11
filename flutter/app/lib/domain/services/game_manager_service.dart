@@ -6,7 +6,7 @@ import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
-import 'package:app/domain/models/requests/leave_game_request.dart';
+import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
@@ -85,12 +85,6 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
     });
-    _socket.on(SocketEvent.win, (dynamic message) {
-      print("SocketEvent.win : $message");
-    });
-    _socket.on(SocketEvent.lose, (dynamic message) {
-      print("SocketEvent.lose : $message");
-    });
     _socket.on(SocketEvent.creatorLeft, (dynamic message) {
       print(message);
       Get.offAll(MainPage());
@@ -144,20 +138,11 @@ class GameManagerService extends ChangeNotifier {
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 
-  void leaveGame(String gameId) {
-    LeaveGameRequest data = LeaveGameRequest(gameId: gameId);
-    _socket.send(SocketEvent.leaveGame, data.toJson());
-    playerInWaitingRoom = [];
-    print("leaveGame");
+  void leaveArena(String gameId) {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: gameId);
+    _socket.send(SocketEvent.leavingArena, data.toJson());
+    print("leavingArena");
   }
-
-  // void leaveWaiting(String roomId, String gameCard) {
-  //   LeaveWaitingRequest data =
-  //       LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
-  //   _socket.send(SocketEvent.leaveWaiting, data.toJson());
-  //   playerInWaitingRoom = [];
-  //   print("leaveWaiting");
-  // }
 
   void leaveWaitingRoom() {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
