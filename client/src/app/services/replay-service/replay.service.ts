@@ -37,6 +37,7 @@ export class ReplayService {
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
     private currentTime: number;
+    private timer: number;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -91,8 +92,7 @@ export class ReplayService {
             this.clearTimer();
         }
         const factor = this.getElapsedSeconds(this.array.getEvent(index));
-
-        const time = this.gameHandler.timer - factor;
+        const time = this.timer - factor;
 
         this.setTimer(time);
     }
@@ -179,10 +179,18 @@ export class ReplayService {
         this.socket.once(SocketEvent.GameStarted, (gameId: string) => {
             this.gameId = gameId;
             this.addEvent(ReplayActions.StartGame, gameId);
+            if (this.gameHandler.timer !== 0) {
+                this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
+                this.timer = this.gameHandler.timer;
+            }
         });
 
         this.socket.on(SocketEvent.Cheat, () => {
             this.addEvent(ReplayActions.ActivateCheat);
+        });
+
+        this.socket.on(SocketEvent.Timer, (payload: { timer: number }) => {
+            this.timer = payload.timer;
         });
     }
 
