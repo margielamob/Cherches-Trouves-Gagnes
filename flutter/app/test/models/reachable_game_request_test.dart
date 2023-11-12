@@ -38,7 +38,7 @@ void main() {
 
       final firstGame = joinableGamesRequest.games[0];
       expect(firstGame.gameInformation.nbDifferences, 5);
-      expect(firstGame.gameInformation.thumbnail.length, 1228894);
+      expect(firstGame.gameInformation.thumbnail.length, 921654);
       expect(firstGame.gameInformation.idEditedBmp,
           "f2384094-ac72-4ffd-84a9-25ee977c41d8");
       expect(firstGame.gameInformation.idOriginalBmp,

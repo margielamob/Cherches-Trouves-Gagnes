@@ -123,7 +123,7 @@ class MainPage extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                           child: Text(
-                            'Thierry, Ahmed El, Ahmed Ben, Skander, Samy',
+                            'Thierry, Ahmed El, Sulayman, Ahmed Ben, Skander, Samy',
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400),
                           ),

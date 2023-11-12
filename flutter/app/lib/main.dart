@@ -36,12 +36,12 @@ void registerDependencies() {
   Get.put(PersonalUserService());
   Get.put(AuthService());
   Get.put(HttpService());
-  Get.put(DifferenceDetectionService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
+  Get.put(DifferenceDetectionService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());

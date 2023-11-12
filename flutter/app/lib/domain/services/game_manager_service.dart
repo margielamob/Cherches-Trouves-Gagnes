@@ -1,13 +1,13 @@
 import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
-import 'package:app/domain/models/game_card_multi_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
+import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
-import 'package:app/domain/models/requests/leave_game_request.dart';
+import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
@@ -30,9 +30,9 @@ class GameManagerService extends ChangeNotifier {
   final AuthService _authService = AuthService();
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
-  GameCardMultiModel? gameInfo;
   GameCardModel? gameCards;
   UserRequest? userRequest;
+  List<UserModel> players = [];
   UserModel? currentUser;
   String? currentGameId;
   String? currentRoomId;
@@ -42,26 +42,6 @@ class GameManagerService extends ChangeNotifier {
   GameManagerService() {
     handleSockets();
   }
-
-  /*
-    handleSocketEvent() {
-        this.socket.once(SocketEvent.Play, (infos: GameId) => {
-            if (infos.gameCard) {
-                this.setGameInformation(infos.gameCard);
-            }
-            this.roomId = infos.gameId;
-            this.routerService.navigateTo('game');
-        });
-
-        this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
-            this.roomId = info.roomId;
-            this.isMulti = true;
-            this.playersEX = info.players;
-            this.cheatMode = info.cheatMode;
-            this.routerService.navigateTo('waiting');
-        });
-    }
-  */
 
   void handleSockets() {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
@@ -77,23 +57,23 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
-      // on a déjà l'info quand on veut joindre une game.
-      // on ne reçoit plus l'info à cette requête.
       currentRoomId = message;
-      Get.to(Classic(gameId: currentRoomId!, gameInfo: gameInfo!));
+      Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      players = waitingRoomInfoRequest!.players;
       Get.to(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      players = waitingRoomInfoRequest!.players;
       notifyListeners();
     });
     _socket.on(SocketEvent.gameStarted, (dynamic message) {
-      print("SocketEvent.updatePlayers : $message");
+      print("SocketEvent.gameStarted : $message");
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
@@ -108,12 +88,6 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
-    });
-    _socket.on(SocketEvent.win, (dynamic message) {
-      print("SocketEvent.win : $message");
-    });
-    _socket.on(SocketEvent.lose, (dynamic message) {
-      print("SocketEvent.lose : $message");
     });
     _socket.on(SocketEvent.creatorLeft, (dynamic message) {
       print(message);
@@ -168,26 +142,17 @@ class GameManagerService extends ChangeNotifier {
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 
-  void leaveGame(String gameId) {
-    LeaveGameRequest data = LeaveGameRequest(gameId: gameId);
-    _socket.send(SocketEvent.leaveGame, data.toJson());
-    playerInWaitingRoom = [];
-    print("leaveGame");
+  void leaveArena(String gameId) {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: gameId);
+    _socket.send(SocketEvent.leavingArena, data.toJson());
+    print("leavingArena");
   }
-
-  // void leaveWaiting(String roomId, String gameCard) {
-  //   LeaveWaitingRequest data =
-  //       LeaveWaitingRequest(roomId: roomId, gameCard: gameCard);
-  //   _socket.send(SocketEvent.leaveWaiting, data.toJson());
-  //   playerInWaitingRoom = [];
-  //   print("leaveWaiting");
-  // }
 
   void leaveWaitingRoom() {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
         roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);
     _socket.send(SocketEvent.leaveWaitingRoom, data.toJson());
-    Get.to(MainPage());
+    Get.offAll(MainPage(), transition: Transition.leftToRight);
   }
 
   void startGame() {
@@ -204,6 +169,15 @@ class GameManagerService extends ChangeNotifier {
         avatar: value.photoURL,
       );
     });
+  }
+
+  void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
+    for (var player in players) {
+      if (player.name == differenceFound.playerName) {
+        player.nbDifferenceFound++;
+      }
+    }
+    notifyListeners();
   }
 
   bool doesPlayerLaunchGame() {

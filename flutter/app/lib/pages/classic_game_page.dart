@@ -3,7 +3,7 @@ import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
-import 'package:app/domain/models/game_card_multi_model.dart';
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -19,9 +19,9 @@ class Classic extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
 
   final String gameId;
-  final GameCardMultiModel gameInfo;
+  final GameCardModel gameCard;
 
-  Classic({required this.gameId, required this.gameInfo}) {
+  Classic({required this.gameId, required this.gameCard}) {
     _differenceDetectionService.handleDifferences();
   }
 
@@ -29,18 +29,17 @@ class Classic extends StatelessWidget {
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
     return Scaffold(
-      appBar: CustomAppBar.buildDefaultBar(context, 'Partie classique'),
+      appBar: CustomAppBar.buildGameNavigationBar(context, 'Partie classique'),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
             future: _classicGameService.getImagesFromIds(
-                gameInfo.idOriginalBmp, gameInfo.idEditedBmp),
+                gameCard.idOriginalBmp, gameCard.idEditedBmp),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
-                    // Show the dialog when isGameFinished is true
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
