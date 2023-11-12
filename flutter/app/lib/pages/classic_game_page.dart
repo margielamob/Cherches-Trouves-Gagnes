@@ -7,7 +7,6 @@ import 'package:app/components/game_vignette_original.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
-import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -46,6 +45,7 @@ class Classic extends StatelessWidget {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (BuildContext context) {
                           return EndGameDialog();
                         },
