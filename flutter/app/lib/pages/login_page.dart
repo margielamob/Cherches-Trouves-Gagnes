@@ -1,4 +1,5 @@
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,8 @@ class LoginPageState extends State<LoginPage> {
   String? credential = "";
   String? password = "";
   bool isEmail = false;
-  final AuthService authService = AuthService();
+  final AuthService authService = Get.find();
+  final ChatManagerService chatManager = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +84,14 @@ class LoginPageState extends State<LoginPage> {
                               isEmail = credential!.contains('@');
 
                               try {
-                                await authService.signInWithUserName(
-                                    credential as String,
-                                    password as String,
-                                    isEmail);
-                                _formKey.currentState!.reset();
-                                Get.offAll(MainPage());
+                                authService
+                                    .signInWithUserName(credential as String,
+                                        password as String, isEmail)
+                                    .then((value) {
+                                  _formKey.currentState!.reset();
+                                  Get.offAll(MainPage());
+                                  chatManager.initChat();
+                                });
                               } catch (error) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

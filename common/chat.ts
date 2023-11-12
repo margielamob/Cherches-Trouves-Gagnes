@@ -1,6 +1,6 @@
 export interface ChatMessage {
     message: string;
-    user: string | undefined;
+    user: string;
     room: string;
 }
 

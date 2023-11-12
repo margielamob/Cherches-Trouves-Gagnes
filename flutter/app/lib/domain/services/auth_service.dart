@@ -1,5 +1,4 @@
 import 'package:app/domain/models/user_data.dart';
-import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,10 +7,11 @@ import 'package:rxdart/rxdart.dart';
 
 class AuthService {
   PersonalUserService userService = Get.find();
+  // ChatManagerService chatService = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
-  UserModel? currentUser;
+  UserData? currentUser;
 
-  BehaviorSubject<UserModel?> userSubject = BehaviorSubject<UserModel?>();
+  BehaviorSubject<UserData?> userSubject = BehaviorSubject<UserData?>();
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
@@ -20,10 +20,11 @@ class AuthService {
         email: email,
         password: password,
       );
-      getCurrentUser().then((value) {
-        currentUser = value;
-        userSubject.add(currentUser);
-      });
+      currentUser = await getCurrentUser();
+      userSubject.add(currentUser);
+      print('userSubject added');
+      print(userSubject.value);
+      // chatService.initChat();
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;

@@ -100,6 +100,17 @@ class MainPage extends StatelessWidget {
                       },
                       child: Text('Page de profile'),
                     ),
+                    SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/chatPage');
+                      },
+                      child: Text('Go to chat'),
+                    ),
                     SizedBox(height: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,

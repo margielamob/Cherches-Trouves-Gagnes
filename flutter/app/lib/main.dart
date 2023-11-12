@@ -1,5 +1,6 @@
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
@@ -14,6 +15,7 @@ import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
+import 'package:app/pages/chat_page.dart';
 import 'package:app/pages/create_game.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
@@ -43,6 +45,7 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(ChatManagerService());
 }
 
 late List<CameraDescription> cameras;
@@ -125,6 +128,7 @@ class MyApp extends StatelessWidget {
         '/ReachableGamePage': (context) => ReachableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
+        '/chatPage': (context) => ChatPage()
       },
     );
   }

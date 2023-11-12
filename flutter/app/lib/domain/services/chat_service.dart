@@ -5,70 +5,20 @@ import 'package:app/domain/utils/socket_events.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'chat_display_service.dart'; // Import your ChatDisplayService
-import 'chat_message.dart'; // Import your ChatMessage
-import 'communication_socket_service.dart'; // Import your CommunicationSocketService
-import 'socket_event.dart'; // Import your SocketEvent
-import 'user.dart'; // Import your UserData
-import 'user_service.dart'; // Import your UserService
-
-class ChatMessage {
-  String message;
-  String? user;
-  String room;
-
-  ChatMessage({
-    required this.message,
-    this.user,
-    required this.room,
-  });
-
-  factory ChatMessage.fromJson(Map<String, dynamic> json) {
-    return ChatMessage(
-      message: json['message'] as String,
-      user: json['user'] as String?,
-      room: json['room'] as String,
-    );
-  }
-}
-
-class ChatRoom {
-  ChatRoomInfo info;
-  List<ChatMessage> messages;
-
-  ChatRoom({
-    required this.info,
-    required this.messages,
-  });
-}
-
-class ChatRoomInfo {
-  String name;
-  ChatMessage? lastMessage;
-
-  ChatRoomInfo({
-    required this.name,
-    this.lastMessage,
-  });
-}
-
-class ChatUser {
-  String displayName;
-
-  ChatUser({
-    required this.displayName,
-  });
-}
+import '../models/chat_model.dart';
 
 class ChatManagerService {
   final SocketService socket = Get.find();
   final AuthService authService = Get.find();
 
   BehaviorSubject<String> activeRoom = BehaviorSubject<String>.seeded('all');
+
   BehaviorSubject<List<String>> userRoomList =
       BehaviorSubject<List<String>>.seeded([]);
+
   BehaviorSubject<List<String>> allRoomsList =
       BehaviorSubject<List<String>>.seeded([]);
+
   UserModel activeUser = UserModel(id: '', name: '');
 
   BehaviorSubject<List<ChatMessage>> messages =
@@ -79,7 +29,7 @@ class ChatManagerService {
   //constructor
   ChatManagerService() {
     authService.userSubject.stream.listen((user) {
-      activeUser = user!;
+      activeUser = {'id': user!.uid, 'name': user.displayName} as UserModel;
     });
   }
 
@@ -91,20 +41,20 @@ class ChatManagerService {
   void sendMessage(String message) {
     final newMessage = ChatMessage(
       message: message,
-      user: activeUser.name,
+      user: authService.currentUser!.displayName,
       room: activeRoom.value,
     );
-    socket.send(SocketEvent.message, {'message': newMessage});
+    socket.send(SocketEvent.message, {'message': newMessage.toJson()});
   }
 
   void addMessage(ChatMessage message) {
-    final currentMessages = messages.value;
-    currentMessages.add(message);
-    messages.add(currentMessages);
+    messages.add([...messages.value, message]);
   }
 
   void addListeners() {
     socket.on(SocketEvent.message, (dynamic data) {
+      print('message received');
+      print(ChatMessage.fromJson(data));
       final message = ChatMessage.fromJson(data);
       if (message.room == activeRoom.value) {
         addMessage(message);
@@ -137,6 +87,9 @@ class ChatManagerService {
   }
 
   void initChat() {
+    activeUser = UserModel(
+        id: authService.currentUser!.uid,
+        name: authService.currentUser!.displayName);
     addListeners();
     socket.send(SocketEvent.initChat, {'userName': activeUser.name});
   }
@@ -157,19 +110,19 @@ class ChatManagerService {
     socket.send(SocketEvent.getMessages, {'roomId': activeRoom.value});
   }
 
-  void createRoom(String roomName) {
-    socket.send(SocketEvent.createRoom, {
-      'roomName': roomName,
-      'userName': activeUser.name,
-    });
-  }
+  // void createRoom(String roomName) {
+  //   socket.send(SocketEvent.createRoom, {
+  //     'roomName': roomName,
+  //     'userName': activeUser.name,
+  //   });
+  // }
 
-  void joinRooms(List<String> roomNames) {
-    socket.send(SocketEvent.joinRooms, {
-      'roomNames': roomNames,
-      'userName': activeUser.name,
-    });
-  }
+  // void joinRooms(List<String> roomNames) {
+  //   socket.send(SocketEvent.joinRooms, {
+  //     'roomNames': roomNames,
+  //     'userName': activeUser.name,
+  //   });
+  // }
 
   bool isOwnMessage(ChatMessage message) {
     return message.user == activeUser.name;
@@ -179,24 +132,24 @@ class ChatManagerService {
     return message.user != activeUser.name;
   }
 
-  void leaveRoom(String roomName) {
-    socket.send(SocketEvent.leaveRoom, {
-      'roomName': roomName,
-      'userName': activeUser.name,
-    });
-  }
+  // void leaveRoom(String roomName) {
+  //   socket.send(SocketEvent.leaveRoom, {
+  //     'roomName': roomName,
+  //     'userName': activeUser.name,
+  //   });
+  // }
 
-  void deleteRoom(String roomName) {
-    socket.send(SocketEvent.deleteRoom, {'roomName': roomName});
-  }
+  // void deleteRoom(String roomName) {
+  //   socket.send(SocketEvent.deleteRoom, {'roomName': roomName});
+  // }
 
-  void leaveGameChat() {
-    if (activeRoom.value.startsWith('Game')) {
-      // display.deselectRoom();
-    }
-    final gameChat = userRoomList.value
-        .firstWhere((room) => room.startsWith('Game'), orElse: () => '');
-    socket.send(SocketEvent.leaveRoom,
-        {'roomName': gameChat, 'userName': activeUser.name});
-  }
+  // void leaveGameChat() {
+  //   if (activeRoom.value.startsWith('Game')) {
+  //     // display.deselectRoom();
+  //   }
+  //   final gameChat = userRoomList.value
+  //       .firstWhere((room) => room.startsWith('Game'), orElse: () => '');
+  //   socket.send(SocketEvent.leaveRoom,
+  //       {'roomName': gameChat, 'userName': activeUser.name});
+  // }
 }
