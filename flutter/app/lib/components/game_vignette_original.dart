@@ -83,7 +83,7 @@ class GameVignetteOriginal extends GameVignette {
               y.value = details.localPosition.dy.toDouble() /
                   GameVignette.tabletScalingRatio;
               diffService.validate(
-                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId);
+                  Vec2(x: x.value.toInt(), y: y.value.toInt()), gameId, true);
             },
             child: SizedBox(
               width: images.original.width.toDouble() *
