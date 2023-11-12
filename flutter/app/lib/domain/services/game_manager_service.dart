@@ -38,6 +38,7 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
+  GameModeModel? gameMode;
 
   GameManagerService() {
     handleSockets();
@@ -96,11 +97,11 @@ class GameManagerService extends ChangeNotifier {
     _socket.send(SocketEvent.joinClassicGame, request.toJson());
   }
 
-  void sendGameRequest(GameModeModel mode) {
+  void sendGameRequest() {
     try {
-      GameModeRequest data = GameModeRequest(gameModeModel: mode);
+      GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
       _socket.send(SocketEvent.getGamesWaiting, data.toJson());
-      print(mode);
+      print(gameMode);
     } catch (error) {
       print('Error while sending the request: $error');
     }
@@ -136,8 +137,8 @@ class GameManagerService extends ChangeNotifier {
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 
-  void leaveArena(String gameId) {
-    LeaveArenaRequest data = LeaveArenaRequest(gameId: gameId);
+  void leavingArena() {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: currentRoomId!);
     _socket.send(SocketEvent.leavingArena, data.toJson());
     print("leavingArena");
   }
