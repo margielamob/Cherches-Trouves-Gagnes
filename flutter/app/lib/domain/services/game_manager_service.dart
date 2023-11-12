@@ -48,11 +48,6 @@ class GameManagerService extends ChangeNotifier {
       print("SocketEvent.getGamesWaiting");
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
-      if (data.gamesWaiting.isNotEmpty) {
-        data.gamesWaiting.forEach((element) {
-          print(element);
-        });
-      }
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
@@ -84,7 +79,7 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.joinGame, (dynamic message) {
       print("SocketEvent.joinGame : $message");
       JoinGameRequest request = JoinGameRequest.fromJson(message);
-      joinGameSend(request.roomId);
+      joinGameSend(currentUser!.name, request.roomId);
     });
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
       print("SocketEvent.leaveWaiting : $message");
@@ -96,7 +91,6 @@ class GameManagerService extends ChangeNotifier {
   }
 
   void joinGame(String roomId) {
-    // TODO: vérifier si le ID du socket est bon
     JoinClassicGameRequest request = JoinClassicGameRequest(
         user: currentUser!, roomId: roomId, socketId: _socket.socket.id!);
     _socket.send(SocketEvent.joinClassicGame, request.toJson());
@@ -129,7 +123,6 @@ class GameManagerService extends ChangeNotifier {
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {
     if (waitingGame == null) return false;
-
     List<String> currentGames = waitingGame!.gamesWaiting;
     for (var game in currentGames) {
       if (game == gameId) return true;
@@ -137,8 +130,9 @@ class GameManagerService extends ChangeNotifier {
     return false;
   }
 
-  void joinGameSend(String roomId) {
-    JoinGameSendRequest data = JoinGameSendRequest(gameId: roomId);
+  void joinGameSend(String playerName, String roomId) {
+    JoinGameSendRequest data =
+        JoinGameSendRequest(player: playerName, gameId: roomId);
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 

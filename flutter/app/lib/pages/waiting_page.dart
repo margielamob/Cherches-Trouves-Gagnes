@@ -11,7 +11,7 @@ class WaitingPage extends StatelessWidget {
       appBar: CustomAppBar.buildDefaultBar(context, 'Waiting Room'),
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Les joueurs suivants sont dans la salle d'attente :",
@@ -20,17 +20,26 @@ class WaitingPage extends StatelessWidget {
           SizedBox(height: 20),
           CircularProgressIndicator(),
           SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount:
-                  gameManagerService.waitingRoomInfoRequest?.players.length,
-              itemBuilder: (context, index) {
-                final playerName = gameManagerService
-                    .waitingRoomInfoRequest?.players[index].name;
-                return ListTile(
-                  title: Text(playerName!),
-                );
-              },
+          SizedBox(
+            height: 100,
+            width: 300,
+            child: Center(
+              child: ListView.builder(
+                itemCount:
+                    gameManagerService.waitingRoomInfoRequest?.players.length,
+                itemBuilder: (context, index) {
+                  final playerName = gameManagerService
+                      .waitingRoomInfoRequest?.players[index].name;
+                  // final playerPhotoURL = gameManagerService
+                  //     .waitingRoomInfoRequest?.players[index].avatar;
+                  return ListTile(
+                    title: Text(playerName!),
+                    // leading: Avatar(
+                    //   photoURL: avatarUrl,
+                    // ),
+                  );
+                },
+              ),
             ),
           ),
           SizedBox(height: 20),
