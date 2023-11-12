@@ -56,7 +56,7 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
       currentRoomId = message;
-      Get.to(Classic(gameId: currentRoomId!, gameCard: gameCards!));
+      Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
