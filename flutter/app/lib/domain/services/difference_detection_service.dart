@@ -1,5 +1,6 @@
 import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/difference_found_request.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 class DifferenceDetectionService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final SoundService _soundService = Get.find();
+  final GameManagerService _gameManagerService = Get.find();
 
   List<Vec2> coordinates = [];
   Path? blinkingDifference;
@@ -78,15 +80,15 @@ class DifferenceDetectionService extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool validate(Vec2 mousePosition, String gameId) {
+  bool validate(Vec2 mousePosition, String gameId, bool isOriginal) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
       print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
       final data = DifferenceFoundRequest(
           differenceCoord: mousePosition,
           gameId: gameId,
-          isOriginal: false,
-          playerName: "Thierry");
+          isOriginal: isOriginal,
+          playerName: _gameManagerService.currentUser!.name);
 
       _socket.send(SocketEvent.difference, data.toJson());
     } catch (error) {
