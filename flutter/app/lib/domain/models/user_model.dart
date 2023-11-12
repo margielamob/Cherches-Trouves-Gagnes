@@ -2,12 +2,10 @@ class UserModel {
   final String id;
   final String name;
   final String? avatar;
+  int nbDifferenceFound;
 
-  UserModel({
-    required this.id,
-    required this.name,
-    this.avatar,
-  });
+  UserModel({required this.id, required this.name, this.avatar})
+      : nbDifferenceFound = 0;
 
   Map<String, dynamic> toMap() {
     return {

@@ -81,11 +81,11 @@ class _GameConstantsDialogState extends State<GameConstantsDialog> {
                 SizedBox(width: 20),
                 FilledButton(
                   onPressed: () {
-                    print(gameTimer);
                     gameManager.createMultiplayerGame(
                         widget.data.id, cheatModeActivated, gameTimer);
                     gameManager.currentGameId = widget.data.id;
                     gameManager.gameCards = widget.data;
+                    Navigator.of(context).pop();
                   },
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),

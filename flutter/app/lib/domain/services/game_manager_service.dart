@@ -2,6 +2,7 @@ import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
+import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
@@ -31,6 +32,7 @@ class GameManagerService extends ChangeNotifier {
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
   UserRequest? userRequest;
+  List<UserModel> players = [];
   UserModel? currentUser;
   String? currentGameId;
   String? currentRoomId;
@@ -56,16 +58,18 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.play, (dynamic message) {
       print("SocketEvent.play");
       currentRoomId = message;
-      Get.to(Classic(gameId: currentRoomId!, gameCard: gameCards!));
+      Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      players = waitingRoomInfoRequest!.players;
       Get.to(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
+      players = waitingRoomInfoRequest!.players;
       notifyListeners();
     });
     _socket.on(SocketEvent.gameStarted, (dynamic message) {
@@ -148,7 +152,7 @@ class GameManagerService extends ChangeNotifier {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
         roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);
     _socket.send(SocketEvent.leaveWaitingRoom, data.toJson());
-    Get.to(MainPage());
+    Get.offAll(MainPage(), transition: Transition.leftToRight);
   }
 
   void startGame() {
@@ -165,6 +169,15 @@ class GameManagerService extends ChangeNotifier {
         avatar: value.photoURL,
       );
     });
+  }
+
+  void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
+    for (var player in players) {
+      if (player.name == differenceFound.playerName) {
+        player.nbDifferenceFound++;
+      }
+    }
+    notifyListeners();
   }
 
   bool doesPlayerLaunchGame() {
