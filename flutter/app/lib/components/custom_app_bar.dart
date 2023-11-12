@@ -31,7 +31,7 @@ class CustomAppBar {
 
   static AppBar buildGameNavigationBar(context, String pageName) {
     DifferenceDetectionService differenceDetectionService = Get.find();
-    
+
     return AppBar(
       title: Text(pageName),
       actions: [

@@ -3,10 +3,10 @@ import 'package:app/domain/models/user_model.dart';
 class WaitingRoomInfoRequest {
   String roomId;
   List<UserModel> players;
-  bool cheatMode;
+  bool? cheatMode;
 
   WaitingRoomInfoRequest(
-      {required this.roomId, required this.players, required this.cheatMode});
+      {required this.roomId, required this.players, this.cheatMode});
 
   factory WaitingRoomInfoRequest.fromJson(Map<String, dynamic> json) {
     List<UserModel> players = List<UserModel>.from(
@@ -15,7 +15,7 @@ class WaitingRoomInfoRequest {
     return WaitingRoomInfoRequest(
       roomId: json['roomId'],
       players: players,
-      cheatMode: json['cheatMode'],
+      cheatMode: json.containsKey('cheatMode') ? json['cheatMode'] : false,
     );
   }
 
@@ -23,7 +23,7 @@ class WaitingRoomInfoRequest {
     return {
       'roomId': roomId,
       'players': players,
-      'cheatMode': cheatMode,
+      if (cheatMode != null) 'cheatMode': cheatMode,
     };
   }
 }
