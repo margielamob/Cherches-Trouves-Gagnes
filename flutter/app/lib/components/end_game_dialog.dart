@@ -8,6 +8,7 @@ class EndGameDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    endGameService.isGameFinished = false;
     return AlertDialog(
       title: Text("Partie terminée"),
       actions: <Widget>[

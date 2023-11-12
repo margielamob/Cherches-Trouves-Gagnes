@@ -30,6 +30,5 @@ class EndGameService extends ChangeNotifier {
   void gameFinished(String gameMessage) {
     isGameFinished = true;
     notifyListeners();
-    isGameFinished = false;
   }
 }
