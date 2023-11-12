@@ -1,6 +1,7 @@
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
+import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -43,6 +44,7 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(ClockService());
 }
 
 late List<CameraDescription> cameras;
@@ -96,6 +98,12 @@ void main() async {
           create: (context) {
             ProfilePageManager profilePageManager = Get.find();
             return profilePageManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            ClockService clockService = Get.find();
+            return clockService;
           },
         ),
       ],
