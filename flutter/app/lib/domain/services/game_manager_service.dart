@@ -152,7 +152,7 @@ class GameManagerService extends ChangeNotifier {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
         roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);
     _socket.send(SocketEvent.leaveWaitingRoom, data.toJson());
-    Get.to(MainPage());
+    Get.offAll(MainPage(), transition: Transition.leftToRight);
   }
 
   void startGame() {
