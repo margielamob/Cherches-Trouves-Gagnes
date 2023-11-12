@@ -1,11 +1,11 @@
 class UserData {
   final String uid;
-  final String displayName;
+  String displayName;
   final String email;
   final String? photoURL;
   final String? phoneNumber;
-  final String? theme;
-  final String? language;
+  String? theme;
+  String? language;
   final int gameLost;
   final int gameWins;
   final int gamePlayed;

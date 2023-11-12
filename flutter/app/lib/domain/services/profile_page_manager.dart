@@ -1,6 +1,7 @@
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ class ProfilePageManager extends ChangeNotifier {
   final AuthService authService = Get.find();
   UserData? currentUser;
   String? avatar;
+  ThemeData? appTheme;
 
   ProfilePageManager();
 
@@ -26,5 +28,31 @@ class ProfilePageManager extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  ThemeData get currentTheme {
+    return (currentUser?.theme == 'Alternative') ? Alternative : Default;
+  }
+
+  changeCurrentUserTheme(String theme) {
+    currentUser!.theme = theme;
+    userService.updateUser(currentUser!);
+    setAppTheme(theme);
+
+    notifyListeners();
+  }
+
+  ChangeCurrentUserLanguage(String language) {
+    currentUser!.language = language;
+    userService.updateUser(currentUser!);
+    notifyListeners();
+  }
+
+  void setAppTheme(String theme) {
+    if (theme == 'Default') {
+      appTheme = Default;
+    } else {
+      appTheme = Alternative;
+    }
   }
 }

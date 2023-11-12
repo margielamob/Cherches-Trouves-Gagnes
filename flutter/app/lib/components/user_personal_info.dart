@@ -161,7 +161,8 @@ class AccountSetting extends StatelessWidget {
               DropdownButton<String>(
                 value: profileManager.currentUser!.theme,
                 onChanged: (newValue) {
-                  // TODO: change the theme
+                  profileManager.changeCurrentUserTheme(newValue!);
+                  print(profileManager.currentUser!.theme);
                 },
                 items: ['Alternative', 'Default']
                     .map<DropdownMenuItem<String>>((String value) {

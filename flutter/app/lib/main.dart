@@ -11,7 +11,6 @@ import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
-import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game.dart';
@@ -107,9 +106,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Accessing ProfilePageManager from the provider
+    final profileManager = Provider.of<ProfilePageManager>(context);
+
+    // Accessing the first camera, assuming you have initialized it somewhere
     final firstCamera = cameras.first;
+
     return GetMaterialApp(
-      theme: appTheme,
+      theme: profileManager
+          .currentTheme, // This uses the current theme from the ProfilePageManager
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       routes: {
