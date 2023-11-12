@@ -34,13 +34,7 @@ class ProfilePageManager extends ChangeNotifier {
     return (currentUser?.theme == 'Alternative') ? Alternative : Default;
   }
 
-  changeCurrentUserTheme(String theme) {
-    currentUser!.theme = theme;
-    userService.updateUser(currentUser!);
-    setAppTheme(theme);
-
-    notifyListeners();
-  }
+  changeCurrentUserTheme(String theme) {}
 
   ChangeCurrentUserLanguage(String language) {
     currentUser!.language = language;
