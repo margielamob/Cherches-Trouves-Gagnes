@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LanguageService } from '@app/services/language-service/languag.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { Subscription, take } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -11,15 +12,17 @@ import { Subscription, take } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
     currentTheme: string = 'default';
     userThemeSubscription: Subscription;
+    userLangSubscription: Subscription;
 
-    constructor(private langService: LanguageService, public userService: UserService) {}
+    constructor(private langService: LanguageService, public userService: UserService, private themeService: ThemeService) {}
     ngOnInit(): void {
         this.userThemeSubscription = this.userService.getUserTheme().subscribe((theme) => {
             this.currentTheme = theme as string;
+            this.themeService.setAppTheme(theme as string);
         });
-        this.userService
+        this.userLangSubscription = this.userService
             .getUserLang()
-            .pipe(take(1))
+
             .subscribe((lang) => {
                 this.langService.setAppLanguage(lang as string);
             });
@@ -28,6 +31,9 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.userThemeSubscription) {
             this.userThemeSubscription.unsubscribe();
+        }
+        if (this.userLangSubscription) {
+            this.userLangSubscription.unsubscribe();
         }
     }
 }

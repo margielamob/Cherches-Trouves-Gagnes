@@ -99,6 +99,10 @@ export class SocketManagerService {
                 socket.emit(SocketEvent.Cheat);
             });
 
+            socket.on(SocketEvent.Timer, (timer: number, roomId: string) => {
+                socket.to(roomId).emit(SocketEvent.Timer, { timer });
+            });
+
             socket.on(SocketEvent.DifferenceFoundReplay, (gameId: string, differenceCoord: Coordinate) => {
                 this.gameManager.isDifference(gameId, socket.id, differenceCoord);
             });

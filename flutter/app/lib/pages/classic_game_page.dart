@@ -19,9 +19,9 @@ class Classic extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
 
   final String gameId;
-  final GameCardModel gameCards;
+  final GameCardModel gameCard;
 
-  Classic({required this.gameId, required this.gameCards}) {
+  Classic({required this.gameId, required this.gameCard}) {
     _differenceDetectionService.handleDifferences();
   }
 
@@ -29,18 +29,17 @@ class Classic extends StatelessWidget {
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
     return Scaffold(
-      appBar: CustomAppBar.buildDefaultBar(context, 'Partie classique'),
+      appBar: CustomAppBar.buildGameNavigationBar(context, 'Partie classique'),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
             future: _classicGameService.getImagesFromIds(
-                gameCards.idOriginalBmp, gameCards.idEditedBmp),
+                gameCard.idOriginalBmp, gameCard.idEditedBmp),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
-                    // Show the dialog when isGameFinished is true
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,

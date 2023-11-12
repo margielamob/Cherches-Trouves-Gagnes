@@ -1,7 +1,8 @@
-import 'package:app/components/avatar/avatar.dart';
+import 'package:app/components/avatar.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/user_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/pages/profile_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,7 @@ class AvatarDialog extends StatefulWidget {
 }
 
 class AvatarDialogState extends State<AvatarDialog> {
-  final UserService userService = Get.find();
+  final PersonalUserService userService = Get.find();
   final AuthService authService = Get.find();
   UserData? currentUser;
   String? avatar;
@@ -71,7 +72,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                           border: Border.all(
                               color: selectedAvatar ==
                                       'assets/default-user-icon.jpg'
-                                  ? Colors.blue
+                                  ? Colors.deepPurple
                                   : Colors.transparent,
                               width: 3.0),
                           borderRadius: BorderRadius.circular(50.0),
@@ -93,7 +94,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                           border: Border.all(
                               color: selectedAvatar ==
                                       'assets/avatar-predefini/avatar2.png'
-                                  ? Colors.blue
+                                  ? Colors.deepPurple
                                   : Colors.transparent,
                               width: 3.0),
                           borderRadius: BorderRadius.circular(50.0),
@@ -116,7 +117,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                           border: Border.all(
                               color: selectedAvatar ==
                                       'assets/avatar-predefini/avatar3.png'
-                                  ? Colors.blue
+                                  ? Colors.deepPurple
                                   : Colors.transparent,
                               width: 3.0),
                           borderRadius: BorderRadius.circular(50.0),
@@ -139,7 +140,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: selectedAvatar == widget.imagePath
-                                        ? Colors.blue
+                                        ? Colors.deepPurple
                                         : Colors.transparent,
                                     width: 3.0),
                                 borderRadius: BorderRadius.circular(50.0),
@@ -168,7 +169,7 @@ class AvatarDialogState extends State<AvatarDialog> {
                 SizedBox(height: 20.0),
                 isLoading
                     ? CircularProgressIndicator()
-                    : TextButton(
+                    : FilledButton(
                         onPressed: () async {
                           setState(() {
                             isLoading = true;
@@ -186,16 +187,9 @@ class AvatarDialogState extends State<AvatarDialog> {
                             }
                           }
                           // ignore: use_build_context_synchronously
-                          Navigator.pushNamed(context, '/ProfilePage');
+                          Navigator.of(context).pop();
+                          Get.off(ProfilePage());
                         },
-                        style: ButtonStyle(alignment: Alignment.center)
-                            .copyWith(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Theme.of(context).primaryColor),
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white)),
                         child: Text("Sauvegarder votre choix")),
               ],
             )));

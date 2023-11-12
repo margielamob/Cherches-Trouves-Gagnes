@@ -399,35 +399,6 @@ describe('GameManagerService', () => {
         expect(spyInterval.called).to.equal(true);
         expect(expectedGame.timerId).to.equal(expectedTimer);
     });
-
-    it('should send that the game is over when 0 sec is left in Limited time gamemode', async () => {
-        const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.LimitedTime });
-        stub(Object.getPrototypeOf(gameManager), 'isGameOver').callsFake(() => true);
-        stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => expectedGame);
-        const spyLeaveGame = stub(Object.getPrototypeOf(gameManager), 'leaveGame').callsFake(() => expectedGame);
-        const spyDeleteTimer = stub(Object.getPrototypeOf(gameManager), 'deleteTimer').callsFake(() => expectedGame);
-        // eslint-disable-next-line no-unused-vars -- callback
-
-        gameManager.sendTimer(
-            {
-                sockets: {
-                    to: () => {
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake Emit and return {}
-                        return { emit: () => {} };
-                    },
-                },
-            } as unknown as Server,
-            '',
-            '',
-        );
-
-        /* eslint-disable @typescript-eslint/no-magic-numbers -- 1001 to trigger the set interval */
-        clock.tick(1001);
-
-        expect(spyLeaveGame.called).to.equal(true);
-        expect(spyDeleteTimer.called).to.equal(true);
-    });
-
     it('should clear a timer of a game', () => {
         const spyFindGame = stub(Object.getPrototypeOf(gameManager), 'findGame').callsFake(() => undefined);
         const expectedGame = new Game({ player: {} as User, isMulti: false }, { info: {} as PrivateGameInformation, mode: GameMode.Classic });

@@ -28,6 +28,8 @@ export class GameStateManager {
             if (this.gameManager.isClassic(gameId)) {
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 this.sio.to(gameId).emit(SocketEvent.Play, gameId);
+                this.gameManager.removeJoinableGame(gameId);
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             } else {
                 const gameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
@@ -71,8 +73,6 @@ export class GameStateManager {
                 this.gameManager.leaveGame(socket.id, gameId);
             }
             this.sio.in(gameId).socketsLeave(gameId);
-            this.gameManager.removeJoinableGame(gameId);
-            this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
         });
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-magic-numbers -- display on canvas with settings*/
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -60,7 +61,7 @@ export class DifferencesDetectionHandlerService {
         });
     }
 
-    differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D) {
+    differenceNotDetected(mousePosition: Vec2, ctx: CanvasRenderingContext2D, timeFactor: number = 1) {
         this.playWrongSound();
         ctx.fillStyle = 'red';
         ctx.fillText('Erreur', mousePosition.x, mousePosition.y, 30);
@@ -69,16 +70,17 @@ export class DifferencesDetectionHandlerService {
         setTimeout(() => {
             this.mouseIsDisabled = false;
             ctx.clearRect(mousePosition.x, mousePosition.y, 30, -30);
-        }, 1000);
+        }, 1000 / timeFactor);
     }
 
-    differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
+    differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[], timeFactor: number = 1) {
         this.playCorrectSound();
-        this.displayDifferenceTemp(ctx, coords, false);
+        this.displayDifferenceTemp(ctx, coords, false, timeFactor);
         this.clearDifference(ctxModified, coords);
     }
 
-    displayDifferenceTemp(ctx: CanvasRenderingContext2D, coords: Coordinate[], isCheatMode: boolean): number {
+    // eslint-disable-next-line max-params
+    displayDifferenceTemp(ctx: CanvasRenderingContext2D, coords: Coordinate[], isCheatMode: boolean, timeFactor: number = 1): number {
         let counter = 0;
         const interval = setInterval(
             () => {
@@ -96,7 +98,7 @@ export class DifferencesDetectionHandlerService {
                 }
                 counter++;
             },
-            isCheatMode ? FlashTimer.CheatMode : FlashTimer.Classic,
+            isCheatMode ? FlashTimer.CheatMode : FlashTimer.Classic / timeFactor,
         ) as unknown as number;
         return interval;
     }

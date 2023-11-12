@@ -1,4 +1,4 @@
-<section>
+<section [ngClass]="{ 'indigo-pink-theme': currentTheme === 'Default', 'deeppurple-amber-theme': currentTheme === 'Alternative' }">
     <h2 class="title">{{ 'GAME_CONSTANTS.TITLE' | translate }}</h2>
 
     <div class="main-timer-container timer-container">

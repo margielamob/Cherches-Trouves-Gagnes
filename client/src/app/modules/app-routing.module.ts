@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
 import { AuthGuard } from '@app/guards/auth.guard';
+import { SessionGuard } from '@app/guards/session.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
@@ -19,8 +20,8 @@ import { WaitingRoomComponent } from '@app/pages/waiting-room/waiting-room.compo
 const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     // { path: 'chat', component: ChatPanelComponent },
-    { path: 'login', component: LoginPageComponent },
-    { path: 'sign-up', component: SignUpPageComponent },
+    { path: 'login', component: LoginPageComponent, canActivate: [SessionGuard] },
+    { path: 'sign-up', component: SignUpPageComponent, canActivate: [SessionGuard] },
     { path: 'home', component: MainPageComponent, canActivate: [AuthGuard] },
     { path: 'game', component: GamePageComponent, canActivate: [AuthGuard] },
     { path: 'create', component: CreateGamePageComponent, canActivate: [AuthGuard] },
@@ -30,10 +31,10 @@ const routes: Routes = [
     { path: 'waiting', component: WaitingRoomComponent, canActivate: [AuthGuard] },
     { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
     { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
-    { path: 'verify-email', component: EmailVerificationComponent },
+    { path: 'verify-email', component: EmailVerificationComponent, canActivate: [SessionGuard] },
     { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
 
-    { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'reset-password', component: ResetPasswordComponent, canActivate: [SessionGuard] },
     { path: '**', redirectTo: '/home' },
 ];
 

@@ -6,8 +6,10 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { GameTimeConstants } from '@common/game-time-constants';
 import { of } from 'rxjs';
 
+import { AngularFireModule } from '@angular/fire/compat';
 import { HttpLoaderFactory } from '@app/app.module';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { environment } from 'src/environments/environment';
 import { GameConstantsSettingsComponent } from './game-constants-settings.component';
 
 describe('GameConstantsSettingsComponent', () => {
@@ -23,6 +25,8 @@ describe('GameConstantsSettingsComponent', () => {
             imports: [
                 AppMaterialModule,
                 HttpClientModule,
+                AngularFireModule.initializeApp(environment.firebase),
+
                 TranslateModule.forRoot({
                     loader: {
                         provide: TranslateLoader,

@@ -1,5 +1,10 @@
 <main>
-    <app-page-header [isHomeButtonEnabled]="false" [isExitButtonEnabled]="true" [headerMessage]="'HEADER.WAITING_ROOM' | translate"></app-page-header>
+    <app-page-header
+        [isHomeButtonEnabled]="false"
+        [isSignOutButtonEnabled]="false"
+        [isExitButtonEnabled]="true"
+        [headerMessage]="'HEADER.WAITING_ROOM' | translate"
+    ></app-page-header>
     <div class="waiting-room-container">
         <div class="dot-pulse"></div>
         <h1 class="waiting-text pulsate">{{ 'SERVER.WAITING_MESSAGE' | translate }}</h1>
@@ -15,5 +20,5 @@
         <ng-template #noPlayers><p>No players in the waiting room.</p></ng-template>
     </div>
     <button (click)="quit()">Quitter la partie</button>
-    <button (click)="play()" [disabled]="!canStartGame">play</button>
+    <button *ngIf="isCreator" (click)="play()" [disabled]="!canStartGame">play</button>
 </main>

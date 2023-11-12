@@ -104,17 +104,18 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-
+        if (this.timer.isStartedTimer(gameId)) {
+            return;
+        }
+        this.timer.started(gameId);
         game.timerId = setInterval(() => {
             const remainingTime = this.timer.calculateTime(game); // Get the remaining time
 
             if (remainingTime <= 0 || game.isGameOver()) {
-                // Game over logic
                 sio.sockets.to(gameId).emit(SocketEvent.Win);
                 this.leaveGame(playerId, gameId);
                 this.deleteTimer(gameId);
             } else {
-                // Update clients with the new timer value
                 sio.sockets.to(gameId).emit(SocketEvent.Clock, remainingTime);
             }
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
