@@ -81,6 +81,11 @@ class DifferenceDetectionService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetForNextGame() {
+    blinkingDifference = null;
+    coordinates = [];
+  }
+
   bool validate(Vec2 mousePosition, String gameId, bool isOriginal) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {

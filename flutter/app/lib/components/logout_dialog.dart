@@ -1,4 +1,5 @@
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 
 class LogoutDialog extends StatelessWidget {
   final AuthService authService = Get.find();
+  final DifferenceDetectionService differenceDetectionService = Get.find();
 
   Widget _showErrorToUser(context) {
     return AlertDialog(
@@ -14,6 +16,7 @@ class LogoutDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
+            differenceDetectionService.resetForNextGame();
             Get.offAll(MainPage());
           },
           child: Text('OK'),

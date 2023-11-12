@@ -29,7 +29,7 @@ class Classic extends StatelessWidget {
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
     return Scaffold(
-      appBar: CustomAppBar.buildDefaultBar(context, 'Partie classique'),
+      appBar: CustomAppBar.buildGameNavigationBar(context, 'Partie classique'),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
