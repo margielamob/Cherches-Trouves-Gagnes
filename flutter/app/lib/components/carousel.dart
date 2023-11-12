@@ -1,10 +1,8 @@
 import 'package:app/components/carousel_card.dart';
 import 'package:app/components/no_game_card.dart';
 import 'package:app/domain/models/game_card_model.dart';
-import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
-import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +11,7 @@ class Carousel extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
   final bool isCarouselForAdminPage;
   Carousel({required this.isCarouselForAdminPage}) {
-    final gameMode = GameModeModel(GameMode.classic);
-    gameManagerService.sendGameRequest(gameMode);
+    gameManagerService.sendGameRequest();
   }
 
   @override
