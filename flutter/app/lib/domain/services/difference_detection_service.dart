@@ -28,6 +28,7 @@ class DifferenceDetectionService extends ChangeNotifier {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
       _soundService.playDifferenceFound();
       coordinates.addAll(data.data.coordinates);
+      _gameManagerService.updatePlayersNbDifference(data);
       notifyListeners();
       startBlinking(data.data.coordinates);
     });
