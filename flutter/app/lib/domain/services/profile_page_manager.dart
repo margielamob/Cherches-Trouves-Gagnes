@@ -10,9 +10,28 @@ class ProfilePageManager extends ChangeNotifier {
   final AuthService authService = Get.find();
   UserData? currentUser;
   String? avatar;
-  ThemeData? appTheme;
+  ThemeData themeData;
 
-  ProfilePageManager();
+  ProfilePageManager(this.themeData);
+
+  setTheme(String themeValue) {
+    themeData = getThemeFromValue(themeValue);
+    themeData = themeData;
+    notifyListeners();
+  }
+
+  getTheme() => themeData;
+
+  ThemeData getThemeFromValue(String themeValue) {
+    switch (themeValue) {
+      case 'Default':
+        return Default;
+      case 'Alternative':
+        return Alternative;
+      default:
+        return Default;
+    }
+  }
 
   Future<void> initUser() async {
     currentUser = await authService.getCurrentUser();
@@ -28,25 +47,5 @@ class ProfilePageManager extends ChangeNotifier {
       }
     }
     notifyListeners();
-  }
-
-  ThemeData get currentTheme {
-    return (currentUser?.theme == 'Alternative') ? Alternative : Default;
-  }
-
-  changeCurrentUserTheme(String theme) {}
-
-  ChangeCurrentUserLanguage(String language) {
-    currentUser!.language = language;
-    userService.updateUser(currentUser!);
-    notifyListeners();
-  }
-
-  void setAppTheme(String theme) {
-    if (theme == 'Default') {
-      appTheme = Default;
-    } else {
-      appTheme = Alternative;
-    }
   }
 }

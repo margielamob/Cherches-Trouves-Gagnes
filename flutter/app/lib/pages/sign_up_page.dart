@@ -119,12 +119,12 @@ class SignUpPageState extends State<SignUpPage> {
                                     email: email as String,
                                     photoURL: '',
                                     phoneNumber: '',
-                                    theme: '',
-                                    language: '',
+                                    theme: 'Default',
+                                    language: 'Fr',
                                     gameLost: 0,
                                     gameWins: 0,
                                     gamePlayed: 0,
-                                    averageTime: '',
+                                    averageTime: '0',
                                   );
 
                                   await userService.addUser(user);

@@ -11,6 +11,7 @@ import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
+import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game.dart';
@@ -28,6 +29,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  ThemeData initialTheme = Default;
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(PersonalUserService());
@@ -41,7 +43,7 @@ void registerDependencies() {
   Get.put(GameManagerService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
-  Get.put(ProfilePageManager());
+  Get.put(ProfilePageManager(initialTheme));
 }
 
 late List<CameraDescription> cameras;
@@ -108,13 +110,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Accessing ProfilePageManager from the provider
     final profileManager = Provider.of<ProfilePageManager>(context);
-
     // Accessing the first camera, assuming you have initialized it somewhere
     final firstCamera = cameras.first;
 
     return GetMaterialApp(
-      theme: profileManager
-          .currentTheme, // This uses the current theme from the ProfilePageManager
+      theme: profileManager.getTheme(),
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       routes: {

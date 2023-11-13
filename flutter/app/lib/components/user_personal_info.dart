@@ -3,9 +3,11 @@ import 'package:app/components/avatar_dialog.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class UserDetailButton extends StatelessWidget {
   final String content;
@@ -96,7 +98,8 @@ class CardWrapper extends StatelessWidget {
 
 class AccountSetting extends StatelessWidget {
   PersonalUserService userService = Get.find();
-  late final UserData currentUserData;
+
+  final UserData currentUserData;
   String? langCode;
   AccountSetting({required this.currentUserData});
 
@@ -117,6 +120,7 @@ class AccountSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileManager = Provider.of<ProfilePageManager>(context);
     return CardWrapper(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -182,6 +186,7 @@ class AccountSetting extends StatelessWidget {
                 onChanged: (newValue) {
                   print(newValue);
                   updateTheme(newValue!);
+                  profileManager.setTheme(newValue);
                 },
                 items: ['Alternative', 'Default']
                     .map<DropdownMenuItem<String>>((String value) {
