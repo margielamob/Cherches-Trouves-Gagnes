@@ -1,3 +1,4 @@
+import 'package:app/components/clock.dart';
 import 'package:app/components/current_players.dart';
 import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/end_game_dialog.dart';
@@ -28,8 +29,9 @@ class Classic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
+
     return Scaffold(
-      appBar: CustomAppBar.buildDefaultBar(context, 'Partie classique'),
+      appBar: CustomAppBar.buildGameNavigationBar(context, 'Partie classique'),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
@@ -40,10 +42,10 @@ class Classic extends StatelessWidget {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
-                    // Show the dialog when isGameFinished is true
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (BuildContext context) {
                           return EndGameDialog();
                         },
@@ -56,19 +58,7 @@ class Classic extends StatelessWidget {
                       SizedBox(height: 20),
                       Row(
                         children: [
-                          Icon(
-                            Icons.timer,
-                            color: Colors.black,
-                            size: 30.0,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            "00:00",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30,
-                            ),
-                          ),
+                          Clock(),
                         ],
                       ),
                       SizedBox(height: 10),

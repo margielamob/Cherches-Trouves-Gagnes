@@ -1,7 +1,8 @@
+import 'package:app/domain/models/requests/difference_found_message.dart';
+import 'package:app/domain/models/requests/difference_found_request.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
-import 'package:app/domain/utils/difference_found_message.dart';
-import 'package:app/domain/utils/difference_found_request.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 class DifferenceDetectionService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final SoundService _soundService = Get.find();
+  final GameManagerService _gameManagerService = Get.find();
 
   List<Vec2> coordinates = [];
   Path? blinkingDifference;
@@ -25,9 +27,10 @@ class DifferenceDetectionService extends ChangeNotifier {
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
       _soundService.playDifferenceFound();
-      coordinates.addAll(data.coords);
+      coordinates.addAll(data.data.coordinates);
+      _gameManagerService.updatePlayersNbDifference(data);
       notifyListeners();
-      startBlinking(data.coords);
+      startBlinking(data.data.coordinates);
     });
     _socket.on(SocketEvent.error, (dynamic message) {
       _soundService.playDifferenceNotFound();
@@ -78,12 +81,21 @@ class DifferenceDetectionService extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool validate(Vec2 mousePosition, String gameId) {
+  void resetForNextGame() {
+    blinkingDifference = null;
+    coordinates = [];
+  }
+
+  bool validate(Vec2 mousePosition, String gameId, bool isOriginal) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
       print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
-      final data =
-          DifferenceFoundRequest(mousePosition: mousePosition, gameId: gameId);
+      final data = DifferenceFoundRequest(
+          differenceCoord: mousePosition,
+          gameId: gameId,
+          isOriginal: isOriginal,
+          playerName: _gameManagerService.currentUser!.name);
+
       _socket.send(SocketEvent.difference, data.toJson());
     } catch (error) {
       print('Error while sending the request: $error');

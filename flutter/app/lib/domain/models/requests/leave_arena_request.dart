@@ -1,7 +1,7 @@
-class LeaveGameRequest {
+class LeaveArenaRequest {
   String gameId;
 
-  LeaveGameRequest({
+  LeaveArenaRequest({
     required this.gameId,
   });
 

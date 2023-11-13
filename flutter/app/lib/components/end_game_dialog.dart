@@ -1,3 +1,4 @@
+import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ class EndGameDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DifferenceDetectionService differenceDetectionService = Get.find();
+    endGameService.isGameFinished = false;
     return AlertDialog(
       title: Text("Partie terminée"),
       actions: <Widget>[
@@ -18,6 +21,7 @@ class EndGameDialog extends StatelessWidget {
             SizedBox(width: 30),
             FilledButton(
               onPressed: () {
+                differenceDetectionService.resetForNextGame();
                 Get.offAll(MainPage());
               },
               style: ButtonStyle(

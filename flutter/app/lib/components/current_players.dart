@@ -1,9 +1,11 @@
+import 'package:app/domain/models/user_model.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class _PlayersCard extends StatelessWidget {
-  final String fname;
-  final String lname;
-  const _PlayersCard({required this.fname, required this.lname});
+  final UserModel player;
+  const _PlayersCard({required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,12 @@ class _PlayersCard extends StatelessWidget {
                 children: [
                   FlutterLogo(size: 30.0),
                   SizedBox(width: 10),
-                  Text('$fname $lname', style: TextStyle(fontSize: 16))
+                  Text(player.name, style: TextStyle(fontSize: 16))
                 ],
               ),
               SizedBox(height: 5),
               Text('Nombre de différences'),
-              Text('trouvés : 4'),
+              Text('trouvés : ${player.nbDifferenceFound.length}'),
             ],
           ),
         ),
@@ -35,25 +37,33 @@ class _PlayersCard extends StatelessWidget {
     );
   }
 }
+
 class CurrentPlayers extends StatelessWidget {
   const CurrentPlayers({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final gameManagerService = Provider.of<GameManagerService>(context);
+
     return SizedBox(
       height: 100,
       width: 1000,
-      child: Center(
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: const <Widget>[
-            _PlayersCard(fname: "Thierry", lname: "Beaulieu"),
-            _PlayersCard(fname: "Sulayman", lname: "Hosna"),
-            _PlayersCard(fname: "Ahmed", lname: "Ben-Othman"),
-            _PlayersCard(fname: "Samy", lname: "Labassi"),
-          ],
-        ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: gameManagerService.players.length,
+                itemBuilder: (_, index) {
+                  return _PlayersCard(
+                      player: gameManagerService.players[index]);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
