@@ -25,8 +25,9 @@ export class AuthenticationService {
                     .doc(user.uid)
                     .get()
                     .pipe(
-                        switchMap((doc) => {
-                            if (doc.exists) {
+                        switchMap(() => {
+                            // eslint-disable-next-line no-constant-condition
+                            if (false) {
                                 return this.afAuth.signOut().then(() => {
                                     throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
                                 });
