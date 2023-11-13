@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+/* eslint-disable max-lines */
+/* eslint-disable max-params */
+import { ElementRef, Injectable } from '@angular/core';
 import { ClearForegroundCommand } from '@app/classes/commands/clear-foreground-command';
 import { DrawCommand } from '@app/classes/commands/draw-command';
 import { PasteExternalForegroundOnCommand } from '@app/classes/commands/paste-external-foreground-on-command';
@@ -37,6 +39,12 @@ export class DrawService {
 
     coordDraw: Vec2 = DEFAULT_POSITION_MOUSE_CLIENT;
     isClick: boolean = DEFAULT_DRAW_CLIENT;
+    selectedShape: 'Rectangle' | 'Ellipse' | null;
+    isDrawingRectangle = false;
+    currentHeight: number;
+    currentWidth: number;
+    animatedFrameID: number;
+    startPosRect: { posX: number; posY: number };
 
     constructor(private canvasStateService: CanvasStateService, private pencil: PencilService) {
         this.$drawingImage = new Map();
@@ -54,6 +62,12 @@ export class DrawService {
 
         this.coordDraw = this.reposition(focusedCanvas.foreground.nativeElement, event);
         this.setCurrentCommand('', focusedCanvas.canvasType);
+        if (this.selectedShape === 'Rectangle') {
+            this.isDrawingRectangle = true;
+            this.startPosRect = { posX: event.offsetX, posY: event.offsetY };
+            this.drawRectangle(event, focusedCanvas.temporary);
+            return;
+        }
         if (this.pencil.state === Tool.Pencil) {
             this.draw(event);
         } else {
@@ -61,8 +75,41 @@ export class DrawService {
         }
     }
 
+    drawRectangle(event: MouseEvent, focusedCanvas: ElementRef<HTMLCanvasElement>) {
+        if (!this.isDrawingRectangle) return;
+
+        const width = event.offsetX - this.startPosRect.posX;
+        const height = event.offsetY - this.startPosRect.posY;
+
+        this.currentWidth = width;
+        this.currentHeight = height;
+
+        cancelAnimationFrame(this.animatedFrameID);
+        this.animatedFrameID = requestAnimationFrame(() => {
+            this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, focusedCanvas);
+        });
+        this.updateImages();
+    }
+
+    saveRectangle(focusedCanvas: ElementRef<HTMLCanvasElement>) {
+        const ctx = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.fillRect(this.coordDraw.x, this.coordDraw.x, this.currentWidth, this.currentHeight);
+    }
+
+    drawRectangleShape(startX: number, startY: number, width: number, height: number, focusedCanvas: ElementRef<HTMLCanvasElement>) {
+        const ctx = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillRect(startX, startY, width, height);
+    }
+
     draw(event: MouseEvent, startOrEndErasing?: boolean) {
         if (!this.isClick) return;
+
+        if (this.selectedShape === 'Rectangle') {
+            const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground;
+            this.drawRectangle(event, focusedCanvas as ElementRef<HTMLCanvasElement>);
+            return;
+        }
         const line = this.updateMouseCoordinates(event);
         this.updateCurrentCommand(line, startOrEndErasing ? true : undefined);
         this.createStroke(line, this.currentCommand.style);
@@ -77,7 +124,21 @@ export class DrawService {
         });
     }
 
+    stopDrawingRectangle() {
+        this.updateImages();
+        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef;
+        this.saveRectangle(focusedCanvas);
+        this.isDrawingRectangle = false;
+        // Optionally, you can reset the width and height after releasing the mouse button.
+        this.currentWidth = 0;
+        this.currentHeight = 0;
+    }
+
     stopDrawing(event: MouseEvent) {
+        if (this.selectedShape === 'Rectangle') {
+            this.stopDrawingRectangle();
+            return;
+        }
         this.draw(event, this.pencil.state === Tool.Pencil ? undefined : true);
         this.isClick = false;
         this.currentCommand.name = this.pencil.state === 'Pencil' ? 'draw' : 'erase';
