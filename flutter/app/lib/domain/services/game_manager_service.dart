@@ -87,7 +87,14 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.creatorLeft, (dynamic message) {
       print(message);
-      Get.offAll(MainPage());
+    });
+    _socket.on(SocketEvent.win, (dynamic message) {
+      print(message);
+      resetAllPlayersNbDifference();
+    });
+    _socket.on(SocketEvent.lose, (dynamic message) {
+      print(message);
+      resetAllPlayersNbDifference();
     });
   }
 
@@ -169,10 +176,30 @@ class GameManagerService extends ChangeNotifier {
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
       if (player.name == differenceFound.playerName) {
-        player.nbDifferenceFound++;
+        for (var diff in player.nbDifferenceFound) {
+          if (diff.x == differenceFound.differenceCoord.x &&
+              diff.y == differenceFound.differenceCoord.y) {
+            return;
+          }
+        }
+        player.nbDifferenceFound.add(differenceFound.differenceCoord);
       }
     }
     notifyListeners();
+  }
+
+  void resetAllPlayersNbDifference() {
+    for (var player in players) {
+      player.nbDifferenceFound = [];
+    }
+  }
+
+  void resetPlayerNbDifference(String playerName) {
+    for (var player in players) {
+      if (player.name == playerName) {
+        player.nbDifferenceFound = [];
+      }
+    }
   }
 
   bool doesPlayerLaunchGame() {

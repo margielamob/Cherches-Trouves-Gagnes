@@ -29,7 +29,7 @@ class _PlayersCard extends StatelessWidget {
               ),
               SizedBox(height: 5),
               Text('Nombre de différences'),
-              Text('trouvés : ${player.nbDifferenceFound}'),
+              Text('trouvés : ${player.nbDifferenceFound.length}'),
             ],
           ),
         ),

@@ -1,11 +1,13 @@
+import 'package:app/domain/utils/vec2.dart';
+
 class UserModel {
   final String id;
   final String name;
   final String? avatar;
-  int nbDifferenceFound;
+  List<Vec2> nbDifferenceFound;
 
   UserModel({required this.id, required this.name, this.avatar})
-      : nbDifferenceFound = 0;
+      : nbDifferenceFound = [];
 
   Map<String, dynamic> toMap() {
     return {
