@@ -126,7 +126,6 @@ export class DrawService {
 
     stopDrawingRectangle() {
         this.updateImages();
-        console.log('called');
         const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef;
         this.saveRectangle(focusedCanvas);
         this.isDrawingRectangle = false;
