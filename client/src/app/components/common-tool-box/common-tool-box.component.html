@@ -9,6 +9,13 @@
         <button mat-mini-fab type="button" (click)="changePencilState(this.tool.Pencil)" [color]="this.colorButton.pencil" name="pencil">
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.DRAW' | translate }}">edit</mat-icon>
         </button>
+        <button mat-mini-fab color="primary" type="button" (click)="onClickRectangle()" [class.mat-accent]="isRectangleSelected">
+            <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.CREATE_RECTANGLE' | translate }}">crop_square</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" [class.mat-accent]="isEllipseSelected" type="button" (click)="onClickEllipse()">
+            <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.CREATE_ELLIPSE' | translate }}">panorama_fish_eye</mat-icon>
+        </button>
+
         <input type="color" (input)="changePencilColor(colorSelector.value)" name="colorSelector" #colorSelector />
         <div class="width-container" *ngIf="this.pencil.state === this.tool.Pencil">
             <mat-slider
