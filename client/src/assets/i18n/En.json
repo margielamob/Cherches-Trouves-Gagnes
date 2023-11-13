@@ -59,7 +59,9 @@
         "DELETE": "Delete",
         "DRAW": "Draw",
         "ADD_BACKGROUND": "Add background",
-        "RESET_BACKGROUND": " Reset background"
+        "RESET_BACKGROUND": " Reset background",
+        "CREATE_RECTANGLE": "Create rectangle",
+        "CREATE_ELLIPSE": "Create an ellipse"
     },
 
     "CONFIRM_DELETE_DIALOG": {

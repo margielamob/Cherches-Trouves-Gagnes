@@ -61,7 +61,9 @@
         "DELETE": "Supprimer",
         "DRAW": "Dessiner",
         "ADD_BACKGROUND": "Ajouter tous les arrière-plans",
-        "RESET_BACKGROUND": "Réinitialiser tous les arrière-plans"
+        "RESET_BACKGROUND": "Réinitialiser tous les arrière-plans",
+        "CREATE_RECTANGLE": "Créer un rectangle",
+        "CREATE_ELLIPSE": "Créer une ellipse"
     },
 
     "CONFIRM_DELETE_DIALOG": {
