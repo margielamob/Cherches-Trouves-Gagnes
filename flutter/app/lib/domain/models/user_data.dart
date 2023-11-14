@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserData {
   final String uid;
-  final String displayName;
+  String displayName;
   final String email;
   final String? photoURL;
   final String? phoneNumber;
-  final String? theme;
-  final String? language;
+  String? theme;
+  String? language;
   final int gameLost;
   final int gameWins;
   final int gamePlayed;
@@ -55,5 +57,14 @@ class UserData {
       gamePlayed: data['gamePlayed'] ?? 0,
       averageTime: data['averageTime'] ?? '',
     );
+  }
+
+  factory UserData.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    return UserData.fromMap({
+      'uid': snapshot.id,
+      ...data,
+    });
   }
 }
