@@ -4,6 +4,7 @@ import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
+import 'package:app/components/video_player.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
@@ -70,7 +71,9 @@ class Classic extends StatelessWidget {
                           GameVignetteOriginal(images, gameId),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 5),
+                      VideoPlayer(),
+                      SizedBox(height: 5),
                       CurrentPlayers(),
                       SizedBox(height: 30),
                     ],

@@ -5,6 +5,7 @@ import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -12,6 +13,7 @@ import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
+import 'package:app/domain/services/video_replay_service.dart';
 import 'package:app/domain/themes/default-theme.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
@@ -45,6 +47,8 @@ void registerDependencies() {
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
   Get.put(ClockService());
+  Get.put(VideoReplayService());
+  Get.put(GameReplayService());
 }
 
 late List<CameraDescription> cameras;
@@ -104,6 +108,18 @@ void main() async {
           create: (context) {
             ClockService clockService = Get.find();
             return clockService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            VideoReplayService videoReplayService = Get.find();
+            return videoReplayService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            GameReplayService gameReplayService = Get.find();
+            return gameReplayService;
           },
         ),
       ],
