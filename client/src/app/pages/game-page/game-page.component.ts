@@ -77,6 +77,8 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.differenceHandler.mouseIsDisabled = false;
+        this.gameInfoHandlerService.isGameDone = false;
         this.gameInfoHandlerService.resetGameVariables();
     }
 

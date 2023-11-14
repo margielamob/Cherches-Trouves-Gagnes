@@ -11,7 +11,7 @@ class _PlayersCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 250,
-      height: 80,
+      height: 40,
       child: Card(
         elevation: 2,
         shadowColor: Color.fromARGB(255, 46, 46, 46),
@@ -28,8 +28,7 @@ class _PlayersCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 5),
-              Text('Nombre de différences'),
-              Text('trouvés : ${player.nbDifferenceFound.length}'),
+              Text('Différences trouvées : ${player.nbDifferenceFound.length}'),
             ],
           ),
         ),
@@ -46,7 +45,7 @@ class CurrentPlayers extends StatelessWidget {
     final gameManagerService = Provider.of<GameManagerService>(context);
 
     return SizedBox(
-      height: 100,
+      height: 90,
       width: 1000,
       child: Column(
         children: [
