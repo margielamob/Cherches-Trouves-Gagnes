@@ -1,5 +1,6 @@
 import 'package:app/components/avatar.dart';
 import 'package:app/components/avatar_dialog.dart';
+import 'package:app/components/update_name_dialog.dart';
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -167,7 +168,12 @@ class AccountSetting extends StatelessWidget {
               UserDetailButton(
                 content: "Pseudonyme",
                 onPressed: () {
-                  print("Pseudonyme button was pressed");
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return UsernameDialog(userId: currentUserData.uid);
+                    },
+                  );
                 },
               ),
               SizedBox(width: 30),
