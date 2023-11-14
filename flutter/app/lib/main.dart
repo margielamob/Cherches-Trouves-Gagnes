@@ -14,7 +14,7 @@ import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/video_replay_service.dart';
-import 'package:app/domain/themes/default-theme.dart';
+import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game.dart';
@@ -26,12 +26,14 @@ import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/sign_up_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  ThemeData initialTheme = Default;
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(PersonalUserService());
@@ -45,7 +47,7 @@ void registerDependencies() {
   Get.put(DifferenceDetectionService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
-  Get.put(ProfilePageManager());
+  Get.put(ProfilePageManager(initialTheme));
   Get.put(ClockService());
   Get.put(VideoReplayService());
   Get.put(GameReplayService());
@@ -129,11 +131,36 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final AuthService authService = Get.find();
   @override
   Widget build(BuildContext context) {
+    // listen to changes in the auth state
+    return StreamBuilder<User?>(
+      stream: authService.auth.authStateChanges(),
+      builder: (context, snapshot) {
+        // if the connection is active and the user is not null
+        if (snapshot.connectionState == ConnectionState.active &&
+            snapshot.data != null) {
+          // user is logged in, use the user's theme
+          return Consumer<ProfilePageManager>(
+            builder: (context, profileManager, child) {
+              // ProfileManager listen to changes in the theme
+              return buildGetMaterialApp(context, profileManager.getTheme());
+            },
+          );
+        } else {
+          // user is not logged in , use the default theme
+          return buildGetMaterialApp(context, Default);
+        }
+      },
+    );
+  }
+
+  GetMaterialApp buildGetMaterialApp(BuildContext context, ThemeData theme) {
     final firstCamera = cameras.first;
+
     return GetMaterialApp(
-      theme: appTheme,
+      theme: theme,
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       routes: {
