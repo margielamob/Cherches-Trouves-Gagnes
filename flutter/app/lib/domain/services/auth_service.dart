@@ -1,6 +1,7 @@
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,8 @@ class AuthService {
         email: email,
         password: password,
       );
+      final profilePageManager = Get.find<ProfilePageManager>();
+      await profilePageManager.initUserThemeAndLang();
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;

@@ -103,4 +103,16 @@ class PersonalUserService {
     }
     return 'Default';
   }
+
+  Future<void> updateUserName(String uid, String newUserName) async {
+    final bool isAvailable = await isUserNameAvailable(newUserName);
+    if (isAvailable) {
+      CollectionReference users = db.collection('users');
+      await users.doc(uid).update({'displayName': newUserName}).catchError(
+          (error) =>
+              throw ("Erreur lors de la mise à jour du nom d'utilisateur"));
+    } else {
+      throw ('Le nom d\'utilisateur est déjà pris.');
+    }
+  }
 }
