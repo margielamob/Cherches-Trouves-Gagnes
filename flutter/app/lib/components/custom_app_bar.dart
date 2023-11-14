@@ -1,5 +1,6 @@
 import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,7 @@ class CustomAppBar {
 
   static AppBar buildGameNavigationBar(context, String pageName) {
     DifferenceDetectionService differenceDetectionService = Get.find();
+    GameReplayService gameReplayService = Get.find();
 
     return AppBar(
       title: Text(pageName),
@@ -39,6 +41,7 @@ class CustomAppBar {
           icon: Icon(Icons.home),
           onPressed: () {
             differenceDetectionService.resetForNextGame();
+            gameReplayService.resetForNextGame();
             Get.offAll(MainPage(), transition: Transition.leftToRight);
           },
         ),
