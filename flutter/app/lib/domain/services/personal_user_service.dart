@@ -87,4 +87,20 @@ class PersonalUserService {
     await uploadTask.whenComplete(() => null);
     updateUserAvatar(uid, 'avatars/$uid/avatar.jpg');
   }
+
+  Future<String> getUserTheme(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic>? data =
+          documentSnapshot.data() as Map<String, dynamic>?;
+      // Vérifier si 'data' n'est pas nul et si 'theme' est une clé valide
+      if (data != null && data.containsKey('theme')) {
+        return data['theme'] ??
+            'Default'; // Utilisation de '??' pour gérer les valeurs nulles
+      }
+    }
+    return 'Default';
+  }
 }
