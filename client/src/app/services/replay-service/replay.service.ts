@@ -9,7 +9,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { EventArray } from './event-array';
 import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
@@ -23,7 +23,6 @@ export class ReplayService {
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
     // public props
-    state: ReplayState = ReplayState.STOPPED;
     gameId: string;
 
     // Node.Js Timers
@@ -34,8 +33,8 @@ export class ReplayService {
     differencesContext: CanvasRenderingContext2D;
     imgOriginalContext: CanvasRenderingContext2D;
     // event subject
-    private stopPlayingSubject: Subject<void> = new Subject<void>();
     // private props
+    isPlaying = true;
     private array: EventArray = new EventArray();
     private previousEvent: ReplayEvent;
     private timeFactor: number = 1;
@@ -70,10 +69,6 @@ export class ReplayService {
         this.imgModifiedContext = ctxImgModified;
     }
 
-    setSate(state: ReplayState) {
-        this.state = state;
-    }
-
     getArray(): EventArray {
         return this.array;
     }
@@ -92,10 +87,6 @@ export class ReplayService {
 
     setCurrentIndex(pos: number) {
         this.array.currentIndex = pos;
-    }
-
-    stopPlaying() {
-        this.stopPlayingSubject.next();
     }
 
     setCurrentTime(percentage: number) {
@@ -141,12 +132,40 @@ export class ReplayService {
         this.size++;
     }
 
-    pause() {
-        this.state = ReplayState.PAUSED;
+    stopBlinking() {
+        clearInterval(this.leftIntervalRef);
+        clearInterval(this.rightIntervalRef);
     }
 
-    resume() {
-        this.state = ReplayState.PLAYING;
+    isDone() {
+        return this.array.end();
+    }
+
+    async pause() {
+        return new Promise<void>((resolve) => {
+            this.isPlaying = false;
+            this.stopBlinking();
+            resolve();
+        });
+    }
+
+    async play() {
+        return new Promise<void>((resolve) => {
+            this.isPlaying = true;
+            resolve();
+        });
+    }
+
+    async stopPlaying() {
+        return new Promise<void>((resolve) => {
+            this.isPlaying = true;
+            resolve();
+        });
+    }
+
+    async resume() {
+        await this.play();
+        await this.playFromIndex();
     }
 
     saveGameState(idx: number) {
@@ -155,21 +174,18 @@ export class ReplayService {
     }
 
     async updateImage(index: number) {
-        return new Promise<void>((resolve, reject) => {
-            console.log(this.gameImageState.size);
-            if (index === 0) {
-                resolve();
-            }
+        console.log(this.gameImageState.size);
+        if (index === 0 || this.array.end()) {
+            return;
+        }
 
-            const imageData = this.gameImageState.get(index - 1);
+        const imageData = this.gameImageState.get(index);
 
-            if (!imageData) {
-                reject();
-            } else {
-                this.modifiedContext.putImageData(imageData, 0, 0);
-                resolve();
-            }
-        });
+        if (!imageData) {
+            return;
+        } else {
+            this.modifiedContext.putImageData(imageData, 0, 0);
+        }
     }
 
     getFormattedTime() {
@@ -186,16 +202,18 @@ export class ReplayService {
 
     async playFromIndex(percentage: number = this.array.currentIndex) {
         this.array.currentIndex = this.indexFromPercentage(percentage);
+        this.updateImage(this.array.currentIndex);
 
-        while (this.state !== ReplayState.DONE) {
+        while (this.isPlaying) {
             if (this.array.end()) {
-                this.setSate(ReplayState.DONE);
+                console.log('end of array');
                 return;
             }
 
-            await this.updateImage(this.array.currentIndex);
-
             const event = this.array.getCurrentEvent();
+            if (!this.isPlaying) {
+                return;
+            }
             await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
             switch (event.action) {
                 case ReplayActions.DifferenceFoundUpdate:
@@ -213,8 +231,15 @@ export class ReplayService {
                 default:
                     throw Error('could not handle this event');
             }
+            if (this.array.end()) {
+                console.log('end of array');
+                return;
+            }
             this.previousEvent = event;
-            this.array.currentIndex++;
+            if (this.isPlaying) {
+                this.array.currentIndex++;
+                console.log(this.array.currentIndex);
+            }
         }
     }
 
@@ -301,12 +326,13 @@ export class ReplayService {
     private async delay(ms: number): Promise<void> {
         return new Promise<void>((resolve) => {
             const timeoutId = setTimeout(() => {
-                if (this.state === ReplayState.PLAYING) {
-                    resolve();
-                } else {
-                    clearTimeout(timeoutId);
-                }
+                resolve();
             }, ms);
+
+            if (!this.isPlaying) {
+                clearTimeout(timeoutId);
+                resolve();
+            }
         });
     }
 
@@ -317,15 +343,6 @@ export class ReplayService {
     private getElapsedSeconds(event: ReplayEvent) {
         return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
     }
-}
-
-export enum ReplayState {
-    PLAYING,
-    PAUSED,
-    STOPPED,
-    REDO,
-    DONE,
-    START,
 }
 
 export enum ReplayActions {

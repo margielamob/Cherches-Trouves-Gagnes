@@ -1,7 +1,7 @@
 import { Component, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
-import { ReplayService, ReplayState } from '@app/services/replay-service/replay.service';
+import { ReplayService } from '@app/services/replay-service/replay.service';
 
 @Component({
     selector: 'app-replay-bar',
@@ -17,40 +17,40 @@ export class ReplayBarComponent implements OnChanges {
     constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 
     async ngOnChanges() {
+        this.replayService.isPlaying = true;
         this.seekToEvent(this.sliderPosition);
     }
 
     async seekToEvent(percentage: number) {
-        this.replayService.setSate(ReplayState.START);
+        await this.replayService.play();
         this.replayService.setCurrentTime(percentage);
         await this.replayService.playFromIndex(percentage);
     }
 
     async replay() {
+        await this.replayService.play();
         this.dialog.closeAll();
         await this.seekToEvent(0);
     }
 
-    pause() {
-        this.replayService.setSate(ReplayState.PAUSED);
+    async pause() {
+        await this.replayService.pause();
     }
 
     async resume() {
-        // this.replayService.setSate(ReplayState.PLAYING);
-        // await this.replayService.playFromIndex(this.sliderPosition);
+        await this.replayService.resume();
     }
 
     quit() {
         this.chat.leaveGameChat();
-        this.replayService.setSate(ReplayState.DONE);
     }
 
     isReplaying(): boolean {
-        return this.replayService.state === ReplayState.START;
+        return this.replayService.isPlaying;
     }
 
-    isPaused(): boolean {
-        return this.replayService.state === ReplayState.PAUSED;
+    isDone() {
+        this.replayService.isDone();
     }
 
     setSpeed(speed: number) {

@@ -3,14 +3,11 @@
     <button mat-button class="home-button" (click)="quit()" [routerLink]="'/home'" routerLinkActive="router-link-active">
         <mat-icon>home</mat-icon>
     </button>
-    <button mat-button [disabled]="isReplaying()" class="replay-button" (click)="replay()">
+    <button mat-button class="replay-button" (click)="replay()">
         <mat-icon>replay</mat-icon>
     </button>
-    <button mat-button *ngIf="!isPaused()" class="pause-button" (click)="pause()">
-        <mat-icon>pause_circle_filled</mat-icon>
-    </button>
-    <button mat-button *ngIf="isPaused()" class="resume-button" (click)="resume()">
-        <mat-icon>play_circle_filled</mat-icon>
+    <button mat-button [disabled]="isDone()" (click)="!isReplaying() ? resume() : pause()">
+        <mat-icon>{{ isReplaying() ? 'play_circle_filled' : 'pause_circle_filled' }}</mat-icon>
     </button>
     <mat-radio-group [(ngModel)]="currentSpeed">
         <mat-radio-button
