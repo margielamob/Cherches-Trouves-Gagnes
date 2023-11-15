@@ -35,6 +35,12 @@ class ProfilePageManager extends ChangeNotifier {
     }
   }
 
+  Future<void> initUserThemeAndLang() async {
+    String userId = await authService.getCurrentUserId();
+    String themeValue = await userService.getUserTheme(userId);
+    setTheme(themeValue);
+  }
+
   Future<ThemeData> loadTheme(String userId) async {
     String theme = await userService.getUserTheme(userId);
     return getThemeFromValue(theme);
