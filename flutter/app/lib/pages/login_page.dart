@@ -107,6 +107,13 @@ class LoginPageState extends State<LoginPage> {
                           },
                           child: Text("Pas de compte? Inscrivez-vous"),
                         ),
+                        SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/ReserPasswordPage');
+                          },
+                          child: Text("mot de passe oublie?"),
+                        ),
                       ],
                     ),
                   ),

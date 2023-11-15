@@ -138,4 +138,26 @@ class AuthService {
     }
     return null;
   }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (error) {
+      String errorMessage;
+
+      switch (error.code) {
+        case 'invalid-email':
+          errorMessage = 'Adresse e-mail invalide.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'Aucun utilisateur trouvé avec cet e-mail.';
+          break;
+        default:
+          errorMessage =
+              'Une erreur s’est produite. Veuillez réessayer plus tard.';
+      }
+
+      throw errorMessage;
+    }
+  }
 }
