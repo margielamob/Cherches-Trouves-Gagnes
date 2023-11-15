@@ -136,7 +136,7 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Avatar",
+                content: "Update Avatar",
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -166,7 +166,7 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Pseudonyme",
+                content: "Update Username",
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -233,6 +233,64 @@ class AccountSetting extends StatelessWidget {
   }
 }
 
+class AccountStatistics extends StatelessWidget {
+  final UserData currentUserData;
+  AccountStatistics({required this.currentUserData});
+
+  @override
+  Widget build(BuildContext context) {
+    return CardWrapper(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 10),
+          Text("Account Statistics",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              HeavyClientTextBox(content: "Played Games"),
+              UserDetailContent(content: currentUserData.gamePlayed.toString())
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              HeavyClientTextBox(content: "Won Games"),
+              UserDetailContent(content: currentUserData.gameWins.toString())
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              HeavyClientTextBox(content: "Average Difference"),
+              UserDetailContent(content: 'ajouter le field dans firebase')
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              HeavyClientTextBox(
+                  content: currentUserData.averageTime.toString()),
+              SizedBox(width: 20),
+              UserDetailContent(content: "0")
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class UserPersonalInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -255,10 +313,8 @@ class UserPersonalInfo extends StatelessWidget {
           return Center(child: Text("ID de l'utilisateur non disponible."));
         }
 
-        final userId = snapshot
-            .data!; // Nous avons maintenant l'ID de l'utilisateur sous forme de String.
+        final userId = snapshot.data!;
 
-        // Maintenant, utilisez StreamBuilder pour écouter les changements dans le document de l'utilisateur.
         return StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -281,17 +337,15 @@ class UserPersonalInfo extends StatelessWidget {
                   child: Text("Données de l'utilisateur non trouvées."));
             }
 
-            // Convertissez le DocumentSnapshot en UserData.
             final currentUserData = UserData.fromSnapshot(snapshot.data!);
 
-            // Utilisez `currentUserData` pour construire vos widgets.
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AccountSetting(currentUserData: currentUserData),
                 SizedBox(height: 20),
-                // AccountStatistics(currentUserData: currentUserData),
+                AccountStatistics(currentUserData: currentUserData),
               ],
             );
           },
