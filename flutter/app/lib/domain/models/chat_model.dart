@@ -26,6 +26,30 @@ class ChatMessage {
   }
 }
 
+class UserRoom {
+  String name;
+  bool newMessage;
+
+  UserRoom({
+    required this.name,
+    required this.newMessage,
+  });
+
+  factory UserRoom.fromJson(Map<String, dynamic> json) {
+    return UserRoom(
+      name: json['name'] as String,
+      newMessage: json['newMessage'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'newMessage': newMessage,
+    };
+  }
+}
+
 class ChatRoom {
   ChatRoomInfo info;
   List<ChatMessage> messages;

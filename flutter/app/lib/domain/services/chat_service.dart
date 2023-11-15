@@ -19,6 +19,9 @@ class ChatManagerService {
   BehaviorSubject<List<String>> allRoomsList =
       BehaviorSubject<List<String>>.seeded([]);
 
+  BehaviorSubject<List<String>> unJoinedRooms =
+      BehaviorSubject<List<String>>.seeded([]);
+
   UserModel activeUser = UserModel(id: '', name: '');
 
   BehaviorSubject<List<ChatMessage>> messages =
@@ -79,10 +82,13 @@ class ChatManagerService {
       fetchAllRooms();
     });
     socket.on(SocketEvent.getMessages, (dynamic data) {
-      final messages = List<ChatMessage>.from(data)
-          .map((item) => ChatMessage.fromJson(item as Map<String, dynamic>))
-          .toList();
-      this.messages.add(messages);
+      final List<ChatMessage> newMessages = [];
+
+      data.forEach((message) {
+        newMessages.add(ChatMessage.fromJson(message as Map<String, dynamic>));
+      });
+
+      messages.add(newMessages);
     });
   }
 
@@ -110,19 +116,19 @@ class ChatManagerService {
     socket.send(SocketEvent.getMessages, {'roomId': activeRoom.value});
   }
 
-  // void createRoom(String roomName) {
-  //   socket.send(SocketEvent.createRoom, {
-  //     'roomName': roomName,
-  //     'userName': activeUser.name,
-  //   });
-  // }
+  void createRoom(String roomName) {
+    socket.send(SocketEvent.createRoom, {
+      'roomName': roomName,
+      'userName': activeUser.name,
+    });
+  }
 
-  // void joinRooms(List<String> roomNames) {
-  //   socket.send(SocketEvent.joinRooms, {
-  //     'roomNames': roomNames,
-  //     'userName': activeUser.name,
-  //   });
-  // }
+  void joinRooms(List<String> roomNames) {
+    socket.send(SocketEvent.joinRooms, {
+      'roomNames': roomNames,
+      'userName': activeUser.name,
+    });
+  }
 
   bool isOwnMessage(ChatMessage message) {
     return message.user == activeUser.name;
@@ -132,16 +138,16 @@ class ChatManagerService {
     return message.user != activeUser.name;
   }
 
-  // void leaveRoom(String roomName) {
-  //   socket.send(SocketEvent.leaveRoom, {
-  //     'roomName': roomName,
-  //     'userName': activeUser.name,
-  //   });
-  // }
+  void leaveRoom(String roomName) {
+    socket.send(SocketEvent.leaveRoom, {
+      'roomName': roomName,
+      'userName': activeUser.name,
+    });
+  }
 
-  // void deleteRoom(String roomName) {
-  //   socket.send(SocketEvent.deleteRoom, {'roomName': roomName});
-  // }
+  void deleteRoom(String roomName) {
+    socket.send(SocketEvent.deleteRoom, {'roomName': roomName});
+  }
 
   // void leaveGameChat() {
   //   if (activeRoom.value.startsWith('Game')) {

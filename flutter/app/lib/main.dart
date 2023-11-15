@@ -1,5 +1,6 @@
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -46,6 +47,7 @@ void registerDependencies() {
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
   Get.put(ChatManagerService());
+  Get.put(ChatDisplayService());
 }
 
 late List<CameraDescription> cameras;

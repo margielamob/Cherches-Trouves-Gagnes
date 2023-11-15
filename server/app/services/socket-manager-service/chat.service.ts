@@ -99,7 +99,7 @@ export class ChatSocketManager {
                 socket.join(roomName);
             }
             socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(userName));
-            socket.broadcast.emit(SocketEvent.UpdateAllRooms, Array.from(this.allRooms.keys()));
+            this.server.sio.emit(SocketEvent.UpdateAllRooms, Array.from(this.allRooms.keys()));
         });
 
         socket.on(SocketEvent.JoinRooms, (roomNames: string[], userName: string) => {

@@ -1,4 +1,4 @@
-import 'package:app/components/chat/chat_feed.dart';
+import 'package:app/components/chat/chat_panel.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
@@ -7,7 +7,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ChatFeed(),
+      body: ChatPanel(),
     );
   }
 }

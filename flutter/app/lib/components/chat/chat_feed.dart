@@ -24,18 +24,17 @@ class _ChatFeedState extends State<ChatFeed> {
   TextEditingController _textController = TextEditingController();
   late ScrollController _scrollController;
 
-  _ChatFeedState() {
-    chatManager.messages.stream.listen((message) {
-      setState(() {
-        messages = message;
-      });
-    });
-  }
+  _ChatFeedState() {}
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    chatManager.messages.stream.listen((message) {
+      setState(() {
+        messages = message;
+      });
+    });
     // chatManager.fetchMessages();
   }
 
@@ -89,21 +88,7 @@ class _ChatFeedState extends State<ChatFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
+    return Expanded(
       child: Column(
         children: [
           Expanded(
