@@ -10,6 +10,7 @@ import { TimeFormatterService } from '@app/services/time-formatter/time-formatte
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject } from 'rxjs';
+import { v4 } from 'uuid';
 import { EventArray } from './event-array';
 import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
@@ -34,20 +35,19 @@ export class ReplayService {
     imgOriginalContext: CanvasRenderingContext2D;
     // event subject
     // private props
-    isPlaying = true;
+    isPlaying = false;
     private array: EventArray = new EventArray();
-    private previousEvent: ReplayEvent;
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
 
     private currentTime: number;
-    private timer: number;
+    private startingTime: number;
     private rightImageState: Map<number, ImageData> = new Map();
     private leftImageState: Map<number, ImageData> = new Map();
 
-    private size = 0;
+    // private size = 0;
 
     constructor(
         private socket: CommunicationSocketService,
@@ -91,47 +91,69 @@ export class ReplayService {
         this.array.currentIndex = pos;
     }
 
+    findInstant(percentage: number) {
+        return Math.floor(this.startingTime - this.getTotalSeconds() * percentage);
+    }
+
     setCurrentTime(percentage: number) {
-        const index = this.indexFromPercentage(percentage);
-        if (index === this.length()) {
-            this.currentTime = this.gameHandler.endedTime;
-            return;
-        }
         if (this.timerRef) {
             this.clearTimer();
         }
-        const factor = this.getElapsedSeconds(this.array.getEvent(index));
-        const time = this.timer - factor;
+        const time = this.findInstant(percentage);
 
+        console.log(time);
         this.setTimer(time);
     }
 
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
+            const event = this.getEventFromInstant(this.currentTime);
+            this.updateImagesState(this.currentTime);
+            if (event) {
+                this.playEvent(event);
+            }
             this.currentTime--;
+
+            console.log(this.currentTime);
             if (this.currentTime <= this.gameHandler.endedTime) {
+                const endEvent = this.getEventFromInstant(this.currentTime);
+                if (endEvent) {
+                    this.playEvent(endEvent);
+                }
                 clearInterval(this.timerRef);
             }
         }, 1000 / this.timeFactor);
     }
 
+    getEventInstant(event: ReplayEvent) {
+        const elapsedTime = this.getElapsedSeconds(event);
+        return this.startingTime - elapsedTime;
+    }
+
+    isEventOnInstant(event: ReplayEvent, instant: number) {
+        return this.getEventInstant(event) === instant;
+    }
+
+    getEventFromInstant(instant: number) {
+        for (let i = 0; i < this.length(); i++) {
+            if (this.isEventOnInstant(this.array.getEvent(i), instant)) {
+                return this.array.getEvent(i);
+            }
+        }
+
+        return undefined;
+    }
+
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
         const event = {
+            eventId: this.generateId(),
             action,
             data,
             playerName,
             timestamp: Date.now(),
         } as ReplayEvent;
-
-        if (this.array.isEmpty()) {
-            this.previousEvent = event;
-        }
-
-        this.saveGameState(this.size);
-
         this.array.push(event);
-        this.size++;
     }
 
     stopBlinking() {
@@ -168,30 +190,25 @@ export class ReplayService {
 
     async resume() {
         await this.play();
-        await this.playFromIndex();
+        // await this.playFromPercentage();
     }
 
-    saveGameState(idx: number) {
+    saveGameState(time: number) {
         const rightImageData = this.imgModifiedContext.getImageData(
             0,
             0,
             this.imgModifiedContext.canvas.width,
             this.imgModifiedContext.canvas.height,
         );
-        const leftImageData = this.originalContext.getImageData(0, 0, this.originalContext.canvas.width, this.originalContext.canvas.height);
+        const leftImageData = this.imgOriginalContext.getImageData(0, 0, this.imgOriginalContext.canvas.width, this.imgOriginalContext.canvas.height);
 
-        this.rightImageState.set(idx, rightImageData);
-        this.leftImageState.set(idx, leftImageData);
+        this.rightImageState.set(time, rightImageData);
+        this.leftImageState.set(time, leftImageData);
     }
 
-    updateImage(index: number) {
-        console.log(this.rightImageState.size);
-        if (index === 0 || this.array.end()) {
-            return;
-        }
-
-        const rightImageData = this.rightImageState.get(index);
-        const leftImageData = this.leftImageState.get(index);
+    updateImagesState(time: number) {
+        const rightImageData = this.rightImageState.get(time);
+        const leftImageData = this.leftImageState.get(time);
 
         if (!rightImageData || !leftImageData) {
             return;
@@ -205,6 +222,10 @@ export class ReplayService {
         return this.timeFormatter.formatTime(this.currentTime);
     }
 
+    getElapsedSeconds(event: ReplayEvent) {
+        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
+    }
+
     getTotalSeconds() {
         return this.array.getTotalSeconds();
     }
@@ -212,48 +233,25 @@ export class ReplayService {
     indexFromPercentage(percentage: number) {
         return Math.floor(percentage * this.length());
     }
-
-    async playFromIndex(percentage: number = this.array.currentIndex) {
-        this.array.currentIndex = this.indexFromPercentage(percentage);
+    playEvent(event: ReplayEvent) {
+        console.log('in play event');
         this.stopBlinking();
-        this.updateImage(this.array.currentIndex);
 
-        while (this.isPlaying) {
-            if (this.array.end()) {
-                console.log('end of array');
-                return;
-            }
-
-            const event = this.array.getCurrentEvent();
-            if (!this.isPlaying) {
-                return;
-            }
-            await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
-            switch (event.action) {
-                case ReplayActions.ClickFound:
-                    this.replayDifferenceFound(event);
-                    break;
-                case ReplayActions.ClickError:
-                    this.replayDifferenceNotFound(event);
-                    break;
-                case ReplayActions.StartGame:
-                    this.replayStartGame();
-                    break;
-                case ReplayActions.ActivateCheat:
-                    this.replayCheating();
-                    break;
-                default:
-                    throw Error('could not handle this event');
-            }
-            if (this.array.end()) {
-                console.log('end of array');
-                return;
-            }
-            this.previousEvent = event;
-            if (this.isPlaying) {
-                this.array.currentIndex++;
-                console.log(this.array.currentIndex);
-            }
+        switch (event.action) {
+            case ReplayActions.ClickFound:
+                this.replayDifferenceFound(event);
+                break;
+            case ReplayActions.ClickError:
+                this.replayDifferenceNotFound(event);
+                break;
+            case ReplayActions.StartGame:
+                this.replayStartGame();
+                break;
+            case ReplayActions.ActivateCheat:
+                this.replayCheating();
+                break;
+            default:
+                throw Error('could not handle this event');
         }
     }
 
@@ -290,7 +288,7 @@ export class ReplayService {
             this.addEvent(ReplayActions.StartGame, gameId);
             if (this.gameHandler.timer !== 0) {
                 this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
-                this.timer = this.gameHandler.timer;
+                this.startingTime = this.gameHandler.timer;
             }
         });
 
@@ -299,7 +297,11 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.Timer, (payload: { timer: number }) => {
-            this.timer = payload.timer;
+            this.startingTime = payload.timer;
+        });
+
+        this.socket.on(SocketEvent.Clock, (time: number) => {
+            this.saveGameState(time);
         });
     }
 
@@ -309,7 +311,7 @@ export class ReplayService {
 
     private replayStartGame() {
         this.sendReplayToServer();
-        this.loadImages.next(true);
+        // this.loadImages.next(true);
     }
 
     private replayDifferenceFound(event: ReplayEvent) {
@@ -333,29 +335,29 @@ export class ReplayService {
         this.cheatActivated.next(true);
     }
 
-    private timeSinceLastEvent(event: ReplayEvent) {
-        return event.timestamp - this.previousEvent.timestamp;
-    }
+    // private timeSinceLastEvent(event: ReplayEvent) {
+    //     return event.timestamp - this.previousEvent.timestamp;
+    // }
 
-    private async delay(ms: number): Promise<void> {
-        return new Promise<void>((resolve) => {
-            const timeoutId = setTimeout(() => {
-                resolve();
-            }, ms);
+    // private async delay(ms: number): Promise<void> {
+    //     return new Promise<void>((resolve) => {
+    //         const timeoutId = setTimeout(() => {
+    //             resolve();
+    //         }, ms);
 
-            if (!this.isPlaying) {
-                clearTimeout(timeoutId);
-                resolve();
-            }
-        });
-    }
+    //         if (!this.isPlaying) {
+    //             clearTimeout(timeoutId);
+    //             resolve();
+    //         }
+    //     });
+    // }
 
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
     }
 
-    private getElapsedSeconds(event: ReplayEvent) {
-        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
+    private generateId() {
+        return v4();
     }
 }
 

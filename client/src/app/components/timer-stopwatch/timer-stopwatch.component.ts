@@ -12,7 +12,6 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
-    hasReplayStarted = false;
     private time: number;
 
     constructor(
@@ -20,11 +19,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         private readonly timeFormatter: TimeFormatterService,
         private readonly gameInfoService: GameInformationHandlerService,
         private replayService: ReplayService,
-    ) {
-        this.replayService.loadImages$.subscribe((hasStarted) => {
-            this.hasReplayStarted = hasStarted;
-        });
-    }
+    ) {}
 
     ngOnInit(): void {
         this.socketService.on(SocketEvent.Clock, (time: number) => {
@@ -35,6 +30,14 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
             this.gameInfoService.endedTime = this.time;
         });
+    }
+
+    isReplaying() {
+        return this.replayService.isPlaying;
+    }
+
+    getTimerDisplay() {
+        return this.timerDisplay;
     }
 
     isGameDone() {

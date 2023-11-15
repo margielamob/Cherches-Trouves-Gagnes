@@ -24,7 +24,7 @@ export class ReplayBarComponent implements OnChanges {
     async seekToEvent(percentage: number) {
         await this.replayService.play();
         this.replayService.setCurrentTime(percentage);
-        await this.replayService.playFromIndex(percentage);
+        // await this.replayService.playFromPercentage(percentage);
     }
 
     async replay() {

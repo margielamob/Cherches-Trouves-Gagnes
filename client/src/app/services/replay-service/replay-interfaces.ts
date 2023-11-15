@@ -19,6 +19,7 @@ export interface ChatReplay {
 }
 
 export interface ReplayEvent {
+    eventId: string;
     action: ReplayActions;
     timestamp: number;
     data?: ReplayPayload;
