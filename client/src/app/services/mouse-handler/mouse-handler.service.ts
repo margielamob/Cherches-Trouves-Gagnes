@@ -9,6 +9,8 @@ export class MouseHandlerService {
 
     // eslint-disable-next-line max-params
     mouseHitDetect($event: MouseEvent, ctx: CanvasRenderingContext2D, gameId: string, isOriginal: boolean) {
-        this.differencesDetectionHandlerService.getDifferenceValidation(gameId, { x: $event.offsetX, y: $event.offsetY }, ctx, isOriginal);
+        if (!this.differencesDetectionHandlerService.mouseIsDisabled) {
+            this.differencesDetectionHandlerService.getDifferenceValidation(gameId, { x: $event.offsetX, y: $event.offsetY }, ctx, isOriginal);
+        }
     }
 }

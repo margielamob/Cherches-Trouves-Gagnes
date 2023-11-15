@@ -44,7 +44,9 @@ export class ReplayService {
 
     private currentTime: number;
     private timer: number;
-    private gameImageState: Map<number, ImageData> = new Map();
+    private rightImageState: Map<number, ImageData> = new Map();
+    private leftImageState: Map<number, ImageData> = new Map();
+
     private size = 0;
 
     constructor(
@@ -133,6 +135,7 @@ export class ReplayService {
     }
 
     stopBlinking() {
+        if (!this.leftIntervalRef || !this.rightIntervalRef) return;
         clearInterval(this.leftIntervalRef);
         clearInterval(this.rightIntervalRef);
     }
@@ -169,22 +172,32 @@ export class ReplayService {
     }
 
     saveGameState(idx: number) {
-        const imageData = this.imgModifiedContext.getImageData(0, 0, this.imgModifiedContext.canvas.width, this.modifiedContext.canvas.height);
-        this.gameImageState.set(idx, imageData);
+        const rightImageData = this.imgModifiedContext.getImageData(
+            0,
+            0,
+            this.imgModifiedContext.canvas.width,
+            this.imgModifiedContext.canvas.height,
+        );
+        const leftImageData = this.originalContext.getImageData(0, 0, this.originalContext.canvas.width, this.originalContext.canvas.height);
+
+        this.rightImageState.set(idx, rightImageData);
+        this.leftImageState.set(idx, leftImageData);
     }
 
-    async updateImage(index: number) {
-        console.log(this.gameImageState.size);
+    updateImage(index: number) {
+        console.log(this.rightImageState.size);
         if (index === 0 || this.array.end()) {
             return;
         }
 
-        const imageData = this.gameImageState.get(index);
+        const rightImageData = this.rightImageState.get(index);
+        const leftImageData = this.leftImageState.get(index);
 
-        if (!imageData) {
+        if (!rightImageData || !leftImageData) {
             return;
         } else {
-            this.modifiedContext.putImageData(imageData, 0, 0);
+            this.modifiedContext.putImageData(rightImageData, 0, 0);
+            this.originalContext.putImageData(leftImageData, 0, 0);
         }
     }
 
@@ -202,6 +215,7 @@ export class ReplayService {
 
     async playFromIndex(percentage: number = this.array.currentIndex) {
         this.array.currentIndex = this.indexFromPercentage(percentage);
+        this.stopBlinking();
         this.updateImage(this.array.currentIndex);
 
         while (this.isPlaying) {
@@ -216,7 +230,7 @@ export class ReplayService {
             }
             await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
             switch (event.action) {
-                case ReplayActions.DifferenceFoundUpdate:
+                case ReplayActions.ClickFound:
                     this.replayDifferenceFound(event);
                     break;
                 case ReplayActions.ClickError:
@@ -259,7 +273,7 @@ export class ReplayService {
                     coords: obj.data.coords,
                     pos: obj.differenceCoord,
                 } as DifferenceFound;
-                this.addEvent(ReplayActions.DifferenceFoundUpdate, data);
+                this.addEvent(ReplayActions.ClickFound, data);
             },
         );
 
@@ -347,17 +361,7 @@ export class ReplayService {
 
 export enum ReplayActions {
     StartGame = 'StartGame',
-    ClickFound = 'ClickFound',
     ClickError = 'ClickError',
-    Message = 'Message',
     ActivateCheat = 'ActivateCheat',
-    DeactivateCheat = 'DeactivateCheat',
-    UseHint = 'UseHint',
-    TimerUpdate = 'TimerUpdate',
-    DifferenceFoundUpdate = 'DifferenceFoundUpdate',
-    OpponentDifferencesFoundUpdate = 'OpponentDifferencesFoundUpdate',
-    EndGame = 'EndGame',
-    ActivateThirdHint = 'ActivateThirdHint',
-    DeactivateThirdHint = 'DeactivateThirdHint',
-    EventMessage = 'EventMessage',
+    ClickFound = 'ClickFound',
 }
