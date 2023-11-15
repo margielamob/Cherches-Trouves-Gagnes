@@ -71,10 +71,6 @@ export class ReplayService {
         this.imgModifiedContext = ctxImgModified;
     }
 
-    getArray(): EventArray {
-        return this.array;
-    }
-
     setTimeFactor(factor: number) {
         this.timeFactor = factor;
     }
@@ -83,19 +79,11 @@ export class ReplayService {
         return this.timeFactor;
     }
 
-    getCurrentIndex() {
-        return this.array.currentIndex;
-    }
-
-    setCurrentIndex(pos: number) {
-        this.array.currentIndex = pos;
-    }
-
     findInstant(percentage: number) {
         return Math.floor(this.startingTime - this.getTotalSeconds() * percentage);
     }
 
-    setCurrentTime(percentage: number) {
+    play(percentage: number) {
         if (this.timerRef) {
             this.clearTimer();
         }
@@ -108,6 +96,10 @@ export class ReplayService {
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
+            if (!this.isPlaying) {
+                clearInterval(this.timerRef);
+                return;
+            }
             const event = this.getEventFromInstant(this.currentTime);
             this.updateImagesState(this.currentTime);
             if (event) {
@@ -162,37 +154,6 @@ export class ReplayService {
         clearInterval(this.rightIntervalRef);
     }
 
-    isDone() {
-        return this.array.end();
-    }
-
-    async pause() {
-        return new Promise<void>((resolve) => {
-            this.isPlaying = false;
-            this.stopBlinking();
-            resolve();
-        });
-    }
-
-    async play() {
-        return new Promise<void>((resolve) => {
-            this.isPlaying = true;
-            resolve();
-        });
-    }
-
-    async stopPlaying() {
-        return new Promise<void>((resolve) => {
-            this.isPlaying = true;
-            resolve();
-        });
-    }
-
-    async resume() {
-        await this.play();
-        // await this.playFromPercentage();
-    }
-
     saveGameState(time: number) {
         const rightImageData = this.imgModifiedContext.getImageData(
             0,
@@ -230,9 +191,6 @@ export class ReplayService {
         return this.array.getTotalSeconds();
     }
 
-    indexFromPercentage(percentage: number) {
-        return Math.floor(percentage * this.length());
-    }
     playEvent(event: ReplayEvent) {
         console.log('in play event');
         this.stopBlinking();
@@ -311,7 +269,6 @@ export class ReplayService {
 
     private replayStartGame() {
         this.sendReplayToServer();
-        // this.loadImages.next(true);
     }
 
     private replayDifferenceFound(event: ReplayEvent) {
@@ -334,23 +291,6 @@ export class ReplayService {
     private replayCheating() {
         this.cheatActivated.next(true);
     }
-
-    // private timeSinceLastEvent(event: ReplayEvent) {
-    //     return event.timestamp - this.previousEvent.timestamp;
-    // }
-
-    // private async delay(ms: number): Promise<void> {
-    //     return new Promise<void>((resolve) => {
-    //         const timeoutId = setTimeout(() => {
-    //             resolve();
-    //         }, ms);
-
-    //         if (!this.isPlaying) {
-    //             clearTimeout(timeoutId);
-    //             resolve();
-    //         }
-    //     });
-    // }
 
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });

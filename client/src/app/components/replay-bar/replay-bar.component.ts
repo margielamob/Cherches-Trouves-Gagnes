@@ -16,29 +16,28 @@ export class ReplayBarComponent implements OnChanges {
     sliderPosition = 0;
     constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 
-    async ngOnChanges() {
+    ngOnChanges() {
         this.replayService.isPlaying = true;
         this.seekToEvent(this.sliderPosition);
     }
 
-    async seekToEvent(percentage: number) {
-        await this.replayService.play();
-        this.replayService.setCurrentTime(percentage);
-        // await this.replayService.playFromPercentage(percentage);
+    seekToEvent(percentage: number) {
+        this.replayService.play(percentage);
     }
 
-    async replay() {
-        await this.replayService.play();
+    replay() {
+        this.replayService.isPlaying = true;
         this.dialog.closeAll();
-        await this.seekToEvent(0);
+        this.seekToEvent(0);
     }
 
-    async pause() {
-        await this.replayService.pause();
+    pause() {
+        this.replayService.isPlaying = false;
     }
 
-    async resume() {
-        await this.replayService.resume();
+    resume() {
+        this.replayService.isPlaying = true;
+        this.seekToEvent(this.sliderPosition);
     }
 
     quit() {
@@ -49,17 +48,9 @@ export class ReplayBarComponent implements OnChanges {
         return this.replayService.isPlaying;
     }
 
-    isDone() {
-        this.replayService.isDone();
-    }
-
     setSpeed(speed: number) {
         this.currentSpeed = speed;
         this.replayService.setTimeFactor(this.currentSpeed);
-    }
-
-    totalEvents() {
-        return this.replayService.length();
     }
 
     totalTime() {
