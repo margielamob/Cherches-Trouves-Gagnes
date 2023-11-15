@@ -89,12 +89,6 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ngOnInit() {
         this.handleClue();
         this.communicationSocketService.send(SocketEvent.GameStarted, { gameId: this.gameInfoHandlerService.roomId });
-        this.replayService.hasReplayStarted$.subscribe(async (hasStarted) => {
-            if (hasStarted) {
-                await this.resetCanvases();
-                this.replayService.imagesLoaded.next(true);
-            }
-        });
     }
 
     async resetCanvases(): Promise<void> {
@@ -111,6 +105,11 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         this.displayImages();
         this.replayService.setContexts(this.getContextOriginal(), this.getContextModified(), this.getContextDifferences());
         this.replayService.setImageContexts(this.getContextImgOriginal(), this.getContextImgModified());
+        this.replayService.loadImages$.subscribe(async (hasStarted) => {
+            if (hasStarted) {
+                await this.resetCanvases();
+            }
+        });
     }
 
     ngOnDestroy() {

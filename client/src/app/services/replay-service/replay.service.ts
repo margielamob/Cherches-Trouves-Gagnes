@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-console */
@@ -8,7 +9,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { EventArray } from './event-array';
 import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
@@ -17,24 +18,23 @@ import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from 
 })
 export class ReplayService {
     // subscriptions:
-    hasReplayStarted = new BehaviorSubject<boolean>(false);
-    hasReplayStarted$ = this.hasReplayStarted.asObservable();
-    slider = new BehaviorSubject<number>(0);
-    slider$ = this.slider.asObservable();
-    imagesLoaded = new BehaviorSubject<boolean>(false);
-    imagesLoaded$ = this.imagesLoaded.asObservable();
+    loadImages = new BehaviorSubject<boolean>(false);
+    loadImages$ = this.loadImages.asObservable();
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
     // public props
     state: ReplayState = ReplayState.STOPPED;
     gameId: string;
-    differencesContext: CanvasRenderingContext2D;
-    imgOriginalContext: CanvasRenderingContext2D;
+
     // Node.Js Timers
     timerRef: any;
     sliderRef: any;
     leftIntervalRef: any;
     rightIntervalRef: any;
+    differencesContext: CanvasRenderingContext2D;
+    imgOriginalContext: CanvasRenderingContext2D;
+    // event subject
+    private stopPlayingSubject: Subject<void> = new Subject<void>();
     // private props
     private array: EventArray = new EventArray();
     private previousEvent: ReplayEvent;
@@ -42,9 +42,11 @@ export class ReplayService {
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
+
     private currentTime: number;
     private timer: number;
-    private elapsed: number = 0;
+    private gameImageState: Map<number, ImageData> = new Map();
+    private size = 0;
 
     constructor(
         private socket: CommunicationSocketService,
@@ -77,7 +79,6 @@ export class ReplayService {
     }
 
     setTimeFactor(factor: number) {
-        console.log('new factor', factor);
         this.timeFactor = factor;
     }
 
@@ -93,8 +94,11 @@ export class ReplayService {
         this.array.currentIndex = pos;
     }
 
+    stopPlaying() {
+        this.stopPlayingSubject.next();
+    }
+
     setCurrentTime(percentage: number) {
-        this.stopBlinking();
         const index = this.indexFromPercentage(percentage);
         if (index === this.length()) {
             this.currentTime = this.gameHandler.endedTime;
@@ -104,7 +108,6 @@ export class ReplayService {
             this.clearTimer();
         }
         const factor = this.getElapsedSeconds(this.array.getEvent(index));
-        this.elapsed = factor;
         const time = this.timer - factor;
 
         this.setTimer(time);
@@ -114,18 +117,10 @@ export class ReplayService {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
             this.currentTime--;
-            this.elapsed++;
-            this.slider.next(this.getCurrentRatio());
             if (this.currentTime <= this.gameHandler.endedTime) {
-                this.stopBlinking();
                 clearInterval(this.timerRef);
-                this.slider.next(1);
             }
         }, 1000 / this.timeFactor);
-    }
-
-    getCurrentRatio() {
-        return this.elapsed / this.getTotalSeconds();
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -140,31 +135,53 @@ export class ReplayService {
             this.previousEvent = event;
         }
 
+        this.saveGameState(this.size);
+
         this.array.push(event);
+        this.size++;
+    }
+
+    pause() {
+        this.state = ReplayState.PAUSED;
+    }
+
+    resume() {
+        this.state = ReplayState.PLAYING;
+    }
+
+    saveGameState(idx: number) {
+        const imageData = this.imgModifiedContext.getImageData(0, 0, this.imgModifiedContext.canvas.width, this.modifiedContext.canvas.height);
+        this.gameImageState.set(idx, imageData);
+    }
+
+    async updateImage(index: number) {
+        return new Promise<void>((resolve, reject) => {
+            console.log(this.gameImageState.size);
+            if (index === 0) {
+                resolve();
+            }
+
+            const imageData = this.gameImageState.get(index - 1);
+
+            if (!imageData) {
+                reject();
+            } else {
+                this.modifiedContext.putImageData(imageData, 0, 0);
+                resolve();
+            }
+        });
     }
 
     getFormattedTime() {
         return this.timeFormatter.formatTime(this.currentTime);
     }
 
-    timeToIndex(elapsedSeconds: number) {
-        return Math.round(this.length() * (elapsedSeconds / this.getTotalSeconds()));
-    }
-
-    indexToTime() {
-        return Math.round(this.getTotalSeconds() * (this.array.currentIndex / this.length()));
-    }
-
     getTotalSeconds() {
         return this.array.getTotalSeconds();
     }
 
-    eventPercentage() {
-        return this.getElapsedSeconds(this.array.getCurrentEvent()) / this.getTotalSeconds();
-    }
-
     indexFromPercentage(percentage: number) {
-        return Math.round(percentage * this.length());
+        return Math.floor(percentage * this.length());
     }
 
     async playFromIndex(percentage: number = this.array.currentIndex) {
@@ -175,6 +192,8 @@ export class ReplayService {
                 this.setSate(ReplayState.DONE);
                 return;
             }
+
+            await this.updateImage(this.array.currentIndex);
 
             const event = this.array.getCurrentEvent();
             await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
@@ -198,6 +217,7 @@ export class ReplayService {
             this.array.currentIndex++;
         }
     }
+
     listenToEvents() {
         this.socket.on(
             SocketEvent.DifferenceFound,
@@ -248,16 +268,9 @@ export class ReplayService {
         clearInterval(this.timerRef);
     }
 
-    private stopBlinking() {
-        if (this.rightIntervalRef && this.leftIntervalRef) {
-            clearInterval(this.leftIntervalRef);
-            clearInterval(this.rightIntervalRef);
-        }
-    }
-
     private replayStartGame() {
         this.sendReplayToServer();
-        this.hasReplayStarted.next(true);
+        this.loadImages.next(true);
     }
 
     private replayDifferenceFound(event: ReplayEvent) {
@@ -286,8 +299,14 @@ export class ReplayService {
     }
 
     private async delay(ms: number): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
+        return new Promise<void>((resolve) => {
+            const timeoutId = setTimeout(() => {
+                if (this.state === ReplayState.PLAYING) {
+                    resolve();
+                } else {
+                    clearTimeout(timeoutId);
+                }
+            }, ms);
         });
     }
 

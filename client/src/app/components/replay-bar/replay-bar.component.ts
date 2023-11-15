@@ -14,18 +14,13 @@ export class ReplayBarComponent implements OnChanges {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     replaySpeeds = [0.5, 1, 2, 3];
     sliderPosition = 0;
-    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {
-        this.replayService.slider$.subscribe((ratio) => {
-            this.sliderPosition = ratio;
-        });
-    }
+    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
 
     async ngOnChanges() {
         this.seekToEvent(this.sliderPosition);
     }
 
     async seekToEvent(percentage: number) {
-        console.log(percentage);
         this.replayService.setSate(ReplayState.START);
         this.replayService.setCurrentTime(percentage);
         await this.replayService.playFromIndex(percentage);

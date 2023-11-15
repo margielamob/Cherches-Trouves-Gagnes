@@ -21,7 +21,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         private readonly gameInfoService: GameInformationHandlerService,
         private replayService: ReplayService,
     ) {
-        this.replayService.hasReplayStarted$.subscribe((hasStarted) => {
+        this.replayService.loadImages$.subscribe((hasStarted) => {
             this.hasReplayStarted = hasStarted;
         });
     }
