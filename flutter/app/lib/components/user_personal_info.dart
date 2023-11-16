@@ -271,7 +271,10 @@ class AccountStatistics extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeavyClientTextBox(content: "Average Difference"),
-              UserDetailContent(content: 'ajouter le field dans firebase')
+              UserDetailContent(
+                  content: (currentUserData.numberDifferenceFound /
+                          currentUserData.gamePlayed)
+                      .toString())
             ],
           ),
           SizedBox(height: 10),
@@ -279,10 +282,12 @@ class AccountStatistics extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(
-                  content: currentUserData.averageTime.toString()),
+              HeavyClientTextBox(content: "Average Time per Game (seconds)"),
               SizedBox(width: 20),
-              UserDetailContent(content: "0")
+              UserDetailContent(
+                  content: (currentUserData.totalTimePlayed /
+                          currentUserData.gamePlayed)
+                      .toString())
             ],
           ),
         ],

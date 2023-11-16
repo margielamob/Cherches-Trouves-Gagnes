@@ -46,10 +46,10 @@ void registerDependencies() {
   Get.put(ClassicGameService());
   Get.put(GameManagerService());
   Get.put(DifferenceDetectionService());
+  Get.put(ClockService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager(initialTheme));
-  Get.put(ClockService());
   Get.put(VideoReplayService());
   Get.put(GameReplayService());
 }
@@ -91,6 +91,12 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) {
+            ClockService clockService = Get.find();
+            return clockService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
             EndGameService endGameService = Get.find();
             return endGameService;
           },
@@ -105,12 +111,6 @@ void main() async {
           create: (context) {
             ProfilePageManager profilePageManager = Get.find();
             return profilePageManager;
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (context) {
-            ClockService clockService = Get.find();
-            return clockService;
           },
         ),
         ChangeNotifierProvider(

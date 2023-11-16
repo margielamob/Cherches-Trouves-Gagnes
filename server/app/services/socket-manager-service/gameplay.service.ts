@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { CluesService } from '@app/services/clues-service/clues.service';
@@ -76,6 +77,7 @@ export class GamePlayManager {
                     );
                 return;
             }
+
             this.sio
                 .to(gameId)
                 .emit(
@@ -97,6 +99,7 @@ export class GamePlayManager {
             }
 
             if (this.gameManager.isLimitedTime(gameId)) {
+                this.gameManager.increaseTimer(gameId, this.gameManager.getGame(gameId)!.bonusTime);
                 this.gameManager.setNextGame(gameId);
                 const nextGameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
@@ -112,12 +115,26 @@ export class GamePlayManager {
                         soloScore: nextGameCard.soloScore,
                         isMulti: false,
                     };
-                    this.sio.to(gameId).emit(SocketEvent.NewGameBoard, gameCardInfo);
+                    const newDifferences = this.removeRandomDifference(this.gameManager.getGameInfo(gameId)!.differences);
+                    this.gameManager.getGame(gameId)!.differencesToClear.coords = newDifferences.newDifferences;
+                    this.gameManager.getGameInfo(gameId)!.differences = [
+                        this.gameManager.getGameInfo(gameId)!.differences[newDifferences.randomIndex],
+                    ];
+                    this.sio.to(gameId).emit(SocketEvent.NewGameBoard, {
+                        gameInfo: gameCardInfo,
+                        coords: this.gameManager.getGame(gameId)!.differencesToClear.coords,
+                    });
                 }
             }
         });
     }
 
+    removeRandomDifference(differences: any[][]): { newDifferences: Coordinate[][]; randomIndex: number } {
+        if (differences.length === 0) return { newDifferences: [], randomIndex: 0 };
+        const randomIndex = Math.floor(Math.random() * differences.length);
+        const newDifferences = differences.filter((_, index) => index !== randomIndex);
+        return { newDifferences, randomIndex };
+    }
     endGame(roomId: string) {
         this.gameManager.removeGame(roomId);
     }

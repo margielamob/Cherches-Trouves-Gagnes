@@ -5,11 +5,10 @@ export interface UserData {
     photoURL?: string;
     uid: string;
     phoneNumber?: string;
-    // user config
     theme?: string;
     language?: string;
-    gameLost?: number;
+    numberDifferenceFound?: number;
+    totalTimePlayed?: number;
     gameWins?: number;
     gamePlayed: number;
-    averageTime?: string;
 }

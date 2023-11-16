@@ -42,14 +42,20 @@ export class DialogGameOverComponent {
     }
 
     toggleReplay() {
+        if (this.isWin) {
+            this.userService.updateUserGameWin();
+        }
+        this.userService.updateUserGamePlayed();
         this.isReplayToggled.emit(true);
         this.dialog.closeAll();
-        // eslint-disable-next-line no-console
-        console.log('emmited');
     }
 
     quitGame() {
         this.chatManager.leaveGameChat();
+        if (this.isWin) {
+            this.userService.updateUserGameWin();
+        }
+        this.userService.updateUserGamePlayed();
         this.dialog.closeAll();
     }
 }

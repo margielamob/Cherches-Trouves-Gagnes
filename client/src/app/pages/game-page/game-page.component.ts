@@ -31,7 +31,7 @@ export class GamePageComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
         private translate: TranslateService,
-        private differenceHandler: DifferencesDetectionHandlerService,
+        private differenceHandler: DifferencesDetectionHandlerService, // private userService: UserService,
     ) {
         exitButtonService.setGamePage();
         const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
@@ -90,6 +90,7 @@ export class GamePageComponent implements OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.minWidth = '50%';
+
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
@@ -110,8 +111,6 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
                 this.isReplayToggled = isReplayToggled;
-                // eslint-disable-next-line no-console
-                console.log('received toggle', this.isReplayToggled);
             });
         }
     }

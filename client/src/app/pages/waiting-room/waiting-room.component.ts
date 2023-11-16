@@ -46,9 +46,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.socketService.on(SocketEvent.CreatorLeft, (data: { player: User }) => {
-            // eslint-disable-next-line no-console
-            console.log('creator left' + data.player.name);
+        this.socketService.on(SocketEvent.CreatorLeft, () => {
             this.routerService.navigateTo('home');
         });
 

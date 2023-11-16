@@ -50,12 +50,9 @@ export class ChatManagerService {
         // });
 
         this.socket.on(SocketEvent.UpdateAllRooms, (rooms: string[]) => {
-            // eslint-disable-next-line no-console
-            console.log('all rooms : ' + rooms);
             this.allRoomsList.next(rooms);
         });
         this.socket.on(SocketEvent.UpdateUserRooms, (rooms: string[]) => {
-            console.log('update user rooms : ' + rooms);
             this.userRoomList.next(rooms);
         });
         this.socket.on(SocketEvent.RoomCreated, (rooms: { all: string[]; user: string[] }) => {
@@ -63,7 +60,6 @@ export class ChatManagerService {
             this.allRoomsList.next(rooms.all);
         });
         this.socket.on(SocketEvent.RoomDeleted, () => {
-            console.log('room deleted');
             this.fetchUserRooms();
             this.fetchAllRooms();
         });

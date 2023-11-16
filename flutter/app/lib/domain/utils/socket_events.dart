@@ -31,4 +31,5 @@ class SocketEvent {
   static String joinClassicGame = 'JoinClassicGame';
   static String creatorLeft = 'CreatorLeft';
   static String clock = 'clock';
+  static String startClock = 'StartClock';
 }

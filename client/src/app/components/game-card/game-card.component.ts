@@ -18,7 +18,6 @@ export class GameCardComponent implements OnInit {
     @Input() isJoining: boolean = false;
     @Input() joinableGameCard: JoinableGameCard;
     imageSrc: string;
-
     constructor(
         private readonly communicationSocket: CommunicationSocketService,
         private readonly timeFormatter: TimeFormatterService,

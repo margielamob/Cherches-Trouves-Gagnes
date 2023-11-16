@@ -121,10 +121,10 @@ class SignUpPageState extends State<SignUpPage> {
                                     phoneNumber: '',
                                     theme: 'Default',
                                     language: 'Fr',
-                                    gameLost: 0,
                                     gameWins: 0,
+                                    numberDifferenceFound: 0,
+                                    totalTimePlayed: 0,
                                     gamePlayed: 0,
-                                    averageTime: '0',
                                   );
 
                                   await userService.addUser(user);
