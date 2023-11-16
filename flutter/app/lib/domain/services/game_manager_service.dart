@@ -15,6 +15,7 @@ import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/classic_game_page.dart';
@@ -28,6 +29,7 @@ import 'package:get/get.dart';
 class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
+  final PersonalUserService _userService = Get.find();
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
@@ -38,6 +40,7 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
+  int? startingTimer;
   GameModeModel? gameMode;
 
   GameManagerService() {
@@ -46,19 +49,16 @@ class GameManagerService extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
-      print("SocketEvent.getGamesWaiting");
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
-      print("SocketEvent.play");
       currentRoomId = message;
       Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
-      print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       players = waitingRoomInfoRequest!.players;
       Get.to(WaitingPage());
@@ -68,9 +68,7 @@ class GameManagerService extends ChangeNotifier {
       players = waitingRoomInfoRequest!.players;
       notifyListeners();
     });
-    _socket.on(SocketEvent.gameStarted, (dynamic message) {
-      print("SocketEvent.gameStarted : $message");
-    });
+    _socket.on(SocketEvent.gameStarted, (dynamic message) {});
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
     });
@@ -78,22 +76,15 @@ class GameManagerService extends ChangeNotifier {
       print("SocketEvent.playerLeft : $message");
     });
     _socket.on(SocketEvent.joinGame, (dynamic message) {
-      print("SocketEvent.joinGame : $message");
       JoinGameRequest request = JoinGameRequest.fromJson(message);
       joinGameSend(currentUser!.name, request.roomId);
     });
-    _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
-      print("SocketEvent.leaveWaiting : $message");
-    });
-    _socket.on(SocketEvent.creatorLeft, (dynamic message) {
-      print(message);
-    });
+    _socket.on(SocketEvent.leaveWaiting, (dynamic message) {});
+    _socket.on(SocketEvent.creatorLeft, (dynamic message) {});
     _socket.on(SocketEvent.win, (dynamic message) {
-      print(message);
       resetAllPlayersNbDifference();
     });
     _socket.on(SocketEvent.lose, (dynamic message) {
-      print(message);
       resetAllPlayersNbDifference();
     });
   }
@@ -116,6 +107,7 @@ class GameManagerService extends ChangeNotifier {
 
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
+      startingTimer = timer;
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
@@ -181,6 +173,9 @@ class GameManagerService extends ChangeNotifier {
               diff.y == differenceFound.differenceCoord.y) {
             return;
           }
+        }
+        if (player.name == currentUser!.name) {
+          _userService.updateUserNbDiffFound(currentUser!.id);
         }
         player.nbDifferenceFound.add(differenceFound.differenceCoord);
       }

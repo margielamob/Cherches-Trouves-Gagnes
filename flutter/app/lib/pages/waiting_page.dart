@@ -21,7 +21,7 @@ class WaitingPage extends StatelessWidget {
           CircularProgressIndicator(),
           SizedBox(height: 20),
           SizedBox(
-            height: 100,
+            height: 300,
             width: 300,
             child: Center(
               child: ListView.builder(
