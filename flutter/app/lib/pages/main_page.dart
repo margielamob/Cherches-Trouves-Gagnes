@@ -12,12 +12,10 @@ import 'package:provider/provider.dart';
 class MainPage extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
   final PersonalUserService userService = Get.find();
-  late String themeValue;
 
   @override
   Widget build(BuildContext context) {
     final profileManager = Provider.of<ProfilePageManager>(context);
-    profileManager.setTheme('Alternative');
 
     gameManagerService.setCurrentUser();
     return Scaffold(

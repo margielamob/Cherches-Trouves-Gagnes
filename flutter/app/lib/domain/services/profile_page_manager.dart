@@ -12,7 +12,7 @@ class ProfilePageManager extends ChangeNotifier {
   String? avatar;
   ThemeData themeData;
 
-  ProfilePageManager(this.themeData);
+  ProfilePageManager() : themeData = Default;
 
   void setTheme(String themeValue) {
     ThemeData newTheme = getThemeFromValue(themeValue);

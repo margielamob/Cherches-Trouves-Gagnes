@@ -23,7 +23,7 @@ import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
-import 'package:app/pages/reset_password_page';
+import 'package:app/pages/reset_password_page.dart';
 import 'package:app/pages/sign_up_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
@@ -34,7 +34,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
-  ThemeData initialTheme = Default;
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(PersonalUserService());
@@ -49,7 +48,7 @@ void registerDependencies() {
   Get.put(ClockService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
-  Get.put(ProfilePageManager(initialTheme));
+  Get.put(ProfilePageManager());
   Get.put(VideoReplayService());
   Get.put(GameReplayService());
 }
