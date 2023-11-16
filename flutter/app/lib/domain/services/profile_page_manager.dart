@@ -12,7 +12,7 @@ class ProfilePageManager extends ChangeNotifier {
   String? avatar;
   ThemeData themeData;
 
-  ProfilePageManager(this.themeData);
+  ProfilePageManager() : themeData = DefaultTheme;
 
   void setTheme(String themeValue) {
     ThemeData newTheme = getThemeFromValue(themeValue);
@@ -27,11 +27,11 @@ class ProfilePageManager extends ChangeNotifier {
   ThemeData getThemeFromValue(String themeValue) {
     switch (themeValue) {
       case 'Default':
-        return Default;
+        return DefaultTheme;
       case 'Alternative':
-        return Alternative;
+        return AlternativeTheme;
       default:
-        return Default;
+        return DefaultTheme;
     }
   }
 

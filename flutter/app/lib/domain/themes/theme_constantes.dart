@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 
-final Alternative = ThemeData(
+final AlternativeTheme = ThemeData(
     colorScheme: ColorScheme.fromSeed(
   seedColor: Colors.deepPurple,
   brightness: Brightness.light,
 ));
 
-final Default = ThemeData(
+final DefaultTheme = ThemeData(
     colorScheme: ColorScheme.fromSeed(
   seedColor: Colors.indigo,
   brightness: Brightness.light,
