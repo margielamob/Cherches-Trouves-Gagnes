@@ -12,6 +12,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
+    isGameDone = false;
     private time: number;
 
     constructor(
@@ -29,6 +30,8 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
 
         this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
             this.gameInfoService.endedTime = this.time;
+            this.isGameDone = true;
+            this.replayService.currentTime = this.time;
         });
     }
 
@@ -36,12 +39,12 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         return this.replayService.isPlaying;
     }
 
-    getTimerDisplay() {
-        return this.timerDisplay;
+    isReplayMode() {
+        return this.replayService.isReplayMode;
     }
 
-    isGameDone() {
-        return this.gameInfoService.isGameDone;
+    getTimerDisplay() {
+        return this.timerDisplay;
     }
 
     getTimeFromReplay() {

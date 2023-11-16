@@ -163,23 +163,23 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     getContextImgOriginal() {
-        return this.canvasImgOriginal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgOriginal.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextImgModified() {
-        return this.canvasImgModified.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgModified.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextOriginal() {
-        return this.canvasOriginal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasOriginal.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextModified() {
-        return this.canvasModified.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasModified.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextDifferences() {
-        return this.canvasImgDifference.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgDifference.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getImageData(source: string) {

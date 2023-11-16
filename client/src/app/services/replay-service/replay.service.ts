@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
@@ -19,6 +18,8 @@ import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from 
 })
 export class ReplayService {
     // subscriptions:
+    newSlider = new BehaviorSubject<number>(0);
+    newSlider$ = this.newSlider.asObservable();
     loadImages = new BehaviorSubject<boolean>(false);
     loadImages$ = this.loadImages.asObservable();
     cheatActivated = new BehaviorSubject<boolean>(false);
@@ -31,23 +32,24 @@ export class ReplayService {
     sliderRef: any;
     leftIntervalRef: any;
     rightIntervalRef: any;
+    sliderIntervalRef: any;
     differencesContext: CanvasRenderingContext2D;
     imgOriginalContext: CanvasRenderingContext2D;
     // event subject
     // private props
     isPlaying = false;
+    isReplayMode = false;
+    currentTime: number;
     private array: EventArray = new EventArray();
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
 
-    private currentTime: number;
     private startingTime: number;
     private rightImageState: Map<number, ImageData> = new Map();
     private leftImageState: Map<number, ImageData> = new Map();
-
-    // private size = 0;
+    private sliderValue = 0;
 
     constructor(
         private socket: CommunicationSocketService,
@@ -83,19 +85,41 @@ export class ReplayService {
         return Math.floor(this.startingTime - this.getTotalSeconds() * percentage);
     }
 
+    timesUp() {
+        return this.currentTime <= this.gameHandler.endedTime;
+    }
+
     play(percentage: number) {
+        const time = this.findInstant(percentage);
+
         if (this.timerRef) {
             this.clearTimer();
         }
-        const time = this.findInstant(percentage);
 
-        console.log(time);
+        if (time === this.startingTime) {
+            this.loadImages.next(true);
+        }
+
+        if (this.sliderIntervalRef) {
+            clearInterval(this.sliderIntervalRef);
+        }
+
         this.setTimer(time);
+        this.sendSlider(percentage);
     }
 
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
+            if (this.timesUp()) {
+                const endEvent = this.array.getEvent(this.array.length - 1);
+                if (endEvent) {
+                    this.playEvent(endEvent);
+                }
+                this.newSlider.next(1);
+                clearInterval(this.timerRef);
+                return;
+            }
             if (!this.isPlaying) {
                 clearInterval(this.timerRef);
                 return;
@@ -106,16 +130,31 @@ export class ReplayService {
                 this.playEvent(event);
             }
             this.currentTime--;
-
-            console.log(this.currentTime);
-            if (this.currentTime <= this.gameHandler.endedTime) {
-                const endEvent = this.getEventFromInstant(this.currentTime);
-                if (endEvent) {
-                    this.playEvent(endEvent);
-                }
-                clearInterval(this.timerRef);
-            }
         }, 1000 / this.timeFactor);
+    }
+
+    sendSlider(fromValue: number) {
+        this.setSliderValue(fromValue);
+        this.emitSliderValue();
+    }
+
+    setSliderValue(value: number) {
+        this.sliderValue = value;
+    }
+
+    emitSliderValue() {
+        const intervalTime = 100;
+        this.sliderIntervalRef = setInterval(() => {
+            if (this.sliderValue >= 1 || !this.isPlaying) {
+                if (this.sliderValue >= 1) {
+                    this.newSlider.next(1);
+                }
+                clearInterval(this.sliderIntervalRef);
+                return;
+            }
+            this.newSlider.next(this.sliderValue);
+            this.sliderValue += intervalTime / ((this.getTotalSeconds() / this.timeFactor) * 1000);
+        }, intervalTime);
     }
 
     getEventInstant(event: ReplayEvent) {
@@ -192,8 +231,7 @@ export class ReplayService {
     }
 
     playEvent(event: ReplayEvent) {
-        console.log('in play event');
-        this.stopBlinking();
+        // this.stopBlinking();
 
         switch (event.action) {
             case ReplayActions.ClickFound:
@@ -259,6 +297,7 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.Clock, (time: number) => {
+            this.currentTime = time;
             this.saveGameState(time);
         });
     }
