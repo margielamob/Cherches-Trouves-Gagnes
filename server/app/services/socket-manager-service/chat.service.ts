@@ -32,27 +32,22 @@ export class ChatSocketManager {
 
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         socket.on(SocketEvent.InitChat, (userName: string) => {
-            console.log('initChat : ' + userName);
             const userRooms = this.userRooms.get(userName);
             if (userRooms) {
-                console.log('existing user');
                 userRooms.forEach((room) => {
                     socket.join(room);
                 });
             } else {
-                console.log('new user');
                 this.userRooms.set(userName, ['all']);
                 ['all'].forEach((room) => {
                     socket.join(room);
                 });
             }
-            console.log(this.userRooms.keys());
             socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(userName));
             socket.emit(SocketEvent.UpdateAllRooms, Array.from(this.allRooms.keys()));
         });
 
         socket.on(SocketEvent.Message, (message: ChatMessage) => {
-            console.log('message : ' + message.message + ' ' + message.room + ' ' + message.user);
             if (this.allRooms.get(message.room)) {
                 this.allRooms.get(message.room)?.messages.push(message);
                 this.server.sio.to(message.room).emit(SocketEvent.Message, message);
@@ -63,7 +58,6 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.GetAllRooms, () => {
-            console.log('getallroom : ' + Array.from(this.allRooms.keys()));
             socket.emit(
                 SocketEvent.UpdateAllRooms,
                 Array.from(this.allRooms.values()).map((room: ChatRoom) => room.info),
@@ -71,12 +65,10 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.GetUserRooms, (userName: string) => {
-            console.log('getuserroom : ' + this.userRooms.get(userName));
             socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(userName));
         });
 
         socket.on(SocketEvent.GetMessages, (roomId: string) => {
-            console.log('getmessages : ' + roomId);
             if (this.allRooms.get(roomId)) {
                 socket.emit(SocketEvent.GetMessages, this.allRooms.get(roomId)?.messages);
             } else if (this.gameRooms.get(roomId)) {
@@ -85,14 +77,11 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.CreateRoom, (roomName: string, userName: string) => {
-            console.log('createRoom : ' + roomName);
             this.createRoom(roomName);
-            console.log(userName);
             if (this.userRooms.get(userName)) {
                 // const rooms = [roomName];
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.userRooms.get(userName)!.push(roomName);
-                console.log(this.userRooms.get(userName));
                 socket.join(roomName);
             } else {
                 this.userRooms.set(userName, [roomName]);
@@ -103,7 +92,6 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.JoinRooms, (roomNames: string[], userName: string) => {
-            console.log('joinRooms : ' + roomNames);
             if (this.userRooms.get(userName)) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.userRooms.set(userName, [...this.userRooms.get(userName)!, ...roomNames]);
@@ -115,7 +103,6 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.LeaveRoom, (roomName: string, userName: string) => {
-            console.log('leaveRoom : ' + roomName);
             if (roomName === 'all') {
                 return;
             }
@@ -137,7 +124,6 @@ export class ChatSocketManager {
         });
 
         socket.on(SocketEvent.DeleteRoom, (roomName: string) => {
-            console.log('deleteRoom : ' + roomName);
             this.server.sio.in(roomName).socketsLeave(roomName);
             this.allRooms.delete(roomName);
             this.userRooms.forEach((rooms, user) => {
@@ -145,7 +131,6 @@ export class ChatSocketManager {
                     user,
                     rooms.filter((r) => r !== roomName),
                 );
-                console.log(this.userRooms.get(user));
             });
             this.server.sio.emit(SocketEvent.RoomDeleted);
         });
@@ -180,7 +165,6 @@ export class ChatSocketManager {
     }
 
     createGameChat(roomId: string, user: User, socket: Socket) {
-        console.log('createGameChat');
         const roomName = 'Game (' + roomId + ')';
         this.gameRooms.set(roomName, { chatRoom: { info: { name: roomName }, messages: [] }, users: [user.name] });
         socket.join(roomName);
@@ -205,7 +189,6 @@ export class ChatSocketManager {
     }
 
     leaveGameChat(user: string) {
-        console.log('leaveGameChat');
         if (this.userRooms.get(user)) {
             this.userRooms.get(user)?.filter((r) => !r.startsWith('Game'));
         }
@@ -219,7 +202,6 @@ export class ChatSocketManager {
                 user,
                 rooms.filter((r) => r !== roomName),
             );
-            console.log(this.userRooms.get(user));
         });
         this.server.sio.emit(SocketEvent.RoomDeleted);
     }

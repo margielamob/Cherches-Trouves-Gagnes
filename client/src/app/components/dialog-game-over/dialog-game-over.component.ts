@@ -48,8 +48,6 @@ export class DialogGameOverComponent {
         this.userService.updateUserGamePlayed();
         this.isReplayToggled.emit(true);
         this.dialog.closeAll();
-        // eslint-disable-next-line no-console
-        console.log('emmited');
     }
 
     quitGame() {

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
+import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
 import { User } from '@common/user';
@@ -11,7 +13,6 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Service } from 'typedi';
 import { ChatSocketManager } from './chat.service';
 import { SocketServer } from './server-socket-manager.service';
-
 @Service()
 export class GameCreationManager {
     constructor(private serverSocket: SocketServer, private gameManager: GameManagerService, private chat: ChatSocketManager) {}
@@ -21,8 +22,12 @@ export class GameCreationManager {
     }
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         socket.on(SocketEvent.CreateClassicGame, async (player: User, card: { id: string; cheatMode: boolean; timer: number }) => {
-            // create new chat room for game
             const roomId = await this.createClassicGame(player, card, true, socket);
+            this.chat.createGameChat(roomId, player, socket);
+        });
+
+        socket.on(SocketEvent.CreateLimitedGame, async (player: User, card: { id: string; timer: number; bonus: number }) => {
+            const roomId = await this.createLimitedGame(player, card, true, socket);
             this.chat.createGameChat(roomId, player, socket);
         });
 
@@ -35,12 +40,8 @@ export class GameCreationManager {
             await this.getJoinableGames();
         });
 
-        socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string, name: string) => {
-            console.log('leave waiting room');
-            console.log(roomId);
-            console.log(name);
+        socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
             this.leaveWaitingRoom(roomId, socket);
-            // this.chat.leaveGameChat(roomId, name, socket);
         });
     }
 
@@ -55,10 +56,34 @@ export class GameCreationManager {
         this.gameManager.setTimer(roomId, card.timer);
         const players = this.gameManager.getPlayers(roomId) || [];
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
+
         socket.join(roomId);
         const data: WaitingRoomInfo = { roomId, players, cheatMode: card.cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         return roomId;
+    }
+
+    // eslint-disable-next-line max-params
+    async createLimitedGame(player: User, card: { id: string; timer: number; bonus: number }, isMulti: boolean, socket: Socket) {
+        const roomId = await this.gameManager.createGame({ player: { name: player.name, id: socket.id }, isMulti }, GameMode.LimitedTime, card.id);
+        socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
+        const players = this.gameManager.getLimitedTimeGamePlayers(roomId) || [];
+        const data: WaitingRoomInfo = { roomId, players, cheatMode: false };
+        socket.emit(SocketEvent.WaitPlayer, data);
+        this.gameManager.getGame(roomId)!.bonusTime = card.bonus;
+        this.gameManager.setTimer(roomId, card.timer);
+        socket.join(roomId);
+        const newDifferences = this.removeRandomDifference(this.gameManager.getGameInfo(roomId)!.differences);
+        this.gameManager.getGame(roomId)!.differencesToClear.coords = newDifferences.newDifferences;
+        this.gameManager.getGameInfo(roomId)!.differences = [this.gameManager.getGameInfo(roomId)!.differences[newDifferences.randomIndex]];
+        return roomId;
+    }
+
+    removeRandomDifference(differences: any[][]): { newDifferences: Coordinate[][]; randomIndex: number } {
+        if (differences.length === 0) return { newDifferences: [], randomIndex: 0 };
+        const randomIndex = Math.floor(Math.random() * differences.length);
+        const newDifferences = differences.filter((_, index) => index !== randomIndex);
+        return { newDifferences, randomIndex };
     }
 
     async joinClassicGame(player: User, roomId: string, socket: Socket) {
@@ -87,6 +112,9 @@ export class GameCreationManager {
     }
 
     async getJoinableGames() {
-        this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+        let games = this.gameManager.getJoinableGames();
+        const limitedGames = this.gameManager.getJoinableLimitedGames();
+        games = [...games, ...limitedGames];
+        this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
     }
 }

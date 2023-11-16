@@ -42,6 +42,7 @@ export class GameCardButtonsComponent {
 
     onClickCreateJoinGame(): void {
         const dialogRef = this.matDialog.open(DialogSetUpGameComponent, {
+            data: { type: 'classic' },
             width: '300px',
         });
 

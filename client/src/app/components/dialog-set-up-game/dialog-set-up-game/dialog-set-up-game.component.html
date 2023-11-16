@@ -3,8 +3,13 @@
 <mat-dialog-content>
     <mat-form-field>
         <mat-label>Game Duration (seconds)</mat-label>
-        <input matInput type="number" [(ngModel)]="duration" name="duration" />
+        <input matInput type="number" [(ngModel)]="duration" name="duration" min="0" max="3600" />
     </mat-form-field>
+    <mat-form-field *ngIf="isLimited">
+        <mat-label>Time Bonus (seconds)</mat-label>
+        <input matInput type="number" [(ngModel)]="bonus" name="bonus" required />
+    </mat-form-field>
+
     <mat-checkbox [(ngModel)]="cheatMode" name="cheatMode">Activate Cheat Mode</mat-checkbox>
 </mat-dialog-content>
 

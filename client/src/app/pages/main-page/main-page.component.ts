@@ -8,11 +8,15 @@ import { CarouselResponse } from '@app/interfaces/carousel-response';
 import { UserData } from '@app/interfaces/user';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { GameMode } from '@common/game-mode';
+import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
+import { WaitingRoomInfo } from '@common/waiting-room-info';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -22,6 +26,10 @@ import { Observable } from 'rxjs';
 })
 export class MainPageComponent implements OnInit {
     user$: Observable<UserData | undefined>;
+    roomId: string;
+    isMulti: boolean;
+    playersEX: User[] = [];
+    cheatMode: boolean;
 
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
@@ -31,16 +39,25 @@ export class MainPageComponent implements OnInit {
         private readonly carouselService: GameCarouselService,
         private readonly router: RouterService,
         private userService: UserService,
+        private socket: CommunicationSocketService,
         private chatManager: ChatManagerService,
+        private routerService: RouterService,
     ) {}
 
     ngOnInit(): void {
+        this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            this.roomId = info.roomId;
+            this.isMulti = true;
+            this.playersEX = info.players;
+            this.cheatMode = info.cheatMode;
+            this.routerService.navigateTo('waiting');
+        });
         this.user$ = this.userService.getCurrentUser();
         this.chatManager.initChat();
     }
 
     onClickPlayClassic(): void {
-        this.matDialog.open(CreateJoinGameDialogueComponent);
+        this.openCreateJoinGameDialog('classic');
         this.mainPageService.setGameMode(GameMode.Classic);
     }
 
@@ -55,7 +72,7 @@ export class MainPageComponent implements OnInit {
                     this.matDialog.closeAll();
                     this.carouselService.setCarouselInformation(response.body.carouselInfo);
                     this.mainPageService.setGameMode(GameMode.LimitedTime);
-                    this.openCreateJoinGameDialog();
+                    this.openCreateJoinGameDialog('limited');
                 }
             },
             error: () => {
@@ -77,7 +94,9 @@ export class MainPageComponent implements OnInit {
     openNameDialog(isMulti: boolean = false) {
         this.matDialog.open(UserNameInputComponent, { data: { isMulti } });
     }
-    openCreateJoinGameDialog() {
-        this.matDialog.open(CreateJoinGameDialogueComponent);
+    openCreateJoinGameDialog(buttonType: string) {
+        this.matDialog.open(CreateJoinGameDialogueComponent, {
+            data: { type: buttonType },
+        });
     }
 }
