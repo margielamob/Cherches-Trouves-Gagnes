@@ -10,6 +10,8 @@ class PersonalUserService {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
 
+  String language = "En";
+
   UserData? get currentUser => null;
 
   Future<void> addUser(UserData user) async {

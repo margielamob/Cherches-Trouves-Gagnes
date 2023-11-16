@@ -98,10 +98,9 @@ class CardWrapper extends StatelessWidget {
 }
 
 class AccountSetting extends StatelessWidget {
-  PersonalUserService userService = Get.find();
+  final PersonalUserService userService = Get.find();
 
   final UserData currentUserData;
-  String? langCode;
   AccountSetting({required this.currentUserData});
 
   void updateTheme(String newTheme) async {
@@ -112,11 +111,12 @@ class AccountSetting extends StatelessWidget {
   }
 
   void updateLang(String newLang) async {
-    langCode = newLang == 'English' ? 'En' : 'Fr';
+    userService.language = newLang == 'English' ? 'En' : 'Fr';
     DocumentReference userDoc =
         userService.db.collection('users').doc(currentUserData.uid);
 
-    await userDoc.update({'language': langCode}).catchError((e) => print(e));
+    await userDoc
+        .update({'language': userService.language}).catchError((e) => print(e));
   }
 
   @override
