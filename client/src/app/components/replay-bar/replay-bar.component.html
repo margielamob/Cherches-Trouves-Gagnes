@@ -6,8 +6,8 @@
     <button mat-button class="replay-button" (click)="replay()">
         <mat-icon>replay</mat-icon>
     </button>
-    <button mat-button [disabled]="!canPause()" (click)="!isReplaying() ? resume() : pause()">
-        <mat-icon>{{ !isReplaying() ? 'play_circle_filled' : 'pause_circle_filled' }}</mat-icon>
+    <button mat-button [disabled]="!canPause()" (click)="isPaused ? resume() : pause()">
+        <mat-icon>{{ isPaused ? 'play_circle_filled' : 'pause_circle_filled' }}</mat-icon>
     </button>
     <mat-radio-group [(ngModel)]="currentSpeed">
         <mat-radio-button

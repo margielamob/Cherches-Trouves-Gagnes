@@ -18,8 +18,10 @@ export interface ChatReplay {
     roomId: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+export const REPLAY_SPEEDS = [0.5, 1, 2, 3];
+
 export interface ReplayEvent {
-    eventId: string;
     action: ReplayActions;
     timestamp: number;
     data?: ReplayPayload;

@@ -9,7 +9,6 @@ import { TimeFormatterService } from '@app/services/time-formatter/time-formatte
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject } from 'rxjs';
-import { v4 } from 'uuid';
 import { EventArray } from './event-array';
 import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
 
@@ -29,7 +28,6 @@ export class ReplayService {
 
     // Node.Js Timers
     timerRef: any;
-    sliderRef: any;
     leftIntervalRef: any;
     rightIntervalRef: any;
     sliderIntervalRef: any;
@@ -111,6 +109,10 @@ export class ReplayService {
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
+            if (!this.isPlaying) {
+                clearInterval(this.timerRef);
+                return;
+            }
             if (this.timesUp()) {
                 const endEvent = this.array.getEvent(this.array.length - 1);
                 if (endEvent) {
@@ -120,10 +122,7 @@ export class ReplayService {
                 clearInterval(this.timerRef);
                 return;
             }
-            if (!this.isPlaying) {
-                clearInterval(this.timerRef);
-                return;
-            }
+
             const event = this.getEventFromInstant(this.currentTime);
             this.updateImagesState(this.currentTime);
             if (event) {
@@ -153,7 +152,7 @@ export class ReplayService {
                 return;
             }
             this.newSlider.next(this.sliderValue);
-            this.sliderValue += intervalTime / ((this.getTotalSeconds() / this.timeFactor) * 1000);
+            this.sliderValue += intervalTime / (((this.getTotalSeconds() + 1) / this.timeFactor) * 1000);
         }, intervalTime);
     }
 
@@ -178,7 +177,6 @@ export class ReplayService {
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
         const event = {
-            eventId: this.generateId(),
             action,
             data,
             playerName,
@@ -232,7 +230,6 @@ export class ReplayService {
 
     playEvent(event: ReplayEvent) {
         // this.stopBlinking();
-
         switch (event.action) {
             case ReplayActions.ClickFound:
                 this.replayDifferenceFound(event);
@@ -333,10 +330,6 @@ export class ReplayService {
 
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
-    }
-
-    private generateId() {
-        return v4();
     }
 }
 
