@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -227,6 +228,120 @@ export class UserService {
                 }
             }),
         );
+    }
+
+    getUserGameWin(): Observable<number | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.gameWins !== undefined) {
+                    return of(user.gameWins);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateUserGameWin() {
+        this.getUserGameWin()
+            .pipe(take(1))
+            .subscribe((gameWin) => {
+                if (gameWin !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ gameWins: gameWin + 1 });
+                        }
+                    });
+                }
+            });
+    }
+
+    getUserGamePlayed(): Observable<number | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.gamePlayed !== undefined) {
+                    return of(user.gamePlayed);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateUserGamePlayed() {
+        this.getUserGamePlayed()
+            .pipe(take(1))
+            .subscribe((gamePlayed) => {
+                if (gamePlayed !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ gamePlayed: gamePlayed + 1 });
+                        }
+                    });
+                }
+            });
+    }
+
+    getNbDifferenceFound() {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.numberDifferenceFound !== undefined) {
+                    return of(user.numberDifferenceFound);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateNbDifferenceFound(playerName: string) {
+        this.getNbDifferenceFound()
+            .pipe(take(1))
+            .subscribe((numberDifferenceFound) => {
+                if (numberDifferenceFound !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            if (playerName === user.displayName) {
+                                userRef.update({ numberDifferenceFound: numberDifferenceFound + 1 });
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
+    getTotalTimePlayed() {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.totalTimePlayed !== undefined) {
+                    return of(user.totalTimePlayed);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateTotalTimePlayed(timePlayed: number) {
+        this.getTotalTimePlayed()
+            .pipe(take(1))
+            .subscribe((totalTimePlayed) => {
+                if (totalTimePlayed !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ totalTimePlayed: totalTimePlayed + timePlayed });
+                        }
+                    });
+                }
+            });
     }
 
     changeUserDisplayName(newDisplayName: string): Observable<void> {

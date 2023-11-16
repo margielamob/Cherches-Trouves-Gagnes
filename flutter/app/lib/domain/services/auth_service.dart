@@ -130,10 +130,10 @@ class AuthService {
         phoneNumber: userDoc['phoneNumber'],
         theme: userDoc['theme'],
         language: userDoc['language'],
-        gameLost: userDoc['gameLost'],
         gameWins: userDoc['gameWins'],
+        numberDifferenceFound: userDoc['numberDifferenceFound'],
+        totalTimePlayed: userDoc['totalTimePlayed'],
         gamePlayed: userDoc['gamePlayed'],
-        averageTime: userDoc['averageTime'],
       );
     }
     return null;

@@ -8,10 +8,10 @@ class UserData {
   final String? phoneNumber;
   String? theme;
   String? language;
-  final int gameLost;
   final int gameWins;
+  final int numberDifferenceFound;
+  final int totalTimePlayed;
   final int gamePlayed;
-  final String? averageTime;
 
   UserData({
     required this.uid,
@@ -21,10 +21,10 @@ class UserData {
     this.phoneNumber,
     this.theme,
     this.language,
-    this.gameLost = 0,
     this.gameWins = 0,
+    this.numberDifferenceFound = 0,
+    this.totalTimePlayed = 0,
     this.gamePlayed = 0,
-    this.averageTime,
   });
 
   Map<String, dynamic> toMap() {
@@ -36,10 +36,10 @@ class UserData {
       'phoneNumber': phoneNumber,
       'theme': theme,
       'language': language,
-      'gameLost': gameLost,
       'gameWins': gameWins,
+      'numberDifferenceFound': numberDifferenceFound,
+      'totalTimePlayed': totalTimePlayed,
       'gamePlayed': gamePlayed,
-      'averageTime': averageTime,
     };
   }
 
@@ -52,10 +52,10 @@ class UserData {
       phoneNumber: data['phoneNumber'] ?? '',
       theme: data['theme'] ?? '',
       language: data['language'] ?? '',
-      gameLost: data['gameLost'] ?? 0,
       gameWins: data['gameWins'] ?? 0,
+      numberDifferenceFound: data['numberDifferenceFound'] ?? 0,
+      totalTimePlayed: data['totalTimePlayed'] ?? '',
       gamePlayed: data['gamePlayed'] ?? 0,
-      averageTime: data['averageTime'] ?? '',
     );
   }
 

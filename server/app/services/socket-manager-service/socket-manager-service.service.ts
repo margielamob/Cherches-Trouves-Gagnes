@@ -91,6 +91,10 @@ export class SocketManagerService {
                 }
             });
 
+            socket.on(SocketEvent.StartClock, (timer: number, roomId: string) => {
+                socket.to(roomId).emit(SocketEvent.StartClock, { timer });
+            });
+
             socket.on(SocketEvent.GameStarted, (gameId: string) => {
                 socket.emit(SocketEvent.GameStarted, gameId);
             });

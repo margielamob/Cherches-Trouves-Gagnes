@@ -65,10 +65,10 @@ export class SignUpPageComponent {
                         // Set default user configurations
                         theme: 'Default',
                         language: 'Fr',
-                        gameLost: 0,
+                        numberDifferenceFound: 0,
+                        totalTimePlayed: 0,
                         gameWins: 0,
                         gamePlayed: 0,
-                        averageTime: '0:0',
                     };
                     return this.userService.adduser(user).pipe(
                         switchMap(() => {

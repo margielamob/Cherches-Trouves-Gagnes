@@ -54,6 +54,7 @@ export class DifferencesAreaComponent {
             if (this.getPlayerIndex(playerName) === notFindIndex) {
                 return;
             }
+
             this.players[this.getPlayerIndex(playerName)].nbDifference = this.setNbDifferencesFound(playerName);
         });
     }
