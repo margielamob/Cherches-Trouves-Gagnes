@@ -3,21 +3,18 @@ import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
-import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
   final PersonalUserService userService = Get.find();
-  late String themeValue;
 
   @override
   Widget build(BuildContext context) {
-    final profileManager = Provider.of<ProfilePageManager>(context);
-    profileManager.setTheme('Alternative');
+    //final profileManager = Provider.of<ProfilePageManager>(context);
+    //profileManager.setTheme('Alternative');
 
     gameManagerService.setCurrentUser();
     return Scaffold(

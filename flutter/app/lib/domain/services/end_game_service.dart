@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -15,7 +13,7 @@ class EndGameService extends ChangeNotifier {
   final GameManagerService _gameManagerService = Get.find();
   final PersonalUserService _userService = Get.find();
   final ClockService _timerService = Get.find();
-  String? END_GAME_MESSAGE;
+  String? endGameMessage;
   bool isGameFinished = false;
 
   EndGameService() {
@@ -25,18 +23,22 @@ class EndGameService extends ChangeNotifier {
   void handleSockets() {
     _socket.once(SocketEvent.win, (dynamic message) {
       print("SocketEvent.win : $message");
-      END_GAME_MESSAGE = "La partie est terminée vous avez gagné !";
-      gameFinished(END_GAME_MESSAGE!);
+      endGameMessage = "La partie est terminée vous avez gagné !";
+      gameFinished(endGameMessage!);
       _userService.updateUserGamePlayer(_gameManagerService.currentUser!.id);
       _userService.updateUserGameWins(_gameManagerService.currentUser!.id);
-      _userService.updateUserTotalTimePlayed(_gameManagerService.currentUser!.id, _gameManagerService.startingTimer! - _timerService.time!);
+      _userService.updateUserTotalTimePlayed(
+          _gameManagerService.currentUser!.id,
+          _gameManagerService.startingTimer! - _timerService.time!);
     });
     _socket.once(SocketEvent.lose, (dynamic message) {
       print("SocketEvent.lose : $message");
-      END_GAME_MESSAGE = "La partie est terminée vous avez perdu !";
-      gameFinished(END_GAME_MESSAGE!);
+      endGameMessage = "La partie est terminée vous avez perdu !";
+      gameFinished(endGameMessage!);
       _userService.updateUserGamePlayer(_gameManagerService.currentUser!.id);
-      _userService.updateUserTotalTimePlayed(_gameManagerService.currentUser!.id, _gameManagerService.startingTimer! - _timerService.time!);
+      _userService.updateUserTotalTimePlayed(
+          _gameManagerService.currentUser!.id,
+          _gameManagerService.startingTimer! - _timerService.time!);
     });
   }
 

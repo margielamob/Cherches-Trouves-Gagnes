@@ -21,7 +21,7 @@ class EndGameDialog extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("${endGameService.END_GAME_MESSAGE}"),
+              Text("${endGameService.endGameMessage}"),
               SizedBox(height: 10),
               Row(
                 children: [
