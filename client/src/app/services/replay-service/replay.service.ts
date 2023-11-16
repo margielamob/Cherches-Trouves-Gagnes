@@ -78,7 +78,6 @@ export class ReplayService {
     }
 
     setTimeFactor(factor: number) {
-        console.log('new factor', factor);
         this.timeFactor = factor;
     }
 
@@ -260,7 +259,6 @@ export class ReplayService {
         this.sendReplayToServer();
         this.hasReplayStarted.next(true);
     }
-
     private replayDifferenceFound(event: ReplayEvent) {
         const data = event.data as DifferenceFound;
         this.leftIntervalRef = this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords, this.timeFactor);
@@ -281,7 +279,6 @@ export class ReplayService {
     private replayCheating() {
         this.cheatActivated.next(true);
     }
-
     private timeSinceLastEvent(event: ReplayEvent) {
         return event.timestamp - this.previousEvent.timestamp;
     }

@@ -80,6 +80,9 @@ export class DifferencesDetectionHandlerService {
         this.clearDifference(ctxModified, coords);
         return interval;
     }
+    differenceDetectedLimitedTime(ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
+        this.clearDifference(ctxModified, coords);
+    }
 
     // eslint-disable-next-line max-params
     displayDifferenceTemp(ctx: CanvasRenderingContext2D, coords: Coordinate[], isCheatMode: boolean, timeFactor: number = 1): number {

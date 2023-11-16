@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-dialog-set-up-game',
     templateUrl: './dialog-set-up-game.component.html',
@@ -7,9 +7,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class DialogSetUpGameComponent {
     duration: number;
+    bonus: number;
     cheatMode: boolean = false;
+    isLimited: boolean = false;
 
-    constructor(public dialogRef: MatDialogRef<DialogSetUpGameComponent>) {}
+    constructor(public dialogRef: MatDialogRef<DialogSetUpGameComponent>, @Inject(MAT_DIALOG_DATA) public data: { type: string }) {
+        this.isLimited = data.type === 'limited';
+    }
 
     onCancel(): void {
         this.dialogRef.close();
@@ -19,6 +23,7 @@ export class DialogSetUpGameComponent {
         this.dialogRef.close({
             duration: this.duration,
             cheatMode: this.cheatMode,
+            bonus: this.isLimited ? this.bonus : null,
         });
     }
 }

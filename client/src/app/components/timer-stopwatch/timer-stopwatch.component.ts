@@ -25,6 +25,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         private replayService: ReplayService,
         private readonly userService: UserService,
     ) {
+        this.timerDisplay = this.timeFormatter.formatTime(this.time);
         this.replayService.hasReplayStarted$.subscribe((hasStarted) => {
             this.hasReplayStarted = hasStarted;
         });

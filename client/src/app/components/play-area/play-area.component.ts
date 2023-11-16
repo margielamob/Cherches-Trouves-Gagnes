@@ -34,6 +34,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     clue: string;
     buttonPressed = '';
     intervals = [];
+    counter = 0;
     // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly differencesDetectionHandlerService: DifferencesDetectionHandlerService,
@@ -52,8 +53,6 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
             if (isActive) {
                 await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
                 this.replayService.cheatActivated.next(false);
-                // eslint-disable-next-line no-console
-                console.log('ici');
             }
         });
     }
@@ -145,11 +144,17 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     handleSocketDifferenceFound() {
-        this.communicationSocketService.on(SocketEvent.NewGameBoard, (data: PublicGameInformation) => {
+        this.communicationSocketService.on(SocketEvent.NewGameBoard, (obj: { gameInfo: PublicGameInformation; coords: Coordinate[][] }) => {
             this.differencesDetectionHandlerService.playCorrectSound();
-            this.gameInfoHandlerService.setGameInformation(data);
+            this.gameInfoHandlerService.setGameInformation(obj.gameInfo);
+            this.gameInfoHandlerService.setDifferencesToClear(obj.coords);
             this.displayImages();
             this.gameInfoHandlerService.$newGame.next();
+        });
+        this.communicationSocketService.on(SocketEvent.OneDifference, (obj: { data: { coords: Coordinate[][]; nbDifferencesLeft: number } }) => {
+            for (const coords of obj.data.coords) {
+                this.differencesDetectionHandlerService.differenceDetectedLimitedTime(this.getContextImgModified(), coords);
+            }
         });
         this.communicationSocketService.on(SocketEvent.DifferenceFound, (obj: { data: DifferenceFound; playerName: string }) => {
             this.differencesDetectionHandlerService.setNumberDifferencesFound(obj.playerName);
@@ -187,31 +192,49 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         return this.communicationService.getImgData(source);
     }
 
-    displayImage(isOriginalImage: boolean, ctx: CanvasRenderingContext2D): void {
-        const originalImageData = isOriginalImage
-            ? this.getImageData(this.gameInfoHandlerService.getOriginalBmpId())
-            : this.getImageData(this.gameInfoHandlerService.getModifiedBmpId());
+    async displayImage(isOriginalImage: boolean, ctx: CanvasRenderingContext2D): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.counter++;
+            const originalImageData = isOriginalImage
+                ? this.getImageData(this.gameInfoHandlerService.getOriginalBmpId())
+                : this.getImageData(this.gameInfoHandlerService.getModifiedBmpId());
 
-        originalImageData.subscribe((response: HttpResponse<{ image: string }> | null) => {
-            if (!response || !response.body) {
-                return;
-            }
-            const imageBase64 = this.decompressImage(response.body.image);
-            const image = new Image();
-            image.src = BASE_64_HEADER + imageBase64;
-            image.onload = () => {
-                ctx.drawImage(image, 0, 0);
-            };
-            image.onerror = () => {
-                this.routerService.navigateTo('home');
-            };
+            originalImageData.subscribe((response: HttpResponse<{ image: string }> | null) => {
+                if (!response || !response.body) {
+                    return;
+                }
+                const imageBase64 = this.decompressImage(response.body.image);
+                const image = new Image();
+                image.src = BASE_64_HEADER + imageBase64;
+                image.onload = () => {
+                    ctx.drawImage(image, 0, 0);
+                    resolve();
+                };
+                image.onerror = () => {
+                    this.routerService.navigateTo('home');
+                    reject('Image load error');
+                };
+            });
         });
     }
 
     private displayImages() {
-        this.displayImage(true, this.getContextImgModified());
-        this.displayImage(false, this.getContextDifferences());
-        this.displayImage(false, this.getContextImgOriginal());
+        Promise.all([
+            this.displayImage(true, this.getContextImgModified()),
+            this.displayImage(false, this.getContextDifferences()),
+            this.displayImage(false, this.getContextImgOriginal()),
+        ])
+            .then(() => {
+                if (this.gameInfoHandlerService.isLimitedTime()) {
+                    for (const coords of this.gameInfoHandlerService.differencesToClear) {
+                        this.differencesDetectionHandlerService.differenceDetectedLimitedTime(this.getContextImgModified(), coords);
+                    }
+                }
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error('An error occurred while displaying images:', error);
+            });
     }
 
     private isMouseDisabled() {

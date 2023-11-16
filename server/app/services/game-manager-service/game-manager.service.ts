@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { Game } from '@app/classes/game/game';
 import { PrivateGameInformation } from '@app/interface/game-info';
@@ -19,6 +20,7 @@ import LZString = require('lz-string');
 export class GameManagerService {
     games: Map<string, Game> = new Map();
     joinableGames: Map<string, Game> = new Map();
+    joinableLimitedGames: Map<string, Game> = new Map();
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -35,21 +37,49 @@ export class GameManagerService {
             gameCard = gamesRandomized[0];
             game = new Game(playerInfo, { info: gameCard, mode });
             this.limitedTimeGame.gamesShuffled.set(game.identifier, gamesRandomized);
+            this.joinableLimitedGames.set(game.identifier, game);
         } else {
             gameCard = (await this.gameInfo.getGameInfoById(gameCardId)) as PrivateGameInformation;
             game = new Game(playerInfo, { info: gameCard, mode });
+            this.joinableGames.set(game.identifier, game);
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
-        this.joinableGames.set(game.identifier, game);
         this.difference.setGameDifferences(game.identifier);
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
         return game.identifier;
     }
 
+    getLimitedJoinableGame(roomId: string): JoinableGameCard | undefined {
+        const game = this.joinableLimitedGames.get(roomId);
+        if (!game) {
+            return;
+        }
+        const thumbnail = BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail);
+        const nbDifferences = game.information.differences.length;
+
+        const players = this.getPlayers(roomId) || [];
+        const gameCardInfo = {
+            id: game.information.id,
+            name: game.information.name,
+            thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail),
+            nbDifferences: game.information.differences.length,
+            idEditedBmp: game.information.idEditedBmp,
+            idOriginalBmp: game.information.idOriginalBmp,
+            multiplayerScore: game.information.multiplayerScore,
+            soloScore: game.information.soloScore,
+            isMulti: false,
+        };
+        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
+    }
     getJoinableGames(): JoinableGameCard[] {
         return Array.from(this.joinableGames.keys())
             .map((roomId) => this.getJoinableGame(roomId))
+            .filter((game) => game !== undefined) as JoinableGameCard[];
+    }
+    getJoinableLimitedGames(): JoinableGameCard[] {
+        return Array.from(this.joinableLimitedGames.keys())
+            .map((roomId) => this.getLimitedJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
 
@@ -121,12 +151,25 @@ export class GameManagerService {
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
     }
+
     deleteTimer(gameId: string) {
         const game = this.findGame(gameId);
         if (!game) {
             return;
         }
         clearInterval(game.timerId as NodeJS.Timer);
+    }
+
+    increaseTimer(gameId: string, bonusTime: number) {
+        const game = this.findGame(gameId);
+        if (game) {
+            let timer = this.timer.initialTime.get(game.identifier);
+            if (timer === undefined || timer === null) {
+                return;
+            }
+            timer += bonusTime;
+            this.timer.initialTime.set(game.identifier, timer);
+        }
     }
 
     gameCardDeletedHandle(gameCardId: string) {
@@ -283,6 +326,14 @@ export class GameManagerService {
     }
 
     findGame(gameId: string): Game | undefined {
+        return this.games.get(gameId);
+    }
+    getLimitedTimeGamePlayers(gameId: string) {
+        const game = this.joinableLimitedGames.get(gameId);
+        return !game ? undefined : Array.from(game.players.values());
+    }
+
+    getGame(gameId: string) {
         return this.games.get(gameId);
     }
 }
