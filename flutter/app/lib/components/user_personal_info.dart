@@ -271,10 +271,13 @@ class AccountStatistics extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeavyClientTextBox(content: "Average Difference"),
-              UserDetailContent(
-                  content: (currentUserData.numberDifferenceFound /
-                          currentUserData.gamePlayed)
-                      .toString())
+              currentUserData.gamePlayed != 0
+                  ? UserDetailContent(
+                      content: ((currentUserData.numberDifferenceFound /
+                                  currentUserData.gamePlayed)
+                              .round())
+                          .toString())
+                  : UserDetailContent(content: ((0).toString())),
             ],
           ),
           SizedBox(height: 10),
@@ -284,10 +287,13 @@ class AccountStatistics extends StatelessWidget {
             children: [
               HeavyClientTextBox(content: "Average Time per Game (seconds)"),
               SizedBox(width: 20),
-              UserDetailContent(
-                  content: (currentUserData.totalTimePlayed /
-                          currentUserData.gamePlayed)
-                      .toString())
+              currentUserData.gamePlayed != 0
+                  ? UserDetailContent(
+                      content: ((currentUserData.totalTimePlayed /
+                                  currentUserData.gamePlayed)
+                              .round())
+                          .toString())
+                  : UserDetailContent(content: ((0).toString())),
             ],
           ),
         ],

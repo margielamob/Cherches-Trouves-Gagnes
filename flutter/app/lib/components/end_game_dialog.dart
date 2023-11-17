@@ -1,12 +1,16 @@
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
+import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EndGameDialog extends StatelessWidget {
   final EndGameService endGameService = Get.find();
+  final GameManagerService gameManagerService = Get.find();
+  final PersonalUserService _userService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,11 @@ class EndGameDialog extends StatelessWidget {
                 children: [
                   FilledButton(
                     onPressed: () {
+                      if (endGameService.endGameMessage ==
+                          "La partie est terminée vous avez gagné !") {
+                        _userService.updateUserGameWins(
+                            gameManagerService.currentUser!.id);
+                      }
                       differenceDetectionService.resetForNextGame();
                       Get.offAll(MainPage());
                     },
@@ -38,6 +47,11 @@ class EndGameDialog extends StatelessWidget {
                   SizedBox(width: 20),
                   FilledButton(
                     onPressed: () {
+                      if (endGameService.endGameMessage ==
+                          "La partie est terminée vous avez gagné !") {
+                        _userService.updateUserGameWins(
+                            gameManagerService.currentUser!.id);
+                      }
                       Navigator.of(context).pop();
                       gameReplayService.activateReplayMode();
                     },
