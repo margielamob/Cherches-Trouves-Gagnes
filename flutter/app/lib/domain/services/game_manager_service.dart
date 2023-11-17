@@ -10,6 +10,7 @@ import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
+import 'package:app/domain/models/requests/start_clock_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
@@ -113,7 +114,6 @@ class GameManagerService extends ChangeNotifier {
           user: currentUser!,
           card: ClassicGameModel(
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
-      _socket.send(SocketEvent.startClock, startingTimer);
       _socket.send(SocketEvent.createClassicGame, data.toJson());
       print("CreateGame event sent: $data");
     } catch (error) {
@@ -153,6 +153,9 @@ class GameManagerService extends ChangeNotifier {
     ReadyGameRequest data =
         ReadyGameRequest(gameId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.ready, data.toJson());
+    StartClockRequest clockData = StartClockRequest(
+        timer: startingTimer!, roomId: waitingRoomInfoRequest!.roomId);
+    _socket.send(SocketEvent.startClock, clockData.toJson());
   }
 
   void setCurrentUser() {
