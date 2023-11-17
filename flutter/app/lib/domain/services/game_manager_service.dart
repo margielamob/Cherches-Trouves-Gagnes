@@ -107,13 +107,13 @@ class GameManagerService extends ChangeNotifier {
 
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
-      startingTimer = timer;
+    startingTimer = timer;
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
           card: ClassicGameModel(
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
-      print(data.toJson());
+      _socket.send(SocketEvent.startClock, startingTimer);
       _socket.send(SocketEvent.createClassicGame, data.toJson());
       print("CreateGame event sent: $data");
     } catch (error) {
