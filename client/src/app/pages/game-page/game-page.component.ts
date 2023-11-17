@@ -46,6 +46,7 @@ export class GamePageComponent implements OnDestroy {
 
     handleSocket() {
         this.socket.once(SocketEvent.Win, (record?: GameRecord) => {
+            console.log('got a win');
             this.openGameOverDialog(true, record);
             this.clueHandlerService.resetNbClue();
             this.differenceHandler.mouseIsDisabled = true;
