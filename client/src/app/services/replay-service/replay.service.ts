@@ -88,6 +88,10 @@ export class ReplayService {
         return this.currentTime <= this.gameHandler.endedTime;
     }
 
+    clear() {
+        this.array.clear();
+    }
+
     play(percentage: number) {
         const time = this.findInstant(percentage);
 
