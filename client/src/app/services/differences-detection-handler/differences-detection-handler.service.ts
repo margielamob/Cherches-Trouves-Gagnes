@@ -108,7 +108,7 @@ export class DifferencesDetectionHandlerService {
         return interval;
     }
 
-    private clearDifference(ctx: CanvasRenderingContext2D, coords: Coordinate[]) {
+    clearDifference(ctx: CanvasRenderingContext2D, coords: Coordinate[]) {
         for (const coordinate of coords) {
             ctx.clearRect(coordinate.x, coordinate.y, 1, 1);
         }

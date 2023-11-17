@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { ReplayService } from '@app/services/replay-service/replay.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
 // eslint-disable-next-line import/no-unresolved
@@ -26,6 +27,7 @@ export class DialogGameOverComponent {
         public userService: UserService,
         public dialog: MatDialog,
         private chatManager: ChatManagerService,
+        private replayService: ReplayService,
     ) {
         this.isWin = data.win;
         this.winner = data.winner;
@@ -47,6 +49,7 @@ export class DialogGameOverComponent {
         }
         this.userService.updateUserGamePlayed();
         this.isReplayToggled.emit(true);
+        this.replayService.isReplayMode = true;
         this.dialog.closeAll();
     }
 

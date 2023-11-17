@@ -12,11 +12,15 @@ export interface DifferenceNotFound {
 export interface DifferenceFound {
     coords: Coordinate[] | Vec2[];
     pos: Coordinate | Vec2;
+    playerName?: string;
 }
 export interface ChatReplay {
     message: string;
     roomId: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+export const REPLAY_SPEEDS = [0.5, 1, 2, 3];
 
 export interface ReplayEvent {
     action: ReplayActions;
