@@ -1,9 +1,10 @@
+/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, of, switchMap, take } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, take, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +18,7 @@ export class UserService {
                 if (user) {
                     return this.afs.collection('users').doc<UserData>(user.uid).valueChanges();
                 } else {
-                    return [];
+                    return of(undefined);
                 }
             }),
         );
@@ -171,7 +172,7 @@ export class UserService {
                 if (user && user.theme !== undefined) {
                     return of(user.theme);
                 } else {
-                    return of(null);
+                    return of('Default');
                 }
             }),
         );
@@ -229,14 +230,152 @@ export class UserService {
         );
     }
 
+    getUserGameWin(): Observable<number | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.gameWins !== undefined) {
+                    return of(user.gameWins);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateUserGameWin() {
+        this.getUserGameWin()
+            .pipe(take(1))
+            .subscribe((gameWin) => {
+                if (gameWin !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ gameWins: gameWin + 1 });
+                        }
+                    });
+                }
+            });
+    }
+
+    getUserGamePlayed(): Observable<number | null> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.gamePlayed !== undefined) {
+                    return of(user.gamePlayed);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateUserGamePlayed() {
+        this.getUserGamePlayed()
+            .pipe(take(1))
+            .subscribe((gamePlayed) => {
+                if (gamePlayed !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ gamePlayed: gamePlayed + 1 });
+                        }
+                    });
+                }
+            });
+    }
+
+    getNbDifferenceFound() {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.numberDifferenceFound !== undefined) {
+                    return of(user.numberDifferenceFound);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateNbDifferenceFound(playerName: string) {
+        this.getNbDifferenceFound()
+            .pipe(take(1))
+            .subscribe((numberDifferenceFound) => {
+                if (numberDifferenceFound !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            if (playerName === user.displayName) {
+                                userRef.update({ numberDifferenceFound: numberDifferenceFound + 1 });
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
+    getTotalTimePlayed() {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.totalTimePlayed !== undefined) {
+                    return of(user.totalTimePlayed);
+                } else {
+                    return of(null);
+                }
+            }),
+        );
+    }
+
+    updateTotalTimePlayed(timePlayed: number) {
+        this.getTotalTimePlayed()
+            .pipe(take(1))
+            .subscribe((totalTimePlayed) => {
+                if (totalTimePlayed !== null) {
+                    this.user$.pipe(take(1)).subscribe((user) => {
+                        if (user && user.uid) {
+                            const userId = user.uid;
+                            const userRef = this.afs.collection('users').doc(userId);
+                            userRef.update({ totalTimePlayed: totalTimePlayed + timePlayed });
+                        }
+                    });
+                }
+            });
+    }
+
     changeUserDisplayName(newDisplayName: string): Observable<void> {
         return this.getCurrentUser().pipe(
             take(1),
             switchMap((user) => {
                 if (!user || !user.uid) {
-                    throw new Error('No user logged in or user ID not found');
+                    throw new Error('Aucun utilisateur connecté ou UID non disponible');
                 }
                 return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
+            }),
+        );
+    }
+
+    addToActiveUser(userId: string): Observable<void> {
+        return from(this.afs.collection('activeUser').doc(userId).set({ userId })).pipe(
+            catchError(() => {
+                return throwError(() => new Error("Erreur lors de l'ajout de l'utilisateur aux utilisateurs actifs"));
+            }),
+        );
+    }
+
+    deleteFromActiveUser(): Observable<void> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (user && user.uid) {
+                    return from(this.afs.collection('activeUser').doc(user.uid).delete());
+                } else {
+                    return throwError(() => new Error('No user logged in or UID not available'));
+                }
+            }),
+            catchError(() => {
+                return throwError(() => new Error('Error removing user from active users'));
             }),
         );
     }

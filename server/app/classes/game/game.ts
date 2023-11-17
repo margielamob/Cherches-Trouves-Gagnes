@@ -3,6 +3,7 @@ import { GameContext } from '@app/classes/game-context/game-context';
 import { InitGameState } from '@app/classes/init-game-state/init-game-state';
 import { GameStatus } from '@app/enum/game-status';
 import { PrivateGameInformation } from '@app/interface/game-info';
+import { Coordinate } from '@common/coordinate';
 import { GameMode } from '@common/game-mode';
 import { User } from '@common/user';
 import { v4 } from 'uuid';
@@ -15,7 +16,12 @@ export class Game {
     isCardDeleted: boolean = false;
     isCheatMode: boolean = false;
     gameCreator: User = {} as User;
-
+    differencesToClear: {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        coords: Coordinate[][];
+        nbDifferencesLeft: 1;
+    } = { coords: [], nbDifferencesLeft: 1 };
+    bonusTime: number = 0;
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
     private id: string;

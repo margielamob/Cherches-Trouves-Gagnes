@@ -14,6 +14,21 @@ export class DifferencesAreaComponent {
         this.setPlayersInfo();
     }
 
+    removeDuplicate(): void {
+        const uniqueSet = new Set();
+
+        const newPlayers = this.players.filter((player) => {
+            const name = player.name;
+            if (!uniqueSet.has(name)) {
+                uniqueSet.add(name);
+                return true;
+            }
+            return false;
+        });
+
+        this.players = newPlayers;
+    }
+
     setPlayersInfo() {
         this.mainPlayer = this.gameInformationHandlerService.getPlayer();
         this.opponentPlayers = this.gameInformationHandlerService.getOpponents();
@@ -31,11 +46,15 @@ export class DifferencesAreaComponent {
         }));
 
         this.players = [...opponents];
+
+        this.removeDuplicate();
+
         this.gameInformationHandlerService.$differenceFound.subscribe((playerName: string) => {
             const notFindIndex = -1;
             if (this.getPlayerIndex(playerName) === notFindIndex) {
                 return;
             }
+
             this.players[this.getPlayerIndex(playerName)].nbDifference = this.setNbDifferencesFound(playerName);
         });
     }

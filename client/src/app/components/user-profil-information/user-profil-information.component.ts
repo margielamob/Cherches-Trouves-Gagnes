@@ -10,6 +10,7 @@ import { LanguageService } from '@app/services/language-service/languag.service'
 import { UserService } from '@app/services/user-service/user.service';
 
 import { DialogChangeNameComponent } from '@app/components/dialog-change-name/dialog-change-name.component';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { Observable, switchMap, take } from 'rxjs';
 
 @Component({
@@ -28,7 +29,13 @@ export class UserProfilInformationComponent implements OnInit {
     curruntLanguage: string | undefined = 'Fr';
     curruntTheme: string = '';
 
-    constructor(private userService: UserService, private dialog: MatDialog, private langService: LanguageService) {
+    // eslint-disable-next-line max-params
+    constructor(
+        private userService: UserService,
+        private dialog: MatDialog,
+        private langService: LanguageService,
+        private themeService: ThemeService,
+    ) {
         this.settingsForm = new FormGroup({
             theme: new FormControl('', [Validators.required]),
             language: new FormControl('', [Validators.required]),
@@ -53,6 +60,7 @@ export class UserProfilInformationComponent implements OnInit {
         this.userService.getUserLang().subscribe((lang) => {
             const langValue = lang || 'Fr';
             this.curruntLanguage = langValue === 'Fr' ? 'Français' : 'English';
+            this.langService.setCurrentLanguage(langValue as string);
             this.settingsForm.controls.language.setValue(this.curruntLanguage);
         });
 
@@ -60,6 +68,7 @@ export class UserProfilInformationComponent implements OnInit {
             const themeValue = theme || 'Default';
             this.curruntTheme = themeValue as string;
             this.settingsForm.controls.theme.setValue(this.curruntTheme);
+            this.langService.setCurrentLanguage(themeValue as string);
         });
     }
 
@@ -120,6 +129,7 @@ export class UserProfilInformationComponent implements OnInit {
                 if (userTheme) {
                     this.curruntTheme = userTheme;
                 }
+                this.themeService.setAppTheme(userTheme as string);
             });
     }
 }

@@ -28,6 +28,7 @@ export class DifferencesDetectionHandlerService {
     setNumberDifferencesFound(playerName: string) {
         const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
         this.gameInfoHandlerService.players[index].nbDifferences++;
+        this.userService.updateNbDifferenceFound(playerName);
         this.gameInfoHandlerService.$differenceFound.next(playerName);
     }
 
@@ -78,6 +79,9 @@ export class DifferencesDetectionHandlerService {
         const interval = this.displayDifferenceTemp(ctx, coords, false, timeFactor);
         this.clearDifference(ctxModified, coords);
         return interval;
+    }
+    differenceDetectedLimitedTime(ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
+        this.clearDifference(ctxModified, coords);
     }
 
     // eslint-disable-next-line max-params

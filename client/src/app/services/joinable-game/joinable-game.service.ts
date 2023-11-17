@@ -28,6 +28,9 @@ export class JoinableGameService {
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
             this._joinableGames.next(payload.games);
         });
+        this.communicationSocket.on(SocketEvent.SendingLimitedGameCreated, (payload: { games: JoinableGameCard[] }) => {
+            this._joinableGames.next(payload.games);
+        });
     }
 
     private initRequestHandlers(): void {

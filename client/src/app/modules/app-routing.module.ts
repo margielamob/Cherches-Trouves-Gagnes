@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
-import { AuthGuard } from '@app/guards/auth.guard';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
@@ -21,17 +20,17 @@ const routes: Routes = [
     // { path: 'chat', component: ChatPanelComponent },
     { path: 'login', component: LoginPageComponent },
     { path: 'sign-up', component: SignUpPageComponent },
-    { path: 'home', component: MainPageComponent, canActivate: [AuthGuard] },
-    { path: 'game', component: GamePageComponent, canActivate: [AuthGuard] },
-    { path: 'create', component: CreateGamePageComponent, canActivate: [AuthGuard] },
-    { path: 'select', component: GameSelectionPageComponent, canActivate: [AuthGuard] },
-    { path: 'draw', component: DrawCanvasComponent, canActivate: [AuthGuard] },
-    { path: 'admin', component: AdminPageComponent, canActivate: [AuthGuard] },
-    { path: 'waiting', component: WaitingRoomComponent, canActivate: [AuthGuard] },
-    { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
-    { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
+    { path: 'home', component: MainPageComponent },
+    { path: 'game', component: GamePageComponent },
+    { path: 'create', component: CreateGamePageComponent },
+    { path: 'select', component: GameSelectionPageComponent },
+    { path: 'draw', component: DrawCanvasComponent },
+    { path: 'admin', component: AdminPageComponent },
+    { path: 'waiting', component: WaitingRoomComponent },
+    { path: 'error', component: MongodbErrorPageComponent },
+    { path: 'settings', component: SettingsPageComponent },
     { path: 'verify-email', component: EmailVerificationComponent },
-    { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
+    { path: 'join-game', component: JoinGameSelectionComponent },
 
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', redirectTo: '/home' },

@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Avatar } from '@app/interfaces/avatar';
 import { UserData } from '@app/interfaces/user';
 import { ImageUploadService } from '@app/services/image-upload/image-upload.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-dialog-user-avatar',
     templateUrl: './dialog-user-avatar.component.html',
     styleUrls: ['./dialog-user-avatar.component.scss'],
 })
-export class DialogUserAvatarComponent implements OnInit {
+export class DialogUserAvatarComponent implements OnInit, OnDestroy {
     fileTypeError: string | null = null;
     selectedFileURL: string | null = null;
     selectedFile: File | null = null;
@@ -22,6 +24,8 @@ export class DialogUserAvatarComponent implements OnInit {
     selectedAvatar: Avatar = { imagePath: '', active: false };
     avatarImages: Avatar[] = [];
     user$ = this.userService.getCurrentUser();
+    userThemeSubscription: Subscription;
+    currentTheme: string;
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     @ViewChild('fileInput') fileInput: ElementRef;
@@ -33,13 +37,20 @@ export class DialogUserAvatarComponent implements OnInit {
         private imageUploadService: ImageUploadService,
         private userService: UserService, //
         private translateService: TranslateService,
+        private themeService: ThemeService,
     ) {}
+    ngOnDestroy(): void {
+        if (this.userThemeSubscription) {
+            this.userThemeSubscription.unsubscribe();
+        }
+    }
 
     ngOnInit(): void {
         this.loadFileNames();
         this.user$.subscribe((user) => {
             this.setUserAvatar(user);
         });
+        this.currentTheme = this.themeService.getAppTheme();
     }
 
     toggleBorder(avatar: Avatar) {

@@ -45,11 +45,19 @@ export class GameStateManager {
                         soloScore: gameCard.soloScore,
                         isMulti: false,
                     };
-                    socket.emit(SocketEvent.Play, { gameId, gameCard: gameCardInfo });
+                    this.gameManager.sendTimer(this.sio, gameId, socket.id);
+                    socket.emit(SocketEvent.Play, {
+                        gameId,
+                        gameCard: gameCardInfo,
+                        data: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            coords: this.gameManager.getGame(gameId)!.differencesToClear.coords,
+                            nbDifferencesLeft: 1,
+                        },
+                    });
                 }
             }
         });
-
         socket.on(SocketEvent.LeaveGame, (gameId: string) => {
             if (!this.gameManager.isGameFound(gameId)) {
                 socket.emit(SocketEvent.Error);

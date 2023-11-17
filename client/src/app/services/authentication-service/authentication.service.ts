@@ -4,8 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { UserService } from '@app/services/user-service/user.service';
-import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
+import { catchError, from, of, switchMap, take, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -15,40 +14,45 @@ export class AuthenticationService {
     constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private afs: AngularFirestore) {}
 
     login(email: string, password: string) {
-        // login user with email and password
         return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
             switchMap((response) => {
                 const user = response.user;
-
                 if (!user) {
                     throw new Error('Echec de la connexion.');
                 }
-
-                // Generate new session token
-                const token = uuidv4();
-                const timeStamp = new Date();
-                const deviceInfo = navigator.userAgent;
-                localStorage.setItem('sessionToken', token);
-
-                // Creat session document in firestore
-                return from(
-                    this.afs.doc(`session/${user.uid}`).set({
-                        token,
-                        timeStamp,
-                        deviceInfo,
-                    }),
-                ).pipe(tap(() => this.logSessionActivity(user.uid, 'connect').subscribe()));
+                return this.afs
+                    .collection('activeUser')
+                    .doc(user.uid)
+                    .get()
+                    .pipe(
+                        switchMap(() => {
+                            // eslint-disable-next-line no-constant-condition
+                            if (false) {
+                                return this.afAuth.signOut().then(() => {
+                                    throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
+                                });
+                            }
+                            return this.userService.addToActiveUser(user.uid);
+                        }),
+                        switchMap(() => {
+                            return this.logSessionActivity(user.uid, 'connect');
+                        }),
+                    );
             }),
-            // error handling
-            catchError((error: FirebaseError) => {
+            catchError((error: FirebaseError | Error) => {
                 let errorMessage = 'Une erreur est survenue lors de la connexion. Merci de revenir plus tard.';
-
-                if (error.code === 'auth/user-not-found') {
-                    errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
-                } else if (error.code === 'auth/wrong-password') {
-                    errorMessage = 'Votre mot de passe est incorrect.';
+                if (error instanceof Error && error.message.includes('Vous avez déjà une session ouverte')) {
+                    errorMessage = error.message;
+                } else if (error instanceof FirebaseError) {
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage = 'Votre mot de passe est incorrect.';
+                            break;
+                    }
                 }
-
                 return throwError(() => new Error(errorMessage));
             }),
         );
@@ -67,21 +71,29 @@ export class AuthenticationService {
         );
     }
 
-    signOut() {
-        this.afAuth.authState
+    signOut(): void {
+        this.userService.user$
             .pipe(
-                tap((user) => {
-                    // log information about the session activity
-                    if (user) this.logSessionActivity(user.uid, 'disconect').subscribe();
+                take(1),
+                switchMap((user) => {
+                    if (user) {
+                        return this.logSessionActivity(user.uid, 'disconnect').pipe(switchMap(() => this.userService.deleteFromActiveUser()));
+                    } else {
+                        return of(null);
+                    }
+                }),
+                switchMap(async () => this.afAuth.signOut()),
+                catchError(() => {
+                    return of("Erreur lors de la déconnexion, la session n'est pas supprimée sur Firebase.");
                 }),
             )
-            .pipe(take(1))
-            .subscribe(() => {
-                // sign out user
-
-                this.afAuth.signOut();
-                localStorage.removeItem('sessionToken');
-                this.router.navigate(['login']);
+            .subscribe({
+                next: () => {
+                    this.router.navigate(['login']);
+                },
+                error: (error) => {
+                    throw error;
+                },
             });
     }
 
@@ -100,59 +112,11 @@ export class AuthenticationService {
         );
     }
 
-    // check if session token is the same as the one in firestore, if not, sign out user
-
-    // checkSession(): Observable<boolean | undefined> {
-    //     return this.afAuth.user.pipe(
-    //         switchMap((user) => {
-    //             if (user) {
-    //                 const deviceToken = localStorage.getItem('sessionToken');
-    //                 return this.afs
-    //                     .doc<Session>(`session/${user.uid}`)
-    //                     .valueChanges()
-    //                     .pipe(
-    //                         tap((sessionData: Session | undefined) => {
-    //                             if (sessionData?.token !== deviceToken) {
-    //                                 this.signOut();
-    //                             }
-    //                         }),
-    //                         map((sessionData: Session | undefined) => sessionData?.token === deviceToken),
-    //                     );
-    //             }
-    //             return of(false);
-    //         }),
-    //     );
-    // }
-
-    // listen to session changes, if session token is not the same as the one in firestore, sign out user, else do nothing
-
-    // listenToSessionChanges() {
-    //     this.afAuth.user
-    //         .pipe(
-    //             switchMap((user) => {
-    //                 if (user) {
-    //                     return this.afs
-    //                         .doc<Session>(`session/${user.uid}`)
-    //                         .valueChanges()
-    //                         .pipe(
-    //                             tap((sessionData) => {
-    //                                 const deviceToken = localStorage.getItem('sessionToken');
-    //                                 if (sessionData?.token !== deviceToken) {
-    //                                     this.signOut();
-    //                                 }
-    //                             }),
-    //                         );
-    //                 }
-    //                 return of(null);
-    //             }),
-    //         )
-    //         .subscribe();
-    // }
-
     // log session activity in firestore for each user
     logSessionActivity(userUid: string, activity: string) {
         const log = {
             activity,
+            client: 'desktop',
             timestamp: new Date(),
         };
         return from(this.afs.collection('users').doc(userUid).collection('activityLogs').add(log));

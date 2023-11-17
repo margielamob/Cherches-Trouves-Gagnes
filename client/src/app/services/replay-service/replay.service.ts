@@ -49,6 +49,7 @@ export class ReplayService {
     private leftImageState: Map<number, ImageData> = new Map();
     private sliderValue = 0;
 
+    // eslint-disable-next-line max-params
     constructor(
         private socket: CommunicationSocketService,
         private differenceHandler: DifferencesDetectionHandlerService,
@@ -306,7 +307,6 @@ export class ReplayService {
     private replayStartGame() {
         this.sendReplayToServer();
     }
-
     private replayDifferenceFound(event: ReplayEvent) {
         const data = event.data as DifferenceFound;
         this.leftIntervalRef = this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords, this.timeFactor);

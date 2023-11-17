@@ -1,4 +1,6 @@
+import 'package:app/pages/create_game.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NoGameCard extends StatelessWidget {
   @override
@@ -30,8 +32,7 @@ class NoGameCard extends StatelessWidget {
                             MaterialStateProperty.all(Size(100.0, 40.0)),
                       ),
                       onPressed: () {
-                        // TODO: Change this to look like heavy client.
-                        Navigator.pushNamed(context, "/create");
+                        Get.off(CreateGamePage());
                       },
                       child: Text("Créer un jeux"),
                     ),

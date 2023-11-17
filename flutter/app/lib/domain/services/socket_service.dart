@@ -4,7 +4,6 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class SocketService {
   late IO.Socket socket;
   String serverUrl = BaseURL.socket;
-
   SocketService() {
     socket = IO.io(serverUrl, <String, dynamic>{
       'transports': ['websocket'],
@@ -35,6 +34,11 @@ class SocketService {
   void on(String event, Function callback) {
     socket.on(event, (data) => callback(data));
   }
+
+  void once(String event, Function callback) {
+    socket.once(event, (data) => callback(data));
+  }
+
 
   void off(String event) {
     socket.off(event);

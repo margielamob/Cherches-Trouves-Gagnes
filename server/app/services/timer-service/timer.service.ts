@@ -6,9 +6,9 @@ import { Service } from 'typedi';
 
 @Service()
 export class TimerService {
-    private timerConstant: Map<string, GameTimeConstants>;
-    private initialTime: Map<string, number>;
-    private timerStarted: Map<string, boolean>;
+    timerConstant: Map<string, GameTimeConstants>;
+    initialTime: Map<string, number>;
+    timerStarted: Map<string, boolean>;
     constructor(private timeConstant: GameTimeConstantService) {
         this.timerConstant = new Map();
         this.initialTime = new Map();

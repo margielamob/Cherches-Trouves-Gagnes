@@ -63,5 +63,11 @@ export enum SocketEvent {
     ResetGameInfosReplay = 'ResetGameInfosReplay',
     DifferenceFoundReplay = 'DifferenceFoundReplay',
     LeavingArena = 'LeavingArena',
+    CreateLimitedGame = 'CreateLimitedGame',
+    LimitedGameCreated = 'LimitedGameCreated',
+    SendingLimitedGameCreated = 'SendingLimitedGameCreated',
+    BoardLoaded = 'BoardLoaded',
+    OneDifference = 'OneDifference',
     Timer = 'Timer',
+    StartClock = 'StartClock',
 }

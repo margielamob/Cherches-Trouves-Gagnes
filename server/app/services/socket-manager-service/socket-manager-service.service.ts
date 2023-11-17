@@ -41,19 +41,14 @@ export class SocketManagerService {
             throw new Error('Server instance not set');
         }
         this.serverSocket.sio.on(SocketEvent.Connection, (socket: Socket) => {
-            // eslint-disable-next-line no-console
-            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-
             this.chatSocketManager.handleSockets(socket);
             this.gameCreationManager.handleSockets(socket);
             this.gameStateManager.handleSockets(socket);
             this.gamePlayManager.handleSockets(socket);
             this.userManager.handleSockets(socket);
 
-            socket.on(SocketEvent.Disconnect, () => {
-                // eslint-disable-next-line no-console
-                console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
-            });
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            socket.on(SocketEvent.Disconnect, () => {});
 
             socket.on(SocketEvent.Message, (message: string, roomId: string) => {
                 socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
@@ -89,6 +84,10 @@ export class SocketManagerService {
                     const roomId = this.multiplayerGameManager.getRoomIdWaiting(gameId);
                     this.multiplayerGameManager.deleteAllRequests(roomId);
                 }
+            });
+
+            socket.on(SocketEvent.StartClock, (timer: number, roomId: string) => {
+                socket.to(roomId).emit(SocketEvent.StartClock, { timer });
             });
 
             socket.on(SocketEvent.GameStarted, (gameId: string) => {

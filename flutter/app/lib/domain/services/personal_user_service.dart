@@ -10,6 +10,8 @@ class PersonalUserService {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
 
+  String language = "En";
+
   UserData? get currentUser => null;
 
   Future<void> addUser(UserData user) async {
@@ -86,5 +88,89 @@ class PersonalUserService {
     UploadTask uploadTask = ref.putData(imageBytes);
     await uploadTask.whenComplete(() => null);
     updateUserAvatar(uid, 'avatars/$uid/avatar.jpg');
+  }
+
+  Future<String> getUserTheme(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic>? data =
+          documentSnapshot.data() as Map<String, dynamic>?;
+      // Vérifier si 'data' n'est pas nul et si 'theme' est une clé valide
+      if (data != null && data.containsKey('theme')) {
+        return data['theme'] ??
+            'Default'; // Utilisation de '??' pour gérer les valeurs nulles
+      }
+    }
+    return 'Default';
+  }
+
+  Future<int> getUserGamePlayed(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+    return documentSnapshot['gamePlayed'];
+  }
+
+  Future<void> updateUserGamePlayer(String uid) async {
+    int currentGamePlayed = await getUserGamePlayed(uid);
+    CollectionReference users = db.collection('users');
+    return users
+        .doc(uid)
+        .update({'gamePlayed': currentGamePlayed + 1}).catchError(
+            (error) => print("Failed to update user: $error"));
+  }
+
+  Future<int> getUserGameWins(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+    return documentSnapshot['gameWins'];
+  }
+
+  Future<void> updateUserGameWins(String uid) async {
+    int currentGameWins = await getUserGameWins(uid);
+    CollectionReference users = db.collection('users');
+    return users.doc(uid).update({'gameWins': currentGameWins + 1}).catchError(
+        (error) => print("Failed to update user: $error"));
+  }
+
+  Future<int> getUserNbDiffFound(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+    return documentSnapshot['numberDifferenceFound'];
+  }
+
+  Future<void> updateUserNbDiffFound(String uid) async {
+    int currentNbDifferenceFound = await getUserNbDiffFound(uid);
+    CollectionReference users = db.collection('users');
+    return users.doc(uid).update({
+      'numberDifferenceFound': currentNbDifferenceFound + 1
+    }).catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<int> getUserTotalTimePlayed(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+    return documentSnapshot['totalTimePlayed'];
+  }
+
+  Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
+    int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
+    CollectionReference users = db.collection('users');
+    return users.doc(uid).update({
+      'totalTimePlayed': currentTotalTimePlayed + timePlayed
+    }).catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> updateUserName(String uid, String newUserName) async {
+    final bool isAvailable = await isUserNameAvailable(newUserName);
+    if (isAvailable) {
+      CollectionReference users = db.collection('users');
+      await users.doc(uid).update({'displayName': newUserName}).catchError(
+          (error) =>
+              throw ("Erreur lors de la mise à jour du nom d'utilisateur"));
+    } else {
+      throw ('Le nom d\'utilisateur est déjà pris.');
+    }
   }
 }

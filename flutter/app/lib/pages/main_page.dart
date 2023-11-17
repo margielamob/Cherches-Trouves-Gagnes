@@ -1,14 +1,21 @@
 import 'package:app/components/classic_game_dialog.dart';
 import 'package:app/components/logout_dialog.dart';
+import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainPage extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
+  final PersonalUserService userService = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    //final profileManager = Provider.of<ProfilePageManager>(context);
+    //profileManager.setTheme('Alternative');
+
     gameManagerService.setCurrentUser();
     return Scaffold(
       appBar: AppBar(
@@ -57,12 +64,14 @@ class MainPage extends StatelessWidget {
                     ElevatedButton(
                       style: ButtonStyle(
                         minimumSize:
-                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                            MaterialStateProperty.all(Size(180.0, 60.0)),
                       ),
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
+                            gameManagerService.gameMode =
+                                GameModeModel(GameMode.classic);
                             return ClassicGameDialog();
                           },
                         );
@@ -73,27 +82,36 @@ class MainPage extends StatelessWidget {
                     ElevatedButton(
                       style: ButtonStyle(
                         minimumSize:
-                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                            MaterialStateProperty.all(Size(180.0, 60.0)),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/adminPage');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            gameManagerService.gameMode =
+                                GameModeModel(GameMode.limited);
+                            return ClassicGameDialog();
+                          },
+                        );
                       },
-                      child: Text('Go to admin'),
-                    ),
-                    SizedBox(height: 60),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        minimumSize:
-                            MaterialStateProperty.all(Size(160.0, 60.0)),
-                      ),
-                      onPressed: () {},
-                      child: Text('Go to Page F'),
+                      child: Text('Mode de jeux Limitée'),
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
                       style: ButtonStyle(
                         minimumSize:
-                            MaterialStateProperty.all(Size(160.0, 60.0)),
+                            MaterialStateProperty.all(Size(180.0, 60.0)),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/adminPage');
+                      },
+                      child: Text('Administration'),
+                    ),
+                    SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(180.0, 60.0)),
                       ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/ProfilePage');
@@ -112,7 +130,7 @@ class MainPage extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                           child: Text(
-                            'Thierry, Ahmed El, Ahmed Ben, Skander, Samy',
+                            'Thierry, Ahmed El, Sulayman, Ahmed Ben, Skander, Samy',
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400),
                           ),

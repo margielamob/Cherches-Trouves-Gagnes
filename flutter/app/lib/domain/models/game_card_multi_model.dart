@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/score_model.dart';
 
 class GameCardMultiModel {
   final String id;
   final String name;
-  final String thumbnail;
+  final Uint8List thumbnail;
   final String idOriginalBmp;
   final String idEditedBmp;
   final List<ScoreModel> soloScore;
@@ -23,11 +27,21 @@ class GameCardMultiModel {
     required this.isMulti,
   });
 
+  GameCardModel toGameCardModel() {
+    return GameCardModel(
+        id: id,
+        title: name,
+        thumbnail: thumbnail,
+        nbDifferences: nbDifferences,
+        idEditedBmp: idEditedBmp,
+        idOriginalBmp: idOriginalBmp);
+  }
+
   factory GameCardMultiModel.fromJson(Map json) {
     return GameCardMultiModel(
       id: json['id'],
       name: json['name'],
-      thumbnail: json['thumbnail'],
+      thumbnail: base64Decode(json['thumbnail'].split(',').last),
       idOriginalBmp: json['idOriginalBmp'],
       idEditedBmp: json['idEditedBmp'],
       soloScore: json['soloScore']
