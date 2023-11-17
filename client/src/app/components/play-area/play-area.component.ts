@@ -49,6 +49,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ) {
         this.handleSocketDifferenceFound();
         this.replayService.listenToEvents();
+        this.replayService.isReplayMode = false;
         this.replayService.cheatActivated$.subscribe(async (isActive) => {
             if (isActive) {
                 await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());

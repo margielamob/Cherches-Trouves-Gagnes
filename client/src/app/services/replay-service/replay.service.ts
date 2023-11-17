@@ -23,6 +23,7 @@ export class ReplayService {
     loadImages$ = this.loadImages.asObservable();
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
+    isGameDone = false;
     // public props
     gameId: string;
 
@@ -38,6 +39,7 @@ export class ReplayService {
     isPlaying = false;
     isReplayMode = false;
     currentTime: number;
+    endTime: number;
     private array: EventArray = new EventArray();
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
@@ -85,7 +87,7 @@ export class ReplayService {
     }
 
     timesUp() {
-        return this.currentTime <= this.gameHandler.endedTime;
+        return this.currentTime <= this.endTime;
     }
 
     clear() {
@@ -281,12 +283,20 @@ export class ReplayService {
             this.addEvent(ReplayActions.ClickError, data);
         });
 
+        this.socket.on(SocketEvent.EndedTime, (payload: { time: number }) => {
+            this.endTime = payload.time;
+        });
+
         this.socket.once(SocketEvent.GameStarted, (gameId: string) => {
             this.gameId = gameId;
             this.addEvent(ReplayActions.StartGame, gameId);
             if (this.gameHandler.timer !== 0) {
                 this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
                 this.startingTime = this.gameHandler.timer;
+            }
+
+            if (this.gameHandler.endedTime) {
+                this.socket.send(SocketEvent.EndedTime, { time: this.gameHandler.endedTime });
             }
         });
 
