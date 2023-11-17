@@ -31,14 +31,13 @@ class SocketService {
     }
   }
 
-  void on(String event, Function callback) {
-    socket.on(event, (data) => callback(data));
-  }
-
   void once(String event, Function callback) {
     socket.once(event, (data) => callback(data));
   }
 
+  void on(String event, Function callback) {
+    socket.on(event, (data) => callback(data));
+  }
 
   void off(String event) {
     socket.off(event);

@@ -21,22 +21,34 @@ class DifferenceDetectionService extends ChangeNotifier {
 
   void handleDifferences() {
     _socket.on(SocketEvent.differenceNotFound, (dynamic message) {
-      _soundService.playDifferenceNotFound();
-      print("difference not found");
+      showDifferenceNotFound();
     });
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
-      _soundService.playDifferenceFound();
-      coordinates.addAll(data.data.coordinates);
-      _gameManagerService.updatePlayersNbDifference(data);
-      notifyListeners();
-      startBlinking(data.data.coordinates);
+      showDifferenceFound(data);
     });
     _socket.on(SocketEvent.error, (dynamic message) {
-      _soundService.playDifferenceNotFound();
-      print(message);
-      print("SocketEvent.error");
+      showError(message);
     });
+  }
+
+  void showDifferenceFound(DifferenceFoundMessage data) {
+    _soundService.playDifferenceFound();
+    coordinates.addAll(data.data.coordinates);
+    _gameManagerService.updatePlayersNbDifference(data);
+    notifyListeners();
+    startBlinking(data.data.coordinates);
+  }
+
+  void showDifferenceNotFound() {
+    _soundService.playDifferenceNotFound();
+    print("difference not found");
+  }
+
+  void showError(dynamic message) {
+    _soundService.playDifferenceNotFound();
+    print(message);
+    print("SocketEvent.error");
   }
 
   void initDataToBlink(List<Vec2> coords) {
