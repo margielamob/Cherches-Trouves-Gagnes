@@ -19,17 +19,11 @@ class EndGameService extends ChangeNotifier {
       print("SocketEvent.win : $message");
       endGameMessage = "La partie est terminée vous avez gagné !";
       gameFinished(endGameMessage!);
-      // _userService.updateUserTotalTimePlayed(
-      //     _gameManagerService.currentUser!.id,
-      //     _gameManagerService.startingTimer! - _timerService.time!);
     });
     _socket.on(SocketEvent.lose, (dynamic message) {
       print("SocketEvent.lose : $message");
       endGameMessage = "La partie est terminée vous avez perdu !";
       gameFinished(endGameMessage!);
-      // _userService.updateUserTotalTimePlayed(
-      //     _gameManagerService.currentUser!.id,
-      //     _gameManagerService.startingTimer! - _timerService.time!);
     });
   }
 
