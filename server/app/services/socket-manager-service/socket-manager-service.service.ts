@@ -76,6 +76,10 @@ export class SocketManagerService {
                 }
             });
 
+            socket.on(SocketEvent.EndedTime, (time: number) => {
+                socket.emit(SocketEvent.EndedTime, { time });
+            });
+
             socket.on(SocketEvent.GamesDeleted, () => {
                 this.limitedTimeService.deleteAllGames();
                 this.gameManager.allGameCardsDeleted();
