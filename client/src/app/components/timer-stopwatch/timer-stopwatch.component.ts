@@ -48,6 +48,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
                 this.userService.updateTotalTimePlayed(this.startTimer - this.time);
             }
             this.gameInfoService.endedTime = this.time;
+            this.replayService.endTime = this.time;
             this.isGameDone = true;
             this.replayService.currentTime = this.time;
         });
