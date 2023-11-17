@@ -4,6 +4,7 @@ import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
+import 'package:app/domain/models/requests/initial_timer_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
@@ -40,7 +41,6 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
-  int? startingTimer;
   GameModeModel? gameMode;
 
   GameManagerService() {
@@ -107,13 +107,13 @@ class GameManagerService extends ChangeNotifier {
 
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
-    startingTimer = timer;
+    InitialTimerRequest request = InitialTimerRequest(startingTime: timer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
           card: ClassicGameModel(
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
-      _socket.send(SocketEvent.startClock, startingTimer);
+      _socket.send(SocketEvent.startClock, request.toJson());
       _socket.send(SocketEvent.createClassicGame, data.toJson());
       print("CreateGame event sent: $data");
     } catch (error) {
