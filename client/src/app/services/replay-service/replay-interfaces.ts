@@ -12,6 +12,7 @@ export interface DifferenceNotFound {
 export interface DifferenceFound {
     coords: Coordinate[] | Vec2[];
     pos: Coordinate | Vec2;
+    playerName?: string;
 }
 export interface ChatReplay {
     message: string;

@@ -85,5 +85,7 @@ export class ReplayBarComponent implements OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.replayService.newSlider.unsubscribe();
+        this.replayService.clear();
+        this.replayService.isPlaying = false;
     }
 }
