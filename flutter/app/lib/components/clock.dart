@@ -1,11 +1,8 @@
 import 'package:app/domain/services/clock_service.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class Clock extends StatelessWidget {
-  final ClockService clockService = Get.find();
-
   @override
   Widget build(BuildContext context) {
     final clockService = Provider.of<ClockService>(context);

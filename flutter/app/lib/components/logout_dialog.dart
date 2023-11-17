@@ -43,6 +43,8 @@ class LogoutDialog extends StatelessWidget {
         ElevatedButton(
           child: Text('Logout'),
           onPressed: () async {
+            differenceDetectionService.resetForNextGame();
+            gameReplayService.resetForNextGame();
             authService.signOut().then((_) {
               Navigator.of(context).pop();
               Get.offAll(LoginPage(), transition: Transition.leftToRight);

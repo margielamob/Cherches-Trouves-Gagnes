@@ -68,7 +68,9 @@ class GameManagerService extends ChangeNotifier {
       players = waitingRoomInfoRequest!.players;
       notifyListeners();
     });
-    _socket.on(SocketEvent.gameStarted, (dynamic message) {});
+    _socket.on(SocketEvent.gameStarted, (dynamic message) {
+      print("SocketEvent.gameStarted : $message");
+    });
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
     });
