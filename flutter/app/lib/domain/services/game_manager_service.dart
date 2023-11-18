@@ -1,7 +1,9 @@
 import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
+import 'package:app/domain/models/limited_game_model.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
+import 'package:app/domain/models/requests/create_limited_game_request.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
@@ -117,8 +119,6 @@ class GameManagerService extends ChangeNotifier {
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
     creatorStartingTimer = timer;
-    print("Starting timer : creatorStartingTimer");
-    print(creatorStartingTimer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
@@ -126,6 +126,17 @@ class GameManagerService extends ChangeNotifier {
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
       _socket.send(SocketEvent.createClassicGame, data.toJson());
       print("CreateGame event sent: $data");
+    } catch (error) {
+      print('Error while sending CreateGame event: $error');
+    }
+  }
+
+  void createLimitedGame(int timer, int bonus, bool cheatModeActivated) {
+    try {
+      CreateLimitedGameRequest data = CreateLimitedGameRequest(
+          user: currentUser!,
+          card: LimitedGameModel(id: null, timer: timer, bonus: bonus));
+      _socket.send(SocketEvent.CreateLimitedGame, data.toJson());
     } catch (error) {
       print('Error while sending CreateGame event: $error');
     }
