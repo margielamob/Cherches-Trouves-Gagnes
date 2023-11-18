@@ -1,6 +1,6 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
@@ -17,34 +17,39 @@ import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from 
 })
 export class ReplayService {
     // subscriptions:
-    hasReplayStarted = new BehaviorSubject<boolean>(false);
-    hasReplayStarted$ = this.hasReplayStarted.asObservable();
-    slider = new BehaviorSubject<number>(0);
-    slider$ = this.slider.asObservable();
-    imagesLoaded = new BehaviorSubject<boolean>(false);
-    imagesLoaded$ = this.imagesLoaded.asObservable();
+    newSlider = new BehaviorSubject<number>(0);
+    newSlider$ = this.newSlider.asObservable();
+    loadImages = new BehaviorSubject<boolean>(false);
+    loadImages$ = this.loadImages.asObservable();
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
+    isGameDone = false;
     // public props
-    state: ReplayState = ReplayState.STOPPED;
     gameId: string;
-    differencesContext: CanvasRenderingContext2D;
-    imgOriginalContext: CanvasRenderingContext2D;
+
     // Node.Js Timers
     timerRef: any;
-    sliderRef: any;
     leftIntervalRef: any;
     rightIntervalRef: any;
+    sliderIntervalRef: any;
+    differencesContext: CanvasRenderingContext2D;
+    imgOriginalContext: CanvasRenderingContext2D;
+    // event subject
     // private props
+    isPlaying = false;
+    isReplayMode = false;
+    currentTime: number;
+    endTime: number;
     private array: EventArray = new EventArray();
-    private previousEvent: ReplayEvent;
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
-    private currentTime: number;
-    private timer: number;
-    private elapsed: number = 0;
+
+    private startingTime: number;
+    private rightImageState: Map<number, ImageData> = new Map();
+    private leftImageState: Map<number, ImageData> = new Map();
+    private sliderValue = 0;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -69,14 +74,6 @@ export class ReplayService {
         this.imgModifiedContext = ctxImgModified;
     }
 
-    setSate(state: ReplayState) {
-        this.state = state;
-    }
-
-    getArray(): EventArray {
-        return this.array;
-    }
-
     setTimeFactor(factor: number) {
         this.timeFactor = factor;
     }
@@ -85,47 +82,104 @@ export class ReplayService {
         return this.timeFactor;
     }
 
-    getCurrentIndex() {
-        return this.array.currentIndex;
+    findInstant(percentage: number) {
+        return Math.floor(this.startingTime - this.getTotalSeconds() * percentage);
     }
 
-    setCurrentIndex(pos: number) {
-        this.array.currentIndex = pos;
+    timesUp() {
+        return this.currentTime <= this.endTime;
     }
 
-    setCurrentTime(percentage: number) {
-        this.stopBlinking();
-        const index = this.indexFromPercentage(percentage);
-        if (index === this.length()) {
-            this.currentTime = this.gameHandler.endedTime;
-            return;
-        }
+    clear() {
+        this.array.clear();
+    }
+
+    play(percentage: number) {
+        const time = this.findInstant(percentage);
+
         if (this.timerRef) {
             this.clearTimer();
         }
-        const factor = this.getElapsedSeconds(this.array.getEvent(index));
-        this.elapsed = factor;
-        const time = this.timer - factor;
+
+        if (time === this.startingTime) {
+            this.loadImages.next(true);
+        }
+
+        if (this.sliderIntervalRef) {
+            clearInterval(this.sliderIntervalRef);
+        }
 
         this.setTimer(time);
+        this.sendSlider(percentage);
     }
 
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
-            this.currentTime--;
-            this.elapsed++;
-            this.slider.next(this.getCurrentRatio());
-            if (this.currentTime <= this.gameHandler.endedTime) {
-                this.stopBlinking();
+            if (!this.isPlaying) {
                 clearInterval(this.timerRef);
-                this.slider.next(1);
+                return;
             }
+            if (this.timesUp()) {
+                const endEvent = this.array.getEvent(this.array.length - 1);
+                if (endEvent) {
+                    this.playEvent(endEvent);
+                }
+                this.newSlider.next(1);
+                clearInterval(this.timerRef);
+                return;
+            }
+
+            const event = this.getEventFromInstant(this.currentTime);
+            this.updateImagesState(this.currentTime);
+            if (event) {
+                this.playEvent(event);
+            }
+            this.currentTime--;
         }, 1000 / this.timeFactor);
     }
 
-    getCurrentRatio() {
-        return this.elapsed / this.getTotalSeconds();
+    sendSlider(fromValue: number) {
+        this.setSliderValue(fromValue);
+        this.emitSliderValue();
+    }
+
+    setSliderValue(value: number) {
+        this.sliderValue = value;
+    }
+
+    emitSliderValue() {
+        const intervalTime = 100;
+        this.sliderIntervalRef = setInterval(() => {
+            if (this.sliderValue >= 1 || !this.isPlaying) {
+                if (this.sliderValue >= 1) {
+                    this.newSlider.next(1);
+                }
+                clearInterval(this.sliderIntervalRef);
+                return;
+            }
+            this.newSlider.next(this.sliderValue);
+            this.sliderValue += intervalTime / (((this.getTotalSeconds() + 1) / this.timeFactor) * 1000);
+        }, intervalTime);
+    }
+
+    getEventInstant(event: ReplayEvent) {
+        const elapsedTime = this.getElapsedSeconds(event);
+        return this.startingTime - elapsedTime;
+    }
+
+    isEventOnInstant(event: ReplayEvent, instant: number) {
+        return this.getEventInstant(event) === instant;
+    }
+
+    getEventFromInstant(instant: number) {
+        for (let i = 0; i < this.length(); i++) {
+            if (this.isEventOnInstant(this.array.getEvent(i), instant)) {
+                return this.array.getEvent(i);
+            }
+        }
+
+        return undefined;
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -135,69 +189,72 @@ export class ReplayService {
             playerName,
             timestamp: Date.now(),
         } as ReplayEvent;
-
-        if (this.array.isEmpty()) {
-            this.previousEvent = event;
-        }
-
         this.array.push(event);
+    }
+
+    stopBlinking() {
+        if (!this.leftIntervalRef || !this.rightIntervalRef) return;
+        clearInterval(this.leftIntervalRef);
+        clearInterval(this.rightIntervalRef);
+    }
+
+    saveGameState(time: number) {
+        const rightImageData = this.imgModifiedContext.getImageData(
+            0,
+            0,
+            this.imgModifiedContext.canvas.width,
+            this.imgModifiedContext.canvas.height,
+        );
+        const leftImageData = this.imgOriginalContext.getImageData(0, 0, this.imgOriginalContext.canvas.width, this.imgOriginalContext.canvas.height);
+
+        this.rightImageState.set(time, rightImageData);
+        this.leftImageState.set(time, leftImageData);
+    }
+
+    updateImagesState(time: number) {
+        const rightImageData = this.rightImageState.get(time);
+        const leftImageData = this.leftImageState.get(time);
+
+        if (!rightImageData || !leftImageData) {
+            return;
+        } else {
+            this.modifiedContext.putImageData(rightImageData, 0, 0);
+            this.originalContext.putImageData(leftImageData, 0, 0);
+        }
     }
 
     getFormattedTime() {
         return this.timeFormatter.formatTime(this.currentTime);
     }
 
-    timeToIndex(elapsedSeconds: number) {
-        return Math.round(this.length() * (elapsedSeconds / this.getTotalSeconds()));
-    }
-
-    indexToTime() {
-        return Math.round(this.getTotalSeconds() * (this.array.currentIndex / this.length()));
+    getElapsedSeconds(event: ReplayEvent) {
+        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
     }
 
     getTotalSeconds() {
         return this.array.getTotalSeconds();
     }
 
-    eventPercentage() {
-        return this.getElapsedSeconds(this.array.getCurrentEvent()) / this.getTotalSeconds();
-    }
-
-    indexFromPercentage(percentage: number) {
-        return Math.round(percentage * this.length());
-    }
-
-    async playFromIndex(percentage: number = this.array.currentIndex) {
-        this.array.currentIndex = this.indexFromPercentage(percentage);
-
-        while (this.state !== ReplayState.DONE) {
-            if (this.array.end()) {
-                this.setSate(ReplayState.DONE);
-                return;
-            }
-
-            const event = this.array.getCurrentEvent();
-            await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
-            switch (event.action) {
-                case ReplayActions.DifferenceFoundUpdate:
-                    this.replayDifferenceFound(event);
-                    break;
-                case ReplayActions.ClickError:
-                    this.replayDifferenceNotFound(event);
-                    break;
-                case ReplayActions.StartGame:
-                    this.replayStartGame();
-                    break;
-                case ReplayActions.ActivateCheat:
-                    this.replayCheating();
-                    break;
-                default:
-                    throw Error('could not handle this event');
-            }
-            this.previousEvent = event;
-            this.array.currentIndex++;
+    playEvent(event: ReplayEvent) {
+        // this.stopBlinking();
+        switch (event.action) {
+            case ReplayActions.ClickFound:
+                this.replayDifferenceFound(event);
+                break;
+            case ReplayActions.ClickError:
+                this.replayDifferenceNotFound(event);
+                break;
+            case ReplayActions.StartGame:
+                this.replayStartGame();
+                break;
+            case ReplayActions.ActivateCheat:
+                this.replayCheating();
+                break;
+            default:
+                throw Error('could not handle this event');
         }
     }
+
     listenToEvents() {
         this.socket.on(
             SocketEvent.DifferenceFound,
@@ -214,7 +271,7 @@ export class ReplayService {
                     coords: obj.data.coords,
                     pos: obj.differenceCoord,
                 } as DifferenceFound;
-                this.addEvent(ReplayActions.DifferenceFoundUpdate, data);
+                this.addEvent(ReplayActions.ClickFound, data);
             },
         );
 
@@ -226,12 +283,20 @@ export class ReplayService {
             this.addEvent(ReplayActions.ClickError, data);
         });
 
+        this.socket.on(SocketEvent.EndedTime, (payload: { time: number }) => {
+            this.endTime = payload.time;
+        });
+
         this.socket.once(SocketEvent.GameStarted, (gameId: string) => {
             this.gameId = gameId;
             this.addEvent(ReplayActions.StartGame, gameId);
             if (this.gameHandler.timer !== 0) {
                 this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
-                this.timer = this.gameHandler.timer;
+                this.startingTime = this.gameHandler.timer;
+            }
+
+            if (this.gameHandler.endedTime) {
+                this.socket.send(SocketEvent.EndedTime, { time: this.gameHandler.endedTime });
             }
         });
 
@@ -240,7 +305,12 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.Timer, (payload: { timer: number }) => {
-            this.timer = payload.timer;
+            this.startingTime = payload.timer;
+        });
+
+        this.socket.on(SocketEvent.Clock, (time: number) => {
+            this.currentTime = time;
+            this.saveGameState(time);
         });
     }
 
@@ -248,16 +318,8 @@ export class ReplayService {
         clearInterval(this.timerRef);
     }
 
-    private stopBlinking() {
-        if (this.rightIntervalRef && this.leftIntervalRef) {
-            clearInterval(this.leftIntervalRef);
-            clearInterval(this.rightIntervalRef);
-        }
-    }
-
     private replayStartGame() {
         this.sendReplayToServer();
-        this.hasReplayStarted.next(true);
     }
     private replayDifferenceFound(event: ReplayEvent) {
         const data = event.data as DifferenceFound;
@@ -279,47 +341,15 @@ export class ReplayService {
     private replayCheating() {
         this.cheatActivated.next(true);
     }
-    private timeSinceLastEvent(event: ReplayEvent) {
-        return event.timestamp - this.previousEvent.timestamp;
-    }
-
-    private async delay(ms: number): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        });
-    }
 
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
     }
-
-    private getElapsedSeconds(event: ReplayEvent) {
-        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
-    }
-}
-
-export enum ReplayState {
-    PLAYING,
-    PAUSED,
-    STOPPED,
-    REDO,
-    DONE,
-    START,
 }
 
 export enum ReplayActions {
     StartGame = 'StartGame',
-    ClickFound = 'ClickFound',
     ClickError = 'ClickError',
-    Message = 'Message',
     ActivateCheat = 'ActivateCheat',
-    DeactivateCheat = 'DeactivateCheat',
-    UseHint = 'UseHint',
-    TimerUpdate = 'TimerUpdate',
-    DifferenceFoundUpdate = 'DifferenceFoundUpdate',
-    OpponentDifferencesFoundUpdate = 'OpponentDifferencesFoundUpdate',
-    EndGame = 'EndGame',
-    ActivateThirdHint = 'ActivateThirdHint',
-    DeactivateThirdHint = 'DeactivateThirdHint',
-    EventMessage = 'EventMessage',
+    ClickFound = 'ClickFound',
 }

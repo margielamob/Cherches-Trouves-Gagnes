@@ -31,7 +31,7 @@ export class GamePageComponent implements OnDestroy {
         private readonly snackBar: MatSnackBar,
         private readonly clueHandlerService: ClueHandlerService,
         private translate: TranslateService,
-        private differenceHandler: DifferencesDetectionHandlerService, // private userService: UserService,
+        private differenceHandler: DifferencesDetectionHandlerService,
     ) {
         exitButtonService.setGamePage();
         const gameModeKey = 'GAME_MODE.' + this.gameInfoHandlerService.gameMode.replace(/\s+/g, '').toUpperCase();
@@ -46,6 +46,7 @@ export class GamePageComponent implements OnDestroy {
 
     handleSocket() {
         this.socket.once(SocketEvent.Win, (record?: GameRecord) => {
+            console.log('got a win');
             this.openGameOverDialog(true, record);
             this.clueHandlerService.resetNbClue();
             this.differenceHandler.mouseIsDisabled = true;
@@ -109,8 +110,10 @@ export class GamePageComponent implements OnDestroy {
         const dialogRef = this.dialog.open(DialogGameOverComponent, dialogConfig);
 
         if (this.gameInfoHandlerService.isClassic()) {
-            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
-                this.isReplayToggled = isReplayToggled;
+            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled: boolean) => {
+                if (isReplayToggled) {
+                    this.isReplayToggled = isReplayToggled;
+                }
             });
         }
     }

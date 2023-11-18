@@ -49,6 +49,7 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ) {
         this.handleSocketDifferenceFound();
         this.replayService.listenToEvents();
+        this.replayService.isReplayMode = false;
         this.replayService.cheatActivated$.subscribe(async (isActive) => {
             if (isActive) {
                 await this.cheatMode.manageCheatMode(this.getContextOriginal(), this.getContextModified());
@@ -88,12 +89,6 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     ngOnInit() {
         this.handleClue();
         this.communicationSocketService.send(SocketEvent.GameStarted, { gameId: this.gameInfoHandlerService.roomId });
-        this.replayService.hasReplayStarted$.subscribe(async (hasStarted) => {
-            if (hasStarted) {
-                await this.resetCanvases();
-                this.replayService.imagesLoaded.next(true);
-            }
-        });
     }
 
     async resetCanvases(): Promise<void> {
@@ -110,6 +105,11 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         this.displayImages();
         this.replayService.setContexts(this.getContextOriginal(), this.getContextModified(), this.getContextDifferences());
         this.replayService.setImageContexts(this.getContextImgOriginal(), this.getContextImgModified());
+        this.replayService.loadImages$.subscribe(async (hasStarted) => {
+            if (hasStarted) {
+                await this.resetCanvases();
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -169,23 +169,23 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     getContextImgOriginal() {
-        return this.canvasImgOriginal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgOriginal.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextImgModified() {
-        return this.canvasImgModified.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgModified.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextOriginal() {
-        return this.canvasOriginal.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasOriginal.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextModified() {
-        return this.canvasModified.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasModified.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getContextDifferences() {
-        return this.canvasImgDifference.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        return this.canvasImgDifference.nativeElement.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     }
 
     getImageData(source: string) {

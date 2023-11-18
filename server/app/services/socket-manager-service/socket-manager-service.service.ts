@@ -11,7 +11,7 @@ import { Service } from 'typedi';
 import { ChatSocketManager } from './chat.service';
 import { GameCreationManager } from './game-creation.service';
 import { GameStateManager } from './game-state.service';
-import { GamePlayManager } from './gameplay.service';
+import { GamePlayManager } from './game-play-manager.service';
 import { SocketServer } from './server-socket-manager.service';
 import { UserManager } from './user-manager.service';
 @Service()
@@ -74,6 +74,10 @@ export class SocketManagerService {
                         }
                     }
                 }
+            });
+
+            socket.on(SocketEvent.EndedTime, (time: number) => {
+                socket.emit(SocketEvent.EndedTime, { time });
             });
 
             socket.on(SocketEvent.GamesDeleted, () => {

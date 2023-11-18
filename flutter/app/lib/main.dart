@@ -1,3 +1,4 @@
+import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
@@ -13,7 +14,7 @@ import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
-import 'package:app/domain/services/video_replay_service.dart';
+import 'package:app/domain/services/time_formatter_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
@@ -36,6 +37,8 @@ import 'package:provider/provider.dart';
 void registerDependencies() {
   Get.put(SoundService());
   Get.put(SocketService());
+  Get.put(TimeFormatterService());
+  Get.put(ClockService());
   Get.put(PersonalUserService());
   Get.put(AuthService());
   Get.put(HttpService());
@@ -43,14 +46,13 @@ void registerDependencies() {
   Get.put(CarouselService());
   Get.put(ImageDecoderService());
   Get.put(ClassicGameService());
+  Get.put(ReplayBar());
   Get.put(GameManagerService());
   Get.put(DifferenceDetectionService());
-  Get.put(ClockService());
+  Get.put(GameReplayService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
-  Get.put(VideoReplayService());
-  Get.put(GameReplayService());
 }
 
 late List<CameraDescription> cameras;
@@ -110,12 +112,6 @@ void main() async {
           create: (context) {
             ProfilePageManager profilePageManager = Get.find();
             return profilePageManager;
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (context) {
-            VideoReplayService videoReplayService = Get.find();
-            return videoReplayService;
           },
         ),
         ChangeNotifierProvider(

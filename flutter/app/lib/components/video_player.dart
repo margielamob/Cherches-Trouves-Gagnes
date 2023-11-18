@@ -1,12 +1,10 @@
 import 'package:app/domain/services/game_replay_service.dart';
-import 'package:app/domain/services/video_replay_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class VideoPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final videoReplayService = Provider.of<VideoReplayService>(context);
     final gameReplayService = Provider.of<GameReplayService>(context);
 
     return gameReplayService.isModeReplayActivated
@@ -19,30 +17,30 @@ class VideoPlayer extends StatelessWidget {
                   SizedBox(
                     width: 750,
                     child: Slider(
-                      min: videoReplayService.beginTime,
-                      max: videoReplayService.endTime,
-                      value: videoReplayService.currentTime,
-                      onChanged: (double value) {
-                        videoReplayService.updateCurrentTime(value);
+                      min: gameReplayService.replayBar.defaultBegin,
+                      max: gameReplayService.replayBar.defaultEnd,
+                      value: gameReplayService.replayBar.currentProgression,
+                      onChanged: (double time) {
+                        gameReplayService.updateCurrentProgression(time);
                       },
                     ),
                   ),
                   SizedBox(width: 20),
                   IconButton(
-                    icon: videoReplayService.currentIcon,
+                    icon: gameReplayService.replayBar.currentIcon,
                     onPressed: () {
-                      videoReplayService.play();
+                      gameReplayService.handlePlayButton();
                     },
                   ),
                   SizedBox(width: 20),
                   IconButton(
                     icon: Icon(Icons.replay),
                     onPressed: () {
-                      videoReplayService.replay();
+                      gameReplayService.replay();
                     },
                   ),
                   ToggleButtons(
-                    isSelected: videoReplayService.selectedSpeed,
+                    isSelected: gameReplayService.replayBar.selectedSpeed,
                     children: [
                       Text("x0.5"),
                       Text("x1"),
@@ -50,7 +48,7 @@ class VideoPlayer extends StatelessWidget {
                       Text("x3")
                     ],
                     onPressed: (int index) {
-                      videoReplayService.updateSelectedSpeed(index);
+                      gameReplayService.updateSelectedSpeed(index);
                     },
                   )
                 ],
