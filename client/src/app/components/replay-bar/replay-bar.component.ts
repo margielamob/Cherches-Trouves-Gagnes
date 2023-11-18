@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { REPLAY_SPEEDS } from '@app/services/replay-service/replay-interfaces';
@@ -9,7 +9,7 @@ import { ReplayService } from '@app/services/replay-service/replay.service';
     templateUrl: './replay-bar.component.html',
     styleUrls: ['./replay-bar.component.scss'],
 })
-export class ReplayBarComponent implements OnInit, OnChanges, OnDestroy {
+export class ReplayBarComponent implements OnInit, OnDestroy {
     currentSpeed = 1;
     isReplayAvailable: boolean = true;
     replaySpeeds = REPLAY_SPEEDS;
@@ -25,19 +25,9 @@ export class ReplayBarComponent implements OnInit, OnChanges, OnDestroy {
         this.sliderPosition = 0;
     }
 
-    ngOnChanges() {
+    updateImages(percentage: number) {
         this.replayService.stopBlinking();
-        this.updateImages();
-        this.seekToEvent(this.sliderPosition);
-    }
-
-    onMouseUp() {
-        this.updateImages();
-    }
-
-    updateImages() {
-        this.replayService.stopBlinking();
-        const time = this.replayService.findInstant(this.sliderPosition);
+        const time = this.replayService.findInstant(percentage);
         this.replayService.updateImagesState(time);
     }
 
@@ -46,6 +36,7 @@ export class ReplayBarComponent implements OnInit, OnChanges, OnDestroy {
             this.replayService.isPlaying = true;
         }
         this.replayService.play(percentage);
+        this.updateImages(percentage);
     }
 
     replay() {
@@ -65,7 +56,6 @@ export class ReplayBarComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     resume() {
-        this.updateImages();
         this.isPaused = false;
         this.replayService.isPlaying = true;
         this.seekToEvent(this.sliderPosition);

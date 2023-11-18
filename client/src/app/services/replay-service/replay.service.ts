@@ -40,6 +40,7 @@ export class ReplayService {
     isReplayMode = false;
     currentTime: number;
     endTime: number;
+    sliderValue = 0;
     private array: EventArray = new EventArray();
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
@@ -49,7 +50,6 @@ export class ReplayService {
     private startingTime: number;
     private rightImageState: Map<number, ImageData> = new Map();
     private leftImageState: Map<number, ImageData> = new Map();
-    private sliderValue = 0;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -83,7 +83,7 @@ export class ReplayService {
     }
 
     findInstant(percentage: number) {
-        return Math.floor(this.startingTime - this.getTotalSeconds() * percentage);
+        return this.startingTime - Math.round(this.getTotalSeconds() * percentage);
     }
 
     timesUp() {
@@ -99,10 +99,6 @@ export class ReplayService {
 
         if (this.timerRef) {
             this.clearTimer();
-        }
-
-        if (time === this.startingTime) {
-            this.loadImages.next(true);
         }
 
         if (this.sliderIntervalRef) {
@@ -131,7 +127,6 @@ export class ReplayService {
             }
 
             const event = this.getEventFromInstant(this.currentTime);
-            this.updateImagesState(this.currentTime);
             if (event) {
                 this.playEvent(event);
             }
@@ -146,6 +141,17 @@ export class ReplayService {
 
     setSliderValue(value: number) {
         this.sliderValue = value;
+    }
+
+    playLastEvent() {
+        const endEvent = this.array.getEvent(this.array.length - 1);
+        if (endEvent) {
+            this.playEvent(endEvent);
+        }
+    }
+
+    displayLastInstant() {
+        this.updateImagesState(this.endTime);
     }
 
     emitSliderValue() {
@@ -212,10 +218,18 @@ export class ReplayService {
     }
 
     updateImagesState(time: number) {
+        if (time < this.endTime) {
+            time = this.endTime;
+        }
+
+        if (time === this.startingTime) {
+            time = this.startingTime - 1;
+        }
         const rightImageData = this.rightImageState.get(time);
         const leftImageData = this.leftImageState.get(time);
 
         if (!rightImageData || !leftImageData) {
+            console.log('didnt find image Data');
             return;
         } else {
             this.modifiedContext.putImageData(rightImageData, 0, 0);
@@ -228,7 +242,7 @@ export class ReplayService {
     }
 
     getElapsedSeconds(event: ReplayEvent) {
-        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
+        return Math.round((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
     }
 
     getTotalSeconds() {
