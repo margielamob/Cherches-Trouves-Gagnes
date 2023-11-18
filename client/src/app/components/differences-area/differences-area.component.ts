@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { ReplayService } from '@app/services/replay-service/replay.service';
 
 @Component({
     selector: 'app-differences-area',
@@ -10,7 +11,7 @@ export class DifferencesAreaComponent {
     players: { name: string; nbDifference: string }[];
     mainPlayer: { name: string; nbDifferences: number };
     private opponentPlayers: { name: string; nbDifferences: number }[] = [];
-    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService) {
+    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService, private replayService: ReplayService) {
         this.setPlayersInfo();
     }
 
@@ -36,7 +37,6 @@ export class DifferencesAreaComponent {
             this.setPlayerInfosClassic();
             return;
         }
-        // this.setPlayerLimitedTime();
     }
 
     setPlayerInfosClassic() {
@@ -48,6 +48,7 @@ export class DifferencesAreaComponent {
         this.players = [...opponents];
 
         this.removeDuplicate();
+        this.replayService.setPlayerInfos([...this.players]);
 
         this.gameInformationHandlerService.$differenceFound.subscribe((playerName: string) => {
             const notFindIndex = -1;
@@ -58,24 +59,6 @@ export class DifferencesAreaComponent {
             this.players[this.getPlayerIndex(playerName)].nbDifference = this.setNbDifferencesFound(playerName);
         });
     }
-
-    // setPlayerLimitedTime() {
-    //     this.players = !this.opponentPlayer
-    //         ? [{ name: this.mainPlayer.name, nbDifference: this.setNbDifferencesFoundLimited() as string }]
-    //         : [
-    //               {
-    //                   name: this.mainPlayer.name + ' & ' + this.opponentPlayer.name,
-    //                   nbDifference: this.setNbDifferencesFoundLimited() as string,
-    //               },
-    //           ];
-    //     this.gameInformationHandlerService.$playerLeft.subscribe(() => {
-    //         this.players = [{ name: this.mainPlayer.name, nbDifference: this.setNbDifferencesFoundLimited() as string }];
-    //     });
-
-    //     this.gameInformationHandlerService.$differenceFound.subscribe(() => {
-    //         this.players[0].nbDifference = this.setNbDifferencesFoundLimited();
-    //     });
-    // }
 
     isLimited(): boolean {
         return this.gameInformationHandlerService.isLimitedTime();
@@ -97,14 +80,11 @@ export class DifferencesAreaComponent {
         }
     }
 
-    // setNbDifferencesFoundLimited() {
-    //     const nbPlayerDifference = this.gameInformationHandlerService.getNbDifferences(this.mainPlayer.name) as number;
+    isReplay() {
+        return this.replayService.isReplayMode;
+    }
 
-    //     if (this.opponentPlayer) {
-    //         const nbOpponentDifference = this.gameInformationHandlerService.getNbDifferences(this.opponentPlayer.name) as number;
-    //         return (nbPlayerDifference + nbOpponentDifference).toString();
-    //     }
-
-    //     return nbPlayerDifference.toString();
-    // }
+    getReplayPlayers() {
+        return this.replayService.getPlayers();
+    }
 }

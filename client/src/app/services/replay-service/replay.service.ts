@@ -8,6 +8,7 @@ import { GameInformationHandlerService } from '@app/services/game-information-ha
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { Coordinate } from '@common/coordinate';
 import { SocketEvent } from '@common/socket-event';
+import * as _ from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { EventArray } from './event-array';
 import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from './replay-interfaces';
@@ -50,6 +51,8 @@ export class ReplayService {
     private startingTime: number;
     private rightImageState: Map<number, ImageData> = new Map();
     private leftImageState: Map<number, ImageData> = new Map();
+    private players: { name: string; nbDifference: string }[] = [];
+    private playersInfoState: Map<number, { name: string; nbDifference: string }[]> = new Map();
 
     // eslint-disable-next-line max-params
     constructor(
@@ -67,6 +70,14 @@ export class ReplayService {
 
     length() {
         return this.array.length;
+    }
+
+    getPlayers() {
+        return this.players;
+    }
+
+    setPlayerInfos(players: { name: string; nbDifference: string }[]) {
+        this.players = players;
     }
 
     setImageContexts(ctxImgOriginal: CanvasRenderingContext2D, ctxImgModified: CanvasRenderingContext2D) {
@@ -87,6 +98,7 @@ export class ReplayService {
     }
 
     timesUp() {
+        console.log(this.endTime);
         return this.currentTime <= this.endTime;
     }
 
@@ -112,23 +124,22 @@ export class ReplayService {
     setTimer(time: number) {
         this.currentTime = time;
         this.timerRef = setInterval(() => {
+            this.updatePlayersInfo(this.currentTime);
             if (!this.isPlaying) {
                 clearInterval(this.timerRef);
                 return;
             }
-            if (this.timesUp()) {
-                const endEvent = this.array.getEvent(this.array.length - 1);
-                if (endEvent) {
-                    this.playEvent(endEvent);
+            const events = this.getEventFromInstant(this.currentTime);
+            if (events.length > 0) {
+                for (const event of events) {
+                    this.playEvent(event);
                 }
+            }
+            if (this.timesUp()) {
+                this.playLastEvents();
                 this.newSlider.next(1);
                 clearInterval(this.timerRef);
                 return;
-            }
-
-            const event = this.getEventFromInstant(this.currentTime);
-            if (event) {
-                this.playEvent(event);
             }
             this.currentTime--;
         }, 1000 / this.timeFactor);
@@ -143,10 +154,12 @@ export class ReplayService {
         this.sliderValue = value;
     }
 
-    playLastEvent() {
-        const endEvent = this.array.getEvent(this.array.length - 1);
-        if (endEvent) {
-            this.playEvent(endEvent);
+    playLastEvents() {
+        const events = this.getEventFromInstant(this.endTime);
+        if (events.length > 0) {
+            for (const event of events) {
+                this.playEvent(event);
+            }
         }
     }
 
@@ -179,13 +192,14 @@ export class ReplayService {
     }
 
     getEventFromInstant(instant: number) {
+        const events = [];
         for (let i = 0; i < this.length(); i++) {
             if (this.isEventOnInstant(this.array.getEvent(i), instant)) {
-                return this.array.getEvent(i);
+                events.push(this.array.getEvent(i));
             }
         }
 
-        return undefined;
+        return events;
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -204,7 +218,7 @@ export class ReplayService {
         clearInterval(this.rightIntervalRef);
     }
 
-    saveGameState(time: number) {
+    saveImagesState(time: number) {
         const rightImageData = this.imgModifiedContext.getImageData(
             0,
             0,
@@ -217,23 +231,17 @@ export class ReplayService {
         this.leftImageState.set(time, leftImageData);
     }
 
-    updateImagesState(time: number) {
-        if (time < this.endTime) {
-            time = this.endTime;
-        }
+    updateGameState(time: number) {
+        this.updateImagesState(time);
+    }
 
+    updatePlayersInfo(time: number) {
         if (time === this.startingTime) {
             time = this.startingTime - 1;
         }
-        const rightImageData = this.rightImageState.get(time);
-        const leftImageData = this.leftImageState.get(time);
-
-        if (!rightImageData || !leftImageData) {
-            console.log('didnt find image Data');
-            return;
-        } else {
-            this.modifiedContext.putImageData(rightImageData, 0, 0);
-            this.originalContext.putImageData(leftImageData, 0, 0);
+        const foundInfos = this.playersInfoState.get(time);
+        if (foundInfos) {
+            this.players = foundInfos;
         }
     }
 
@@ -298,6 +306,7 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.EndedTime, (payload: { time: number }) => {
+            console.log('received end time');
             this.endTime = payload.time;
         });
 
@@ -307,10 +316,6 @@ export class ReplayService {
             if (this.gameHandler.timer !== 0) {
                 this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
                 this.startingTime = this.gameHandler.timer;
-            }
-
-            if (this.gameHandler.endedTime) {
-                this.socket.send(SocketEvent.EndedTime, { time: this.gameHandler.endedTime });
             }
         });
 
@@ -324,8 +329,28 @@ export class ReplayService {
 
         this.socket.on(SocketEvent.Clock, (time: number) => {
             this.currentTime = time;
-            this.saveGameState(time);
+            this.saveImagesState(time);
+            this.saveScoreInstant();
         });
+    }
+
+    private updateImagesState(time: number) {
+        if (time < this.endTime) {
+            time = this.endTime;
+        }
+
+        if (time === this.startingTime) {
+            time = this.startingTime - 1;
+        }
+        const rightImageData = this.rightImageState.get(time);
+        const leftImageData = this.leftImageState.get(time);
+
+        if (!rightImageData || !leftImageData) {
+            return;
+        } else {
+            this.modifiedContext.putImageData(rightImageData, 0, 0);
+            this.originalContext.putImageData(leftImageData, 0, 0);
+        }
     }
 
     private clearTimer() {
@@ -358,6 +383,12 @@ export class ReplayService {
 
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
+    }
+
+    private saveScoreInstant() {
+        const time = this.currentTime;
+        const newArray = _.cloneDeep(this.players);
+        this.playersInfoState.set(time, newArray);
     }
 }
 

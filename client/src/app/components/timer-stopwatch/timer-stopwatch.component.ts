@@ -37,11 +37,26 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
             this.timerDisplay = this.timeFormatter.formatTime(time);
         });
 
-        this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
+        this.socketService.once(SocketEvent.Win, () => {
             this.gameInfoService.endedTime = this.time;
             this.replayService.endTime = this.time;
             this.isGameDone = true;
             this.replayService.currentTime = this.time;
+            if (this.gameInfoService.endedTime !== 0) {
+                console.log('sending end time');
+                this.socketService.send(SocketEvent.EndedTime, { time: this.gameInfoService.endedTime });
+            }
+        });
+
+        this.socketService.once(SocketEvent.Lose, () => {
+            this.gameInfoService.endedTime = this.time;
+            this.replayService.endTime = this.time;
+            this.isGameDone = true;
+            this.replayService.currentTime = this.time;
+            if (this.gameInfoService.endedTime !== 0) {
+                console.log('sending end time');
+                this.socketService.send(SocketEvent.EndedTime, { time: this.gameInfoService.endedTime });
+            }
         });
     }
 

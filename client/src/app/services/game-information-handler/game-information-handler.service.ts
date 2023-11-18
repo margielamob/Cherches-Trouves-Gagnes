@@ -33,7 +33,7 @@ export class GameInformationHandlerService {
     timer: number = 0;
     isCreator: boolean = false;
     differencesToClear: Coordinate[][];
-    endedTime: number;
+    endedTime: number = 0;
     isGameDone: boolean = false;
     startTimer: number;
     // eslint-disable-next-line max-params

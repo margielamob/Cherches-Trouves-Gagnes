@@ -25,10 +25,11 @@ export class ReplayBarComponent implements OnInit, OnDestroy {
         this.sliderPosition = 0;
     }
 
-    updateImages(percentage: number) {
+    updateState(percentage: number) {
         this.replayService.stopBlinking();
         const time = this.replayService.findInstant(percentage);
-        this.replayService.updateImagesState(time);
+        this.replayService.updatePlayersInfo(time);
+        this.replayService.updateGameState(time);
     }
 
     seekToEvent(percentage: number) {
@@ -36,7 +37,8 @@ export class ReplayBarComponent implements OnInit, OnDestroy {
             this.replayService.isPlaying = true;
         }
         this.replayService.play(percentage);
-        this.updateImages(percentage);
+
+        this.updateState(percentage);
     }
 
     replay() {
@@ -82,5 +84,6 @@ export class ReplayBarComponent implements OnInit, OnDestroy {
         this.replayService.clear();
         this.replayService.isPlaying = false;
         this.sliderPosition = 0;
+        this.replayService.setTimeFactor(1);
     }
 }
