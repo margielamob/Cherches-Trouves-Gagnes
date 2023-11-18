@@ -1,11 +1,9 @@
-import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class LimitedConstantsDialog extends StatefulWidget {
-  final AuthService authService = Get.find();
   final GameManagerService gameManagerService = Get.find();
 
   @override
@@ -101,6 +99,9 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                 SizedBox(width: 20),
                 FilledButton(
                   onPressed: () {
+                    print("gameTimer : $gameTimer");
+                    print("timeBonus : $timeBonus");
+                    print("cheatModeActivated : $cheatModeActivated");
                     widget.gameManagerService.createLimitedGame(
                         gameTimer, timeBonus, cheatModeActivated);
                   },

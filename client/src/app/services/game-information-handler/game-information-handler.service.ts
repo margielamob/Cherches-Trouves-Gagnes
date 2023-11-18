@@ -64,6 +64,7 @@ export class GameInformationHandlerService {
         });
 
         this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
+            console.log(info);
             this.roomId = info.roomId;
             this.isMulti = true;
             this.playersEX = info.players;

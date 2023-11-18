@@ -1,5 +1,5 @@
 class LimitedGameModel {
-  String? id;
+  void id;
   int timer;
   int bonus;
 
@@ -8,7 +8,7 @@ class LimitedGameModel {
 
   factory LimitedGameModel.fromJson(Map<String, dynamic> json) {
     return LimitedGameModel(
-      id: json['id'],
+      id: null,
       timer: json['timer'],
       bonus: json['bonus'],
     );

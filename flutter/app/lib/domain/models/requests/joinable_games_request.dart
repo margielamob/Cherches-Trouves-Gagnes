@@ -6,14 +6,14 @@ import 'package:app/domain/models/game_card_multi_model.dart';
 class PlayerModel {
   final String id;
   final String name;
-  final String avatar;
-  PlayerModel({required this.id, required this.name, required this.avatar});
+  final String? avatar;
+  PlayerModel({required this.id, required this.name, this.avatar});
 
   factory PlayerModel.fromJson(Map<String, dynamic> json) {
     return PlayerModel(
       name: json['name'],
       id: json['id'],
-      avatar: json['avatar'],
+      avatar: json['avatar'] ?? "assets/default-user-icon.png",
     );
   }
 }
