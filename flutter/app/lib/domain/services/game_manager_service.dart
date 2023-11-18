@@ -11,6 +11,7 @@ import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/start_clock_request.dart';
+import 'package:app/domain/models/requests/timer_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
@@ -41,7 +42,8 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
-  int? startingTimer;
+  int startingTimer = 0;
+  int creatorStartingTimer = 0;
   GameModeModel? gameMode;
 
   GameManagerService() {
@@ -90,6 +92,10 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.lose, (dynamic message) {
       resetAllPlayersNbDifference();
     });
+    _socket.on(SocketEvent.startClock, (dynamic message) {
+      TimerRequest request = TimerRequest.fromJson(message);
+      startingTimer = request.timer;
+    });
   }
 
   void joinGame(String roomId) {
@@ -110,7 +116,9 @@ class GameManagerService extends ChangeNotifier {
 
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
-    startingTimer = timer;
+    creatorStartingTimer = timer;
+    print("Starting timer : creatorStartingTimer");
+    print(creatorStartingTimer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
@@ -156,7 +164,7 @@ class GameManagerService extends ChangeNotifier {
         ReadyGameRequest(gameId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.ready, data.toJson());
     StartClockRequest clockData = StartClockRequest(
-        timer: startingTimer!, roomId: waitingRoomInfoRequest!.roomId);
+        timer: startingTimer, roomId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.startClock, clockData.toJson());
   }
 

@@ -15,7 +15,6 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
     isGameDone = false;
     private time: number;
-    private startTimer: number;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -32,9 +31,6 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         if (this.gameInfoService.timer !== 0) {
             this.socketService.send(SocketEvent.StartClock, { timer: this.gameInfoService.timer, roomId: this.gameInfoService.roomId });
         }
-        this.socketService.on(SocketEvent.StartClock, (payload: { timer: number }) => {
-            this.startTimer = payload.timer;
-        });
 
         this.socketService.on(SocketEvent.Clock, (time: number) => {
             this.time = time;
@@ -42,11 +38,6 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         });
 
         this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
-            if (this.gameInfoService.timer !== 0) {
-                this.userService.updateTotalTimePlayed(this.gameInfoService.timer - this.time);
-            } else {
-                this.userService.updateTotalTimePlayed(this.startTimer - this.time);
-            }
             this.gameInfoService.endedTime = this.time;
             this.replayService.endTime = this.time;
             this.isGameDone = true;
@@ -76,6 +67,11 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        if (this.gameInfoService.timer !== 0) {
+            this.userService.updateTotalTimePlayed(this.gameInfoService.timer - this.time);
+        } else {
+            this.userService.updateTotalTimePlayed(this.gameInfoService.startTimer - this.time);
+        }
         this.socketService.off(SocketEvent.Clock);
     }
 }

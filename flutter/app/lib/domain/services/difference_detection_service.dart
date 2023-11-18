@@ -101,7 +101,6 @@ class DifferenceDetectionService extends ChangeNotifier {
   bool validate(Vec2 mousePosition, String gameId, bool isOriginal) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
-      print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
       final data = DifferenceFoundRequest(
           differenceCoord: mousePosition,
           gameId: gameId,
