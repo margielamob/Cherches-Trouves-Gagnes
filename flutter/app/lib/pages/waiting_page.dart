@@ -8,7 +8,7 @@ class WaitingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
     return Scaffold(
-      appBar: CustomAppBar.buildDefaultBar(context, 'Waiting Room'),
+      appBar: CustomAppBar.buildWaitingRoomBar(context, 'Waiting Room'),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
