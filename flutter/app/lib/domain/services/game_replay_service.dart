@@ -21,6 +21,8 @@ class GameReplayService extends ChangeNotifier {
   int endGameTimeMilliSeconds = 0;
   int currentTimeMs = 0;
 
+  int duration = 0;
+
   Timer? timer;
 
   GameReplayService() {
@@ -31,7 +33,7 @@ class GameReplayService extends ChangeNotifier {
     if (replayBar.currentProgression == replayBar.defaultEnd) return;
     _toggleIcon();
     if (replayBar.isPlaying) {
-      play();
+      _play();
     } else {
       pause();
     }
@@ -48,8 +50,19 @@ class GameReplayService extends ChangeNotifier {
     timer?.cancel();
   }
 
-  void play() {
-    final duration = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
+  void handleOnChangeStart() {
+    if (!replayBar.isPlaying) return;
+    pause();
+  }
+
+  void playFrom(double percentage) {
+    _updateCurrentTime(percentage);
+    _executeAllPreviousCommands();
+    if (!replayBar.isPlaying) return;
+    _play();
+  }
+
+  void _play() {
     const timeIntervalMs = 200;
     timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       currentTimeMs = currentTimeMs + timeIntervalMs;
@@ -58,8 +71,12 @@ class GameReplayService extends ChangeNotifier {
           event.execute();
         }
       }
-      updateCurrentProgression(currentTimeMs / duration);
+      _updateCurrentProgression(currentTimeMs / duration);
     });
+  }
+
+  void _updateCurrentTime(double percentage) {
+    currentTimeMs = (duration * percentage).round();
   }
 
   bool _didEventHappen(GameEvent event, int timeIntervalMs) {
@@ -72,16 +89,40 @@ class GameReplayService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCurrentProgression(double percentageOfProgression) {
-    if (percentageOfProgression >= replayBar.defaultEnd) {
-      replayBar.currentProgression = replayBar.defaultEnd;
+  void updateProgressBarUI(
+      double percentageOfProgression, bool shouldUpdateUI) {
+    replayBar.currentProgression = percentageOfProgression;
+    if (shouldUpdateUI) notifyListeners();
+  }
+
+  void _updateCurrentProgression(double percentageOfProgression) {
+    if (_replayIsFinished(percentageOfProgression)) {
+      updateProgressBarUI(replayBar.defaultEnd, false);
       pause();
       _toggleIcon();
       notifyListeners();
       return;
     }
-    replayBar.currentProgression = percentageOfProgression;
+    updateProgressBarUI(percentageOfProgression, false);
+    _updateCurrentTime(percentageOfProgression);
     notifyListeners();
+  }
+
+  void _executeAllPreviousCommands() {
+    _differenceDetectionService.resetForNextGame();
+    for (var event in gameEvents) {
+      if (_didEventHappenBefore(event)) {
+        event.execute();
+      }
+    }
+  }
+
+  bool _didEventHappenBefore(GameEvent event) {
+    return event.relativeTimeStampMs < currentTimeMs;
+  }
+
+  bool _replayIsFinished(double percentageOfProgression) {
+    return percentageOfProgression >= replayBar.defaultEnd;
   }
 
   void updateSelectedSpeed(int index) {
@@ -146,6 +187,7 @@ class GameReplayService extends ChangeNotifier {
     final lastEvent = gameEvents.last;
     Duration delay = firstEvent.timeStamp.difference(lastEvent.timeStamp);
     beginGameTimeMilliSeconds = delay.inMilliseconds + endGameTimeMilliSeconds;
+    duration = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
   }
 
   void resetForNextGame() {
@@ -154,6 +196,7 @@ class GameReplayService extends ChangeNotifier {
     gameEvents = [];
     beginGameTimeMilliSeconds = 0;
     endGameTimeMilliSeconds = 0;
+    duration = 0;
     currentTimeMs = 0;
     replayBar.currentProgression = 0;
     replayBar.isPlaying = false;
