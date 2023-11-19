@@ -5,6 +5,7 @@ import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class MainPage extends StatelessWidget {
@@ -13,13 +14,10 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final profileManager = Provider.of<ProfilePageManager>(context);
-    //profileManager.setTheme('Alternative');
-
     gameManagerService.setCurrentUser();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Menu principal"),
+        title: Text(AppLocalizations.of(context)!.mainPageMenu),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -47,7 +45,7 @@ class MainPage extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            'Jeux de différences',
+                            AppLocalizations.of(context)!.mainPageTitle,
                             style: TextStyle(
                                 fontSize: 35, fontWeight: FontWeight.bold),
                           ),
@@ -76,7 +74,8 @@ class MainPage extends StatelessWidget {
                           },
                         );
                       },
-                      child: Text('Mode de jeux classique'),
+                      child:
+                          Text(AppLocalizations.of(context)!.mainPageClassic),
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
@@ -94,7 +93,8 @@ class MainPage extends StatelessWidget {
                           },
                         );
                       },
-                      child: Text('Mode de jeux Limitée'),
+                      child:
+                          Text(AppLocalizations.of(context)!.mainPageLimited),
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
@@ -116,7 +116,8 @@ class MainPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, '/ProfilePage');
                       },
-                      child: Text('Page de profile'),
+                      child:
+                          Text(AppLocalizations.of(context)!.mainPageSettings),
                     ),
                     SizedBox(height: 20),
                     Column(
