@@ -207,7 +207,6 @@ class GameReplayService extends ChangeNotifier {
     Duration delay = firstEvent.timeStamp.difference(lastEvent.timeStamp);
     beginGameTimeMilliSeconds = delay.inMilliseconds + endGameTimeMilliSeconds;
     durationMs = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
-    _updateClock(0);
   }
 
   void resetForNextGame() {
@@ -226,7 +225,6 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _resetForReplay() {
-    _updateClock(0);
     _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     pause();
