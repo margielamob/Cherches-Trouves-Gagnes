@@ -227,6 +227,7 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _resetForReplay() {
+    _updateClock(0);
     _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     pause();
