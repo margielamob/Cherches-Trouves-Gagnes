@@ -118,8 +118,6 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _updateClock(double percentageOfProgression) {
-    // print(lastTimeRegistered);
-    // print(duration);
     int time = lastTimeRegistered +
         ((durationMs * (1 - percentageOfProgression)) / 1000).round() -
         1;
