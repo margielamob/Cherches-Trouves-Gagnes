@@ -52,6 +52,8 @@ class Classic extends StatelessWidget {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
+                    /*
+
                     _userService.updateUserGamePlayer(
                         gameManagerService.currentUser!.id);
                     if (gameManagerService.creatorStartingTimer != 0) {
@@ -65,6 +67,7 @@ class Classic extends StatelessWidget {
                           gameManagerService.startingTimer -
                               _clockService.time!);
                     }
+                    */
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,

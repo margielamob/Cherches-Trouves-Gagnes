@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app/domain/models/game_event.dart';
 import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
+import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/global_variables.dart';
@@ -17,6 +18,7 @@ class GameReplayService extends ChangeNotifier {
   GameManagerService _gameManagerService = Get.find();
   SocketService _socket = Get.find();
   ReplayBar replayBar = Get.find();
+  ClockService clockService = Get.find();
 
   List<GameEvent> gameEvents = [];
 
@@ -24,7 +26,9 @@ class GameReplayService extends ChangeNotifier {
   int endGameTimeMilliSeconds = 0;
   int currentTimeMs = 0;
 
-  int duration = 0;
+  int lastTimeRegistered = 0;
+
+  int durationMs = 0;
 
   Timer? timer;
 
@@ -74,12 +78,12 @@ class GameReplayService extends ChangeNotifier {
           event.execute();
         }
       }
-      _updateCurrentProgression(currentTimeMs / duration);
+      _updateCurrentProgression(currentTimeMs / durationMs);
     });
   }
 
   void _updateCurrentTime(double percentage) {
-    currentTimeMs = (duration * percentage).round();
+    currentTimeMs = (durationMs * percentage).round();
   }
 
   bool _didEventHappen(GameEvent event, int timeIntervalMs) {
@@ -101,6 +105,7 @@ class GameReplayService extends ChangeNotifier {
   void _updateCurrentProgression(double percentageOfProgression) {
     if (_replayIsFinished(percentageOfProgression)) {
       updateProgressBarUI(replayBar.defaultEnd, false);
+      _updateClock(percentageOfProgression);
       pause();
       _toggleIcon();
       notifyListeners();
@@ -108,7 +113,17 @@ class GameReplayService extends ChangeNotifier {
     }
     updateProgressBarUI(percentageOfProgression, false);
     _updateCurrentTime(percentageOfProgression);
+    _updateClock(percentageOfProgression);
     notifyListeners();
+  }
+
+  void _updateClock(double percentageOfProgression) {
+    // print(lastTimeRegistered);
+    // print(duration);
+    int time = lastTimeRegistered +
+        ((durationMs * (1 - percentageOfProgression)) / 1000).round();
+
+    clockService.updateTime(time);
   }
 
   void _executeAllPreviousCommands() {
@@ -167,6 +182,9 @@ class GameReplayService extends ChangeNotifier {
     _socket.on(SocketEvent.gameStarted, (dynamic message) {
       addStartGameEvent();
     });
+    _socket.on(SocketEvent.clock, (dynamic message) {
+      lastTimeRegistered = message;
+    });
   }
 
   void activateReplayMode() {
@@ -191,7 +209,7 @@ class GameReplayService extends ChangeNotifier {
     final lastEvent = gameEvents.last;
     Duration delay = firstEvent.timeStamp.difference(lastEvent.timeStamp);
     beginGameTimeMilliSeconds = delay.inMilliseconds + endGameTimeMilliSeconds;
-    duration = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
+    durationMs = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
   }
 
   void resetForNextGame() {
@@ -201,7 +219,7 @@ class GameReplayService extends ChangeNotifier {
     gameEvents = [];
     beginGameTimeMilliSeconds = 0;
     endGameTimeMilliSeconds = 0;
-    duration = 0;
+    durationMs = 0;
     currentTimeMs = 0;
     replayBar.currentProgression = 0;
     replayBar.isPlaying = false;
