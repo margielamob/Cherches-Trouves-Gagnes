@@ -121,7 +121,8 @@ class GameReplayService extends ChangeNotifier {
     // print(lastTimeRegistered);
     // print(duration);
     int time = lastTimeRegistered +
-        ((durationMs * (1 - percentageOfProgression)) / 1000).round();
+        ((durationMs * (1 - percentageOfProgression)) / 1000).round() -
+        1;
 
     clockService.updateTime(time);
   }
