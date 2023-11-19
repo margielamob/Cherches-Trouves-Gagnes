@@ -154,7 +154,6 @@ class PersonalUserService {
     return documentSnapshot['totalTimePlayed'];
   }
 
-  /*
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
@@ -162,7 +161,6 @@ class PersonalUserService {
       'totalTimePlayed': currentTotalTimePlayed + timePlayed
     }).catchError((error) => print("Failed to update user: $error"));
   }
-  */
 
   Future<void> updateUserName(String uid, String newUserName) async {
     final bool isAvailable = await isUserNameAvailable(newUserName);
