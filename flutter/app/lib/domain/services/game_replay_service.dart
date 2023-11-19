@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app/domain/models/game_event.dart';
 import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
+import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/global_variables.dart';
@@ -13,6 +14,7 @@ import 'package:get/get.dart';
 
 class GameReplayService extends ChangeNotifier {
   GlobalVariables global = Get.find();
+  ClockService clockService = Get.find();
   DifferenceDetectionService _differenceDetectionService = Get.find();
   GameManagerService _gameManagerService = Get.find();
   SocketService _socket = Get.find();
@@ -25,6 +27,9 @@ class GameReplayService extends ChangeNotifier {
   int currentTimeMs = 0;
 
   int duration = 0;
+
+  bool isTimerInit = false;
+  int initTime = 0;
 
   Timer? timer;
 
@@ -95,6 +100,7 @@ class GameReplayService extends ChangeNotifier {
   void updateProgressBarUI(
       double percentageOfProgression, bool shouldUpdateUI) {
     replayBar.currentProgression = percentageOfProgression;
+    _updateClock(percentageOfProgression);
     if (shouldUpdateUI) notifyListeners();
   }
 
@@ -109,6 +115,11 @@ class GameReplayService extends ChangeNotifier {
     updateProgressBarUI(percentageOfProgression, false);
     _updateCurrentTime(percentageOfProgression);
     notifyListeners();
+  }
+
+  void _updateClock(double percentageOfProgression) {
+    final time = initTime - (duration * percentageOfProgression / 1000).floor();
+    clockService.updateTime(time);
   }
 
   void _executeAllPreviousCommands() {
@@ -167,6 +178,12 @@ class GameReplayService extends ChangeNotifier {
     _socket.on(SocketEvent.gameStarted, (dynamic message) {
       addStartGameEvent();
     });
+    _socket.on(SocketEvent.clock, (dynamic message) {
+      if (!isTimerInit) {
+        initTime = message + 1;
+        isTimerInit = true;
+      }
+    });
   }
 
   void activateReplayMode() {
@@ -195,6 +212,8 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void resetForNextGame() {
+    isTimerInit = false;
+    initTime = 0;
     _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     global.isModeReplayActivated = false;
@@ -210,6 +229,7 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _resetForReplay() {
+    _updateCurrentProgression(0);
     _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     pause();
