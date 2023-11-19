@@ -7,6 +7,7 @@ import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -35,6 +36,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  Get.put(GlobalVariables());
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(TimeFormatterService());
