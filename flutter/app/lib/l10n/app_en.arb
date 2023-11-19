@@ -1,0 +1,15 @@
+{
+    "mainPageTitle": "Difference game",
+    "mainPageClassic": "Classic game mode",
+    "mainPageMenu": " Main menu",
+    "mainPageLimited": "Limited time game mode",
+    "mainPageAdmin": "Administration",
+    "mainPageSettings": "Settings",
+    "settingsPageTitle": "Account Settings",
+    "settingsPageName": "Change Name",
+    "settingsAvatar": "Change Avatar",
+    "settingsPageTheme": "Theme",
+    "settingsPageLanguage": "Language",
+    "settingsPageChangeTheme": "Change Theme",
+    "settingsPageChangeLanguage": "Change Language"
+}
