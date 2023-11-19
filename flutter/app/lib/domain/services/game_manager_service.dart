@@ -66,7 +66,7 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       players = waitingRoomInfoRequest!.players;
-      Get.to(WaitingPage());
+      Get.offAll(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
