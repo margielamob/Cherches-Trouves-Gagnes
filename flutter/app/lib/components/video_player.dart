@@ -1,13 +1,17 @@
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class VideoPlayer extends StatelessWidget {
+  final GlobalVariables global = Get.find();
+
   @override
   Widget build(BuildContext context) {
     final gameReplayService = Provider.of<GameReplayService>(context);
 
-    return gameReplayService.isModeReplayActivated
+    return global.isModeReplayActivated
         ? Column(
             children: [
               SizedBox(height: 5),
