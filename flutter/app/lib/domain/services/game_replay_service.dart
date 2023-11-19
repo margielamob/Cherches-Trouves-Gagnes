@@ -71,11 +71,12 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _play() {
-    const timeIntervalMs = 200;
-    timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
-      currentTimeMs = currentTimeMs + timeIntervalMs;
+    const refreshRateMs = 200;
+    timer = Timer.periodic(Duration(milliseconds: refreshRateMs), (timer) {
+      final timeSpan = (refreshRateMs * replayBar.getSpeed()).round();
+      currentTimeMs = currentTimeMs + timeSpan;
       for (var event in gameEvents) {
-        if (_didEventHappen(event, timeIntervalMs)) {
+        if (_didEventHappen(event, timeSpan)) {
           event.execute();
         }
       }
@@ -225,6 +226,7 @@ class GameReplayService extends ChangeNotifier {
     replayBar.currentProgression = 0;
     replayBar.isPlaying = false;
     replayBar.currentIcon = Icon(Icons.play_arrow);
+    replayBar.selectedSpeed = [false, true, false, false];
     notifyListeners();
   }
 
