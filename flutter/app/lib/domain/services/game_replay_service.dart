@@ -4,17 +4,20 @@ import 'package:app/domain/models/game_event.dart';
 import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GameReplayService extends ChangeNotifier {
+  GlobalVariables global = Get.find();
   DifferenceDetectionService _differenceDetectionService = Get.find();
+  GameManagerService _gameManagerService = Get.find();
   SocketService _socket = Get.find();
   ReplayBar replayBar = Get.find();
 
-  bool isModeReplayActivated = false;
   List<GameEvent> gameEvents = [];
 
   int beginGameTimeMilliSeconds = 0;
@@ -109,6 +112,7 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _executeAllPreviousCommands() {
+    _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     for (var event in gameEvents) {
       if (_didEventHappenBefore(event)) {
@@ -167,7 +171,7 @@ class GameReplayService extends ChangeNotifier {
 
   void activateReplayMode() {
     _differenceDetectionService.coordinates = [];
-    isModeReplayActivated = true;
+    global.isModeReplayActivated = true;
     _initGameTimes();
     _setRelativeTimeStamp();
     notifyListeners();
@@ -191,8 +195,9 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void resetForNextGame() {
+    _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
-    isModeReplayActivated = false;
+    global.isModeReplayActivated = false;
     gameEvents = [];
     beginGameTimeMilliSeconds = 0;
     endGameTimeMilliSeconds = 0;
@@ -205,6 +210,7 @@ class GameReplayService extends ChangeNotifier {
   }
 
   void _resetForReplay() {
+    _gameManagerService.resetAllPlayersNbDifference();
     _differenceDetectionService.resetForNextGame();
     pause();
     currentTimeMs = 0;

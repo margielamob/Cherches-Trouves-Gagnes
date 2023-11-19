@@ -17,6 +17,7 @@ import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
@@ -29,6 +30,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class GameManagerService extends ChangeNotifier {
+  final GlobalVariables global = Get.find();
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
   final PersonalUserService _userService = Get.find();
@@ -187,7 +189,7 @@ class GameManagerService extends ChangeNotifier {
             return;
           }
         }
-        if (player.name == currentUser!.name) {
+        if (player.name == currentUser!.name && !global.isModeReplayActivated) {
           _userService.updateUserNbDiffFound(currentUser!.id);
         }
         player.nbDifferenceFound.add(differenceFound.differenceCoord);
@@ -200,6 +202,7 @@ class GameManagerService extends ChangeNotifier {
     for (var player in players) {
       player.nbDifferenceFound = [];
     }
+    notifyListeners();
   }
 
   void resetPlayerNbDifference(String playerName) {
