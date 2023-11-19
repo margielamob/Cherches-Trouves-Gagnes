@@ -119,9 +119,7 @@ class GameReplayService extends ChangeNotifier {
 
   void _updateClock(double percentageOfProgression) {
     int time = lastTimeRegistered +
-        ((durationMs * (1 - percentageOfProgression)) / 1000).round() -
-        1;
-
+        ((durationMs * (1 - percentageOfProgression)) / 1000).round();
     clockService.updateTime(time);
   }
 
@@ -209,6 +207,7 @@ class GameReplayService extends ChangeNotifier {
     Duration delay = firstEvent.timeStamp.difference(lastEvent.timeStamp);
     beginGameTimeMilliSeconds = delay.inMilliseconds + endGameTimeMilliSeconds;
     durationMs = endGameTimeMilliSeconds - beginGameTimeMilliSeconds;
+    _updateClock(0);
   }
 
   void resetForNextGame() {
