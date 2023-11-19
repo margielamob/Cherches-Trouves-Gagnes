@@ -20,14 +20,8 @@ class VideoPlayer extends StatelessWidget {
                       min: gameReplayService.replayBar.defaultBegin,
                       max: gameReplayService.replayBar.defaultEnd,
                       value: gameReplayService.replayBar.currentProgression,
-                      onChangeStart: (double time) {
-                        gameReplayService.handleOnChangeStart();
-                      },
                       onChanged: (double time) {
-                        gameReplayService.updateProgressBarUI(time, true);
-                      },
-                      onChangeEnd: (double time) {
-                        gameReplayService.playFrom(time);
+                        gameReplayService.updateCurrentProgression(time);
                       },
                     ),
                   ),
