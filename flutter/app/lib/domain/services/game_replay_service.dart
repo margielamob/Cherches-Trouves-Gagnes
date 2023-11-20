@@ -226,7 +226,7 @@ class GameReplayService extends ChangeNotifier {
     replayBar.currentProgression = 0;
     replayBar.isPlaying = false;
     replayBar.currentIcon = Icon(Icons.play_arrow);
-    replayBar.selectedSpeed = [false, true, false, false];
+    replayBar.selectedSpeed = [false, true, false];
     notifyListeners();
   }
 
