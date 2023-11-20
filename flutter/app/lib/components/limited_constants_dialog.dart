@@ -99,9 +99,6 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                 SizedBox(width: 20),
                 FilledButton(
                   onPressed: () {
-                    print("gameTimer : $gameTimer");
-                    print("timeBonus : $timeBonus");
-                    print("cheatModeActivated : $cheatModeActivated");
                     widget.gameManagerService.createLimitedGame(
                         gameTimer, timeBonus, cheatModeActivated);
                   },
