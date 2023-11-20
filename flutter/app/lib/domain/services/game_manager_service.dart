@@ -11,6 +11,7 @@ import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
+import 'package:app/domain/models/requests/new_game_request.dart';
 import 'package:app/domain/models/requests/play_limited_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/start_clock_request.dart';
@@ -105,6 +106,12 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.startClock, (dynamic message) {
       TimerRequest request = TimerRequest.fromJson(message);
       startingTimer = request.timer;
+    });
+    _socket.on(SocketEvent.newGameBoard, (dynamic message) {
+      print('newGameBoard received');
+      NewGameRequest request = NewGameRequest.fromJson(message);
+      gameCards = request.gameInfo;
+      notifyListeners();
     });
   }
 
