@@ -1,0 +1,46 @@
+/* styles.css */
+.search-container {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.search-results {
+    margin-top: 20px;
+}
+
+.user-item {
+    background-color: #fff;
+    margin-bottom: 10px; /* Espace entre les utilisateurs */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.user-item img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-item button {
+    margin-left: 10px;
+}

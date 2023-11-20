@@ -1,0 +1,12 @@
+<!-- search.component.html -->
+<div class="search-container">
+    <input type="text" [formControl]="searchControl" placeholder="Rechercher des utilisateurs..." class="search-input" />
+</div>
+
+<div class="search-results" *ngIf="users$ | async as users">
+    <div class="user-item" *ngFor="let user of users">
+        <img [src]="user.photoURL" alt="Avatar" style="width: 50px; height: 50px" />
+        {{ user.displayName }}
+        <button mat-raised-button color="primary" (click)="sendFriendRequest(user)">Demande d'ami</button>
+    </div>
+</div>

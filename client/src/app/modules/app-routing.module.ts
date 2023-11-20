@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
+import { SearchBatComponent } from '@app/components/search-bat/search-bat.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
@@ -31,6 +32,7 @@ const routes: Routes = [
     { path: 'settings', component: SettingsPageComponent },
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent },
+    { path: 'social', component: SearchBatComponent },
 
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', redirectTo: '/home' },
