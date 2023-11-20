@@ -29,7 +29,7 @@ export class GameStateManager {
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 this.gameManager.removeJoinableGame(gameId);
-                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+                // this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             } else {
                 const gameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
@@ -46,6 +46,8 @@ export class GameStateManager {
                         isMulti: false,
                     };
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);
+                    const players = this.gameManager.getPlayers(gameId);
+                    console.log(players);
                     socket.emit(SocketEvent.Play, {
                         gameId,
                         gameCard: gameCardInfo,
@@ -53,6 +55,7 @@ export class GameStateManager {
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             coords: this.gameManager.getGame(gameId)!.differencesToClear.coords,
                             nbDifferencesLeft: 1,
+                            players,
                         },
                     });
                 }

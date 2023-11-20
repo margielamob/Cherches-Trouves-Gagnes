@@ -93,6 +93,7 @@ export class GamePlayManager {
                 playerName,
                 differenceCoord,
             });
+            this.gameManager.addDifferenceFound(gameId, differences);
 
             if (this.gameManager.isGameOver(gameId)) {
                 this.handleEndGame(gameId, socket);
@@ -126,6 +127,41 @@ export class GamePlayManager {
                     });
                 }
             }
+        });
+
+        socket.on(SocketEvent.ObserveGame, (player: { name: string; avatar: string }, gameId: string) => {
+            socket.join(gameId);
+            const pastPlayerDiffs = this.gameManager.updateObservableGameState(gameId);
+            const gameCard = this.gameManager.getGameInfo(gameId);
+            let gameCardInfo: PublicGameInformation;
+            if (gameCard) {
+                gameCardInfo = {
+                    id: gameCard.id,
+                    name: gameCard.name,
+                    thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(gameCard.thumbnail),
+                    nbDifferences: gameCard.differences.length,
+                    idEditedBmp: gameCard.idEditedBmp,
+                    idOriginalBmp: gameCard.idOriginalBmp,
+                    multiplayerScore: gameCard.multiplayerScore,
+                    soloScore: gameCard.soloScore,
+                    isMulti: false,
+                };
+                const players = this.gameManager.getPlayers(gameId) || [];
+                console.log(players);
+                this.gameManager.sendTimer(this.sio, gameId, socket.id);
+                socket.emit(SocketEvent.Play, {
+                    gameId,
+                    gameCard: gameCardInfo,
+                    data: {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        coords: pastPlayerDiffs,
+                        nbDifferencesLeft: 1,
+                        players,
+                    },
+                });
+            }
+            // socket.emit(SocketEvent.Play, gameId);
+            // // socket.emit(SocketEvent.UpdateDifferences, pastPlayerDiffs);
         });
     }
 
