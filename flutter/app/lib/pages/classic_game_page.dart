@@ -32,7 +32,6 @@ class Classic extends StatelessWidget {
 
   Classic({required this.gameId, required this.gameCard, startDifference}) {
     _differenceDetectionService.handleDifferences();
-    print(startDifference);
     _differenceDetectionService.coordinates = startDifference;
     _socket.send(
         SocketEvent.gameStarted, {gameId: gameManagerService.currentRoomId});
@@ -41,9 +40,12 @@ class Classic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final endGameService = Provider.of<EndGameService>(context);
-
+    String title = 'Partie classique';
+    if (gameManagerService.gameMode!.value == "Temps Limité") {
+      title = 'Partie temps limité';
+    }
     return Scaffold(
-      appBar: CustomAppBar.buildGameNavigationBar(context, 'Partie classique'),
+      appBar: CustomAppBar.buildGameNavigationBar(context, title),
       body: Center(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(

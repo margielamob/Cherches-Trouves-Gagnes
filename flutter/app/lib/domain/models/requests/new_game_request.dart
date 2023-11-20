@@ -8,7 +8,7 @@ class NewGameRequest {
   NewGameRequest({required this.gameInfo, required this.coords});
 
   factory NewGameRequest.fromJson(Map<String, dynamic> json) {
-    GameCardModel gameInfo = GameCardModel.fromJson(json['gameCard']);
+    GameCardModel gameInfo = GameCardModel.fromJson(json['gameInfo']);
     List<dynamic> coordsList = json['coords'];
     List<Vec2> parsedCoords = coordsList
         .map((coord) => Vec2.fromJson({'coordinate': coord}))

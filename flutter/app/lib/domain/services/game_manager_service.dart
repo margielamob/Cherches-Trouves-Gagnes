@@ -69,7 +69,10 @@ class GameManagerService extends ChangeNotifier {
         Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
-        Get.offAll(Classic(gameId: data.gameId, gameCard: data.gameCard, startDifference: data.data.coords));
+        Get.offAll(Classic(
+            gameId: data.gameId,
+            gameCard: data.gameCard,
+            startDifference: data.data.coords));
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
@@ -108,7 +111,6 @@ class GameManagerService extends ChangeNotifier {
       startingTimer = request.timer;
     });
     _socket.on(SocketEvent.newGameBoard, (dynamic message) {
-      print('newGameBoard received');
       NewGameRequest request = NewGameRequest.fromJson(message);
       gameCards = request.gameInfo;
       notifyListeners();
