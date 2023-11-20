@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { UserData } from '@app/interfaces/user';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { ChatMessage } from '@common/chat';
+import { ChatMessage, UserRoom } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatDisplayService } from './chat-display.service';
@@ -31,6 +31,7 @@ export class ChatManagerService {
     }
 
     sendMessage(message: string) {
+        console.log('sending message');
         const newMessage: ChatMessage = { message, user: this.userService.activeUser.displayName, room: this.activeRoom.value };
         this.socket.send(SocketEvent.Message, { message: newMessage });
     }
@@ -41,6 +42,7 @@ export class ChatManagerService {
 
     addListeners() {
         this.socket.on(SocketEvent.Message, (message: ChatMessage) => {
+            console.log('message received');
             if (message.room === this.activeRoom.value) {
                 this.addMessage(message);
             }
@@ -54,9 +56,9 @@ export class ChatManagerService {
             console.log('all rooms : ' + rooms);
             this.allRoomsList.next(rooms);
         });
-        this.socket.on(SocketEvent.UpdateUserRooms, (rooms: string[]) => {
+        this.socket.on(SocketEvent.UpdateUserRooms, (rooms: UserRoom[]) => {
             console.log('update user rooms : ' + rooms);
-            this.userRoomList.next(rooms);
+            this.userRoomList.next(rooms.map((room) => room.room));
         });
         this.socket.on(SocketEvent.RoomCreated, (rooms: { all: string[]; user: string[] }) => {
             this.userRoomList.next(rooms.user);

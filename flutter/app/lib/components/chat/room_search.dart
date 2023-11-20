@@ -23,10 +23,10 @@ class _RoomSearchState extends State<RoomSearch> {
     // Assuming the equivalent logic for fetching initial unjoined rooms is in a function named fetchUnjoinedRooms()
     chatManager.allRoomsList.stream.listen((rooms) {
       setState(() {
-        unjoinedRooms = rooms
-            .where(
-                (element) => !chatManager.userRoomList.value.contains(element))
-            .toList();
+        List<String> userRoomNames =
+            chatManager.userRoomList.value.map((e) => e.room).toList();
+        unjoinedRooms =
+            rooms.where((element) => !userRoomNames.contains(element)).toList();
         searchedRooms = unjoinedRooms;
       });
     });
@@ -34,53 +34,60 @@ class _RoomSearchState extends State<RoomSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: searchController,
-          onChanged: (value) {
-            filterSearchResults(value);
-          },
-          decoration: InputDecoration(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: searchController,
+            onChanged: (value) {
+              filterSearchResults(value);
+            },
+            decoration: InputDecoration(
               labelText: "Search",
               hintText: "Search",
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-        ),
-        SizedBox(height: 16.0),
-        searchedRooms.isEmpty
-            ? Text('No rooms found.')
-            : Expanded(
-                child: ListView.builder(
-                  itemCount: searchedRooms.length,
-                  itemBuilder: (context, index) {
-                    final room = searchedRooms[index];
-                    return ListTile(
-                      title: Text(room),
-                      onTap: () {
-                        setState(() {
-                          if (selectedRooms.contains(room)) {
-                            selectedRooms.remove(room);
-                          } else {
-                            selectedRooms.add(room);
-                          }
-                        });
-                      },
-                      tileColor: selectedRooms.contains(room)
-                          ? Colors.blue.withOpacity(0.3)
-                          : null,
-                    );
-                  },
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
                 ),
               ),
-        SizedBox(height: 16.0),
-        ElevatedButton(
-          onPressed: joinRooms,
-          child: Text('Join'),
-        ),
-      ],
+            ),
+          ),
+          SizedBox(height: 16.0),
+          searchedRooms.isEmpty
+              ? Text('No rooms found.')
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: searchedRooms.length,
+                    itemBuilder: (context, index) {
+                      final room = searchedRooms[index];
+                      return ListTile(
+                        title: Text(room),
+                        onTap: () {
+                          setState(() {
+                            if (selectedRooms.contains(room)) {
+                              selectedRooms.remove(room);
+                            } else {
+                              selectedRooms.add(room);
+                            }
+                          });
+                        },
+                        tileColor: selectedRooms.contains(room)
+                            ? Colors.blue.withOpacity(0.3)
+                            : null,
+                      );
+                    },
+                  ),
+                ),
+          SizedBox(height: 16.0),
+          ElevatedButton(
+            onPressed: joinRooms,
+            child: Text('Join'),
+          ),
+        ],
+      ),
     );
   }
 

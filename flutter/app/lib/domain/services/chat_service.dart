@@ -13,8 +13,8 @@ class ChatManagerService {
 
   BehaviorSubject<String> activeRoom = BehaviorSubject<String>.seeded('all');
 
-  BehaviorSubject<List<String>> userRoomList =
-      BehaviorSubject<List<String>>.seeded([]);
+  BehaviorSubject<List<UserRoom>> userRoomList =
+      BehaviorSubject<List<UserRoom>>.seeded([]);
 
   BehaviorSubject<List<String>> allRoomsList =
       BehaviorSubject<List<String>>.seeded([]);
@@ -34,11 +34,31 @@ class ChatManagerService {
     authService.userSubject.stream.listen((user) {
       activeUser = {'id': user!.uid, 'name': user.displayName} as UserModel;
     });
+    allRoomsList.stream.listen((rooms) {
+      unJoinedRooms.add(rooms
+          .where((element) =>
+              !userRoomList.value.map((e) => e.room).toList().contains(element))
+          .toList());
+    });
   }
 
   void selectRoom(String room) {
     activeRoom.add(room);
     fetchMessages();
+    //read messages
+    socket.send(SocketEvent.ReadMessages, {
+      'roomName': room,
+      'userName': activeUser.name,
+    });
+
+    List<UserRoom> newRooms = userRoomList.value;
+
+    int index = newRooms.indexWhere((element) => element.room == room);
+
+    if (index != -1) {
+      newRooms[index].read = true;
+      userRoomList.add(newRooms);
+    }
   }
 
   void sendMessage(String message) {
@@ -60,7 +80,27 @@ class ChatManagerService {
       print(ChatMessage.fromJson(data));
       final message = ChatMessage.fromJson(data);
       if (message.room == activeRoom.value) {
+        // AND CHAT DISPLAY IS ACTIVE
         addMessage(message);
+        socket.send(SocketEvent.ReadMessages, {
+          'roomName': message.room,
+          'userName': activeUser.name,
+        });
+      } else {
+        List<UserRoom> newUserRooms = userRoomList.value;
+
+        int index =
+            newUserRooms.indexWhere((element) => element.room == message.room);
+        if (index != -1) {
+          newUserRooms[index].read = false;
+
+          userRoomList.add(newUserRooms);
+
+          socket.send(SocketEvent.UnreadMessage, {
+            'roomName': message.room,
+            'userName': activeUser.name,
+          });
+        }
       }
     });
 
@@ -69,12 +109,15 @@ class ChatManagerService {
       allRoomsList.add(rooms);
     });
     socket.on(SocketEvent.updateUserRooms, (dynamic data) {
-      final rooms = List<String>.from(data);
+      List<UserRoom> rooms = [];
+      data.forEach((element) {
+        rooms.add(UserRoom.fromJson(element as Map<String, dynamic>));
+      });
       userRoomList.add(rooms);
     });
     socket.on(SocketEvent.roomCreated, (dynamic data) {
       final rooms = data as Map<String, dynamic>;
-      userRoomList.add(List<String>.from(rooms['user']));
+      userRoomList.add(List<UserRoom>.from(rooms['user']));
       allRoomsList.add(List<String>.from(rooms['all']));
     });
     socket.on(SocketEvent.roomDeleted, (dynamic data) {

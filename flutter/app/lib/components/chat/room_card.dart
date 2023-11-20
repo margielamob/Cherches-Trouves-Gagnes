@@ -1,9 +1,10 @@
+import 'package:app/domain/models/chat_model.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RoomCardWidget extends StatefulWidget {
-  final String room;
+  final UserRoom room;
 
   RoomCardWidget({required this.room}) {}
 
@@ -31,11 +32,11 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
     return Padding(
       padding: const EdgeInsets.all(15),
       child: GestureDetector(
-        onTap: () => selectRoom(widget.room),
+        onTap: () => selectRoom(widget.room.room),
         child: Container(
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color: chatManager.activeRoom.value == widget.room
+            color: chatManager.activeRoom.value == widget.room.room
                 ? Colors.blue[100]
                 : Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -43,12 +44,13 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
           ),
           child: Row(
             children: [
+              widget.room.read ? Spacer() : Icon(Icons.circle),
               Text(
-                widget.room,
+                widget.room.room,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Spacer(),
-              if (widget.room != 'all' && !widget.room.startsWith('Game'))
+              if (widget.room != 'all' && !widget.room.room.startsWith('Game'))
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'leave') {
@@ -88,10 +90,10 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
   }
 
   void leaveRoom() {
-    chatManager.leaveRoom(widget.room);
+    chatManager.leaveRoom(widget.room.room);
   }
 
   void deleteRoom() {
-    chatManager.deleteRoom(widget.room);
+    chatManager.deleteRoom(widget.room.room);
   }
 }

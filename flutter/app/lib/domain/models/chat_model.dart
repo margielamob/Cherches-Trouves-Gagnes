@@ -27,25 +27,25 @@ class ChatMessage {
 }
 
 class UserRoom {
-  String name;
-  bool newMessage;
+  String room;
+  bool read = false;
 
   UserRoom({
-    required this.name,
-    required this.newMessage,
+    required this.room,
+    required this.read,
   });
 
   factory UserRoom.fromJson(Map<String, dynamic> json) {
     return UserRoom(
-      name: json['name'] as String,
-      newMessage: json['newMessage'] as bool,
+      room: json['room'] as String,
+      read: json['read'] as bool,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'newMessage': newMessage,
+      'room': room,
+      'read': read,
     };
   }
 }

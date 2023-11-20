@@ -64,4 +64,6 @@ export enum SocketEvent {
     DifferenceFoundReplay = 'DifferenceFoundReplay',
     LeavingArena = 'LeavingArena',
     Timer = 'Timer',
+    ReadMessages = 'ReadMessages',
+    UnreadMessage = 'UnreadMessage',
 }

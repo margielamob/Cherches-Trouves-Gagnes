@@ -7,6 +7,12 @@ export interface ChatMessage {
 export interface ChatRoom {
     info: ChatRoomInfo;
     messages: ChatMessage[];
+    users: string[];
+}
+
+export interface UserRoom {
+    room: string;
+    read: boolean;
 }
 
 export interface ChatRoomInfo {

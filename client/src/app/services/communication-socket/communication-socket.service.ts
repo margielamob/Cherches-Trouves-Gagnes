@@ -39,6 +39,7 @@ export class CommunicationSocketService {
     }
 
     send<T>(event: SocketEvent, data?: T) {
+        console.log('sending event ' + event);
         if (!data) {
             this.socket.emit(event);
             return;

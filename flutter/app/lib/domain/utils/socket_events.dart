@@ -53,4 +53,8 @@ class SocketEvent {
   static String leaveRoom = "LeaveRoom";
 
   static String deleteRoom = "DeleteRoom";
+
+  static String ReadMessages = "ReadMessages";
+
+  static String UnreadMessage = "UnreadMessage";
 }

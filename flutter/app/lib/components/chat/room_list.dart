@@ -1,4 +1,5 @@
 import 'package:app/components/chat/room_card.dart';
+import 'package:app/domain/models/chat_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class RoomList extends StatefulWidget {
 class _RoomListState extends State<RoomList> {
   ChatManagerService chatManager = Get.find();
   ChatDisplayService chatDisplayService = Get.find();
-  List<String> rooms = []; // Replace with your data
+  List<UserRoom> rooms = []; // Replace with your data
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _RoomListState extends State<RoomList> {
       clipBehavior: Clip.antiAlias,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Chat'),
           actions: [
             IconButton(
@@ -62,9 +64,5 @@ class _RoomListState extends State<RoomList> {
 
   void goToSearch() {
     chatDisplayService.selectSearch();
-  }
-
-  void selectRoom(String room) {
-    chatManager.selectRoom(room);
   }
 }

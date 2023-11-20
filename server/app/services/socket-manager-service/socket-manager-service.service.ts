@@ -55,9 +55,9 @@ export class SocketManagerService {
                 console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
 
-            socket.on(SocketEvent.Message, (message: string, roomId: string) => {
-                socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
-            });
+            // socket.on(SocketEvent.Message, (message: string, roomId: string) => {
+            //     socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
+            // });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
                 const result = { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) };

@@ -27,7 +27,7 @@ class RoomAdd extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: RoomCreate()),
+            RoomCreate(),
             Expanded(child: RoomSearch()),
           ],
         ),

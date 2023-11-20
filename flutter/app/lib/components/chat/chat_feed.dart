@@ -19,6 +19,7 @@ class _ChatFeedState extends State<ChatFeed> {
   final ChatManagerService chatManager = Get.find();
 
   List<ChatMessage> messages = [];
+  String activeRoom = '';
 
   FocusNode _textFocusNode = FocusNode();
   TextEditingController _textController = TextEditingController();
@@ -33,6 +34,11 @@ class _ChatFeedState extends State<ChatFeed> {
     chatManager.messages.stream.listen((message) {
       setState(() {
         messages = message;
+      });
+    });
+    chatManager.activeRoom.listen((value) {
+      setState(() {
+        activeRoom = value;
       });
     });
     // chatManager.fetchMessages();
@@ -88,73 +94,79 @@ class _ChatFeedState extends State<ChatFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Stack(
-                children: [
-                  ListView.builder(
-                    controller: _scrollController,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return messages
-                          .map((e) => ChatMessageWidget(
-                              username: e.user,
-                              isFromUser: chatManager.isOwnMessage(e),
-                              text: e.message))
-                          .toList()[index];
-                    },
-                  ),
-                ],
-              ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: null,
+          title: Text(activeRoom),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10),
             ),
           ),
-          SizedBox(height: 16.0),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  focusNode: _textFocusNode,
-                  controller: _textController,
-                  onSubmitted: (message) {
-                    sendMessage(message);
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    labelText: 'Enter your message',
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              GestureDetector(
-                onTap: () {
-                  sendMessage(_textController.text);
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  return messages
+                      .map((e) => ChatMessageWidget(
+                          username: e.user,
+                          isFromUser: chatManager.isOwnMessage(e),
+                          text: e.message))
+                      .toList()[index];
                 },
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.send,
-                    color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    focusNode: _textFocusNode,
+                    controller: _textController,
+                    onSubmitted: (message) {
+                      sendMessage(message);
+                    },
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      labelText: 'Enter your message',
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                SizedBox(width: 16),
+                GestureDetector(
+                  onTap: () {
+                    sendMessage(_textController.text);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
