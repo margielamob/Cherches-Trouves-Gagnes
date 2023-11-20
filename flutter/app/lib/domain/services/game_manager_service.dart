@@ -11,6 +11,7 @@ import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
+import 'package:app/domain/models/requests/play_limited_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/start_clock_request.dart';
 import 'package:app/domain/models/requests/timer_request.dart';
@@ -61,8 +62,13 @@ class GameManagerService extends ChangeNotifier {
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
-      currentRoomId = message;
-      Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
+      if (gameMode!.value == "Classique") {
+        currentRoomId = message;
+        Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
+      } else if (gameMode!.value == "Temps Limité") {
+        PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
+        Get.offAll(Classic(gameId: data.gameId, gameCard: data.gameCard));
+      }
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
