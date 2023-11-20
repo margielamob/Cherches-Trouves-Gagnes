@@ -1,7 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl } from '@angular/forms';
 import { UserData } from '@app/interfaces/user';
+import { FriendRequestService } from '@app/services/friend-request-service/friend-request.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 
 @Component({
@@ -9,15 +11,16 @@ import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap, tak
     templateUrl: './search-bat.component.html',
     styleUrls: ['./search-bat.component.scss'],
 })
-export class SearchBatComponent implements OnDestroy {
-    friendRequestStatus: { [userId: string]: 'pending' | 'sent' | 'none' } = {};
+export class SearchBatComponent {
+    friendRequestStatus: { [userId: string]: 'pending' | 'sent' | 'none' | 'cancelled' } = {};
     searchControl = new FormControl();
     users$: Observable<UserData[]>;
+    currentUserId: string;
     private unsubscribe$ = new Subject();
-    // curruntUserId : string
 
-    constructor(private firestore: AngularFirestore) {
+    constructor(private firestore: AngularFirestore, private userService: UserService, private friendRequestService: FriendRequestService) {
         this.users$ = this.searchControl.valueChanges.pipe(
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             debounceTime(500),
             distinctUntilChanged(), // Seulement si la valeur a changé
             switchMap((searchTerm) =>
@@ -29,21 +32,35 @@ export class SearchBatComponent implements OnDestroy {
             ),
             takeUntil(this.unsubscribe$), // Nettoyage à la destruction du composant
         );
+
+        this.userService.getCurrentUser().subscribe((user) => {
+            if (user) this.currentUserId = user.uid;
+        });
     }
 
-    // sendFriendRequest(userTo: UserDate) {
-    //     // ...
-    //     this.friendRequestService.sendFriendRequest(this.currentUserId, userTo.uid).subscribe({
-    //         next: () => {
-    //             console.log('Demande d’ami envoyée');
-    //             this.friendRequestStatus[userTo.uid] = 'sent'; // Mettre à jour l'état
-    //         },
-    //         error: (error) => console.error('Erreur en envoyant la demande d’ami:', error),
-    //     });
-    // }
+    sendFriendRequest(userTo: UserData) {
+        this.friendRequestService.sendFriendRequest(this.currentUserId, userTo.uid).subscribe({
+            next: () => {
+                this.friendRequestStatus[userTo.uid] = 'sent';
+                console.log('Demande d’ami envoyée');
+            },
+            error: (error) => {
+                console.error('Erreur en envoyant la demande d’ami:', error);
+                // Gestion des erreurs, éventuellement réinitialiser le statut
+            },
+        });
+    }
 
-    ngOnDestroy() {
-        this.unsubscribe$.next('');
-        this.unsubscribe$.complete();
+    cancelFriendRequest(userTo: UserData) {
+        this.friendRequestService.cancelFriendRequest(this.currentUserId, userTo.uid).subscribe({
+            next: () => {
+                this.friendRequestStatus[userTo.uid] = 'none';
+                console.log('Demande d’ami annulée');
+            },
+            error: (error) => {
+                console.error('Erreur lors de l’annulation de la demande d’ami:', error);
+                // Gestion des erreurs
+            },
+        });
     }
 }

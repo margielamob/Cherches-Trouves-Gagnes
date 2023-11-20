@@ -7,6 +7,15 @@
     <div class="user-item" *ngFor="let user of users">
         <img [src]="user.photoURL" alt="Avatar" style="width: 50px; height: 50px" />
         {{ user.displayName }}
-        <button mat-raised-button color="primary" (click)="sendFriendRequest(user)">Demande d'ami</button>
+
+        <div class="button-row" *ngFor="let user of users">
+            <button *ngIf="friendRequestStatus[user.uid] !== 'sent'" mat-raised-button color="primary" (click)="sendFriendRequest(user)">
+                Ajouter Ami
+            </button>
+            <span *ngIf="friendRequestStatus[user.uid] === 'sent'">En attente</span>
+            <button *ngIf="friendRequestStatus[user.uid] === 'sent'" mat-raised-button color="warn" (click)="cancelFriendRequest(user)">
+                Annuler
+            </button>
+        </div>
     </div>
 </div>
