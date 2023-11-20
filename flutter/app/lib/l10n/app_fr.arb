@@ -1,0 +1,15 @@
+{
+    "mainPageTitle": "Jeux des differences",
+    "mainPageClassic": "Mode de jeu classique",
+    "mainPageMenu": " Menu principal",
+    "mainPageLimited": "Mode de jeu limite",
+    "mainPageAdmin": "Administration",
+    "mainPageSettings": "Parametres",
+    "settingsPageTitle": "Parametres du compte",
+    "settingsPageName": "Changer le nom",
+    "settingsAvatar": "Changer l'avatar",
+    "settingsPageTheme": "Theme",
+    "settingsPageLanguage": "Langue",
+    "settingsPageChangeTheme": "Changer le theme",
+    "settingsPageChangeLanguage": "Changer la langue"
+}

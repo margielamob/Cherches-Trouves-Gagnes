@@ -52,10 +52,9 @@ class VideoPlayer extends StatelessWidget {
                   ToggleButtons(
                     isSelected: gameReplayService.replayBar.selectedSpeed,
                     children: [
-                      Text("x0.5"),
                       Text("x1"),
                       Text("x2"),
-                      Text("x3")
+                      Text("x4"),
                     ],
                     onPressed: (int index) {
                       gameReplayService.updateSelectedSpeed(index);

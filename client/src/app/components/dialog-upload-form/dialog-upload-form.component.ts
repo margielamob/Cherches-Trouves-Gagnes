@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BMP_HEADER_OFFSET, FORMAT_IMAGE, IMAGE_TYPE, SIZE } from '@app/constants/canvas';
+import { IMAGE_BMP, IMAGE_JPG, IMAGE_PNG, SIZE } from '@app/constants/canvas';
 import { CanvasType } from '@app/enums/canvas-type';
 import { ImageCorrect } from '@app/interfaces/image-correct';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
@@ -12,33 +12,28 @@ import { Subject } from 'rxjs';
     styleUrls: ['./dialog-upload-form.component.scss'],
 })
 export class DialogUploadFormComponent {
-    isPropertiesImageCorrect: ImageCorrect = { size: true, type: true, format: true };
+    isPropertiesImageCorrect: ImageCorrect = { size: true, type: true };
     isFormSubmitted: boolean = false;
+    allowedFormats = [IMAGE_JPG, IMAGE_BMP, IMAGE_PNG];
+
     private img: ImageBitmap;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: { canvas: CanvasType }, private toolService: ToolBoxService) {}
 
     async uploadImage(event: Event) {
         const files: FileList = (event.target as HTMLInputElement).files as FileList;
-        this.isFormSubmitted = await this.isImageCorrect(files[0]);
+        const file = files[0];
+
+        this.isFormSubmitted = await this.isImageCorrect(file);
         if (files === null || !this.isFormSubmitted) {
             return;
         }
 
-        this.img = await this.createImage(files[0]);
-    }
-
-    isImageFormatCorrect(bmpFormat: number) {
-        return (this.isPropertiesImageCorrect.format = bmpFormat === FORMAT_IMAGE);
+        this.img = await this.createImage(file);
     }
 
     async isImageCorrect(file: File): Promise<boolean> {
-        const bmpHeader = new DataView(await file.arrayBuffer());
-        return (
-            (await this.isSizeCorrect(file)) &&
-            this.isImageTypeCorrect(file) &&
-            this.isImageFormatCorrect(bmpHeader.getUint16(BMP_HEADER_OFFSET, true))
-        );
+        return (await this.isSizeCorrect(file)) && this.isImageTypeCorrect(file);
     }
 
     async createImage(file: File): Promise<ImageBitmap> {
@@ -46,11 +41,13 @@ export class DialogUploadFormComponent {
     }
 
     isImageTypeCorrect(file: File): boolean {
-        return (this.isPropertiesImageCorrect.type = file.type === IMAGE_TYPE);
+        this.isPropertiesImageCorrect.type = this.isFileSupported(file);
+        return this.isPropertiesImageCorrect.type;
     }
 
     async isSizeCorrect(file: File): Promise<boolean> {
         const img = await this.createImage(file);
+
         return (this.isPropertiesImageCorrect.size = img.width === SIZE.x && img.height === SIZE.y);
     }
 
@@ -65,5 +62,9 @@ export class DialogUploadFormComponent {
             return;
         }
         (this.toolService.$uploadImage.get(this.data.canvas) as Subject<ImageBitmap>).next(this.img);
+    }
+
+    isFileSupported(file: File) {
+        return this.allowedFormats.includes(file.type);
     }
 }

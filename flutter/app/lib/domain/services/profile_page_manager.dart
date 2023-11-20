@@ -38,11 +38,20 @@ class ProfilePageManager extends ChangeNotifier {
   Future<void> initUserThemeAndLang() async {
     String userId = await authService.getCurrentUserId();
     String themeValue = await userService.getUserTheme(userId);
+    String langValue = await userService.getUserLang(userId);
+    String language = langValue == 'Fr' ? 'Français' : 'English';
+    setLang(language);
     setTheme(themeValue);
   }
 
   Future<ThemeData> loadTheme(String userId) async {
     String theme = await userService.getUserTheme(userId);
     return getThemeFromValue(theme);
+  }
+
+  setLang(String language) {
+    String languageCode = language == 'English' ? 'en' : 'fr';
+    Locale newLocale = Locale(languageCode, '');
+    Get.updateLocale(newLocale);
   }
 }

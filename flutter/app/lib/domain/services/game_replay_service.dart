@@ -144,7 +144,7 @@ class GameReplayService extends ChangeNotifier {
   void updateSelectedSpeed(int index) {
     if (replayBar.selectedSpeed[index]) return;
     _resetForReplay();
-    replayBar.selectedSpeed = [false, false, false, false];
+    replayBar.selectedSpeed = [false, false, false];
     replayBar.selectedSpeed[index] = true;
     notifyListeners();
   }
