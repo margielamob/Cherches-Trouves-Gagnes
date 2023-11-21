@@ -44,10 +44,6 @@ export class FriendRequestService {
             );
     }
 
-    getReceivedFriendRequests(userId: string) {
-        return this.firestore.collection('friendRequests', (ref) => ref.where('to', '==', userId)).valueChanges({ idField: 'docId' });
-    }
-
     getUserData(userId: string): Observable<UserData | undefined> {
         return this.firestore.collection('users').doc<UserData>(userId).valueChanges();
     }
@@ -65,5 +61,24 @@ export class FriendRequestService {
                     }),
                 ),
             );
+    }
+
+    listenForReceivedFriendRequests(userId: string): Observable<FriendRequest[]> {
+        return this.firestore
+            .collection<FriendRequest>('friendRequests', (ref) => ref.where('to', '==', userId).where('status', '==', 'pending'))
+            .snapshotChanges()
+            .pipe(
+                map((changes) =>
+                    changes.map((change) => {
+                        const data = change.payload.doc.data() as FriendRequest;
+                        const docId = change.payload.doc.id;
+                        return { ...data, docId };
+                    }),
+                ),
+            );
+    }
+
+    getUsersDetailsByIds(userIds: string[]): Observable<UserData[]> {
+        return this.firestore.collection<UserData>('users', (ref) => ref.where('uid', 'in', userIds)).valueChanges();
     }
 }

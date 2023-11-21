@@ -5,7 +5,7 @@ import { FriendRequest } from '@app/interfaces/friend-request';
 import { UserData } from '@app/interfaces/user';
 import { FriendRequestService } from '@app/services/friend-request-service/friend-request.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap, take, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-search-bat',
@@ -34,9 +34,12 @@ export class SearchBatComponent implements OnInit {
             takeUntil(this.unsubscribe$),
         );
 
-        this.userService.getCurrentUser().subscribe((user) => {
-            if (user) this.currentUserId = user.uid;
-        });
+        this.userService
+            .getCurrentUser()
+            .pipe(take(1))
+            .subscribe((user) => {
+                if (user) this.currentUserId = user.uid;
+            });
     }
 
     ngOnInit() {

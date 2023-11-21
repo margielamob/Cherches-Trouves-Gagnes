@@ -1,13 +1,23 @@
-<!-- friend-requests.component.html -->
-<div *ngIf="receivedRequests$ | async as requests" class="friend-requests-container">
-    <mat-card *ngFor="let request of requests" class="friend-request-card">
-        <mat-card-header>
-            <img mat-card-avatar [src]="request.userData.avatar" alt="Avatar de l'utilisateur" />
-            <mat-card-title>{{ request.userData.displayName }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-actions>
-            <button mat-button color="primary">Accepter</button>
-            <button mat-button color="warn">Rejeter</button>
-        </mat-card-actions>
+<div class="friend-requests-container">
+    <h2>Demandes d'amis</h2>
+    <mat-card *ngIf="receivedFriendRequests$ | async as requests; else noRequests" class="requests-list">
+        <mat-card-content *ngFor="let request of requests" class="request-item">
+            <ng-container *ngIf="request.from && userDetailsMap[request.from]">
+                <div class="user-details">
+                    <img mat-card-avatar [src]="userDetailsMap[request.from].photoURL || 'path/to/default/photo.png'" alt="User Photo" />
+                    <span class="user-name">{{ userDetailsMap[request.from].displayName || 'Unknown User' }}</span>
+                </div>
+                <div class="actions">
+                    <button mat-raised-button color="primary" (click)="acceptRequest(request)">Accepter</button>
+                    <button mat-raised-button color="warn" (click)="declineRequest(request)">Refuser</button>
+                </div>
+            </ng-container>
+        </mat-card-content>
     </mat-card>
+
+    <ng-template #noRequests>
+        <mat-card>
+            <mat-card-content> Aucune demande d'amis. </mat-card-content>
+        </mat-card>
+    </ng-template>
 </div>
