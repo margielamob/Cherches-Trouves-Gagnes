@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{ 'CROP_DIALOG.TILE' | translate }}</h1>
+<div matDialogContent>
+    <image-cropper
+        [imageFile]="data.image"
+        (imageCropped)="submitCrop($event)"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="data.width / data.height"
+        [cropperMinHeight]="data.height"
+        [cropperMinWidth]="data.width"
+        [cropperMaxHeight]="data.height"
+        [cropperMaxWidth]="data.width"
+    ></image-cropper>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button [matDialogClose]="undefined">{{ 'CROP_DIALOG.CANCEL' | translate }}</button>
+    <button mat-raised-button color="primary" [matDialogClose]="this.file">{{ 'CROP_DIALOG.DONE' | translate }}</button>
+</div>
