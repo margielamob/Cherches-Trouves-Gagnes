@@ -1,0 +1,13 @@
+<!-- friend-requests.component.html -->
+<div *ngIf="receivedRequests$ | async as requests" class="friend-requests-container">
+    <mat-card *ngFor="let request of requests" class="friend-request-card">
+        <mat-card-header>
+            <img mat-card-avatar [src]="request.userData.avatar" alt="Avatar de l'utilisateur" />
+            <mat-card-title>{{ request.userData.displayName }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+            <button mat-button color="primary">Accepter</button>
+            <button mat-button color="warn">Rejeter</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

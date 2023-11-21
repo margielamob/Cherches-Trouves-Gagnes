@@ -33,7 +33,7 @@ const routes: Routes = [
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent },
     { path: 'social', component: SearchBatComponent },
-
+    // { path: 'friends-req', component: FriendRequestsComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', redirectTo: '/home' },
 ];

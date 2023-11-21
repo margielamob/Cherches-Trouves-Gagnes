@@ -1,21 +1,16 @@
-<!-- search.component.html -->
 <div class="search-container">
     <input type="text" [formControl]="searchControl" placeholder="Rechercher des utilisateurs..." class="search-input" />
 </div>
 
-<div class="search-results" *ngIf="users$ | async as users">
+<div class="search-results" *ngIf="searchControl.value && (users$ | async) as users">
     <div class="user-item" *ngFor="let user of users">
         <img [src]="user.photoURL" alt="Avatar" style="width: 50px; height: 50px" />
         {{ user.displayName }}
 
-        <div class="button-row" *ngFor="let user of users">
-            <button *ngIf="friendRequestStatus[user.uid] !== 'sent'" mat-raised-button color="primary" (click)="sendFriendRequest(user)">
-                Ajouter Ami
-            </button>
-            <span *ngIf="friendRequestStatus[user.uid] === 'sent'">En attente</span>
-            <button *ngIf="friendRequestStatus[user.uid] === 'sent'" mat-raised-button color="warn" (click)="cancelFriendRequest(user)">
-                Annuler
-            </button>
+        <div class="button-row">
+            <button *ngIf="!friendRequestStatus[user.uid]" (click)="sendFriendRequest(user)">Ajouter en ami</button>
+            <span *ngIf="friendRequestStatus[user.uid]?.status === 'pending'">Demande envoyée</span>
+            <button *ngIf="friendRequestStatus[user.uid]?.status === 'pending'" (click)="cancelFriendRequest(user)">Supprimer la demande</button>
         </div>
     </div>
 </div>
