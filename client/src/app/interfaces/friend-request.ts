@@ -2,6 +2,6 @@ export interface FriendRequest {
     from?: string;
     to?: string;
     uniqueKey?: string;
-    status: 'pending' | 'sent' | 'none' | 'cancelled';
+    status: 'pending' | 'accepted' | 'none' | 'cancelled';
     docId?: string;
 }

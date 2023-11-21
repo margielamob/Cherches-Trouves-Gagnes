@@ -47,6 +47,7 @@ export class SearchBatComponent implements OnInit {
             if (user) {
                 this.currentUserId = user.uid;
                 this.listenForFriendRequestUpdates();
+                this.listenForSentFriendRequestUpdates();
             }
         });
     }

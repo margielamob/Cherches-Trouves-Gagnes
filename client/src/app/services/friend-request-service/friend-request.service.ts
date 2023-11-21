@@ -50,7 +50,7 @@ export class FriendRequestService {
 
     getSentFriendRequestUpdates(userId: string): Observable<FriendRequest[]> {
         return this.firestore
-            .collection<FriendRequest>('friendRequests', (ref) => ref.where('from', '==', userId).where('status', '==', 'pending'))
+            .collection<FriendRequest>('friendRequests', (ref) => ref.where('from', '==', userId))
             .snapshotChanges()
             .pipe(
                 map((actions) =>
@@ -65,7 +65,7 @@ export class FriendRequestService {
 
     listenForReceivedFriendRequests(userId: string): Observable<FriendRequest[]> {
         return this.firestore
-            .collection<FriendRequest>('friendRequests', (ref) => ref.where('to', '==', userId).where('status', '==', 'pending'))
+            .collection<FriendRequest>('friendRequests', (ref) => ref.where('to', '==', userId))
             .snapshotChanges()
             .pipe(
                 map((changes) =>
@@ -80,5 +80,42 @@ export class FriendRequestService {
 
     getUsersDetailsByIds(userIds: string[]): Observable<UserData[]> {
         return this.firestore.collection<UserData>('users', (ref) => ref.where('uid', 'in', userIds)).valueChanges();
+    }
+
+    updateFriendRequestStatus(requesterUid: string, currentUserUid: string, status: string): Observable<void> {
+        return this.firestore
+            .collection('friendRequests', (ref) => ref.where('from', '==', requesterUid).where('to', '==', currentUserUid))
+            .get()
+            .pipe(
+                switchMap((querySnapshot) => {
+                    const batch = this.firestore.firestore.batch();
+                    querySnapshot.forEach((doc) => {
+                        batch.update(doc.ref, { status });
+                    });
+                    return from(batch.commit());
+                }),
+            );
+    }
+
+    addToFriendsList(currentUserUid: string, requesterUid: string): Observable<void> {
+        // Obtenir le document de l'utilisateur
+        return this.firestore
+            .doc<UserData>(`users/${currentUserUid}`)
+            .valueChanges()
+            .pipe(
+                take(1),
+                map((user) => {
+                    // Ajoutez l'UID si ce n'est pas déjà dans le tableau
+                    const updatedFriendsList = user?.friends ? [...user.friends] : [];
+                    if (!updatedFriendsList.includes(requesterUid)) {
+                        updatedFriendsList.push(requesterUid);
+                    }
+                    return updatedFriendsList;
+                }),
+                switchMap((updatedFriendsList) => {
+                    // Mettre à jour le document avec la nouvelle liste d'amis
+                    return from(this.firestore.doc(`users/${currentUserUid}`).update({ friends: updatedFriendsList }));
+                }),
+            );
     }
 }

@@ -11,6 +11,7 @@
             <button *ngIf="!friendRequestStatus[user.uid]" (click)="sendFriendRequest(user)">Ajouter en ami</button>
             <span *ngIf="friendRequestStatus[user.uid]?.status === 'pending'">Demande envoyée</span>
             <button *ngIf="friendRequestStatus[user.uid]?.status === 'pending'" (click)="cancelFriendRequest(user)">Supprimer la demande</button>
+            <span *ngIf="friendRequestStatus[user.uid]?.status === 'accepted'">Ami(e)</span>
         </div>
     </div>
 </div>
