@@ -13,6 +13,7 @@ import { Command } from '@app/interfaces/command';
 import { DrawingBoardState } from '@app/interfaces/drawing-board-state';
 import { DrawingCommand } from '@app/interfaces/drawing-command';
 import { Line } from '@app/interfaces/line';
+import { Rectangle } from '@app/interfaces/rectangle';
 import { StrokeStyle } from '@app/interfaces/stroke-style';
 import { Vec2 } from '@app/interfaces/vec2';
 import { CanvasStateService } from '@app/services/canvas-state/canvas-state.service';
@@ -84,11 +85,9 @@ export class DrawService {
         this.currentWidth = width;
         this.currentHeight = height;
 
-        cancelAnimationFrame(this.animatedFrameID);
-        this.animatedFrameID = requestAnimationFrame(() => {
-            this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, focusedCanvas);
-        });
-        this.updateImages();
+        this.updateCurrentRectangleCommand({ width, height });
+
+        this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, focusedCanvas);
     }
 
     saveRectangle(focusedCanvas: ElementRef<HTMLCanvasElement>) {
@@ -126,10 +125,9 @@ export class DrawService {
 
     stopDrawingRectangle() {
         this.updateImages();
-        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef;
+        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef;
         this.saveRectangle(focusedCanvas);
         this.isDrawingRectangle = false;
-        // Optionally, you can reset the width and height after releasing the mouse button.
         this.currentWidth = 0;
         this.currentHeight = 0;
     }
@@ -346,6 +344,10 @@ export class DrawService {
             width: this.pencil.width,
             destination: this.pencil.state === Tool.Pencil ? 'source-over' : 'destination-out',
         };
+    }
+
+    private updateCurrentRectangleCommand(rectangle: Rectangle) {
+        this.currentCommand.rectangle = rectangle;
     }
 
     private updateMouseCoordinates(event: MouseEvent): Line {
