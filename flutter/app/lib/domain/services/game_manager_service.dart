@@ -25,6 +25,7 @@ import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/domain/utils/vec2.dart';
 import 'package:app/pages/classic_game_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/waiting_page.dart';
@@ -38,6 +39,7 @@ class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
   final PersonalUserService _userService = Get.find();
+
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
@@ -51,6 +53,8 @@ class GameManagerService extends ChangeNotifier {
   int startingTimer = 0;
   int creatorStartingTimer = 0;
   GameModeModel? gameMode;
+  List<Vec2> limitedCoords = [];
+  VoidCallback? onGameCardsChanged;
 
   GameManagerService() {
     handleSockets();
@@ -65,13 +69,12 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.play, (dynamic message) {
       if (gameMode!.value == "Classique") {
         currentRoomId = message;
-        Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
+        Get.offAll(Classic(gameId: currentRoomId!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
-        Get.offAll(Classic(
-            gameId: data.gameId,
-            gameCard: data.gameCard,
-            limitedCoords: data.data.coords));
+        gameCards = data.gameCard;
+        limitedCoords = data.data.coords;
+        Get.offAll(Classic(gameId: data.gameId));
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
@@ -112,8 +115,14 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.newGameBoard, (dynamic message) {
       NewGameRequest request = NewGameRequest.fromJson(message);
       gameCards = request.gameInfo;
-      notifyListeners();
+      limitedCoords = request.coords;
+      gameCardsUpdated(gameCards);
     });
+  }
+
+  void gameCardsUpdated(GameCardModel? value) {
+    onGameCardsChanged?.call();
+    notifyListeners();
   }
 
   void joinGame(String roomId) {

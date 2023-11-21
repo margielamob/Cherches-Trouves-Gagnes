@@ -10,9 +10,17 @@ class NewGameRequest {
   factory NewGameRequest.fromJson(Map<String, dynamic> json) {
     GameCardModel gameInfo = GameCardModel.fromJson(json['gameInfo']);
     List<dynamic> coordsList = json['coords'];
-    List<Vec2> parsedCoords = coordsList
-        .map((coord) => Vec2.fromJson({'coordinate': coord}))
-        .toList();
+    List<Vec2> parsedCoords = coordsList.expand<Vec2>((coordList) {
+      return List<Vec2>.from(
+        coordList.map((coord) {
+          if (coord['x'] != null && coord['y'] != null) {
+            return Vec2.fromJson({'x': coord['x'], 'y': coord['y']});
+          } else {
+            return null;
+          }
+        }).where((vec2) => vec2 != null),
+      );
+    }).toList();
 
     return NewGameRequest(
       gameInfo: gameInfo,

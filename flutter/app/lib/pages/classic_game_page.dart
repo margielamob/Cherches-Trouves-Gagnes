@@ -5,38 +5,49 @@ import 'package:app/components/end_game_dialog.dart';
 import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
 import 'package:app/components/video_player.dart';
-import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
-import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
-import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
-import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class Classic extends StatelessWidget {
+class Classic extends StatefulWidget {
+  final String gameId;
+
+  Classic({required this.gameId});
+
+  @override
+  _ClassicState createState() => _ClassicState();
+}
+
+class _ClassicState extends State<Classic> {
   final ClassicGameService _classicGameService = Get.find();
   final DifferenceDetectionService _differenceDetectionService = Get.find();
   final GameManagerService gameManagerService = Get.find();
   final SocketService _socket = Get.find();
-  final PersonalUserService _userService = Get.find();
-  final ClockService _clockService = Get.find();
 
-  final String gameId;
-  final GameCardModel gameCard;
-  List<Vec2> limitedCoords = [];
-
-  Classic({required this.gameId, required this.gameCard, limitedCoords}) {
+  @override
+  void initState() {
+    super.initState();
+    gameManagerService.onGameCardsChanged = () {
+      if (gameManagerService.limitedCoords.isNotEmpty) {
+        _differenceDetectionService
+            .addNewCoords(gameManagerService.limitedCoords);
+      }
+      setState(() {});
+    };
+    if (gameManagerService.limitedCoords.isNotEmpty) {
+      _differenceDetectionService
+          .addNewCoords(gameManagerService.limitedCoords);
+    }
     _differenceDetectionService.handleDifferences();
-    _differenceDetectionService.addNewCoords(limitedCoords);
-    _socket.send(
-        SocketEvent.gameStarted, {gameId: gameManagerService.currentRoomId});
+    _socket.send(SocketEvent.gameStarted,
+        {widget.gameId: gameManagerService.currentRoomId});
   }
 
   @override
@@ -52,27 +63,13 @@ class Classic extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           FutureBuilder<VignettesModel>(
             future: _classicGameService.getImagesFromIds(
-                gameCard.idOriginalBmp, gameCard.idEditedBmp),
+                gameManagerService.gameCards!.idOriginalBmp,
+                gameManagerService.gameCards!.idEditedBmp),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final images = snapshot.data;
                 if (images != null) {
                   if (endGameService.isGameFinished) {
-                    /*
-                    _userService.updateUserGamePlayer(
-                        gameManagerService.currentUser!.id);
-                    if (gameManagerService.creatorStartingTimer != 0) {
-                      _userService.updateUserTotalTimePlayed(
-                          gameManagerService.currentUser!.id,
-                          (gameManagerService.creatorStartingTimer -
-                              _clockService.time!));
-                    } else {
-                      _userService.updateUserTotalTimePlayed(
-                          gameManagerService.currentUser!.id,
-                          gameManagerService.startingTimer -
-                              _clockService.time!);
-                    }
-                    */
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
@@ -96,9 +93,9 @@ class Classic extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GameVignetteModified(images, gameId),
+                          GameVignetteModified(images, widget.gameId),
                           SizedBox(width: 50),
-                          GameVignetteOriginal(images, gameId),
+                          GameVignetteOriginal(images, widget.gameId),
                         ],
                       ),
                       SizedBox(height: 5),
