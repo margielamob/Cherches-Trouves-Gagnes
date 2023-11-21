@@ -6,8 +6,8 @@ class Vec2 {
 
   factory Vec2.fromJson(Map<String, dynamic> json) {
     return Vec2(
-      x: json['x'] ?? 0,
-      y: json['y'] ?? 0,
+      x: json['x'],
+      y: json['y'],
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:app/domain/utils/vec2.dart';
 
 class LimitedDataModel {
-  final List<Vec2> coords;
+  final List<List<Vec2>> coords;
   final int nbDifferencesLeft;
 
   const LimitedDataModel({
@@ -18,9 +18,12 @@ class LimitedDataModel {
 
   factory LimitedDataModel.fromJson(Map<String, dynamic> json) {
     List<dynamic> coordsList = json['coords'];
-    List<Vec2> parsedCoords = coordsList
-        .map((coord) => Vec2.fromJson({'coordinate': coord}))
-        .toList();
+    List<List<Vec2>> parsedCoords = coordsList.map<List<Vec2>>((coordList) {
+      return List<Vec2>.from(
+        coordList
+            .map((coord) => Vec2.fromJson({'x': coord['x'], 'y': coord['y']})),
+      );
+    }).toList();
 
     return LimitedDataModel(
       coords: parsedCoords,

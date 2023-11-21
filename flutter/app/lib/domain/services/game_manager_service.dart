@@ -21,7 +21,6 @@ import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
@@ -69,10 +68,7 @@ class GameManagerService extends ChangeNotifier {
         Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
-        Get.offAll(Classic(
-            gameId: data.gameId,
-            gameCard: data.gameCard,
-            startDifference: data.data.coords));
+        Get.offAll(Classic(gameId: data.gameId, gameCard: data.gameCard));
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {

@@ -123,4 +123,9 @@ class DifferenceDetectionService extends ChangeNotifier {
     }
     canvas.clipPath(path);
   }
+
+  void addNewCoords(List<Vec2> coords) {
+    coordinates.addAll(coords);
+    notifyListeners();
+  }
 }

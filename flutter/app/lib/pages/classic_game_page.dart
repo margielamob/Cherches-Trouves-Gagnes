@@ -30,9 +30,8 @@ class Classic extends StatelessWidget {
   final String gameId;
   final GameCardModel gameCard;
 
-  Classic({required this.gameId, required this.gameCard, startDifference}) {
+  Classic({required this.gameId, required this.gameCard}) {
     _differenceDetectionService.handleDifferences();
-    _differenceDetectionService.coordinates = startDifference;
     _socket.send(
         SocketEvent.gameStarted, {gameId: gameManagerService.currentRoomId});
   }
