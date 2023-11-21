@@ -80,42 +80,6 @@ describe('DialogUploadFormComponent', () => {
         expect(await component.isSizeCorrect({} as File)).toBeFalse();
     });
 
-    it('should manage event to upload an image', async () => {
-        const spyImage = spyOn(component, 'isImageCorrect').and.callFake(async () => new Promise((resolve) => resolve(true)));
-        const expectedImage = {} as ImageBitmap;
-        const spyCreateImage = spyOn(component, 'createImage').and.callFake(async () => new Promise((resolve) => resolve(expectedImage)));
-        await component.uploadImage({
-            target: {
-                files: {
-                    item: () => {
-                        return {} as File;
-                    },
-                    length: 1,
-                } as FileList,
-            } as HTMLInputElement,
-        } as unknown as Event);
-        expect(spyImage).toHaveBeenCalled();
-        expect(spyCreateImage).toHaveBeenCalled();
-    });
-
-    it('should manage event to not upload an image if the image doesn t have the good requirement', async () => {
-        const spyImage = spyOn(component, 'isImageCorrect').and.callFake(async () => new Promise((resolve) => resolve(false)));
-        const expectedImage = {} as ImageBitmap;
-        const spyCreateImage = spyOn(component, 'createImage').and.callFake(async () => new Promise((resolve) => resolve(expectedImage)));
-        await component.uploadImage({
-            target: {
-                files: {
-                    item: () => {
-                        return {} as File;
-                    },
-                    length: 1,
-                } as FileList,
-            } as HTMLInputElement,
-        } as unknown as Event);
-        expect(spyImage).toHaveBeenCalled();
-        expect(spyCreateImage).not.toHaveBeenCalled();
-    });
-
     it('should not submit a form because the type is not good', async () => {
         const spyDiff = spyOn(toolBoxServiceSpyObj.$uploadImage.get(CanvasType.Left) as Subject<ImageBitmap>, 'next');
         const spySource = spyOn(toolBoxServiceSpyObj.$uploadImage.get(CanvasType.Right) as Subject<ImageBitmap>, 'next');

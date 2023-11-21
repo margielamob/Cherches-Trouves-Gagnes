@@ -2,7 +2,6 @@
 <form (ngSubmit)="onSubmit()">
     <mat-dialog-content>
         <input mat-fab type="file" color="primary" accept=".bmp, image/jpeg, image/png" (change)="this.uploadImage($event)" />
-        <mat-error *ngIf="!this.isPropertiesImageCorrect.type">{{ 'UPLOAD_DIALOG.NOT_BITMAP' | translate }}</mat-error>
         <mat-error *ngIf="!this.isPropertiesImageCorrect.size">{{ 'UPLOAD_DIALOG.SIZE' | translate }}</mat-error>
     </mat-dialog-content>
     <mat-dialog-actions align="end">

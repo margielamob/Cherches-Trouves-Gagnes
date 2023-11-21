@@ -106,11 +106,18 @@
         "SOLO": "Solo",
         "COOP": "Coop"
     },
+
+    "CROP_DIALOG": {
+        "TITLE": "Choose teh desired portion",
+        "CANCEL": "Cancel",
+        "DONE": "Done"
+    },
+
     "UPLOAD_DIALOG": {
         "TITLE": "Upload an image that should be ",
         "NOT_BITMAP": "Image should be a bitmap",
         "NOT_24BITS": "Image sould be 24 bits",
-        "SIZE": "Image size should be 640x480",
+        "SIZE": "The image selected is too small",
         "CANCEL": "Cancel",
         "UPLOAD": "Upload"
     },
