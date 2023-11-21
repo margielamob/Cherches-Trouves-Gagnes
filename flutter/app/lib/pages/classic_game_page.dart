@@ -15,6 +15,7 @@ import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -29,9 +30,11 @@ class Classic extends StatelessWidget {
 
   final String gameId;
   final GameCardModel gameCard;
+  List<Vec2> limitedCoords = [];
 
-  Classic({required this.gameId, required this.gameCard}) {
+  Classic({required this.gameId, required this.gameCard, limitedCoords}) {
     _differenceDetectionService.handleDifferences();
+    _differenceDetectionService.addNewCoords(limitedCoords);
     _socket.send(
         SocketEvent.gameStarted, {gameId: gameManagerService.currentRoomId});
   }
