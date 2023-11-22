@@ -14,6 +14,8 @@ import { SocketEvent } from '@common/socket-event';
 export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
     isGameDone = false;
+    totalBonusTime = 0;
+    endTime = 0;
     private time: number;
 
     // eslint-disable-next-line max-params
@@ -32,6 +34,13 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
             this.socketService.send(SocketEvent.StartClock, { timer: this.gameInfoService.timer, roomId: this.gameInfoService.roomId });
         }
 
+        if (this.gameInfoService.gameMode === 'Temps Limité' && this.gameInfoService.startTimer !== (0 || undefined)) {
+            this.socketService.send(SocketEvent.StartLimitedClock, {
+                timer: this.gameInfoService.startTimer,
+                roomId: this.gameInfoService.roomId,
+            });
+        }
+
         this.socketService.on(SocketEvent.Clock, (time: number) => {
             this.time = time;
             this.timerDisplay = this.timeFormatter.formatTime(time);
@@ -42,6 +51,14 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
             this.replayService.endTime = this.time;
             this.isGameDone = true;
             this.replayService.currentTime = this.time;
+        });
+
+        this.socketService.on(SocketEvent.TimerBonus, (obj: { bonus: number }) => {
+            this.totalBonusTime += obj.bonus;
+        });
+
+        this.socketService.on(SocketEvent.EndedTime, (payload: { time: number }) => {
+            this.endTime = payload.time;
         });
     }
 
@@ -67,10 +84,15 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        if (this.gameInfoService.timer !== 0) {
-            this.userService.updateTotalTimePlayed(this.gameInfoService.timer - this.time);
-        } else {
-            this.userService.updateTotalTimePlayed(this.gameInfoService.startTimer - this.time);
+        if (this.gameInfoService.getGameMode() === 'Classique') {
+            if (this.gameInfoService.timer !== 0) {
+                this.userService.updateTotalTimePlayed(this.gameInfoService.timer - this.time);
+            } else {
+                this.userService.updateTotalTimePlayed(this.gameInfoService.startTimer - this.time);
+            }
+        } else if (this.gameInfoService.getGameMode() === 'Temps Limité') {
+            const totalTimePlayed = this.gameInfoService.startTimer - this.time + this.totalBonusTime;
+            this.userService.updateTotalTimePlayed(totalTimePlayed);
         }
         this.socketService.off(SocketEvent.Clock);
     }

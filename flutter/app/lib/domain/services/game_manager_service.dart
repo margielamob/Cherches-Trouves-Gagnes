@@ -144,6 +144,8 @@ class GameManagerService extends ChangeNotifier {
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
     creatorStartingTimer = timer;
+    print("Starting timer : creatorStartingTimer");
+    print(creatorStartingTimer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,

@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 @Component({
     selector: 'app-dialog-set-up-game',
     templateUrl: './dialog-set-up-game.component.html',
@@ -11,7 +12,11 @@ export class DialogSetUpGameComponent {
     cheatMode: boolean = false;
     isLimited: boolean = false;
 
-    constructor(public dialogRef: MatDialogRef<DialogSetUpGameComponent>, @Inject(MAT_DIALOG_DATA) public data: { type: string }) {
+    constructor(
+        public dialogRef: MatDialogRef<DialogSetUpGameComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: { type: string },
+        private gameInfoService: GameInformationHandlerService,
+    ) {
         this.isLimited = data.type === 'limited';
     }
 
@@ -20,6 +25,7 @@ export class DialogSetUpGameComponent {
     }
 
     onConfirm(): void {
+        this.gameInfoService.startTimer = this.duration;
         this.dialogRef.close({
             duration: this.duration,
             cheatMode: this.cheatMode,
