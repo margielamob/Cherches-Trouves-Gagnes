@@ -99,7 +99,9 @@ class _ClassicState extends State<Classic> {
                         ],
                       ),
                       SizedBox(height: 5),
-                      VideoPlayer(),
+                      gameManagerService.gameMode!.value == "Classique"
+                          ? VideoPlayer()
+                          : SizedBox(height: 0),
                       SizedBox(height: 5),
                       CurrentPlayers(),
                       SizedBox(height: 30),
