@@ -157,10 +157,14 @@ class GameManagerService extends ChangeNotifier {
   }
 
   void createLimitedGame(int timer, int bonus, bool cheatModeActivated) {
-    CreateLimitedGameRequest data = CreateLimitedGameRequest(
-        user: currentUser!,
-        card: LimitedGameModel(id: null, timer: timer, bonus: bonus));
-    _socket.send(SocketEvent.CreateLimitedGame, data.toJson());
+    try {
+      CreateLimitedGameRequest data = CreateLimitedGameRequest(
+          user: currentUser!,
+          card: LimitedGameModel(id: null, timer: timer, bonus: bonus));
+      _socket.send(SocketEvent.CreateLimitedGame, data.toJson());
+    } catch (error) {
+      print('Error while sending CreateLimitedGame event: $error');
+    }
   }
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {

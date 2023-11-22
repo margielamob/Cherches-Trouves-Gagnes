@@ -37,7 +37,9 @@ class DifferenceDetectionService extends ChangeNotifier {
     coordinates.addAll(data.data.coordinates);
     _gameManagerService.updatePlayersNbDifference(data);
     notifyListeners();
-    startBlinking(data.data.coordinates);
+    if (_gameManagerService.gameMode!.value != "Temps Limité") {
+      startBlinking(data.data.coordinates);
+    }
   }
 
   void showDifferenceNotFound() {
