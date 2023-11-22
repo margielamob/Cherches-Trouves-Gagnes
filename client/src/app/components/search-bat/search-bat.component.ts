@@ -40,7 +40,6 @@ export class SearchBatComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log('SearchBatComponent');
         this.userService.getCurrentUser().subscribe((user) => {
             if (user) {
                 this.currentUserId = user.uid;
@@ -53,8 +52,7 @@ export class SearchBatComponent implements OnInit {
         if (!this.friendRequestStatus[userTo.uid]) {
             this.friendRequestService.sendFriendRequest(this.currentUserId, userTo.uid).subscribe({
                 next: (docId) => {
-                    // Stockez l'ID du document Firestore dans l'objet de statut
-                    this.friendRequestStatus[userTo.uid] = { status: 'pending', docId: docId as string };
+                    this.friendRequestStatus[userTo.uid] = { docId: docId as string };
                 },
                 error: (error) => {
                     delete this.friendRequestStatus[userTo.uid];
@@ -73,25 +71,6 @@ export class SearchBatComponent implements OnInit {
                 throw error;
             },
         });
-    }
-
-    listenForSentFriendRequestUpdates() {
-        this.friendRequestService
-            .getSentFriendRequestUpdates(this.currentUserId)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((requests) => {
-                requests.forEach((request) => {
-                    if (request.to) {
-                        this.friendRequestStatus[request.to] = {
-                            from: request.from,
-                            to: request.to,
-                            status: request.status,
-                            uniqueKey: request.uniqueKey,
-                            docId: request.docId,
-                        };
-                    }
-                });
-            });
     }
 
     listenForFriendRequestUpdates() {

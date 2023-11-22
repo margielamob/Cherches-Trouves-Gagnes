@@ -3,7 +3,7 @@ import { FriendRequest } from '@app/interfaces/friend-request';
 import { UserData } from '@app/interfaces/user';
 import { FriendRequestService } from '@app/services/friend-request-service/friend-request.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { Observable, Subject, map, switchMap, take, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
     selector: 'app-friend-requests',
@@ -32,7 +32,6 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
 
     initializeFriendRequests() {
         this.receivedFriendRequests$ = this.friendRequestService.listenForReceivedFriendRequests(this.curruntUserId).pipe(
-            map((requests) => requests.filter((request) => request.status === 'pending')),
             tap((requests) => {
                 const userIds = requests.map((request) => request.from).filter((id) => !!id);
                 this.updateUserDetailsMap(userIds as string[]);
@@ -65,7 +64,7 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
             return;
         }
 
-        this.friendRequestService.deleterFriendRequest(request.from as string, request.to as string).subscribe({
+        this.friendRequestService.cancelFriendRequest(request.from as string, request.to as string).subscribe({
             next: () => {
                 console.log('Demande d’ami supprimée avec succès.');
             },
@@ -84,7 +83,7 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
         const currentUserUid = this.curruntUserId;
         this.friendRequestService
             .addToFriendsList(currentUserUid, request.from)
-            .pipe(switchMap(() => this.friendRequestService.updateFriendRequestStatus(request.from as string, currentUserUid, 'accepted')))
+            .pipe(switchMap(() => this.friendRequestService.cancelFriendRequest(request.from as string, request.to as string)))
             .subscribe({
                 next: () => {
                     console.log('Demande d’ami acceptée et statut mis à jour avec succès.');

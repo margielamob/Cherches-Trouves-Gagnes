@@ -19,7 +19,9 @@ export class FriendsListComponent {
     removeFriend(friendUid: string) {
         // La suppression est gérée par votre service UserService
         this.userService.deleteFriend(this.currentUserId, friendUid).subscribe({
-            next: () => console.log("L'ami a été retiré avec succès."),
+            next: () => {
+                console.log('Ami supprimé avec succès');
+            },
             error: (error) => console.error("Erreur lors de la suppression de l'ami:", error),
         });
     }

@@ -17,7 +17,6 @@ export class FriendRequestService {
         const friendRequest = {
             from: fromUserId,
             to: toUserId,
-            status: 'pending',
             uniqueKey,
         };
 
@@ -106,41 +105,37 @@ export class FriendRequestService {
             requesterUser: requesterUserDocRef.valueChanges().pipe(take(1)),
         }).pipe(
             switchMap(({ currentUser, requesterUser }) => {
-                // Mise à jour de la liste d'amis de l'utilisateur actuel
                 const updatedCurrentUserFriendsList = currentUser?.friends ? [...currentUser.friends] : [];
                 if (!updatedCurrentUserFriendsList.includes(requesterUid)) {
                     updatedCurrentUserFriendsList.push(requesterUid);
                 }
 
-                // Mise à jour de la liste d'amis de l'ami demandeur
                 const updatedRequesterFriendsList = requesterUser?.friends ? [...requesterUser.friends] : [];
                 if (!updatedRequesterFriendsList.includes(currentUserUid)) {
                     updatedRequesterFriendsList.push(currentUserUid);
                 }
 
-                // Créer un tableau  pour mettre à jour les deux documents
                 const updates = [];
                 updates.push(currentUserDocRef.update({ friends: updatedCurrentUserFriendsList }));
                 updates.push(requesterUserDocRef.update({ friends: updatedRequesterFriendsList }));
 
-                // Exécuter toutes les mises à jour simultanément
                 return forkJoin(updates);
             }),
         );
     }
 
-    deleterFriendRequest(requesterUid: string, currentUserUid: string): Observable<void> {
-        return this.firestore
-            .collection('friendRequests', (ref) => ref.where('from', '==', requesterUid).where('to', '==', currentUserUid))
-            .get()
-            .pipe(
-                switchMap((querySnapshot) => {
-                    const batch = this.firestore.firestore.batch();
-                    querySnapshot.forEach((doc) => {
-                        batch.delete(doc.ref);
-                    });
-                    return from(batch.commit());
-                }),
-            );
-    }
+    // deleterFriendRequest(requesterUid: string, currentUserUid: string): Observable<void> {
+    //     return this.firestore
+    //         .collection('friendRequests', (ref) => ref.where('from', '==', requesterUid).where('to', '==', currentUserUid))
+    //         .get()
+    //         .pipe(
+    //             switchMap((querySnapshot) => {
+    //                 const batch = this.firestore.firestore.batch();
+    //                 querySnapshot.forEach((doc) => {
+    //                     batch.delete(doc.ref);
+    //                 });
+    //                 return from(batch.commit());
+    //             }),
+    //         );
+    // }
 }
