@@ -1,48 +1,57 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FriendRequest } from '@app/interfaces/friend-request';
 import { UserData } from '@app/interfaces/user';
 import { FriendRequestService } from '@app/services/friend-request-service/friend-request.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { Observable, Subject, of, switchMap, take, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, map, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
     selector: 'app-friend-requests',
     templateUrl: './friend-requests.component.html',
     styleUrls: ['./friend-requests.component.scss'],
 })
-export class FriendRequestsComponent implements OnDestroy {
+export class FriendRequestsComponent implements OnDestroy, OnInit {
     receivedFriendRequests$: Observable<FriendRequest[]>;
     userDetailsMap: { [uid: string]: UserData } = {}; // Map pour stocker les détails des utilisateurs
     curruntUserId: string;
     private ngUnsubscribe = new Subject<void>();
 
-    constructor(private friendRequestService: FriendRequestService, private userService: UserService) {
+    constructor(private friendRequestService: FriendRequestService, private userService: UserService) {}
+
+    ngOnInit() {
         this.userService
             .getCurrentUser()
-            .pipe(take(1))
+            .pipe(take(1), takeUntil(this.ngUnsubscribe))
             .subscribe((user) => {
-                if (user) this.curruntUserId = user.uid;
-            });
-        this.receivedFriendRequests$ = this.userService.getCurrentUser().pipe(
-            switchMap((user) => {
-                return user ? this.friendRequestService.listenForReceivedFriendRequests(user.uid) : of([]);
-            }),
-            tap((requests) => {
-                const userIds = requests.map((request) => request.from).filter((id): id is string => !!id);
-                if (userIds.length > 0) {
-                    this.friendRequestService
-                        .getUsersDetailsByIds(userIds)
-                        .pipe(takeUntil(this.ngUnsubscribe))
-                        .subscribe((users) => {
-                            // Remplir userDetailsMap avec les détails des utilisateurs
-                            users.forEach((user) => {
-                                if (user) this.userDetailsMap[user.uid] = user;
-                            });
-                        });
+                if (user) {
+                    this.curruntUserId = user.uid;
+                    this.initializeFriendRequests();
                 }
+            });
+    }
+
+    initializeFriendRequests() {
+        this.receivedFriendRequests$ = this.friendRequestService.listenForReceivedFriendRequests(this.curruntUserId).pipe(
+            map((requests) => requests.filter((request) => request.status === 'pending')),
+            tap((requests) => {
+                const userIds = requests.map((request) => request.from).filter((id) => !!id);
+                this.updateUserDetailsMap(userIds as string[]);
             }),
             takeUntil(this.ngUnsubscribe),
         );
+    }
+
+    updateUserDetailsMap(userIds: string[]) {
+        if (userIds.length > 0) {
+            this.friendRequestService
+                .getUsersDetailsByIds(userIds)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((users) => {
+                    users.forEach((user) => {
+                        if (user) this.userDetailsMap[user.uid] = user;
+                    });
+                });
+        }
     }
 
     ngOnDestroy() {
@@ -59,8 +68,7 @@ export class FriendRequestsComponent implements OnDestroy {
             return;
         }
 
-        const currentUserUid = this.curruntUserId; // Supposons que c'est l'UID de l'utilisateur courant.
-        // Premièrement, ajoutez l'UID à la liste des amis
+        const currentUserUid = this.curruntUserId;
         this.friendRequestService
             .addToFriendsList(currentUserUid, request.from)
             .pipe(

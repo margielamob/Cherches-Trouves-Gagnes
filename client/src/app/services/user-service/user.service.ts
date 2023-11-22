@@ -379,4 +379,17 @@ export class UserService {
             }),
         );
     }
+
+    getFriends(): Observable<UserData[]> {
+        return this.user$.pipe(
+            take(1),
+            switchMap((user) => {
+                if (user && user.friends) {
+                    return this.afs.collection<UserData>('users', (ref) => ref.where('uid', 'in', user.friends)).valueChanges();
+                } else {
+                    return of([]);
+                }
+            }),
+        );
+    }
 }

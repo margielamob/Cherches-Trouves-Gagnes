@@ -5,8 +5,8 @@
             <mat-card-content *ngFor="let request of receivedFriendRequests$ | async" class="request-item">
                 <ng-container *ngIf="request.from && userDetailsMap[request.from]">
                     <div class="user-details">
-                        <img mat-card-avatar [src]="userDetailsMap[request.from].photoURL || 'path/to/default/photo.png'" alt="User Photo" />
-                        <span class="user-name">{{ userDetailsMap[request.from].displayName || 'Unknown User' }}</span>
+                        <img mat-card-avatar [src]="userDetailsMap[request.from].photoURL" alt="User Photo" />
+                        <span class="user-name">{{ userDetailsMap[request.from].displayName }}</span>
                     </div>
                     <div class="actions">
                         <button mat-raised-button color="primary" (click)="acceptRequest(request)">Accepter</button>

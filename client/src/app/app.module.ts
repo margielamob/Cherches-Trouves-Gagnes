@@ -53,6 +53,7 @@ import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialo
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
 import { ExitGameButtonComponent } from './components/exit-game-button/exit-game-button.component';
 import { FriendRequestsComponent } from './components/friend-requests/friend-requests.component';
+import { FriendsListComponent } from './components/friends-list/friends-list.component';
 import { GameCardButtonsComponent } from './components/game-card-buttons/game-card-buttons.component';
 import { GameCardComponent } from './components/game-card/game-card.component';
 import { GameCarouselComponent } from './components/game-carousel/game-carousel.component';
@@ -159,6 +160,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         ReplayBarComponent,
         SearchBatComponent,
         FriendRequestsComponent,
+        FriendsListComponent,
     ],
     imports: [
         MatCheckboxModule,

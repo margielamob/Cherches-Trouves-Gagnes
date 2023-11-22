@@ -105,7 +105,6 @@ export class FriendRequestService {
             .pipe(
                 take(1),
                 map((user) => {
-                    // Ajoutez l'UID si ce n'est pas déjà dans le tableau
                     const updatedFriendsList = user?.friends ? [...user.friends] : [];
                     if (!updatedFriendsList.includes(requesterUid)) {
                         updatedFriendsList.push(requesterUid);
@@ -113,7 +112,6 @@ export class FriendRequestService {
                     return updatedFriendsList;
                 }),
                 switchMap((updatedFriendsList) => {
-                    // Mettre à jour le document avec la nouvelle liste d'amis
                     return from(this.firestore.doc(`users/${currentUserUid}`).update({ friends: updatedFriendsList }));
                 }),
             );
