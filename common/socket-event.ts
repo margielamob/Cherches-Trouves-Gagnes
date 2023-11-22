@@ -70,5 +70,7 @@ export enum SocketEvent {
     OneDifference = 'OneDifference',
     Timer = 'Timer',
     StartClock = 'StartClock',
+    StartLimitedClock = 'StartLimitedClock',
     EndedTime = 'EndedTime',
+    TimerBonus = 'TimerBonus',
 }

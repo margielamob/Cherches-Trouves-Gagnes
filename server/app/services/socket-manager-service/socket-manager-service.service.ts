@@ -10,8 +10,8 @@ import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { ChatSocketManager } from './chat.service';
 import { GameCreationManager } from './game-creation.service';
-import { GameStateManager } from './game-state.service';
 import { GamePlayManager } from './game-play-manager.service';
+import { GameStateManager } from './game-state.service';
 import { SocketServer } from './server-socket-manager.service';
 import { UserManager } from './user-manager.service';
 @Service()
@@ -94,6 +94,9 @@ export class SocketManagerService {
                 socket.to(roomId).emit(SocketEvent.StartClock, { timer });
             });
 
+            socket.on(SocketEvent.StartLimitedClock, (timer: number, roomId: string) => {
+                socket.to(roomId).emit(SocketEvent.StartLimitedClock, { timer });
+            });
             socket.on(SocketEvent.GameStarted, (gameId: string) => {
                 socket.emit(SocketEvent.GameStarted, gameId);
             });
