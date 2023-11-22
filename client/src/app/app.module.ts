@@ -74,6 +74,7 @@ import { UserNameInputComponent } from './components/user-name-input/user-name-i
 import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
 import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+import { FriendsPageComponent } from './pages/friends-page/friends-page.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
@@ -161,6 +162,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         SearchBatComponent,
         FriendRequestsComponent,
         FriendsListComponent,
+        FriendsPageComponent,
     ],
     imports: [
         MatCheckboxModule,

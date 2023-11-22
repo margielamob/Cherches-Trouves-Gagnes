@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FriendRequest } from '@app/interfaces/friend-request';
 import { UserData } from '@app/interfaces/user';
-import { Observable, from, map, switchMap, take } from 'rxjs';
+import { Observable, forkJoin, from, map, switchMap, take } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -97,22 +97,49 @@ export class FriendRequestService {
             );
     }
 
-    addToFriendsList(currentUserUid: string, requesterUid: string): Observable<void> {
-        // Obtenir le document de l'utilisateur
+    addToFriendsList(currentUserUid: string, requesterUid: string): Observable<unknown> {
+        const currentUserDocRef = this.firestore.doc<UserData>(`users/${currentUserUid}`);
+        const requesterUserDocRef = this.firestore.doc<UserData>(`users/${requesterUid}`);
+
+        return forkJoin({
+            currentUser: currentUserDocRef.valueChanges().pipe(take(1)),
+            requesterUser: requesterUserDocRef.valueChanges().pipe(take(1)),
+        }).pipe(
+            switchMap(({ currentUser, requesterUser }) => {
+                // Mise à jour de la liste d'amis de l'utilisateur actuel
+                const updatedCurrentUserFriendsList = currentUser?.friends ? [...currentUser.friends] : [];
+                if (!updatedCurrentUserFriendsList.includes(requesterUid)) {
+                    updatedCurrentUserFriendsList.push(requesterUid);
+                }
+
+                // Mise à jour de la liste d'amis de l'ami demandeur
+                const updatedRequesterFriendsList = requesterUser?.friends ? [...requesterUser.friends] : [];
+                if (!updatedRequesterFriendsList.includes(currentUserUid)) {
+                    updatedRequesterFriendsList.push(currentUserUid);
+                }
+
+                // Créer un tableau  pour mettre à jour les deux documents
+                const updates = [];
+                updates.push(currentUserDocRef.update({ friends: updatedCurrentUserFriendsList }));
+                updates.push(requesterUserDocRef.update({ friends: updatedRequesterFriendsList }));
+
+                // Exécuter toutes les mises à jour simultanément
+                return forkJoin(updates);
+            }),
+        );
+    }
+
+    deleterFriendRequest(requesterUid: string, currentUserUid: string): Observable<void> {
         return this.firestore
-            .doc<UserData>(`users/${currentUserUid}`)
-            .valueChanges()
+            .collection('friendRequests', (ref) => ref.where('from', '==', requesterUid).where('to', '==', currentUserUid))
+            .get()
             .pipe(
-                take(1),
-                map((user) => {
-                    const updatedFriendsList = user?.friends ? [...user.friends] : [];
-                    if (!updatedFriendsList.includes(requesterUid)) {
-                        updatedFriendsList.push(requesterUid);
-                    }
-                    return updatedFriendsList;
-                }),
-                switchMap((updatedFriendsList) => {
-                    return from(this.firestore.doc(`users/${currentUserUid}`).update({ friends: updatedFriendsList }));
+                switchMap((querySnapshot) => {
+                    const batch = this.firestore.firestore.batch();
+                    querySnapshot.forEach((doc) => {
+                        batch.delete(doc.ref);
+                    });
+                    return from(batch.commit());
                 }),
             );
     }

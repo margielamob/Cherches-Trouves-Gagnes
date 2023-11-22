@@ -59,9 +59,22 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
         this.ngUnsubscribe.complete();
     }
 
-    declineRequest(_t11: FriendRequest) {
-        throw new Error('Method not implemented.');
+    declineRequest(request: FriendRequest) {
+        if (!request.from || !request.to) {
+            console.error('La demande d’ami est invalide.');
+            return;
+        }
+
+        this.friendRequestService.deleterFriendRequest(request.from as string, request.to as string).subscribe({
+            next: () => {
+                console.log('Demande d’ami supprimée avec succès.');
+            },
+            error: (error) => {
+                console.error('Erreur lors de la suppression de la demande d’ami:', error);
+            },
+        });
     }
+
     acceptRequest(request: FriendRequest): void {
         if (!request.from || !request.to) {
             console.error('La demande d’ami est invalide.');
@@ -71,14 +84,10 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
         const currentUserUid = this.curruntUserId;
         this.friendRequestService
             .addToFriendsList(currentUserUid, request.from)
-            .pipe(
-                // Ensuite, si l'ajout est un succès, passez à la mise à jour du statut de la demande d'ami
-                switchMap(() => this.friendRequestService.updateFriendRequestStatus(request.from as string, currentUserUid, 'accepted')),
-            )
+            .pipe(switchMap(() => this.friendRequestService.updateFriendRequestStatus(request.from as string, currentUserUid, 'accepted')))
             .subscribe({
                 next: () => {
                     console.log('Demande d’ami acceptée et statut mis à jour avec succès.');
-                    // Ici, mettez à jour l'état de votre composant pour refléter le changement
                 },
                 error: (error) => {
                     console.error('Erreur lors de l’acceptation de la demande d’ami:', error);

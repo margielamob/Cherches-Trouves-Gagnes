@@ -40,11 +40,11 @@ export class SearchBatComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log('SearchBatComponent');
         this.userService.getCurrentUser().subscribe((user) => {
             if (user) {
                 this.currentUserId = user.uid;
                 this.listenForFriendRequestUpdates();
-                this.listenForSentFriendRequestUpdates();
             }
         });
     }

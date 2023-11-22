@@ -1,0 +1,13 @@
+.active-link {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+mat-toolbar {
+    .toolbar-spacer {
+        flex: 1 1 auto; /* Pousse les éléments suivants vers la droite */
+    }
+
+    .mat-button {
+        margin: 0 10px; /* Ajoute de l'espacement autour des boutons */
+    }
+}

@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
+import { FriendRequestsComponent } from '@app/components/friend-requests/friend-requests.component';
+import { FriendsListComponent } from '@app/components/friends-list/friends-list.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { EmailVerificationComponent } from '@app/pages/email-verification/email-verification.component';
+import { FriendsPageComponent } from '@app/pages/friends-page/friends-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameSelectionPageComponent } from '@app/pages/game-selection-page/game-selection-page.component';
 import { JoinGameSelectionComponent } from '@app/pages/join-game-selection/join-game-selection.component';
@@ -32,6 +35,16 @@ const routes: Routes = [
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
+    {
+        path: 'friends',
+        component: FriendsPageComponent,
+        children: [
+            { path: 'list', component: FriendsListComponent },
+            { path: 'requests', component: FriendRequestsComponent },
+            { path: '', redirectTo: 'list', pathMatch: 'full' },
+        ],
+    },
+
     { path: '**', redirectTo: '/home' },
 ];
 
