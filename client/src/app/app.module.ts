@@ -22,6 +22,7 @@ import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
 import { AppLogoComponent } from './components/app-logo/app-logo.component';
@@ -41,6 +42,7 @@ import { CluesAreaComponent } from './components/clues-area/clues-area.component
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
+import { CropperDialogComponent } from './components/cropper-dialog/cropper-dialog.component';
 import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogConfirmResetPasswordComponent } from './components/dialog-confirm-reset-password/dialog-confirm-reset-password.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
@@ -84,6 +86,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -163,8 +166,10 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         FriendRequestsComponent,
         FriendsListComponent,
         FriendsPageComponent,
+        CropperDialogComponent,
     ],
     imports: [
+        ImageCropperModule,
         MatCheckboxModule,
         AppMaterialModule,
         AppRoutingModule,

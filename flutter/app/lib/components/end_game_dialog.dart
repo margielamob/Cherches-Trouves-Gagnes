@@ -45,21 +45,24 @@ class EndGameDialog extends StatelessWidget {
                     child: Text("Quitter la page"),
                   ),
                   SizedBox(width: 20),
-                  FilledButton(
-                    onPressed: () {
-                      if (endGameService.endGameMessage ==
-                          "La partie est terminée vous avez gagné !") {
-                        _userService.updateUserGameWins(
-                            gameManagerService.currentUser!.id);
-                      }
-                      Navigator.of(context).pop();
-                      gameReplayService.activateReplayMode();
-                    },
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
-                    ),
-                    child: Text("Revoir la partie"),
-                  ),
+                  gameManagerService.gameMode!.value == "Temps Limité"
+                      ? SizedBox()
+                      : FilledButton(
+                          onPressed: () {
+                            if (endGameService.endGameMessage ==
+                                "La partie est terminée vous avez gagné !") {
+                              _userService.updateUserGameWins(
+                                  gameManagerService.currentUser!.id);
+                            }
+                            Navigator.of(context).pop();
+                            gameReplayService.activateReplayMode();
+                          },
+                          style: ButtonStyle(
+                            minimumSize:
+                                MaterialStateProperty.all(Size(100.0, 40.0)),
+                          ),
+                          child: Text("Revoir la partie"),
+                        ),
                 ],
               )
             ],

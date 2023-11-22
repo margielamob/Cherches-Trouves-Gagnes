@@ -114,9 +114,15 @@
         "TITLE": "Upload a 24-bit BMP image of size 640x480",
         "NOT_BITMAP": "Le type d'image doit être un bitmap (.bmp)",
         "NOT_24BITS": "L'image doit être en 24 bits",
-        "SIZE": "La taille d'image doit être de 640x480",
+        "SIZE": "L'image choisie est trop petite",
         "CANCEL": "Annuler",
         "UPLOAD": "Télécharger"
+    },
+
+    "CROP_DIALOG": {
+        "TITLE": "Veuillez choisir la portion désirée",
+        "CANCEL": "Annuler",
+        "DONE": "Terminer"
     },
 
     "DIALOG_USER": {
