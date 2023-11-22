@@ -30,6 +30,7 @@ export class SearchBatComponent implements OnInit, OnDestroy {
         // Combinez les utilisateurs recherchés avec la liste d'amis pour filtrer ceux qui ne doivent pas apparaître
         this.users$ = combineLatest([
             this.searchControl.valueChanges.pipe(
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 debounceTime(500),
                 distinctUntilChanged(),
                 switchMap((searchTerm) =>
@@ -38,6 +39,7 @@ export class SearchBatComponent implements OnInit, OnDestroy {
                             ref
                                 .where('displayName', '>=', searchTerm)
                                 .where('displayName', '<=', searchTerm + '\uf8ff')
+                                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                                 .limit(5),
                         )
                         .valueChanges({ idField: 'uid' }),
@@ -86,9 +88,6 @@ export class SearchBatComponent implements OnInit, OnDestroy {
 
     cancelFriendRequest(userTo: UserData) {
         this.friendRequestService.cancelFriendRequest(this.currentUserId, userTo.uid).subscribe({
-            next: () => {
-                console.log('Demande d’ami annulée');
-            },
             error: (error) => {
                 throw error;
             },

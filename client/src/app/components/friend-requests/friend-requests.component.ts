@@ -60,23 +60,18 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
 
     declineRequest(request: FriendRequest) {
         if (!request.from || !request.to) {
-            console.error('La demande d’ami est invalide.');
             return;
         }
 
         this.friendRequestService.cancelFriendRequest(request.from as string, request.to as string).subscribe({
-            next: () => {
-                console.log('Demande d’ami supprimée avec succès.');
-            },
             error: (error) => {
-                console.error('Erreur lors de la suppression de la demande d’ami:', error);
+                throw error;
             },
         });
     }
 
     acceptRequest(request: FriendRequest): void {
         if (!request.from || !request.to) {
-            console.error('La demande d’ami est invalide.');
             return;
         }
 
@@ -85,11 +80,8 @@ export class FriendRequestsComponent implements OnDestroy, OnInit {
             .addToFriendsList(currentUserUid, request.from)
             .pipe(switchMap(() => this.friendRequestService.cancelFriendRequest(request.from as string, request.to as string)))
             .subscribe({
-                next: () => {
-                    console.log('Demande d’ami acceptée et statut mis à jour avec succès.');
-                },
                 error: (error) => {
-                    console.error('Erreur lors de l’acceptation de la demande d’ami:', error);
+                    throw error;
                 },
             });
     }
