@@ -54,6 +54,8 @@ import { DialogUploadFormComponent } from './components/dialog-upload-form/dialo
 import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
 import { ExitGameButtonComponent } from './components/exit-game-button/exit-game-button.component';
+import { FriendRequestsComponent } from './components/friend-requests/friend-requests.component';
+import { FriendsListComponent } from './components/friends-list/friends-list.component';
 import { GameCardButtonsComponent } from './components/game-card-buttons/game-card-buttons.component';
 import { GameCardComponent } from './components/game-card/game-card.component';
 import { GameCarouselComponent } from './components/game-carousel/game-carousel.component';
@@ -67,12 +69,14 @@ import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/p
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
+import { SearchBatComponent } from './components/search-bat/search-bat.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
 import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
 import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+import { FriendsPageComponent } from './pages/friends-page/friends-page.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
@@ -158,6 +162,10 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         ResetPasswordComponent,
         CreateJoinGameDialogueComponent,
         ReplayBarComponent,
+        SearchBatComponent,
+        FriendRequestsComponent,
+        FriendsListComponent,
+        FriendsPageComponent,
         CropperDialogComponent,
     ],
     imports: [

@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <button mat-icon-button routerLink="/home">
+            <mat-icon>home</mat-icon>
+        </button>
+        <span class="toolbar-spacer"></span>
+        <button mat-button routerLink="./list" routerLinkActive="active-link">Liste d'amis</button>
+        <button mat-button routerLink="./requests" routerLinkActive="active-link">Demandes d'amis</button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet></router-outlet>
