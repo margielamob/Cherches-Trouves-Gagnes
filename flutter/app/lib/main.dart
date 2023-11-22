@@ -4,6 +4,7 @@ import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/drawing_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
@@ -19,7 +20,7 @@ import 'package:app/domain/services/time_formatter_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
-import 'package:app/pages/create_game.dart';
+import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
@@ -56,6 +57,7 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(DrawingService());
 }
 
 late List<CameraDescription> cameras;
@@ -123,6 +125,12 @@ void main() async {
             return gameReplayService;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DrawingService drawingService = Get.find();
+            return drawingService;
+          },
+        ),
       ],
       child: MyApp(),
     ),
@@ -170,7 +178,7 @@ class MyApp extends StatelessWidget {
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/signUpPage': (context) => SignUpPage(),
+        '/sign  Page': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),

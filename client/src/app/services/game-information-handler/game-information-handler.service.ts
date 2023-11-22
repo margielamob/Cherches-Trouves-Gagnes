@@ -59,7 +59,11 @@ export class GameInformationHandlerService {
             this.routerService.navigateTo('game');
         });
 
-        this.socket.on(SocketEvent.StartClock, (payload: { timer: number; roomId: string }) => {
+        this.socket.on(SocketEvent.StartClock, (payload: { timer: number }) => {
+            this.startTimer = payload.timer;
+        });
+
+        this.socket.on(SocketEvent.StartLimitedClock, (payload: { timer: number }) => {
             this.startTimer = payload.timer;
         });
 
