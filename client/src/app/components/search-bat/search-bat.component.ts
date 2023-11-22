@@ -1,41 +1,58 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl } from '@angular/forms';
 import { FriendRequest } from '@app/interfaces/friend-request';
 import { UserData } from '@app/interfaces/user';
 import { FriendRequestService } from '@app/services/friend-request-service/friend-request.service';
 import { UserService } from '@app/services/user-service/user.service';
-import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-search-bat',
     templateUrl: './search-bat.component.html',
     styleUrls: ['./search-bat.component.scss'],
 })
-export class SearchBatComponent implements OnInit {
+export class SearchBatComponent implements OnInit, OnDestroy {
     friendRequestStatus: { [userId: string]: FriendRequest } = {};
     searchControl = new FormControl();
     users$: Observable<UserData[]>;
     currentUserId: string;
+    currentUserFriends$: Observable<string[]>; // Observable des ID d'amis
     private unsubscribe$ = new Subject();
 
     constructor(private firestore: AngularFirestore, private userService: UserService, private friendRequestService: FriendRequestService) {
-        this.users$ = this.searchControl.valueChanges.pipe(
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            debounceTime(500),
-            distinctUntilChanged(),
-            switchMap((searchTerm) =>
-                this.firestore
-                    .collection<UserData>('users', (ref) =>
-                        ref
-                            .where('displayName', '>=', searchTerm)
-                            .where('displayName', '<=', searchTerm + '\uf8ff')
-                            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                            .limit(5),
-                    )
-                    .valueChanges(),
+        // Initialisez currentUserFriends$ pour qu'il émette la liste d'amis en temps réel
+        this.currentUserFriends$ = this.userService.getFriends().pipe(
+            map((friends) => friends.map((friend) => friend.uid)),
+            startWith([]), // Commence avec un tableau vide pour éviter les erreurs si getFriends() est lent
+        );
+
+        // Combinez les utilisateurs recherchés avec la liste d'amis pour filtrer ceux qui ne doivent pas apparaître
+        this.users$ = combineLatest([
+            this.searchControl.valueChanges.pipe(
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap((searchTerm) =>
+                    this.firestore
+                        .collection<UserData>('users', (ref) =>
+                            ref
+                                .where('displayName', '>=', searchTerm)
+                                .where('displayName', '<=', searchTerm + '\uf8ff')
+                                .limit(5),
+                        )
+                        .valueChanges({ idField: 'uid' }),
+                ),
+                takeUntil(this.unsubscribe$),
             ),
-            takeUntil(this.unsubscribe$),
+            this.currentUserFriends$,
+        ]).pipe(
+            map(([users, friends]) =>
+                users.map((user) => ({
+                    ...user,
+                    isFriend: friends.includes(user.uid),
+                    isCurrentUser: user.uid === this.currentUserId,
+                })),
+            ),
         );
     }
 
@@ -46,6 +63,11 @@ export class SearchBatComponent implements OnInit {
                 this.listenForFriendRequestUpdates();
             }
         });
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next('');
+        this.unsubscribe$.complete();
     }
 
     sendFriendRequest(userTo: UserData) {
