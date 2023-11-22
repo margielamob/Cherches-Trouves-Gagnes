@@ -8,6 +8,7 @@ class SocketEvent {
   static String differenceFound = 'differenceFound';
   static String getGamesWaiting = 'getGamesWaiting';
   static String createClassicGame = "createClassicGame";
+  static String CreateLimitedGame = 'CreateLimitedGame';
   static String ready = "ready";
   static String gameStarted = "GameStarted";
   static String play = "play";
@@ -34,4 +35,5 @@ class SocketEvent {
   static String cheat = 'cheat';
   static String timer = 'Timer';
   static String startClock = 'StartClock';
+  static String newGameBoard = 'newGameBoard';
 }
