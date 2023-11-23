@@ -1,3 +1,4 @@
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -11,6 +12,7 @@ class EndGameDialog extends StatelessWidget {
   final EndGameService endGameService = Get.find();
   final GameManagerService gameManagerService = Get.find();
   final PersonalUserService _userService = Get.find();
+  final ChatManagerService _chatService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class EndGameDialog extends StatelessWidget {
                       }
                       differenceDetectionService.resetForNextGame();
                       Get.offAll(MainPage());
+                      _chatService.leaveGameChat();
                     },
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),

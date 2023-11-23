@@ -29,16 +29,21 @@ class ChatMessage {
 class UserRoom {
   String room;
   bool read = false;
+  ChatMessage? lastMessage;
 
   UserRoom({
     required this.room,
     required this.read,
+    this.lastMessage,
   });
 
   factory UserRoom.fromJson(Map<String, dynamic> json) {
     return UserRoom(
       room: json['room'] as String,
       read: json['read'] as bool,
+      lastMessage: json['lastMessage'] != null
+          ? ChatMessage.fromJson(json['lastMessage'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -46,8 +51,11 @@ class UserRoom {
     return {
       'room': room,
       'read': read,
+      'lastMessage': lastMessage?.toJson(),
     };
   }
+
+  startsWith(String s) {}
 }
 
 class ChatRoom {

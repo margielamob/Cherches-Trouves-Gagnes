@@ -1,7 +1,9 @@
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -10,8 +12,9 @@ import '../models/chat_model.dart';
 class ChatManagerService {
   final SocketService socket = Get.find();
   final AuthService authService = Get.find();
+  final ChatDisplayService chatDs = Get.find();
 
-  BehaviorSubject<String> activeRoom = BehaviorSubject<String>.seeded('all');
+  BehaviorSubject<String> activeRoom = BehaviorSubject<String>.seeded('');
 
   BehaviorSubject<List<UserRoom>> userRoomList =
       BehaviorSubject<List<UserRoom>>.seeded([]);
@@ -27,12 +30,23 @@ class ChatManagerService {
   BehaviorSubject<List<ChatMessage>> messages =
       BehaviorSubject<List<ChatMessage>>.seeded([]);
 
+  BehaviorSubject<int> unreadMessages = BehaviorSubject<int>.seeded(0);
+
   // final ChatDisplayService display;
 
   //constructor
   ChatManagerService() {
     authService.userSubject.stream.listen((user) {
-      activeUser = {'id': user!.uid, 'name': user.displayName} as UserModel;
+      activeUser = UserModel(id: user!.uid, name: user.displayName);
+    });
+    userRoomList.stream.listen((rooms) {
+      int sum = 0;
+      for (var room in rooms) {
+        if (!room.read) {
+          sum++;
+        }
+      }
+      unreadMessages.add(sum);
     });
     allRoomsList.stream.listen((rooms) {
       unJoinedRooms.add(rooms
@@ -40,6 +54,7 @@ class ChatManagerService {
               !userRoomList.value.map((e) => e.room).toList().contains(element))
           .toList());
     });
+    addListeners();
   }
 
   void selectRoom(String room) {
@@ -86,6 +101,17 @@ class ChatManagerService {
           'roomName': message.room,
           'userName': activeUser.name,
         });
+        List<UserRoom> newUserRooms = userRoomList.value;
+
+        int index =
+            newUserRooms.indexWhere((element) => element.room == message.room);
+
+        if (index != -1) {
+          newUserRooms[index].read = true;
+          newUserRooms[index].lastMessage = message;
+
+          userRoomList.add(newUserRooms);
+        }
       } else {
         List<UserRoom> newUserRooms = userRoomList.value;
 
@@ -93,6 +119,7 @@ class ChatManagerService {
             newUserRooms.indexWhere((element) => element.room == message.room);
         if (index != -1) {
           newUserRooms[index].read = false;
+          newUserRooms[index].lastMessage = message;
 
           userRoomList.add(newUserRooms);
 
@@ -101,6 +128,9 @@ class ChatManagerService {
             'userName': activeUser.name,
           });
         }
+      }
+      if (message.user != activeUser.name) {
+        FlutterRingtonePlayer.playNotification();
       }
     });
 
@@ -136,11 +166,11 @@ class ChatManagerService {
   }
 
   void initChat() {
-    activeUser = UserModel(
-        id: authService.currentUser!.uid,
-        name: authService.currentUser!.displayName);
-    addListeners();
-    socket.send(SocketEvent.initChat, {'userName': activeUser.name});
+    authService.getCurrentUser().then((value) {
+      activeUser = UserModel(id: value!.uid, name: value.displayName);
+      // addListeners();
+      socket.send(SocketEvent.initChat, {'userName': activeUser.name});
+    });
   }
 
   String getCurrentRoom() {
@@ -192,13 +222,18 @@ class ChatManagerService {
     socket.send(SocketEvent.deleteRoom, {'roomName': roomName});
   }
 
-  // void leaveGameChat() {
-  //   if (activeRoom.value.startsWith('Game')) {
-  //     // display.deselectRoom();
-  //   }
-  //   final gameChat = userRoomList.value
-  //       .firstWhere((room) => room.startsWith('Game'), orElse: () => '');
-  //   socket.send(SocketEvent.leaveRoom,
-  //       {'roomName': gameChat, 'userName': activeUser.name});
-  // }
+  void leaveGameChat() {
+    if (activeRoom.value.startsWith('Game')) {
+      deselectRoom();
+    }
+    final gameChat =
+        userRoomList.value.firstWhere((room) => room.startsWith('Game'));
+    socket.send(SocketEvent.leaveRoom,
+        {'roomName': gameChat, 'userName': activeUser.name});
+  }
+
+  void deselectRoom() {
+    activeRoom.add('');
+    messages.add([]);
+  }
 }

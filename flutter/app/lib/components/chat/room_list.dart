@@ -55,7 +55,7 @@ class _RoomListState extends State<RoomList> {
         body: ListView.builder(
           itemCount: rooms.length,
           itemBuilder: (context, index) {
-            return rooms.map((e) => RoomCardWidget(room: e)).toList()[index];
+            return RoomCardWidget(room: rooms[index]);
           },
         ),
       ),

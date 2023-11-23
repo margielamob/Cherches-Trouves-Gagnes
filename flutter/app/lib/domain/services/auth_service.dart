@@ -21,14 +21,12 @@ class AuthService {
         email: email,
         password: password,
       );
-      print('userSubject added');
-      print(userSubject.value);
+      currentUser = await getCurrentUser();
+      userSubject.add(currentUser);
       // chatService.initChat();
       final profilePageManager = Get.find<ProfilePageManager>();
       await profilePageManager.initUserThemeAndLang();
-      getCurrentUser().then((value) {
-        userSubject.add(value);
-      });
+
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;

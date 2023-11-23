@@ -3,6 +3,7 @@ import 'package:app/components/classic_game_dialog.dart';
 import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
@@ -18,10 +19,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GameManagerService gameManagerService = Get.find();
   final PersonalUserService userService = Get.find();
+  final ChatManagerService chatManagerService = Get.find();
 
   final ChatDisplayService chatDisplayService = Get.find();
 
   bool showChat = false;
+  int unreadMessages = 0;
 
   @override
   void initState() {
@@ -30,6 +33,11 @@ class _MainPageState extends State<MainPage> {
     chatDisplayService.isChatVisible.listen((value) {
       setState(() {
         showChat = value;
+      });
+    });
+    chatManagerService.unreadMessages.listen((value) {
+      setState(() {
+        unreadMessages = value;
       });
     });
   }
@@ -42,18 +50,32 @@ class _MainPageState extends State<MainPage> {
         appBar: AppBar(
           title: Text("Menu principal"),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return LogoutDialog();
-                  }),
-            ),
-            IconButton(
-              icon: Icon(Icons.chat_bubble),
-              onPressed: () => chatDisplayService.toggleChat(),
-            ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Badge(
+                      isLabelVisible: unreadMessages > 0,
+                      label: Text(unreadMessages.toString()),
+                      backgroundColor: Colors.red,
+                      child: IconButton(
+                        icon: Icon(Icons.chat_bubble),
+                        onPressed: () => chatDisplayService.toggleChat(),
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return LogoutDialog();
+                        }),
+                  ),
+                )
+              ],
+            )
           ],
         ),
         body: Center(

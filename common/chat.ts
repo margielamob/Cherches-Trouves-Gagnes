@@ -13,6 +13,7 @@ export interface ChatRoom {
 export interface UserRoom {
     room: string;
     read: boolean;
+    lastMessage?: ChatMessage;
 }
 
 export interface ChatRoomInfo {

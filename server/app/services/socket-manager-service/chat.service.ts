@@ -66,7 +66,15 @@ export class ChatSocketManager {
                 });
             } else {
                 console.log('new user');
-                this.userRooms.set(userName, [{ room: 'all', read: true }]);
+                this.userRooms.set(userName, [
+                    {
+                        room: 'all',
+                        read: false,
+                        lastMessage: this.allRooms.get('all')
+                            ? this.allRooms.get('all')?.messages[this.allRooms.get('all')!.messages.length - 1]
+                            : undefined,
+                    },
+                ]);
                 socket.join('all');
             }
             console.log(this.userRooms.keys());
@@ -84,6 +92,18 @@ export class ChatSocketManager {
                     .then((sockets) => {
                         console.log('sockets in room : ' + sockets.map((s) => s.id));
                     });
+                this.allRooms.get(message.room)!.users.forEach((user) => {
+                    this.userRooms.get(user)![this.userRooms.get(user)!.findIndex((room) => room.room === message.room)].lastMessage = message;
+                    // this.userRooms.set(
+                    //     user,
+                    //     this.userRooms.get(user)!.map((room) => {
+                    //         if (room.room === message.room) {
+                    //             return { ...room, lastMessage: message };
+                    //         }
+                    //         return room;
+                    //     }),
+                    // );
+                });
                 this.allRooms.get(message.room)?.messages.push(message);
                 this.server.sio.to(message.room).emit(SocketEvent.Message, message);
             } else if (this.gameRooms.get(message.room)) {
@@ -144,7 +164,7 @@ export class ChatSocketManager {
             this.createRoom(roomName);
             if (this.userRooms.get(userName)) {
                 // const rooms = [roomName];
-                this.userRooms.get(userName)!.push({ room: roomName, read: true });
+                this.userRooms.get(userName)!.push({ room: roomName, read: true, lastMessage: undefined });
                 console.log(this.userRooms.get(userName));
                 socket.join(roomName);
             }
@@ -160,7 +180,10 @@ export class ChatSocketManager {
             console.log('joinRooms : ' + roomNames);
             if (this.userRooms.get(userName)) {
                 roomNames.forEach((room) => {
-                    this.userRooms.set(userName, [...this.userRooms.get(userName)!, { room, read: false }]);
+                    this.userRooms.set(userName, [
+                        ...this.userRooms.get!(userName)!,
+                        { room, read: false, lastMessage: this.allRooms.get(room)!.messages[this.allRooms.get(room)!.messages.length - 1] },
+                    ]);
                     socket.join(room);
                 });
             }
@@ -238,7 +261,7 @@ export class ChatSocketManager {
         socket.join(roomName);
         if (this.userRooms.get(user.name)) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, { room: roomName, read: false }]);
+            this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, { room: roomName, read: false, lastMessage: undefined }]);
             socket.join(roomName);
         }
         socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name)!);
@@ -249,7 +272,14 @@ export class ChatSocketManager {
         socket.join(roomName);
         if (this.userRooms.get(user.name)) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, { room: roomName, read: false }]);
+            this.userRooms.set(user.name, [
+                ...this.userRooms.get(user.name)!,
+                {
+                    room: roomName,
+                    read: false,
+                    lastMessage: this.gameRooms.get(roomName)!.chatRoom.messages[this.gameRooms.get(roomName)!.chatRoom.messages.length - 1],
+                },
+            ]);
             socket.join(roomName);
             this.gameRooms.get(roomId)?.users.push(user.name);
         }

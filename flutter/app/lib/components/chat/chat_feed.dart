@@ -73,11 +73,11 @@ class _ChatFeedState extends State<ChatFeed> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _scrollController.dispose();
+  // }
 
   void sendMessage(String text) {
     if (text.isEmpty) return;

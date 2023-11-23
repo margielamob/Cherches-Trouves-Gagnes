@@ -44,10 +44,33 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
           ),
           child: Row(
             children: [
-              widget.room.read ? Spacer() : Icon(Icons.circle),
-              Text(
-                widget.room.room,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              widget.room.read
+                  ? Icon(
+                      Icons.circle,
+                      color: Colors.transparent,
+                    )
+                  : Icon(Icons.circle),
+              Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align text to the left
+                children: [
+                  Text(
+                    widget.room.room,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  widget.room.lastMessage != null
+                      ? Text(
+                          "${widget.room.lastMessage!.user}: ${widget.room.lastMessage!.message}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      : Text(''),
+                ],
               ),
               Spacer(),
               if (widget.room != 'all' && !widget.room.room.startsWith('Game'))

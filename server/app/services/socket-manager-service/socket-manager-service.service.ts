@@ -10,8 +10,8 @@ import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { ChatSocketManager } from './chat.service';
 import { GameCreationManager } from './game-creation.service';
-import { GameStateManager } from './game-state.service';
 import { GamePlayManager } from './game-play-manager.service';
+import { GameStateManager } from './game-state.service';
 import { SocketServer } from './server-socket-manager.service';
 import { UserManager } from './user-manager.service';
 @Service()
@@ -46,9 +46,14 @@ export class SocketManagerService {
             this.gameStateManager.handleSockets(socket);
             this.gamePlayManager.handleSockets(socket);
             this.userManager.handleSockets(socket);
+            // eslint-disable-next-line no-console
+            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
 
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            socket.on(SocketEvent.Disconnect, () => {});
+            socket.on(SocketEvent.Disconnect, () => {
+                // eslint-disable-next-line no-console
+                console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
+            });
 
             // socket.on(SocketEvent.Message, (message: string, roomId: string) => {
             //     socket.broadcast.to(roomId).emit(SocketEvent.Message, message);

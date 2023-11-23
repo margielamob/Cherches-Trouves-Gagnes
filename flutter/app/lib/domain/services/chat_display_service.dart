@@ -31,9 +31,11 @@ class ChatDisplayService {
     isChatVisible.add(!isChatVisible.value);
   }
 
-  void dispose() {
-    isRoomSelected.close();
-    isSearchSelected.close();
-    isChatVisible.close();
-  }
+  void deselectRoom() {}
+
+  // void dispose() {
+  //   isRoomSelected.close();
+  //   isSearchSelected.close();
+  //   isChatVisible.close();
+  // }
 }

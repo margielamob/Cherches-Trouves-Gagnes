@@ -182,7 +182,7 @@ class MyApp extends StatelessWidget {
         '/ReachableGamePage': (context) => ReachableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
-        '/chatPage': (context) => ChatPage()
+        '/chatPage': (context) => ChatPage(),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
       },
     );
