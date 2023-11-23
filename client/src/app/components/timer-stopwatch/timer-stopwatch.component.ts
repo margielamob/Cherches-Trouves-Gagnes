@@ -3,6 +3,7 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { ReplayService } from '@app/services/replay-service/replay.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { SocketEvent } from '@common/socket-event';
 
 @Component({
@@ -12,7 +13,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class TimerStopwatchComponent implements OnInit, OnDestroy {
     timerDisplay: string;
-    hasReplayStarted = false;
+    isGameDone = false;
     private time: number;
 
     // eslint-disable-next-line max-params
@@ -21,13 +22,16 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         private readonly timeFormatter: TimeFormatterService,
         private readonly gameInfoService: GameInformationHandlerService,
         private replayService: ReplayService,
+        private readonly userService: UserService,
     ) {
-        this.replayService.hasReplayStarted$.subscribe((hasStarted) => {
-            this.hasReplayStarted = hasStarted;
-        });
+        this.timerDisplay = this.timeFormatter.formatTime(this.time);
     }
 
     ngOnInit(): void {
+        if (this.gameInfoService.timer !== 0) {
+            this.socketService.send(SocketEvent.StartClock, { timer: this.gameInfoService.timer, roomId: this.gameInfoService.roomId });
+        }
+
         this.socketService.on(SocketEvent.Clock, (time: number) => {
             this.time = time;
             this.timerDisplay = this.timeFormatter.formatTime(time);
@@ -35,11 +39,22 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
 
         this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
             this.gameInfoService.endedTime = this.time;
+            this.replayService.endTime = this.time;
+            this.isGameDone = true;
+            this.replayService.currentTime = this.time;
         });
     }
 
-    isGameDone() {
-        return this.gameInfoService.isGameDone;
+    isReplaying() {
+        return this.replayService.isPlaying;
+    }
+
+    isReplayMode() {
+        return this.replayService.isReplayMode;
+    }
+
+    getTimerDisplay() {
+        return this.timerDisplay;
     }
 
     getTimeFromReplay() {
@@ -52,6 +67,11 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        if (this.gameInfoService.timer !== 0) {
+            this.userService.updateTotalTimePlayed(this.gameInfoService.timer - this.time);
+        } else {
+            this.userService.updateTotalTimePlayed(this.gameInfoService.startTimer - this.time);
+        }
         this.socketService.off(SocketEvent.Clock);
     }
 }

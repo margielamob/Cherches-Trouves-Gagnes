@@ -10,11 +10,15 @@ import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
+import 'package:app/domain/models/requests/start_clock_request.dart';
+import 'package:app/domain/models/requests/timer_request.dart';
 import 'package:app/domain/models/requests/user_request.dart';
 import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/global_variables.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/classic_game_page.dart';
@@ -26,8 +30,10 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class GameManagerService extends ChangeNotifier {
+  final GlobalVariables global = Get.find();
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
+  final PersonalUserService _userService = Get.find();
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
   GameCardModel? gameCards;
@@ -38,6 +44,9 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
+  int startingTimer = 0;
+  int creatorStartingTimer = 0;
+  GameModeModel? gameMode;
 
   GameManagerService() {
     handleSockets();
@@ -45,27 +54,19 @@ class GameManagerService extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.getGamesWaiting, (dynamic message) {
-      print("SocketEvent.getGamesWaiting");
       WaitingGameModel data = WaitingGameModel.fromJson(message);
       waitingGame = data;
-      if (data.gamesWaiting.isNotEmpty) {
-        data.gamesWaiting.forEach((element) {
-          print(element);
-        });
-      }
       notifyListeners();
     });
     _socket.on(SocketEvent.play, (dynamic message) {
-      print("SocketEvent.play");
       currentRoomId = message;
       Get.offAll(Classic(gameId: currentRoomId!, gameCard: gameCards!));
     });
 
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
-      print("SocketEvent.waitPlayer : $message");
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       players = waitingRoomInfoRequest!.players;
-      Get.to(WaitingPage());
+      Get.offAll(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
@@ -82,31 +83,34 @@ class GameManagerService extends ChangeNotifier {
       print("SocketEvent.playerLeft : $message");
     });
     _socket.on(SocketEvent.joinGame, (dynamic message) {
-      print("SocketEvent.joinGame : $message");
       JoinGameRequest request = JoinGameRequest.fromJson(message);
-      joinGameSend(request.roomId);
+      joinGameSend(currentUser!.name, request.roomId);
     });
-    _socket.on(SocketEvent.leaveWaiting, (dynamic message) {
-      print("SocketEvent.leaveWaiting : $message");
+    _socket.on(SocketEvent.leaveWaiting, (dynamic message) {});
+    _socket.on(SocketEvent.creatorLeft, (dynamic message) {});
+    _socket.on(SocketEvent.win, (dynamic message) {
+      resetAllPlayersNbDifference();
     });
-    _socket.on(SocketEvent.creatorLeft, (dynamic message) {
-      print(message);
-      Get.offAll(MainPage());
+    _socket.on(SocketEvent.lose, (dynamic message) {
+      resetAllPlayersNbDifference();
+    });
+    _socket.on(SocketEvent.startClock, (dynamic message) {
+      TimerRequest request = TimerRequest.fromJson(message);
+      startingTimer = request.timer;
     });
   }
 
   void joinGame(String roomId) {
-    // TODO: vérifier si le ID du socket est bon
     JoinClassicGameRequest request = JoinClassicGameRequest(
         user: currentUser!, roomId: roomId, socketId: _socket.socket.id!);
     _socket.send(SocketEvent.joinClassicGame, request.toJson());
   }
 
-  void sendGameRequest(GameModeModel mode) {
+  void sendGameRequest() {
     try {
-      GameModeRequest data = GameModeRequest(gameModeModel: mode);
+      GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
       _socket.send(SocketEvent.getGamesWaiting, data.toJson());
-      print(mode);
+      print(gameMode);
     } catch (error) {
       print('Error while sending the request: $error');
     }
@@ -114,12 +118,14 @@ class GameManagerService extends ChangeNotifier {
 
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
+    creatorStartingTimer = timer;
+    print("Starting timer : creatorStartingTimer");
+    print(creatorStartingTimer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
           card: ClassicGameModel(
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
-      print(data.toJson());
       _socket.send(SocketEvent.createClassicGame, data.toJson());
       print("CreateGame event sent: $data");
     } catch (error) {
@@ -129,7 +135,6 @@ class GameManagerService extends ChangeNotifier {
 
   bool isGameJoinable(String gameId, GameModeModel gameMode) {
     if (waitingGame == null) return false;
-
     List<String> currentGames = waitingGame!.gamesWaiting;
     for (var game in currentGames) {
       if (game == gameId) return true;
@@ -137,13 +142,14 @@ class GameManagerService extends ChangeNotifier {
     return false;
   }
 
-  void joinGameSend(String roomId) {
-    JoinGameSendRequest data = JoinGameSendRequest(gameId: roomId);
+  void joinGameSend(String playerName, String roomId) {
+    JoinGameSendRequest data =
+        JoinGameSendRequest(player: playerName, gameId: roomId);
     _socket.send(SocketEvent.joinGame, data.toJson());
   }
 
-  void leaveArena(String gameId) {
-    LeaveArenaRequest data = LeaveArenaRequest(gameId: gameId);
+  void leavingArena() {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: currentRoomId!);
     _socket.send(SocketEvent.leavingArena, data.toJson());
     print("leavingArena");
   }
@@ -159,6 +165,9 @@ class GameManagerService extends ChangeNotifier {
     ReadyGameRequest data =
         ReadyGameRequest(gameId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.ready, data.toJson());
+    StartClockRequest clockData = StartClockRequest(
+        timer: startingTimer, roomId: waitingRoomInfoRequest!.roomId);
+    _socket.send(SocketEvent.startClock, clockData.toJson());
   }
 
   void setCurrentUser() {
@@ -174,10 +183,34 @@ class GameManagerService extends ChangeNotifier {
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
       if (player.name == differenceFound.playerName) {
-        player.nbDifferenceFound++;
+        for (var diff in player.nbDifferenceFound) {
+          if (diff.x == differenceFound.differenceCoord.x &&
+              diff.y == differenceFound.differenceCoord.y) {
+            return;
+          }
+        }
+        if (player.name == currentUser!.name && !global.isModeReplayActivated) {
+          _userService.updateUserNbDiffFound(currentUser!.id);
+        }
+        player.nbDifferenceFound.add(differenceFound.differenceCoord);
       }
     }
     notifyListeners();
+  }
+
+  void resetAllPlayersNbDifference() {
+    for (var player in players) {
+      player.nbDifferenceFound = [];
+    }
+    notifyListeners();
+  }
+
+  void resetPlayerNbDifference(String playerName) {
+    for (var player in players) {
+      if (player.name == playerName) {
+        player.nbDifferenceFound = [];
+      }
+    }
   }
 
   bool doesPlayerLaunchGame() {

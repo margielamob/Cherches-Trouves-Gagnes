@@ -28,6 +28,7 @@ export class DifferencesDetectionHandlerService {
     setNumberDifferencesFound(playerName: string) {
         const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
         this.gameInfoHandlerService.players[index].nbDifferences++;
+        this.userService.updateNbDifferenceFound(playerName);
         this.gameInfoHandlerService.$differenceFound.next(playerName);
     }
 
@@ -75,7 +76,11 @@ export class DifferencesDetectionHandlerService {
 
     differenceDetected(ctx: CanvasRenderingContext2D, ctxModified: CanvasRenderingContext2D, coords: Coordinate[], timeFactor: number = 1) {
         this.playCorrectSound();
-        this.displayDifferenceTemp(ctx, coords, false, timeFactor);
+        const interval = this.displayDifferenceTemp(ctx, coords, false, timeFactor);
+        this.clearDifference(ctxModified, coords);
+        return interval;
+    }
+    differenceDetectedLimitedTime(ctxModified: CanvasRenderingContext2D, coords: Coordinate[]) {
         this.clearDifference(ctxModified, coords);
     }
 
@@ -103,7 +108,7 @@ export class DifferencesDetectionHandlerService {
         return interval;
     }
 
-    private clearDifference(ctx: CanvasRenderingContext2D, coords: Coordinate[]) {
+    clearDifference(ctx: CanvasRenderingContext2D, coords: Coordinate[]) {
         for (const coordinate of coords) {
             ctx.clearRect(coordinate.x, coordinate.y, 1, 1);
         }

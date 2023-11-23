@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Avatar } from '@app/interfaces/avatar';
 import { UserData } from '@app/interfaces/user';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './dialog-user-avatar.component.html',
     styleUrls: ['./dialog-user-avatar.component.scss'],
 })
-export class DialogUserAvatarComponent implements OnInit {
+export class DialogUserAvatarComponent implements OnInit, OnDestroy {
     fileTypeError: string | null = null;
     selectedFileURL: string | null = null;
     selectedFile: File | null = null;
@@ -39,6 +39,11 @@ export class DialogUserAvatarComponent implements OnInit {
         private translateService: TranslateService,
         private themeService: ThemeService,
     ) {}
+    ngOnDestroy(): void {
+        if (this.userThemeSubscription) {
+            this.userThemeSubscription.unsubscribe();
+        }
+    }
 
     ngOnInit(): void {
         this.loadFileNames();

@@ -1,63 +1,72 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
-import { ReplayService, ReplayState } from '@app/services/replay-service/replay.service';
+import { REPLAY_SPEEDS } from '@app/services/replay-service/replay-interfaces';
+import { ReplayService } from '@app/services/replay-service/replay.service';
 
 @Component({
     selector: 'app-replay-bar',
     templateUrl: './replay-bar.component.html',
     styleUrls: ['./replay-bar.component.scss'],
 })
-export class ReplayBarComponent implements OnChanges {
+export class ReplayBarComponent implements OnInit, OnDestroy {
     currentSpeed = 1;
     isReplayAvailable: boolean = true;
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    replaySpeeds = [0.5, 1, 2, 3];
-    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {}
-
-    get sliderPosition() {
-        return this.replayService.getCurrentIndex();
+    replaySpeeds = REPLAY_SPEEDS;
+    sliderPosition = 0;
+    isPaused = true;
+    constructor(private readonly replayService: ReplayService, public dialog: MatDialog, private chat: ChatManagerService) {
+        this.replayService.newSlider$.subscribe((value) => {
+            this.sliderPosition = value;
+        });
     }
 
-    set sliderPosition(pos: number) {
-        this.replayService.setCurrentIndex(pos);
+    ngOnInit(): void {
+        this.sliderPosition = 0;
     }
 
-    ngOnChanges() {
-        this.seekToEvent(this.sliderPosition);
+    updateImages(percentage: number) {
+        this.replayService.stopBlinking();
+        const time = this.replayService.findInstant(percentage);
+        this.replayService.updateImagesState(time);
     }
 
-    async seekToEvent(position: number) {
-        this.replayService.setSate(ReplayState.START);
-        this.replayService.setCurrentTime(position);
-        await this.replayService.playFromIndex(position);
+    seekToEvent(percentage: number) {
+        if (!this.isPaused) {
+            this.replayService.isPlaying = true;
+        }
+        this.replayService.play(percentage);
+        this.updateImages(percentage);
     }
 
-    async replay() {
+    replay() {
+        this.isPaused = false;
+        this.replayService.isPlaying = true;
         this.dialog.closeAll();
-        await this.seekToEvent(0);
+        this.seekToEvent(0);
+    }
+
+    canPause() {
+        return this.sliderPosition !== 1;
     }
 
     pause() {
-        this.replayService.setSate(ReplayState.PAUSED);
+        this.isPaused = true;
+        this.replayService.isPlaying = false;
     }
 
-    async resume() {
-        this.replayService.setSate(ReplayState.PLAYING);
-        await this.replayService.playFromIndex(this.sliderPosition);
+    resume() {
+        this.isPaused = false;
+        this.replayService.isPlaying = true;
+        this.seekToEvent(this.sliderPosition);
     }
 
     quit() {
         this.chat.leaveGameChat();
-        this.replayService.setSate(ReplayState.DONE);
     }
 
     isReplaying(): boolean {
-        return this.replayService.state === ReplayState.START;
-    }
-
-    isPaused(): boolean {
-        return this.replayService.state === ReplayState.PAUSED;
+        return this.replayService.isPlaying;
     }
 
     setSpeed(speed: number) {
@@ -65,7 +74,13 @@ export class ReplayBarComponent implements OnChanges {
         this.replayService.setTimeFactor(this.currentSpeed);
     }
 
-    totalEvents() {
-        return this.replayService.length();
+    totalTime() {
+        return this.replayService.getTotalSeconds();
+    }
+
+    ngOnDestroy(): void {
+        this.replayService.clear();
+        this.replayService.isPlaying = false;
+        this.sliderPosition = 0;
     }
 }

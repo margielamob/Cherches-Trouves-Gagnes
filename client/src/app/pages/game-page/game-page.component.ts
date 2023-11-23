@@ -77,6 +77,8 @@ export class GamePageComponent implements OnDestroy {
         this.socket.send(SocketEvent.LeaveGame, { gameId: this.gameInfoHandlerService.roomId });
         this.socket.off(SocketEvent.Win);
         this.socket.off(SocketEvent.Lose);
+        this.differenceHandler.mouseIsDisabled = false;
+        this.gameInfoHandlerService.isGameDone = false;
         this.gameInfoHandlerService.resetGameVariables();
     }
 
@@ -88,6 +90,7 @@ export class GamePageComponent implements OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.minWidth = '50%';
+
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
@@ -106,10 +109,10 @@ export class GamePageComponent implements OnDestroy {
         const dialogRef = this.dialog.open(DialogGameOverComponent, dialogConfig);
 
         if (this.gameInfoHandlerService.isClassic()) {
-            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled) => {
-                this.isReplayToggled = isReplayToggled;
-                // eslint-disable-next-line no-console
-                console.log('received toggle', this.isReplayToggled);
+            dialogRef.componentInstance.isReplayToggled.subscribe((isReplayToggled: boolean) => {
+                if (isReplayToggled) {
+                    this.isReplayToggled = isReplayToggled;
+                }
             });
         }
     }

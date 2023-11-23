@@ -18,7 +18,6 @@ class ReachableGameManager extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.classicGameCreated, (dynamic message) {
-      print("SocketEvent.classicGameCreated");
       JoinableGamesModel request = JoinableGamesModel.fromJson(message);
       if (joinableGames == null) {
         final List<JoinableGamesModel> games = [];
@@ -31,14 +30,11 @@ class ReachableGameManager extends ChangeNotifier {
     });
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
-      print("SocketEvent.sendingJoinableClassicGames");
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
       joinableGames = request;
       notifyListeners();
     });
 
-    _socket.on(SocketEvent.updatePlayers, (dynamic message) {
-      print("updatePlayers was called");
-    });
+    _socket.on(SocketEvent.updatePlayers, (dynamic message) {});
   }
 }

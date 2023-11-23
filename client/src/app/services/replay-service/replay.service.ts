@@ -1,6 +1,6 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable no-console */
 import { Injectable } from '@angular/core';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
@@ -17,27 +17,39 @@ import { DifferenceFound, DifferenceNotFound, ReplayEvent, ReplayPayload } from 
 })
 export class ReplayService {
     // subscriptions:
-    hasReplayStarted = new BehaviorSubject<boolean>(false);
-    hasReplayStarted$ = this.hasReplayStarted.asObservable();
-    imagesLoaded = new BehaviorSubject<boolean>(false);
-    imagesLoaded$ = this.imagesLoaded.asObservable();
+    newSlider = new BehaviorSubject<number>(0);
+    newSlider$ = this.newSlider.asObservable();
+    loadImages = new BehaviorSubject<boolean>(false);
+    loadImages$ = this.loadImages.asObservable();
     cheatActivated = new BehaviorSubject<boolean>(false);
     cheatActivated$ = this.cheatActivated.asObservable();
+    isGameDone = false;
     // public props
-    state: ReplayState = ReplayState.STOPPED;
     gameId: string;
+
+    // Node.Js Timers
+    timerRef: any;
+    leftIntervalRef: any;
+    rightIntervalRef: any;
+    sliderIntervalRef: any;
     differencesContext: CanvasRenderingContext2D;
     imgOriginalContext: CanvasRenderingContext2D;
-    timerRef: any;
+    // event subject
     // private props
+    isPlaying = false;
+    isReplayMode = false;
+    currentTime: number;
+    endTime: number;
+    sliderValue = 0;
     private array: EventArray = new EventArray();
-    private previousEvent: ReplayEvent;
     private timeFactor: number = 1;
     private originalContext: CanvasRenderingContext2D;
     private modifiedContext: CanvasRenderingContext2D;
     private imgModifiedContext: CanvasRenderingContext2D;
-    private currentTime: number;
-    private timer: number;
+
+    private startingTime: number;
+    private rightImageState: Map<number, ImageData> = new Map();
+    private leftImageState: Map<number, ImageData> = new Map();
 
     // eslint-disable-next-line max-params
     constructor(
@@ -62,16 +74,7 @@ export class ReplayService {
         this.imgModifiedContext = ctxImgModified;
     }
 
-    setSate(state: ReplayState) {
-        this.state = state;
-    }
-
-    getArray(): EventArray {
-        return this.array;
-    }
-
     setTimeFactor(factor: number) {
-        console.log('new factor', factor);
         this.timeFactor = factor;
     }
 
@@ -79,22 +82,110 @@ export class ReplayService {
         return this.timeFactor;
     }
 
-    getCurrentIndex() {
-        return this.array.currentIndex;
+    findInstant(percentage: number) {
+        return this.startingTime - Math.round(this.getTotalSeconds() * percentage);
     }
 
-    setCurrentIndex(pos: number) {
-        this.array.currentIndex = pos;
+    timesUp() {
+        return this.currentTime <= this.endTime;
     }
 
-    setCurrentTime(index: number) {
+    clear() {
+        this.array.clear();
+    }
+
+    play(percentage: number) {
+        const time = this.findInstant(percentage);
+
         if (this.timerRef) {
             this.clearTimer();
         }
-        const factor = this.getElapsedSeconds(this.array.getEvent(index));
-        const time = this.timer - factor;
+
+        if (this.sliderIntervalRef) {
+            clearInterval(this.sliderIntervalRef);
+        }
 
         this.setTimer(time);
+        this.sendSlider(percentage);
+    }
+
+    setTimer(time: number) {
+        this.currentTime = time;
+        this.timerRef = setInterval(() => {
+            if (!this.isPlaying) {
+                clearInterval(this.timerRef);
+                return;
+            }
+            if (this.timesUp()) {
+                const endEvent = this.array.getEvent(this.array.length - 1);
+                if (endEvent) {
+                    this.playEvent(endEvent);
+                }
+                this.newSlider.next(1);
+                clearInterval(this.timerRef);
+                return;
+            }
+
+            const event = this.getEventFromInstant(this.currentTime);
+            if (event) {
+                this.playEvent(event);
+            }
+            this.currentTime--;
+        }, 1000 / this.timeFactor);
+    }
+
+    sendSlider(fromValue: number) {
+        this.setSliderValue(fromValue);
+        this.emitSliderValue();
+    }
+
+    setSliderValue(value: number) {
+        this.sliderValue = value;
+    }
+
+    playLastEvent() {
+        const endEvent = this.array.getEvent(this.array.length - 1);
+        if (endEvent) {
+            this.playEvent(endEvent);
+        }
+    }
+
+    displayLastInstant() {
+        this.updateImagesState(this.endTime);
+    }
+
+    emitSliderValue() {
+        const intervalTime = 100;
+        this.sliderIntervalRef = setInterval(() => {
+            if (this.sliderValue >= 1 || !this.isPlaying) {
+                if (this.sliderValue >= 1) {
+                    this.newSlider.next(1);
+                }
+                clearInterval(this.sliderIntervalRef);
+                return;
+            }
+            this.newSlider.next(this.sliderValue);
+            this.sliderValue += intervalTime / (((this.getTotalSeconds() + 1) / this.timeFactor) * 1000);
+        }, intervalTime);
+    }
+
+    getEventInstant(event: ReplayEvent) {
+        const elapsedTime = this.getElapsedSeconds(event);
+        return this.startingTime - elapsedTime;
+    }
+
+    isEventOnInstant(event: ReplayEvent, instant: number) {
+        return this.getEventInstant(event) === instant;
+    }
+
+    getEventFromInstant(instant: number) {
+        for (let i = 0; i < this.length(); i++) {
+            if (this.isEventOnInstant(this.array.getEvent(i), instant)) {
+                return this.array.getEvent(i);
+            }
+        }
+
+        return undefined;
     }
 
     addEvent(action: ReplayActions, data?: ReplayPayload, playerName?: string): void {
@@ -104,47 +195,77 @@ export class ReplayService {
             playerName,
             timestamp: Date.now(),
         } as ReplayEvent;
+        this.array.push(event);
+    }
 
-        if (this.array.isEmpty()) {
-            this.previousEvent = event;
+    stopBlinking() {
+        if (!this.leftIntervalRef || !this.rightIntervalRef) return;
+        clearInterval(this.leftIntervalRef);
+        clearInterval(this.rightIntervalRef);
+    }
+
+    saveGameState(time: number) {
+        const rightImageData = this.imgModifiedContext.getImageData(
+            0,
+            0,
+            this.imgModifiedContext.canvas.width,
+            this.imgModifiedContext.canvas.height,
+        );
+        const leftImageData = this.imgOriginalContext.getImageData(0, 0, this.imgOriginalContext.canvas.width, this.imgOriginalContext.canvas.height);
+
+        this.rightImageState.set(time, rightImageData);
+        this.leftImageState.set(time, leftImageData);
+    }
+
+    updateImagesState(time: number) {
+        if (time < this.endTime) {
+            time = this.endTime;
         }
 
-        this.array.push(event);
+        if (time === this.startingTime) {
+            time = this.startingTime - 1;
+        }
+        const rightImageData = this.rightImageState.get(time);
+        const leftImageData = this.leftImageState.get(time);
+
+        if (!rightImageData || !leftImageData) {
+            console.log('didnt find image Data');
+            return;
+        } else {
+            this.modifiedContext.putImageData(rightImageData, 0, 0);
+            this.originalContext.putImageData(leftImageData, 0, 0);
+        }
     }
 
     getFormattedTime() {
         return this.timeFormatter.formatTime(this.currentTime);
     }
 
-    async playFromIndex(index: number = this.array.currentIndex) {
-        this.array.currentIndex = index;
+    getElapsedSeconds(event: ReplayEvent) {
+        return Math.round((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
+    }
 
-        while (this.state !== ReplayState.DONE) {
-            if (this.array.end()) {
-                this.setSate(ReplayState.DONE);
-                return;
-            }
+    getTotalSeconds() {
+        return this.array.getTotalSeconds();
+    }
 
-            const event = this.array.getCurrentEvent();
-            await this.delay(this.timeSinceLastEvent(event) / this.timeFactor);
-            switch (event.action) {
-                case ReplayActions.DifferenceFoundUpdate:
-                    this.replayDifferenceFound(event);
-                    break;
-                case ReplayActions.ClickError:
-                    this.replayDifferenceNotFound(event);
-                    break;
-                case ReplayActions.StartGame:
-                    this.replayStartGame();
-                    break;
-                case ReplayActions.ActivateCheat:
-                    this.replayCheating();
-                    break;
-                default:
-                    throw Error('could not handle this event');
-            }
-            this.previousEvent = event;
-            this.array.currentIndex++;
+    playEvent(event: ReplayEvent) {
+        // this.stopBlinking();
+        switch (event.action) {
+            case ReplayActions.ClickFound:
+                this.replayDifferenceFound(event);
+                break;
+            case ReplayActions.ClickError:
+                this.replayDifferenceNotFound(event);
+                break;
+            case ReplayActions.StartGame:
+                this.replayStartGame();
+                break;
+            case ReplayActions.ActivateCheat:
+                this.replayCheating();
+                break;
+            default:
+                throw Error('could not handle this event');
         }
     }
 
@@ -164,7 +285,7 @@ export class ReplayService {
                     coords: obj.data.coords,
                     pos: obj.differenceCoord,
                 } as DifferenceFound;
-                this.addEvent(ReplayActions.DifferenceFoundUpdate, data);
+                this.addEvent(ReplayActions.ClickFound, data);
             },
         );
 
@@ -176,12 +297,20 @@ export class ReplayService {
             this.addEvent(ReplayActions.ClickError, data);
         });
 
+        this.socket.on(SocketEvent.EndedTime, (payload: { time: number }) => {
+            this.endTime = payload.time;
+        });
+
         this.socket.once(SocketEvent.GameStarted, (gameId: string) => {
             this.gameId = gameId;
             this.addEvent(ReplayActions.StartGame, gameId);
             if (this.gameHandler.timer !== 0) {
                 this.socket.send(SocketEvent.Timer, { timer: this.gameHandler.timer, roomId: this.gameId });
-                this.timer = this.gameHandler.timer;
+                this.startingTime = this.gameHandler.timer;
+            }
+
+            if (this.gameHandler.endedTime) {
+                this.socket.send(SocketEvent.EndedTime, { time: this.gameHandler.endedTime });
             }
         });
 
@@ -190,18 +319,13 @@ export class ReplayService {
         });
 
         this.socket.on(SocketEvent.Timer, (payload: { timer: number }) => {
-            this.timer = payload.timer;
+            this.startingTime = payload.timer;
         });
-    }
 
-    private setTimer(time: number) {
-        this.currentTime = time;
-        this.timerRef = setInterval(() => {
-            this.currentTime--;
-            if (this.currentTime <= this.gameHandler.endedTime) {
-                clearInterval(this.timerRef);
-            }
-        }, 1000);
+        this.socket.on(SocketEvent.Clock, (time: number) => {
+            this.currentTime = time;
+            this.saveGameState(time);
+        });
     }
 
     private clearTimer() {
@@ -210,13 +334,16 @@ export class ReplayService {
 
     private replayStartGame() {
         this.sendReplayToServer();
-        this.hasReplayStarted.next(true);
     }
-
     private replayDifferenceFound(event: ReplayEvent) {
         const data = event.data as DifferenceFound;
-        this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords, this.timeFactor);
-        this.differenceHandler.differenceDetected(this.modifiedContext, this.imgModifiedContext, data.coords, this.timeFactor);
+        this.leftIntervalRef = this.differenceHandler.differenceDetected(this.originalContext, this.imgModifiedContext, data.coords, this.timeFactor);
+        this.rightIntervalRef = this.differenceHandler.differenceDetected(
+            this.modifiedContext,
+            this.imgModifiedContext,
+            data.coords,
+            this.timeFactor,
+        );
         this.socket.send(SocketEvent.DifferenceFoundReplay, { gameId: this.gameId, differenceCoord: data.pos });
     }
 
@@ -229,47 +356,14 @@ export class ReplayService {
         this.cheatActivated.next(true);
     }
 
-    private timeSinceLastEvent(event: ReplayEvent) {
-        return event.timestamp - this.previousEvent.timestamp;
-    }
-
-    private async delay(ms: number): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        });
-    }
-
     private sendReplayToServer() {
         this.socket.send(SocketEvent.ResetGameInfosReplay, { gameId: this.gameId });
     }
-
-    private getElapsedSeconds(event: ReplayEvent) {
-        return Math.floor((event.timestamp - this.array.getEvent(0).timestamp) / 1000);
-    }
-}
-
-export enum ReplayState {
-    PLAYING,
-    PAUSED,
-    STOPPED,
-    REDO,
-    DONE,
-    START,
 }
 
 export enum ReplayActions {
     StartGame = 'StartGame',
-    ClickFound = 'ClickFound',
     ClickError = 'ClickError',
-    Message = 'Message',
     ActivateCheat = 'ActivateCheat',
-    DeactivateCheat = 'DeactivateCheat',
-    UseHint = 'UseHint',
-    TimerUpdate = 'TimerUpdate',
-    DifferenceFoundUpdate = 'DifferenceFoundUpdate',
-    OpponentDifferencesFoundUpdate = 'OpponentDifferencesFoundUpdate',
-    EndGame = 'EndGame',
-    ActivateThirdHint = 'ActivateThirdHint',
-    DeactivateThirdHint = 'DeactivateThirdHint',
-    EventMessage = 'EventMessage',
+    ClickFound = 'ClickFound',
 }

@@ -6,6 +6,7 @@ class SoundService {
 
   playDifferenceFound() async {
     try {
+      await audioPlayer.stop();
       await audioPlayer.play(AssetSource('sounds/correctanswer.wav'));
     } catch (e) {
       print('Error playing correctanswer.wav: $e');
@@ -14,6 +15,7 @@ class SoundService {
 
   playDifferenceNotFound() async {
     try {
+      await audioPlayer.stop();
       await audioPlayer.play(AssetSource('sounds/wronganswer.wav'));
     } catch (e) {
       print('Error playing wronganswer.wav: $e');

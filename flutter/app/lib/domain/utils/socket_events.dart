@@ -57,4 +57,8 @@ class SocketEvent {
   static String ReadMessages = "ReadMessages";
 
   static String UnreadMessage = "UnreadMessage";
+  static String clock = 'clock';
+  static String cheat = 'cheat';
+  static String timer = 'Timer';
+  static String startClock = 'StartClock';
 }

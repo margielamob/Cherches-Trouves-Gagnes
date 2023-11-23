@@ -3,6 +3,7 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { RouterService } from '@app/services/router-service/router.service';
 import { UserService } from '@app/services/user-service/user.service';
+import { Coordinate } from '@common/coordinate';
 import { GameId } from '@common/game-id';
 import { PublicGameInformation } from '@common/game-information';
 import { GameMode } from '@common/game-mode';
@@ -24,15 +25,17 @@ export class GameInformationHandlerService {
     $differenceFound: Subject<string> = new Subject();
     $newGame: Subject<void> = new Subject();
     gameInformation: PublicGameInformation;
-    gameMode: GameMode = GameMode.Classic;
+    gameMode: GameMode;
     isReadyToAccept: boolean = true;
     isMulti: boolean = false;
     gameTimeConstants: GameTimeConstants;
     cheatMode: boolean = false;
     timer: number = 0;
     isCreator: boolean = false;
+    differencesToClear: Coordinate[][];
     endedTime: number;
     isGameDone: boolean = false;
+    startTimer: number;
     // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,
@@ -49,9 +52,15 @@ export class GameInformationHandlerService {
         this.socket.once(SocketEvent.Play, (infos: GameId) => {
             if (infos.gameCard) {
                 this.setGameInformation(infos.gameCard);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                this.setDifferencesToClear(infos.data!.coords);
             }
             this.roomId = infos.gameId;
             this.routerService.navigateTo('game');
+        });
+
+        this.socket.on(SocketEvent.StartClock, (payload: { timer: number; roomId: string }) => {
+            this.startTimer = payload.timer;
         });
 
         this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {
@@ -61,6 +70,10 @@ export class GameInformationHandlerService {
             this.cheatMode = info.cheatMode;
             this.routerService.navigateTo('waiting');
         });
+    }
+
+    setDifferencesToClear(differences: Coordinate[][]) {
+        this.differencesToClear = differences;
     }
 
     getPlayersEX() {
@@ -155,6 +168,13 @@ export class GameInformationHandlerService {
             player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
             card: { id: this.getId(), cheatMode: this.cheatMode, timer: this.timer },
         });
+        this.setPlayerName(this.player.displayName);
+        this.handleSocketEvent();
+    }
+
+    waitingRoomLimited() {
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
         this.setPlayerName(this.player.displayName);
         this.handleSocketEvent();
     }

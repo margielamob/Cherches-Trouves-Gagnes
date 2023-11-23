@@ -20,7 +20,6 @@ import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
@@ -75,6 +74,7 @@ import { EmailVerificationComponent } from './pages/email-verification/email-ver
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 import { MongodbErrorPageComponent } from './pages/mongodb-error-page/mongodb-error-page.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';

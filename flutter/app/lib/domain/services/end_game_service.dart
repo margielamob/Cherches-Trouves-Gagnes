@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class EndGameService extends ChangeNotifier {
   final SocketService _socket = Get.find();
-  String? END_GAME_MESSAGE;
+  String? endGameMessage;
   bool isGameFinished = false;
 
   EndGameService() {
@@ -17,19 +17,18 @@ class EndGameService extends ChangeNotifier {
   void handleSockets() {
     _socket.on(SocketEvent.win, (dynamic message) {
       print("SocketEvent.win : $message");
-      END_GAME_MESSAGE = "La partie est terminée vous avez gagné !";
-      gameFinished(END_GAME_MESSAGE!);
+      endGameMessage = "La partie est terminée vous avez gagné !";
+      gameFinished(endGameMessage!);
     });
     _socket.on(SocketEvent.lose, (dynamic message) {
       print("SocketEvent.lose : $message");
-      END_GAME_MESSAGE = "La partie est terminée vous avez perdu !";
-      gameFinished(END_GAME_MESSAGE!);
+      endGameMessage = "La partie est terminée vous avez perdu !";
+      gameFinished(endGameMessage!);
     });
   }
 
   void gameFinished(String gameMessage) {
     isGameFinished = true;
     notifyListeners();
-    isGameFinished = false;
   }
 }

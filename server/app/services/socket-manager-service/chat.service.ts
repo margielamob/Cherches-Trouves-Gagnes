@@ -142,7 +142,6 @@ export class ChatSocketManager {
         socket.on(SocketEvent.CreateRoom, (roomName: string, userName: string) => {
             console.log('createRoom : ' + roomName);
             this.createRoom(roomName);
-            console.log(userName);
             if (this.userRooms.get(userName)) {
                 // const rooms = [roomName];
                 this.userRooms.get(userName)!.push({ room: roomName, read: true });

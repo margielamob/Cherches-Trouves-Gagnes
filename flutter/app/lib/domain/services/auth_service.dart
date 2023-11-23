@@ -1,5 +1,6 @@
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -20,11 +21,14 @@ class AuthService {
         email: email,
         password: password,
       );
-      currentUser = await getCurrentUser();
-      userSubject.add(currentUser);
       print('userSubject added');
       print(userSubject.value);
       // chatService.initChat();
+      final profilePageManager = Get.find<ProfilePageManager>();
+      await profilePageManager.initUserThemeAndLang();
+      getCurrentUser().then((value) {
+        userSubject.add(value);
+      });
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;
@@ -135,12 +139,34 @@ class AuthService {
         phoneNumber: userDoc['phoneNumber'],
         theme: userDoc['theme'],
         language: userDoc['language'],
-        gameLost: userDoc['gameLost'],
         gameWins: userDoc['gameWins'],
+        numberDifferenceFound: userDoc['numberDifferenceFound'],
+        totalTimePlayed: userDoc['totalTimePlayed'],
         gamePlayed: userDoc['gamePlayed'],
-        averageTime: userDoc['averageTime'],
       );
     }
     return null;
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (error) {
+      String errorMessage;
+
+      switch (error.code) {
+        case 'invalid-email':
+          errorMessage = 'Adresse e-mail invalide.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'Aucun utilisateur trouvé avec cet e-mail.';
+          break;
+        default:
+          errorMessage =
+              'Une erreur s’est produite. Veuillez réessayer plus tard.';
+      }
+
+      throw errorMessage;
+    }
   }
 }

@@ -1,7 +1,14 @@
 import 'package:app/components/avatar.dart';
 import 'package:app/components/avatar_dialog.dart';
+import 'package:app/components/update_name_dialog.dart';
+import 'package:app/domain/models/user_data.dart';
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class UserDetailButton extends StatelessWidget {
@@ -92,18 +99,37 @@ class CardWrapper extends StatelessWidget {
 }
 
 class AccountSetting extends StatelessWidget {
+  final PersonalUserService userService = Get.find();
+
+  final UserData currentUserData;
+  AccountSetting({required this.currentUserData});
+
+  void updateTheme(String newTheme) async {
+    DocumentReference userDoc =
+        userService.db.collection('users').doc(currentUserData.uid);
+
+    await userDoc.update({'theme': newTheme}).catchError((e) => print(e));
+  }
+
+  void updateLang(String newLang) async {
+    userService.language = newLang == 'English' ? 'En' : 'Fr';
+    DocumentReference userDoc =
+        userService.db.collection('users').doc(currentUserData.uid);
+
+    await userDoc
+        .update({'language': userService.language}).catchError((e) => print(e));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ProfilePageManager profileManager =
-        Provider.of<ProfilePageManager>(context);
-
+    final profileManager = Provider.of<ProfilePageManager>(context);
     return CardWrapper(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 10),
-          Text("Account settings",
+          Text(AppLocalizations.of(context)!.settingsPageTitle,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           SizedBox(height: 20),
           Row(
@@ -111,7 +137,7 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Avatar",
+                content: AppLocalizations.of(context)!.settingsAvatar,
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -141,14 +167,18 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Pseudonyme",
+                content: AppLocalizations.of(context)!.settingsPageName,
                 onPressed: () {
-                  print("Pseudonyme button was pressed");
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return UsernameDialog(userId: currentUserData.uid);
+                    },
+                  );
                 },
               ),
               SizedBox(width: 30),
-              UserDetailContent(
-                  content: profileManager.currentUser!.displayName),
+              UserDetailContent(content: currentUserData.displayName),
             ],
           ),
           SizedBox(height: 10),
@@ -156,12 +186,15 @@ class AccountSetting extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Theme"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!.settingsPageTheme),
               SizedBox(width: 30),
               DropdownButton<String>(
-                value: profileManager.currentUser!.theme,
+                value: currentUserData.theme,
                 onChanged: (newValue) {
-                  // TODO: change the theme
+                  print(newValue);
+                  updateTheme(newValue!);
+                  profileManager.setTheme(newValue);
                 },
                 items: ['Alternative', 'Default']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -178,14 +211,16 @@ class AccountSetting extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Language"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!.settingsPageLanguage),
               SizedBox(width: 30),
               DropdownButton<String>(
-                value: profileManager.currentUser!.language == 'En'
-                    ? 'English'
-                    : 'Français',
+                value:
+                    currentUserData.language == 'En' ? 'English' : 'Français',
                 onChanged: (newValue) {
-                  // TODO: update language based on choice
+                  updateLang(newValue!);
+                  profileManager.setLang(newValue);
+                  print(newValue);
                 },
                 items: ['English', 'Français']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -204,6 +239,9 @@ class AccountSetting extends StatelessWidget {
 }
 
 class AccountStatistics extends StatelessWidget {
+  final UserData currentUserData;
+  AccountStatistics({required this.currentUserData});
+
   @override
   Widget build(BuildContext context) {
     return CardWrapper(
@@ -220,7 +258,7 @@ class AccountStatistics extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeavyClientTextBox(content: "Played Games"),
-              UserDetailContent(content: "0")
+              UserDetailContent(content: currentUserData.gamePlayed.toString())
             ],
           ),
           SizedBox(height: 10),
@@ -229,7 +267,7 @@ class AccountStatistics extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeavyClientTextBox(content: "Won Games"),
-              UserDetailContent(content: "0")
+              UserDetailContent(content: currentUserData.gameWins.toString())
             ],
           ),
           SizedBox(height: 10),
@@ -238,7 +276,13 @@ class AccountStatistics extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               HeavyClientTextBox(content: "Average Difference"),
-              UserDetailContent(content: "0")
+              currentUserData.gamePlayed != 0
+                  ? UserDetailContent(
+                      content: ((currentUserData.numberDifferenceFound /
+                                  currentUserData.gamePlayed)
+                              .round())
+                          .toString())
+                  : UserDetailContent(content: ((0).toString())),
             ],
           ),
           SizedBox(height: 10),
@@ -246,9 +290,15 @@ class AccountStatistics extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Average Time"),
+              HeavyClientTextBox(content: "Average Time per Game (seconds)"),
               SizedBox(width: 20),
-              UserDetailContent(content: "0")
+              currentUserData.gamePlayed != 0
+                  ? UserDetailContent(
+                      content: ((currentUserData.totalTimePlayed /
+                                  currentUserData.gamePlayed)
+                              .round())
+                          .toString())
+                  : UserDetailContent(content: ((0).toString())),
             ],
           ),
         ],
@@ -260,35 +310,63 @@ class AccountStatistics extends StatelessWidget {
 class UserPersonalInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final ProfilePageManager profilePageManager =
-        Provider.of<ProfilePageManager>(context);
+    final AuthService authService = AuthService();
 
-    if (profilePageManager.currentUser == null) {
-      profilePageManager.initUser();
-      return Center(child: CircularProgressIndicator());
-    }
+    return FutureBuilder<String>(
+      future: authService.getCurrentUserId(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [AccountSetting(), SizedBox(height: 20), AccountStatistics()],
+        if (snapshot.hasError) {
+          return Center(
+              child: Text(
+                  "Erreur lors de la récupération de l'ID de l'utilisateur."));
+        }
+
+        if (!snapshot.hasData) {
+          return Center(child: Text("ID de l'utilisateur non disponible."));
+        }
+
+        final userId = snapshot.data!;
+
+        return StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                      "Erreur lors de la récupération des données de l'utilisateur."));
+            }
+
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return Center(
+                  child: Text("Données de l'utilisateur non trouvées."));
+            }
+
+            final currentUserData = UserData.fromSnapshot(snapshot.data!);
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AccountSetting(currentUserData: currentUserData),
+                SizedBox(height: 20),
+                AccountStatistics(currentUserData: currentUserData),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
-
-/*
-MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: Avatar(
-                              photoURL: avatar,
-                              onTap: () async {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AvatarDialog();
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-*/

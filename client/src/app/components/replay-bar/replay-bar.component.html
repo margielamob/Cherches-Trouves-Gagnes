@@ -1,21 +1,19 @@
 <div *ngIf="isReplayAvailable" class="replay-container">
-    <input type="range" [(ngModel)]="sliderPosition" (change)="seekToEvent(sliderPosition)" min="0" [max]="totalEvents()" />
+    <input type="range" [(ngModel)]="sliderPosition" (change)="seekToEvent(sliderPosition)" min="0" [max]="1" step="0.001" />
     <button mat-button class="home-button" (click)="quit()" [routerLink]="'/home'" routerLinkActive="router-link-active">
         <mat-icon>home</mat-icon>
     </button>
-    <button mat-button [disabled]="isReplaying()" class="replay-button" (click)="replay()">
+    <button mat-button class="replay-button" (click)="replay()">
         <mat-icon>replay</mat-icon>
     </button>
-    <button mat-button *ngIf="!isPaused()" class="pause-button" (click)="pause()">
-        <mat-icon>pause_circle_filled</mat-icon>
-    </button>
-    <button mat-button *ngIf="isPaused()" class="resume-button" (click)="resume()">
-        <mat-icon>play_circle_filled</mat-icon>
+    <button mat-button [disabled]="!canPause()" (click)="isPaused ? resume() : pause()">
+        <mat-icon>{{ isPaused ? 'play_circle_filled' : 'pause_circle_filled' }}</mat-icon>
     </button>
     <mat-radio-group [(ngModel)]="currentSpeed">
         <mat-radio-button
             mat-button
             class="speed-radio"
+            [disabled]="isReplaying()"
             (click)="setSpeed(replaySpeed)"
             *ngFor="let replaySpeed of replaySpeeds"
             [value]="replaySpeed"

@@ -2,17 +2,16 @@ import 'package:app/components/carousel.dart';
 import 'package:app/components/carousel_modal.dart';
 import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/pages/create_game.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AdminPage extends StatelessWidget {
-  final bool enabled = false;
   final CarouselService service = Get.find();
   @override
   Widget build(BuildContext context) {
     final carouselService = Provider.of<CarouselService>(context);
-    final VoidCallback? onPressed = enabled ? () {} : null;
 
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(context, 'Administration'),
@@ -24,7 +23,9 @@ class AdminPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FilledButton(
-                  onPressed: onPressed,
+                  onPressed: () {
+                    Get.to(CreateGamePage());
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

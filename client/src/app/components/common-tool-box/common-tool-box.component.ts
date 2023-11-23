@@ -17,6 +17,8 @@ export class CommonToolBoxComponent implements OnInit {
     @Input() canvasType: CanvasType;
     tool: typeof Tool = Tool;
     colorButton: { pencil: string; eraser: string };
+    isRectangleSelected: boolean = false;
+    isEllipseSelected: boolean = false;
 
     /* Michel prefers to have more services uncoupled than tighly bounded components and services*/
     // eslint-disable-next-line max-params
@@ -62,5 +64,26 @@ export class CommonToolBoxComponent implements OnInit {
 
     openUploadDialog(): void {
         this.dialog.open(DialogUploadFormComponent, { data: { canvas: this.canvasType } });
+    }
+
+    onClickRectangle() {
+        if (this.isEllipseSelected) return;
+        this.isRectangleSelected = !this.isRectangleSelected;
+        if (this.isRectangleSelected) {
+            this.drawService.selectedShape = 'Rectangle';
+        } else {
+            this.drawService.selectedShape = null;
+        }
+    }
+
+    onClickEllipse() {
+        if (this.isRectangleSelected) return;
+        this.isEllipseSelected = !this.isEllipseSelected;
+
+        if (this.isEllipseSelected) {
+            this.drawService.selectedShape = 'Ellipse';
+        } else {
+            this.drawService.selectedShape = null;
+        }
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { ReplayEvent } from './replay-interfaces';
 
 export class EventArray {
@@ -37,12 +38,7 @@ export class EventArray {
         return this.array[this.currentIndex];
     }
 
-    getTotalTime() {
-        let sum = 0;
-        for (let i = 0; i < this.length; i++) {
-            if (i + 1 > this.length) break;
-            sum += this.array[i + 1].timestamp - this.array[i].timestamp;
-        }
-        return sum;
+    getTotalSeconds() {
+        return Math.round(this.array[this.length - 1].timestamp - this.array[0].timestamp) / 1000;
     }
 }

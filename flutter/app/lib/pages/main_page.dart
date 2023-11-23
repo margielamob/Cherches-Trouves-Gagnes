@@ -1,9 +1,13 @@
 import 'package:app/components/chat/chat_panel.dart';
 import 'package:app/components/classic_game_dialog.dart';
 import 'package:app/components/logout_dialog.dart';
+import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class MainPage extends StatefulWidget {
@@ -13,6 +17,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final GameManagerService gameManagerService = Get.find();
+  final PersonalUserService userService = Get.find();
 
   final ChatDisplayService chatDisplayService = Get.find();
 
@@ -67,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                         child: Row(
                           children: [
                             Text(
-                              'Jeux de différences',
+                              AppLocalizations.of(context)!.mainPageTitle,
                               style: TextStyle(
                                   fontSize: 35, fontWeight: FontWeight.bold),
                             ),
@@ -84,48 +89,62 @@ class _MainPageState extends State<MainPage> {
                       ElevatedButton(
                         style: ButtonStyle(
                           minimumSize:
-                              MaterialStateProperty.all(Size(160.0, 60.0)),
+                              MaterialStateProperty.all(Size(180.0, 60.0)),
                         ),
                         onPressed: () {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
+                              gameManagerService.gameMode =
+                                  GameModeModel(GameMode.classic);
                               return ClassicGameDialog();
                             },
                           );
                         },
-                        child: Text('Mode de jeux classique'),
+                        child:
+                            Text(AppLocalizations.of(context)!.mainPageClassic),
                       ),
                       SizedBox(height: 30),
                       ElevatedButton(
                         style: ButtonStyle(
                           minimumSize:
-                              MaterialStateProperty.all(Size(160.0, 60.0)),
+                              MaterialStateProperty.all(Size(180.0, 60.0)),
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              gameManagerService.gameMode =
+                                  GameModeModel(GameMode.limited);
+                              return ClassicGameDialog();
+                            },
+                          );
+                        },
+                        child:
+                            Text(AppLocalizations.of(context)!.mainPageLimited),
+                      ),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          minimumSize:
+                              MaterialStateProperty.all(Size(180.0, 60.0)),
                         ),
                         onPressed: () {
                           Navigator.pushNamed(context, '/adminPage');
                         },
-                        child: Text('Go to admin'),
-                      ),
-                      SizedBox(height: 60),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          minimumSize:
-                              MaterialStateProperty.all(Size(160.0, 60.0)),
-                        ),
-                        onPressed: () {},
-                        child: Text('Go to Page F'),
+                        child: Text('Administration'),
                       ),
                       SizedBox(height: 30),
                       ElevatedButton(
                         style: ButtonStyle(
                           minimumSize:
-                              MaterialStateProperty.all(Size(160.0, 60.0)),
+                              MaterialStateProperty.all(Size(180.0, 60.0)),
                         ),
                         onPressed: () {
                           Navigator.pushNamed(context, '/ProfilePage');
                         },
-                        child: Text('Page de profile'),
+                        child: Text(
+                            AppLocalizations.of(context)!.mainPageSettings),
                       ),
                       SizedBox(height: 30),
                       ElevatedButton(

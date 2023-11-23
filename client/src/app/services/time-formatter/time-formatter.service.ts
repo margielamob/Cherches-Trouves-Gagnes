@@ -8,10 +8,14 @@ import { Injectable } from '@angular/core';
 export class TimeFormatterService {
     private precision: number = 2;
 
-    formatTime(seconds: number): string {
-        const min = Math.floor(seconds / 60).toString();
-        const sec = (seconds % 60).toString();
-        return `${min.padStart(this.precision, '0')}:${sec.padStart(this.precision, '0')}`;
+    formatTime(seconds?: number): string {
+        if (seconds) {
+            const min = Math.floor(seconds / 60).toString();
+            const sec = (seconds % 60).toString();
+            return `${min.padStart(this.precision, '0')}:${sec.padStart(this.precision, '0')}`;
+        } else {
+            return 'UNDEFINED';
+        }
     }
 
     formatTimeForScore(seconds: number): string {
