@@ -74,6 +74,10 @@ export class GameInfoService {
         }
     }
 
+    async convertToBase64(imageData: ImageData) {
+        return await this.bmpService.convertToBase64(imageData);
+    }
+
     async addGameInfoWrapper(images: { original: Bmp; modify: Bmp }, name: string, radius: number): Promise<void | null> {
         try {
             const originalRef = await this.bmpService.createImageRef(await images.original.toImageData());

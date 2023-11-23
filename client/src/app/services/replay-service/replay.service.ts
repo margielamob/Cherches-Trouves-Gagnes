@@ -26,7 +26,6 @@ export class ReplayService {
     isGameDone = false;
     // public props
     gameId: string;
-
     // Node.Js Timers
     timerRef: any;
     leftIntervalRef: any;
@@ -229,7 +228,6 @@ export class ReplayService {
         const leftImageData = this.leftImageState.get(time);
 
         if (!rightImageData || !leftImageData) {
-            console.log('didnt find image Data');
             return;
         } else {
             this.modifiedContext.putImageData(rightImageData, 0, 0);

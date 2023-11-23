@@ -72,5 +72,7 @@ export enum SocketEvent {
     ReadMessages = 'ReadMessages',
     UnreadMessage = 'UnreadMessage',
     StartClock = 'StartClock',
+    StartLimitedClock = 'StartLimitedClock',
     EndedTime = 'EndedTime',
+    TimerBonus = 'TimerBonus',
 }

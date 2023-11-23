@@ -165,6 +165,30 @@ export class GameController {
             }
         });
 
+        this.router.post('/flutter/card/validation', async (req: Request, res: Response) => {
+            if (!req.body.original || !req.body.modify || req.body.differenceRadius === undefined) {
+                res.status(StatusCodes.BAD_REQUEST).send();
+                return;
+            }
+            try {
+                const original = new Bmp({ width: req.body.original.width, height: req.body.original.height }, req.body.original.data as number[]);
+                const modify = new Bmp({ width: req.body.modify.width, height: req.body.modify.height }, req.body.modify.data as number[]);
+                const numberDifference = await this.gameValidation.numberDifference(original, modify, req.body.differenceRadius as number);
+                const differenceImage = await this.bmpSubtractor.getDifferenceBMP(original, modify, req.body.differenceRadius as number);
+                const differenceImageBase64 = await this.gameInfo.convertToBase64(await differenceImage.toImageData());
+                res.status(
+                    (await this.gameValidation.isNbDifferenceValid(original, modify, req.body.differenceRadius as number))
+                        ? StatusCodes.ACCEPTED
+                        : StatusCodes.NOT_ACCEPTABLE,
+                ).send({
+                    nbDifferences: numberDifference,
+                    differenceImage: differenceImageBase64,
+                });
+            } catch (e) {
+                res.status(StatusCodes.NOT_FOUND).send();
+            }
+        });
+
         this.router.post('/card', async (req: Request, res: Response) => {
             if (!req.body.original || !req.body.modify || req.body.differenceRadius === undefined || req.body.name === undefined) {
                 res.status(StatusCodes.BAD_REQUEST).send();
