@@ -1,55 +1,17 @@
 import 'package:app/components/drawing_canvas.dart';
 import 'package:app/domain/services/drawing_service.dart';
+import 'package:app/domain/services/drawing_service_left.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class _CanvasForegroundPainterLeft extends CustomPainter {
+class _CanvasPainterLeft extends CustomPainter {
   final DrawingService drawingService;
-  _CanvasForegroundPainterLeft(this.drawingService);
+  _CanvasPainterLeft(this.drawingService);
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
-
-    for (var stroke in drawingService.strokes) {
-      final path = Path();
-
-      if (stroke.coordinates.length > 1) {
-        path.moveTo(stroke.coordinates[0].x.toDouble(),
-            stroke.coordinates[0].y.toDouble());
-
-        for (int i = 1; i < stroke.coordinates.length - 1; ++i) {
-          final coord0 = stroke.coordinates[i];
-          final coord1 = stroke.coordinates[i + 1];
-
-          final controlPointX = (coord0.x + coord1.x) / 2;
-          final controlPointY = (coord0.y + coord1.y) / 2;
-
-          path.quadraticBezierTo(
-            coord0.x.toDouble(),
-            coord0.y.toDouble(),
-            controlPointX,
-            controlPointY,
-          );
-
-          path.quadraticBezierTo(
-            controlPointX,
-            controlPointY,
-            (controlPointX + coord1.x) / 2,
-            (controlPointY + coord1.y) / 2,
-          );
-        }
-
-        final lastPoint = stroke.coordinates.last;
-        path.lineTo(lastPoint.x.toDouble(), lastPoint.y.toDouble());
-      }
-
-      canvas.drawPath(path, paint);
-    }
+    drawingService.showDrawing(canvas, false);
   }
 
   @override
@@ -59,19 +21,26 @@ class _CanvasForegroundPainterLeft extends CustomPainter {
 }
 
 class _CanvasBackgroundPainterLeft extends CustomPainter {
+  final DrawingServiceLeft drawingServiceLeft = Get.find();
   @override
-  void paint(Canvas canvas, Size size) {}
+  void paint(Canvas canvas, Size size) {
+    final backgroundImage = drawingServiceLeft.background;
+    if (backgroundImage == null) return;
+    canvas.scale(
+        DrawingCanvas.tabletScalingRatio, DrawingCanvas.tabletScalingRatio);
+    canvas.drawImage(backgroundImage, Offset.zero, Paint());
+  }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }
 
 class DrawingCanvasLeft extends DrawingCanvas {
   @override
   Widget build(BuildContext context) {
-    final drawService = Provider.of<DrawingService>(context);
+    final drawService = Provider.of<DrawingServiceLeft>(context);
     return Column(
       children: <Widget>[
         Container(
@@ -88,8 +57,8 @@ class DrawingCanvasLeft extends DrawingCanvas {
               y.value = details.localPosition.dy.toDouble() /
                   DrawingCanvas.tabletScalingRatio;
 
-              //drawService.tap(details);
-              //print("onTapUp");
+              drawService.tap(details);
+              print("onTapUp");
             },
             onPanStart: (details) {
               print("onPanStart");
@@ -114,14 +83,14 @@ class DrawingCanvasLeft extends DrawingCanvas {
                   DrawingCanvas.tabletScalingRatio,
               child: CustomPaint(
                 painter: _CanvasBackgroundPainterLeft(),
-                foregroundPainter: _CanvasForegroundPainterLeft(drawService),
+                foregroundPainter: _CanvasPainterLeft(drawService),
               ),
             ),
           ),
         ),
         Obx(
           () => Text("Coordinate x : ${x.value}, y : ${y.value}"),
-        )
+        ),
       ],
     );
   }

@@ -1,7 +1,8 @@
 import 'package:app/components/drawing_canvas_left.dart';
 import 'package:app/components/drawing_canvas_right.dart';
 import 'package:app/components/menu_between_canvas.dart';
-import 'package:app/components/menu_under_canvas.dart';
+import 'package:app/components/menu_under_canvas_left.dart';
+import 'package:app/components/menu_under_canvas_right.dart';
 import 'package:app/components/pencil_box.dart';
 import 'package:app/components/submission_box_new_drawing.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class CreateGamePage extends StatelessWidget {
               Column(
                 children: [
                   DrawingCanvasLeft(),
-                  MenuUnderCanvas(),
+                  MenuUnderCanvasLeft(),
                 ],
               ),
               SizedBox(width: 20),
@@ -32,7 +33,7 @@ class CreateGamePage extends StatelessWidget {
               Column(
                 children: [
                   DrawingCanvasRight(),
-                  MenuUnderCanvas(),
+                  MenuUnderCanvasRight(),
                 ],
               ),
             ],
