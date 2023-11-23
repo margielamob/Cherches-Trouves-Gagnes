@@ -117,6 +117,10 @@ class GameManagerService extends ChangeNotifier {
       TimerRequest request = TimerRequest.fromJson(message);
       startingTimerReceived = request.timer;
     });
+    _socket.on(SocketEvent.startLimitedClock, (dynamic message) {
+      TimerRequest request = TimerRequest.fromJson(message);
+      startingTimerReceived = request.timer;
+    });
     _socket.on(SocketEvent.newGameBoard, (dynamic message) {
       NewGameRequest request = NewGameRequest.fromJson(message);
       gameCards = request.gameInfo;
