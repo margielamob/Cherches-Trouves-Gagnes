@@ -2,6 +2,7 @@ import 'package:app/domain/models/classic_game_model.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/models/limited_game_model.dart';
+import 'package:app/domain/models/requests/bonus_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/create_limited_game_request.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
@@ -21,6 +22,7 @@ import 'package:app/domain/models/requests/waiting_room_request.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/models/waiting_game_model.dart';
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/socket_service.dart';
@@ -39,6 +41,7 @@ class GameManagerService extends ChangeNotifier {
   final SocketService _socket = Get.find();
   final AuthService _authService = AuthService();
   final PersonalUserService _userService = Get.find();
+  final ClockService _clockService = Get.find();
 
   WaitingRoomInfoRequest? waitingRoomInfoRequest;
   WaitingGameModel? waitingGame;
@@ -50,8 +53,9 @@ class GameManagerService extends ChangeNotifier {
   String? currentRoomId;
   List<String> playerInWaitingRoom = [];
   bool isMulti = false;
-  int startingTimer = 0;
   int creatorStartingTimer = 0;
+  int startingTimerReceived = 0;
+  int limitedTimerBonus = 0;
   GameModeModel? gameMode;
   List<Vec2> limitedCoords = [];
   VoidCallback? onGameCardsChanged;
@@ -72,9 +76,10 @@ class GameManagerService extends ChangeNotifier {
         Get.offAll(Classic(gameId: currentRoomId!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
+        currentRoomId = data.gameId;
         gameCards = data.gameCard;
         limitedCoords = data.data.coords;
-        Get.offAll(Classic(gameId: data.gameId));
+        Get.offAll(Classic(gameId: currentRoomId!));
       }
     });
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
@@ -110,13 +115,17 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.startClock, (dynamic message) {
       TimerRequest request = TimerRequest.fromJson(message);
-      startingTimer = request.timer;
+      startingTimerReceived = request.timer;
     });
     _socket.on(SocketEvent.newGameBoard, (dynamic message) {
       NewGameRequest request = NewGameRequest.fromJson(message);
       gameCards = request.gameInfo;
       limitedCoords = request.coords;
       gameCardsUpdated(gameCards);
+    });
+    _socket.on(SocketEvent.timerBonus, (dynamic message) {
+      BonusRequest request = BonusRequest.fromJson(message);
+      limitedTimerBonus += request.bonus;
     });
   }
 
@@ -144,21 +153,19 @@ class GameManagerService extends ChangeNotifier {
   void createMultiplayerGame(
       String cardId, bool cheatModeActivated, int timer) {
     creatorStartingTimer = timer;
-    print("Starting timer : creatorStartingTimer");
-    print(creatorStartingTimer);
     try {
       CreateClassicGameRequest data = CreateClassicGameRequest(
           user: currentUser!,
           card: ClassicGameModel(
               id: cardId, cheatMode: cheatModeActivated, timer: timer));
       _socket.send(SocketEvent.createClassicGame, data.toJson());
-      print("CreateGame event sent: $data");
     } catch (error) {
       print('Error while sending CreateGame event: $error');
     }
   }
 
   void createLimitedGame(int timer, int bonus, bool cheatModeActivated) {
+    creatorStartingTimer = timer;
     try {
       CreateLimitedGameRequest data = CreateLimitedGameRequest(
           user: currentUser!,
@@ -202,7 +209,7 @@ class GameManagerService extends ChangeNotifier {
         ReadyGameRequest(gameId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.ready, data.toJson());
     StartClockRequest clockData = StartClockRequest(
-        timer: startingTimer, roomId: waitingRoomInfoRequest!.roomId);
+        timer: creatorStartingTimer, roomId: waitingRoomInfoRequest!.roomId);
     _socket.send(SocketEvent.startClock, clockData.toJson());
   }
 
@@ -254,5 +261,33 @@ class GameManagerService extends ChangeNotifier {
             waitingRoomInfoRequest!.players[0].name == currentUser?.name)
         ? true
         : false);
+  }
+
+  void updateTotalTimePlayed() {
+    if (gameMode!.value == "Temps Limité") {
+      updateTotalTimePlayedLimited();
+    } else {
+      updateTotalTimePlayedClassic();
+    }
+  }
+
+  void updateTotalTimePlayedLimited() {
+    if (creatorStartingTimer != 0) {
+      _userService.updateUserTotalTimePlayed(currentUser!.id,
+          creatorStartingTimer - _clockService.time! + limitedTimerBonus);
+    } else {
+      _userService.updateUserTotalTimePlayed(currentUser!.id,
+          startingTimerReceived - _clockService.time! + limitedTimerBonus);
+    }
+  }
+
+  void updateTotalTimePlayedClassic() {
+    if (creatorStartingTimer != 0) {
+      _userService.updateUserTotalTimePlayed(
+          currentUser!.id, creatorStartingTimer - _clockService.time!);
+    } else {
+      _userService.updateUserTotalTimePlayed(
+          currentUser!.id, startingTimerReceived - _clockService.time!);
+    }
   }
 }
