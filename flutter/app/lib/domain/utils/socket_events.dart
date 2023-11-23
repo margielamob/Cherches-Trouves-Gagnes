@@ -35,5 +35,7 @@ class SocketEvent {
   static String cheat = 'cheat';
   static String timer = 'Timer';
   static String startClock = 'StartClock';
+  static String startLimitedClock = 'StartLimitedClock';
   static String newGameBoard = 'newGameBoard';
+  static String timerBonus = 'TimerBonus';
 }

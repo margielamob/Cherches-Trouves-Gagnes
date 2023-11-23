@@ -7,7 +7,6 @@ import 'package:app/components/game_vignette_original.dart';
 import 'package:app/components/video_player.dart';
 import 'package:app/domain/models/vignettes_model.dart';
 import 'package:app/domain/services/classic_game_service.dart';
-import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -33,7 +32,6 @@ class _ClassicState extends State<Classic> {
   final GameManagerService gameManagerService = Get.find();
   final SocketService _socket = Get.find();
   final PersonalUserService _userService = Get.find();
-  final ClockService _clockService = Get.find();
 
   @override
   void initState() {
@@ -76,17 +74,7 @@ class _ClassicState extends State<Classic> {
                   if (endGameService.isGameFinished) {
                     _userService.updateUserGamePlayer(
                         gameManagerService.currentUser!.id);
-                    if (gameManagerService.creatorStartingTimer != 0) {
-                      _userService.updateUserTotalTimePlayed(
-                          gameManagerService.currentUser!.id,
-                          (gameManagerService.creatorStartingTimer -
-                              _clockService.time!));
-                    } else {
-                      _userService.updateUserTotalTimePlayed(
-                          gameManagerService.currentUser!.id,
-                          gameManagerService.startingTimer -
-                              _clockService.time!);
-                    }
+                    gameManagerService.updateTotalTimePlayed();
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showDialog(
                         context: context,
