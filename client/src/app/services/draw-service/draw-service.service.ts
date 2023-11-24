@@ -66,7 +66,7 @@ export class DrawService {
         if (this.selectedShape === 'Rectangle') {
             this.isDrawingRectangle = true;
             this.startPosRect = { posX: event.offsetX, posY: event.offsetY };
-            this.drawRectangle(event, focusedCanvas.foreground);
+            this.drawRectangle(event, focusedCanvas.temporary);
             return;
         }
         if (this.pencil.state === Tool.Pencil) {
@@ -85,7 +85,7 @@ export class DrawService {
         ctx.stroke();
     }
 
-    drawRectangle(event: MouseEvent, focusedCanvas: ElementRef<HTMLCanvasElement>) {
+    drawRectangle(event: MouseEvent, tempCanvas: ElementRef<HTMLCanvasElement>) {
         if (!this.isDrawingRectangle) return;
 
         const width = event.offsetX - this.startPosRect.posX;
@@ -96,7 +96,7 @@ export class DrawService {
 
         cancelAnimationFrame(this.animatedFrameID);
         this.animatedFrameID = requestAnimationFrame(() => {
-            this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, focusedCanvas);
+            this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, tempCanvas);
         });
     }
 
@@ -111,10 +111,9 @@ export class DrawService {
     }
 
     drawRectangleShape(startX: number, startY: number, width: number, height: number, focusedCanvas: ElementRef<HTMLCanvasElement>) {
-        this.executeAllCommand();
         const ctxTemp = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
         ctxTemp.fillStyle = this.pencil.color;
-        if (this.indexOfCommand) ctxTemp.clearRect(0, 0, ctxTemp.canvas.width, ctxTemp.canvas.height);
         ctxTemp.fillRect(startX, startY, width, height);
     }
 
@@ -122,7 +121,7 @@ export class DrawService {
         if (!this.isClick) return;
 
         if (this.selectedShape === 'Rectangle') {
-            const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground;
+            const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.temporary;
             this.drawRectangle(event, focusedCanvas as ElementRef<HTMLCanvasElement>);
             return;
         }
