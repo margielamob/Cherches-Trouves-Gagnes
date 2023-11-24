@@ -9,19 +9,19 @@ import { Service } from 'typedi';
 export class GameValidation {
     constructor(private bmpSubtractor: BmpSubtractorService, private bmpDifferenceInterpreter: BmpDifferenceInterpreter) {}
 
-    async numberDifference(original: Bmp, modify: Bmp, radius: number) {
-        return this.differenceBmp(original, modify, radius).then(async (bmpDifferentiated: Bmp) =>
-            this.bmpDifferenceInterpreter.getCoordinates(bmpDifferentiated).then((coordinates: Coordinate[][]) => coordinates.length),
-        );
+    async findNbDifference(modifiedImage: Bmp) {
+        return this.bmpDifferenceInterpreter.getCoordinates(modifiedImage).then((coordinates: Coordinate[][]) => coordinates.length);
     }
 
     async differenceBmp(original: Bmp, modify: Bmp, radius: number) {
         return this.bmpSubtractor.getDifferenceBMP(original, modify, radius).then((differenceBMP: Bmp) => differenceBMP);
     }
 
-    async isNbDifferenceValid(original: Bmp, modify: Bmp, radius: number) {
-        return this.numberDifference(original, modify, radius).then(
-            (nbDifference: number) => nbDifference >= Difference.MIN && nbDifference <= Difference.MAX,
-        );
+    async isNbDifferenceValid(nbDifference: number) {
+        return nbDifference >= Difference.MIN && nbDifference <= Difference.MAX;
+    }
+
+    async getDifferenceBMP(original: Bmp, modify: Bmp, radius: number): Promise<Bmp> {
+        return await this.bmpSubtractor.getDifferenceBMP(original, modify, radius);
     }
 }

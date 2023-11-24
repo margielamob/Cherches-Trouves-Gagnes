@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:app/components/image_border.dart';
-import 'package:app/components/vignette_name_selection_modal.dart';
 import 'package:app/domain/models/requests/vignette_created_request.dart';
 import 'package:app/domain/services/vignette_submission_service.dart';
+import 'package:app/pages/admin_page.dart';
+import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class DifferenceVignetteModal extends StatelessWidget {
   final VignetteSubmissionService submissionService = Get.find();
@@ -31,66 +34,16 @@ class DifferenceVignetteModal extends StatelessWidget {
                 return Center(child: CircularProgressIndicator());
               case ConnectionState.done:
                 if (snapshot.hasError || snapshot.data == null) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: Column(
-                      children: [
-                        Text('Error: ${snapshot.error}'),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
-                        child: const Text('Close'),
-                      ),
-                    ],
-                  );
+                  return ErrorNewVignetteCreation();
+                } else if (snapshot.data!.statusCode == 406) {
+                  return RejectionModalDifferenceVignette();
+                } else if (snapshot.data!.nbDifference != null &&
+                    snapshot.data!.differenceImage != null) {
+                  return DifferenceVignetteModalContent(
+                      nbDifference: snapshot.data!.nbDifference!,
+                      image: snapshot.data!.differenceImage!);
                 } else {
-                  return AlertDialog(
-                    title: const Text('Differences produced'),
-                    content: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                                "There are ${snapshot.data!.nbDifference} differences")
-                          ],
-                        ),
-                        ImageBorder.forSizeBox(
-                          color: Colors.black,
-                          width: 1.0,
-                          sizeBoxChild: SizedBox(
-                            width: 640,
-                            height: 480,
-                            child: Image.memory(
-                              snapshot.data!.differenceImage,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context, 'OK');
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return VignetteNameSelectionModal();
-                            },
-                          );
-                        },
-                        child: const Text('Create'),
-                      ),
-                    ],
-                  );
+                  return ErrorNewVignetteCreation();
                 }
             }
           },
@@ -99,6 +52,209 @@ class DifferenceVignetteModal extends StatelessWidget {
       child: Row(
         children: [Text("Submit"), SizedBox(width: 10), Icon(Icons.send)],
       ),
+    );
+  }
+}
+
+class RejectionModalDifferenceVignette extends StatelessWidget {
+  RejectionModalDifferenceVignette();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Error message'),
+      content: const Text("You need between 3 and 9 differences"),
+      actions: <Widget>[
+        FilledButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+}
+
+class DifferenceVignetteModalContent extends StatelessWidget {
+  final int nbDifference;
+  final Uint8List image;
+
+  DifferenceVignetteModalContent(
+      {required this.nbDifference, required this.image});
+
+  @override
+  Widget build(BuildContext context) {
+    final vignetteSubmissionService =
+        Provider.of<VignetteSubmissionService>(context);
+
+    return AlertDialog(
+      title: const Text('Differences produced'),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [Text("There are $nbDifference differences")],
+            ),
+            ImageBorder.forSizeBox(
+              color: Colors.black,
+              width: 1.0,
+              sizeBoxChild: SizedBox(
+                width: 533,
+                height: 400,
+                child: Image.memory(
+                  image,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(height: 15),
+                    Text("Give your new game a new!"),
+                    SizedBox(
+                      width: 200,
+                      child: TextField(
+                        maxLength: 20,
+                        onChanged: ((value) {
+                          vignetteSubmissionService.changeGameName(value);
+                        }),
+                        decoration: InputDecoration(labelText: 'Name'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        FilledButton(
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');
+            vignetteSubmissionService.changeGameName("");
+          },
+          child: const Text('Cancel'),
+        ),
+        FeedBackFromVignetteSubmission(),
+      ],
+    );
+  }
+}
+
+class FeedBackFromVignetteSubmission extends StatelessWidget {
+  final VignetteSubmissionService submissionService = Get.find();
+
+  Future<bool> submitNewGame() async {
+    return await submissionService.submitNewGame();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vignetteSubmissionService =
+        Provider.of<VignetteSubmissionService>(context);
+
+    return FilledButton(
+      onPressed: vignetteSubmissionService.isGameNameValid()
+          ? () {
+              Navigator.pop(context, 'OK');
+              showDialog<String>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) => FutureBuilder(
+                  future: submitNewGame(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.active:
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return Center(child: CircularProgressIndicator());
+                      case ConnectionState.done:
+                        if (snapshot.hasError ||
+                            snapshot.data == null ||
+                            snapshot.data == false) {
+                          return ErrorNewVignetteCreation();
+                        } else {
+                          return SubmissionConfirmationModalContent();
+                        }
+                    }
+                  },
+                ),
+              );
+            }
+          : null,
+      child: Text("Create"),
+    );
+  }
+}
+
+class SubmissionConfirmationModalContent extends StatelessWidget {
+  SubmissionConfirmationModalContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Congrats! A new game was created!'),
+      actions: <Widget>[
+        FilledButton(
+          onPressed: () {
+            Get.off(AdminPage());
+          },
+          child: const Text('Done'),
+        ),
+      ],
+    );
+  }
+}
+
+class ErrorModalEasterEgg extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Error message'),
+      content: Column(children: [
+        Text("A problem happened and it's because of him"),
+        ImageBorder.forSizeBox(
+          color: Colors.black,
+          width: 1.0,
+          sizeBoxChild: SizedBox(
+            width: 400,
+            height: 300,
+            child: Image.asset(
+              'assets/easter_egg.jpg',
+              width: 400,
+              height: 300,
+            ),
+          ),
+        ),
+      ]),
+      actions: <Widget>[
+        FilledButton(
+          onPressed: () => Get.offAll(MainPage()),
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+}
+
+class ErrorNewVignetteCreation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Error message'),
+      content: Column(children: [
+        Text("Error during game creation"),
+      ]),
+      actions: <Widget>[
+        FilledButton(
+          onPressed: () => Get.offAll(MainPage()),
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
