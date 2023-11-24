@@ -39,14 +39,16 @@ class VignetteCreatedRequest {
 */
 
 class DifferenceVignetteResponse {
-  int nbDifference;
-  Uint8List differenceImage;
+  int statusCode;
+  int? nbDifference;
+  Uint8List? differenceImage;
 
   DifferenceVignetteResponse(
-      {required this.nbDifference, required this.differenceImage});
+      {required this.statusCode, this.nbDifference, this.differenceImage});
 
   factory DifferenceVignetteResponse.fromJson(Map<String, dynamic> json) {
     return DifferenceVignetteResponse(
+        statusCode: 202,
         nbDifference: json['nbDifferences'],
         differenceImage: base64Decode(json['differenceImage'].split(',').last));
   }

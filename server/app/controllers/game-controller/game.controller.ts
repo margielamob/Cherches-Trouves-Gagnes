@@ -1,6 +1,5 @@
 import { Bmp } from '@app/classes/bmp/bmp';
 import { PrivateGameInformation } from '@app/interface/game-info';
-import { BmpSubtractorService } from '@app/services/bmp-subtractor-service/bmp-subtractor.service';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { GameTimeConstantService } from '@app/services/game-time-constant/game-time-constants.service';
 import { GameValidation } from '@app/services/game-validation-service/game-validation.service';
@@ -19,7 +18,6 @@ export class GameController {
     constructor(
         private gameInfo: GameInfoService,
         private gameValidation: GameValidation,
-        private bmpSubtractor: BmpSubtractorService,
         private readonly socketManager: SocketManagerService,
         private readonly gameTimeConstantService: GameTimeConstantService,
     ) {
@@ -148,17 +146,18 @@ export class GameController {
             try {
                 const original = new Bmp({ width: req.body.original.width, height: req.body.original.height }, req.body.original.data as number[]);
                 const modify = new Bmp({ width: req.body.modify.width, height: req.body.modify.height }, req.body.modify.data as number[]);
-                const numberDifference = await this.gameValidation.numberDifference(original, modify, req.body.differenceRadius as number);
-                const differenceImage = await this.bmpSubtractor.getDifferenceBMP(original, modify, req.body.differenceRadius as number);
-                res.status(
-                    (await this.gameValidation.isNbDifferenceValid(original, modify, req.body.differenceRadius as number))
-                        ? StatusCodes.ACCEPTED
-                        : StatusCodes.NOT_ACCEPTABLE,
-                ).send({
+
+                const differenceImage = await this.gameValidation.getDifferenceBMP(original, modify, req.body.differenceRadius as number);
+                const numberDifference = await this.gameValidation.findNbDifference(differenceImage);
+
+                const isNbDifferenceValid = await this.gameValidation.isNbDifferenceValid(numberDifference);
+                const imageData = Array.from((await differenceImage.toImageData()).data);
+
+                res.status(isNbDifferenceValid ? StatusCodes.ACCEPTED : StatusCodes.NOT_ACCEPTABLE).send({
                     numberDifference,
                     width: differenceImage.getWidth(),
                     height: differenceImage.getHeight(),
-                    data: Array.from((await differenceImage.toImageData()).data),
+                    data: imageData,
                 });
             } catch (e) {
                 res.status(StatusCodes.NOT_FOUND).send();
@@ -173,14 +172,13 @@ export class GameController {
             try {
                 const original = new Bmp({ width: req.body.original.width, height: req.body.original.height }, req.body.original.data as number[]);
                 const modify = new Bmp({ width: req.body.modify.width, height: req.body.modify.height }, req.body.modify.data as number[]);
-                const numberDifference = await this.gameValidation.numberDifference(original, modify, req.body.differenceRadius as number);
-                const differenceImage = await this.bmpSubtractor.getDifferenceBMP(original, modify, req.body.differenceRadius as number);
+                const differenceImage = await this.gameValidation.getDifferenceBMP(original, modify, req.body.differenceRadius as number);
+                const numberDifference = await this.gameValidation.findNbDifference(differenceImage);
+
+                const isNbDifferenceValid = await this.gameValidation.isNbDifferenceValid(numberDifference);
+
                 const differenceImageBase64 = await this.gameInfo.convertToBase64(await differenceImage.toImageData());
-                res.status(
-                    (await this.gameValidation.isNbDifferenceValid(original, modify, req.body.differenceRadius as number))
-                        ? StatusCodes.ACCEPTED
-                        : StatusCodes.NOT_ACCEPTABLE,
-                ).send({
+                res.status(isNbDifferenceValid ? StatusCodes.ACCEPTED : StatusCodes.NOT_ACCEPTABLE).send({
                     nbDifferences: numberDifference,
                     differenceImage: differenceImageBase64,
                 });
