@@ -7,4 +7,7 @@ export interface Command {
     name: string;
     strokes: Stroke[];
     style: StrokeStyle;
+    rectangleStart?: { x: number; y: number };
+    rectangleWidth?: number;
+    rectangleHeight?: number;
 }

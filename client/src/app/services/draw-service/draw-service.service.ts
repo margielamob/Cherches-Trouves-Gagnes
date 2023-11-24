@@ -3,6 +3,7 @@
 import { ElementRef, Injectable } from '@angular/core';
 import { ClearForegroundCommand } from '@app/classes/commands/clear-foreground-command';
 import { DrawCommand } from '@app/classes/commands/draw-command';
+import { DrawRectangleCommand } from '@app/classes/commands/draw-rectangle-command';
 import { PasteExternalForegroundOnCommand } from '@app/classes/commands/paste-external-foreground-on-command';
 import { SwitchForegroundCommand } from '@app/classes/commands/switch-foreground-command';
 import { DEFAULT_DRAW_CLIENT, DEFAULT_POSITION_MOUSE_CLIENT, SIZE } from '@app/constants/canvas';
@@ -65,7 +66,7 @@ export class DrawService {
         if (this.selectedShape === 'Rectangle') {
             this.isDrawingRectangle = true;
             this.startPosRect = { posX: event.offsetX, posY: event.offsetY };
-            this.drawRectangle(event, focusedCanvas.temporary);
+            this.drawRectangle(event, focusedCanvas.foreground);
             return;
         }
         if (this.pencil.state === Tool.Pencil) {
@@ -73,6 +74,15 @@ export class DrawService {
         } else {
             this.draw(event, true);
         }
+    }
+
+    drawEllipse() {
+        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground;
+        const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.clearRect(0, 0, focusedCanvas?.nativeElement.width as number, focusedCanvas?.nativeElement.height as number);
+        ctx.beginPath();
+        // ctx.ellipse(100, 100, 50, 75, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.stroke();
     }
 
     drawRectangle(event: MouseEvent, focusedCanvas: ElementRef<HTMLCanvasElement>) {
@@ -88,18 +98,24 @@ export class DrawService {
         this.animatedFrameID = requestAnimationFrame(() => {
             this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, focusedCanvas);
         });
+    }
+
+    saveRectangle(saveCanvas: ElementRef<HTMLCanvasElement>) {
+        const ctx = saveCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.fillStyle = this.pencil.color;
+        ctx.fillRect(this.coordDraw.x, this.coordDraw.y, this.currentWidth, this.currentHeight);
+
+        this.updateRectangleCommand();
+        this.addCurrentCommand(new DrawRectangleCommand(this.currentCommand, saveCanvas, this));
         this.updateImages();
     }
 
-    saveRectangle(focusedCanvas: ElementRef<HTMLCanvasElement>) {
-        const ctx = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        ctx.fillRect(this.coordDraw.x, this.coordDraw.x, this.currentWidth, this.currentHeight);
-    }
-
     drawRectangleShape(startX: number, startY: number, width: number, height: number, focusedCanvas: ElementRef<HTMLCanvasElement>) {
-        const ctx = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillRect(startX, startY, width, height);
+        this.executeAllCommand();
+        const ctxTemp = focusedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctxTemp.fillStyle = this.pencil.color;
+        if (this.indexOfCommand) ctxTemp.clearRect(0, 0, ctxTemp.canvas.width, ctxTemp.canvas.height);
+        ctxTemp.fillRect(startX, startY, width, height);
     }
 
     draw(event: MouseEvent, startOrEndErasing?: boolean) {
@@ -124,14 +140,25 @@ export class DrawService {
         });
     }
 
+    redrawRectangle(command: Command, focusedCanvas: ElementRef<HTMLCanvasElement>) {
+        const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.fillStyle = command.style.color;
+        ctx.fillRect(
+            command.rectangleStart?.x as number,
+            command.rectangleStart?.y as number,
+            command.rectangleWidth as number,
+            command.rectangleHeight as number,
+        );
+    }
+
     stopDrawingRectangle() {
-        this.updateImages();
-        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef;
-        this.saveRectangle(focusedCanvas);
+        const saveCanvas = this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef;
+        // const redrawCanvas = this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef;
+        this.saveRectangle(saveCanvas);
         this.isDrawingRectangle = false;
-        // Optionally, you can reset the width and height after releasing the mouse button.
         this.currentWidth = 0;
         this.currentHeight = 0;
+        // this.removeCommandsPastIndex();
     }
 
     stopDrawing(event: MouseEvent) {
@@ -337,6 +364,13 @@ export class DrawService {
         return { x: event.clientX - canvas.offsetLeft, y: event.clientY - canvas.offsetTop };
     }
 
+    private updateRectangleCommand() {
+        this.currentCommand.rectangleStart = { x: this.startPosRect.posX, y: this.startPosRect.posY };
+        this.currentCommand.rectangleWidth = this.currentWidth;
+        this.currentCommand.rectangleHeight = this.currentHeight;
+        this.currentCommand.name = 'drawRectangle';
+    }
+
     private updateCurrentCommand(line: Line, didStartErasing?: boolean) {
         const cap = didStartErasing === true ? 'square' : 'round';
         this.currentCommand.strokes[0].lines.push(line);
@@ -360,10 +394,19 @@ export class DrawService {
 
     private executeAllCommand() {
         this.clearAllForegrounds();
+        // this.clearAllBackgrounds();
         for (let i = 0; i < this.indexOfCommand + 1; i++) {
             this.commands[i].execute();
         }
     }
+
+    // private clearAllBackgrounds() {
+    //     this.canvasStateService.states.forEach((state) => {
+    //         const background = state.background.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+    //         this.clearBackground(background);
+    //     });
+    //     this.updateImages();
+    // }
 
     private addCurrentCommand(drawingCommand: DrawingCommand, needsToBeExecuted?: boolean) {
         this.indexOfCommand++;
