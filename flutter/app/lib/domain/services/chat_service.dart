@@ -1,6 +1,5 @@
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/auth_service.dart';
-import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
@@ -12,7 +11,6 @@ import '../models/chat_model.dart';
 class ChatManagerService {
   final SocketService socket = Get.find();
   final AuthService authService = Get.find();
-  final ChatDisplayService chatDs = Get.find();
 
   BehaviorSubject<String> activeRoom = BehaviorSubject<String>.seeded('');
 

@@ -260,6 +260,7 @@ export class ChatSocketManager {
         });
         socket.join(roomName);
         if (this.userRooms.get(user.name)) {
+            console.log('existing user ' + user.name);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, { room: roomName, read: false, lastMessage: undefined }]);
             socket.join(roomName);
@@ -268,6 +269,7 @@ export class ChatSocketManager {
     }
 
     joinGameChat(roomId: string, user: User, socket: Socket) {
+        console.log('joinGameChat');
         const roomName = 'Game (' + roomId + ')';
         socket.join(roomName);
         if (this.userRooms.get(user.name)) {

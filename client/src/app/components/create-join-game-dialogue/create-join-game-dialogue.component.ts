@@ -9,6 +9,7 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
 
@@ -29,6 +30,7 @@ export class CreateJoinGameDialogueComponent {
         private readonly carouselService: GameCarouselService,
         private gameInformationHandlerService: GameInformationHandlerService,
         private communicationSocketService: CommunicationSocketService,
+        private userService: UserService,
     ) {
         this.isLimited = data.type === 'limited';
     }
@@ -59,8 +61,8 @@ export class CreateJoinGameDialogueComponent {
                     this.gameInformationHandlerService.gameMode = GameMode.LimitedTime;
                     this.communicationSocketService.send(SocketEvent.CreateLimitedGame, {
                         player: {
-                            displayName: this.gameInformationHandlerService.player.displayName,
-                            avatar: this.gameInformationHandlerService.player.avatar,
+                            displayName: this.userService.activeUser.displayName,
+                            avatar: this.userService.activeUser.photoURL,
                         },
                         card: { id: undefined, timer: result.duration, bonus: result.bonus },
                         isMulti: true,
