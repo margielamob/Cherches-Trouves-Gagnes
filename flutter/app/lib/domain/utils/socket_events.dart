@@ -38,4 +38,5 @@ class SocketEvent {
   static String startLimitedClock = 'StartLimitedClock';
   static String newGameBoard = 'newGameBoard';
   static String timerBonus = 'TimerBonus';
+  static String observeGame = 'ObserveGame';
 }

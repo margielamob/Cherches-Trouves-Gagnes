@@ -12,7 +12,7 @@ class ClassicGameDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Créer ou rejoindre une partie"),
+      title: Text("Créer, rejoindre ou observer une partie"),
       actions: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -48,6 +48,14 @@ class ClassicGameDialog extends StatelessWidget {
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
               child: Text("Rejoindre"),
+            ),
+            SizedBox(width: 20),
+            FilledButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+              ),
+              child: Text("Observer"),
             ),
           ],
         ),

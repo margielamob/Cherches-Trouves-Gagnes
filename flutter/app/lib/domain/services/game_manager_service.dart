@@ -13,6 +13,7 @@ import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/new_game_request.dart';
+import 'package:app/domain/models/requests/observe_game_reuqest.dart';
 import 'package:app/domain/models/requests/play_limited_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/start_clock_request.dart';
@@ -128,6 +129,9 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.timerBonus, (dynamic message) {
       BonusRequest request = BonusRequest.fromJson(message);
       limitedTimerBonus += request.bonus;
+    });
+    _socket.on(SocketEvent.observeGame, (dynamic message) {
+      print(message);
     });
   }
 
@@ -291,5 +295,12 @@ class GameManagerService extends ChangeNotifier {
       _userService.updateUserTotalTimePlayed(
           currentUser!.id, startingTimerReceived - _clockService.time!);
     }
+  }
+
+  void observeGame() {
+    ObserveGameRequest data = ObserveGameRequest(
+        player: currentUser!, roomId: waitingRoomInfoRequest!.roomId);
+    print(data.toJson());
+    _socket.send(SocketEvent.observeGame, data.toJson());
   }
 }
