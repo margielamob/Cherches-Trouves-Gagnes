@@ -111,7 +111,7 @@ class ReachableGamesCard extends StatelessWidget {
                       onPressed: () {
                         gameManagerService.gameCards =
                             game.gameInformation.toGameCardModel();
-                        gameManagerService.joinGame(game.roomId);
+                        gameManagerService.observeGame(game.roomId);
                       },
                       child: Text("Observer"),
                     ),

@@ -6,13 +6,13 @@ import 'package:app/domain/models/requests/bonus_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/create_limited_game_request.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
-import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/new_game_request.dart';
+import 'package:app/domain/models/requests/observe_game_request.dart';
 import 'package:app/domain/models/requests/observe_game_reuqest.dart';
 import 'package:app/domain/models/requests/play_limited_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
@@ -60,7 +60,7 @@ class GameManagerService extends ChangeNotifier {
   GameModeModel? gameMode;
   List<Vec2> limitedCoords = [];
   VoidCallback? onGameCardsChanged;
-  bool? isObservable;
+  bool isObservable = false;
 
   GameManagerService() {
     handleSockets();
@@ -75,6 +75,11 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.play, (dynamic message) {
       if (gameMode!.value == "Classique") {
         currentRoomId = message;
+        if (isObservable) {
+          ObserveGameReceiveRequest request =
+              ObserveGameReceiveRequest.fromJson(message);
+          limitedCoords = request.data.coords;
+        }
         Get.offAll(Classic(gameId: currentRoomId!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
@@ -131,9 +136,7 @@ class GameManagerService extends ChangeNotifier {
       BonusRequest request = BonusRequest.fromJson(message);
       limitedTimerBonus += request.bonus;
     });
-    _socket.on(SocketEvent.observeGame, (dynamic message) {
-      print(message);
-    });
+    _socket.on(SocketEvent.observeGame, (dynamic message) {});
   }
 
   void gameCardsUpdated(GameCardModel? value) {
@@ -149,9 +152,9 @@ class GameManagerService extends ChangeNotifier {
 
   void sendGameRequest() {
     try {
-      GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
-      _socket.send(SocketEvent.getGamesWaiting, data.toJson());
-      print(gameMode);
+      // GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
+      // _socket.send(SocketEvent.getGamesWaiting, data.toJson());
+      // print(gameMode);
     } catch (error) {
       print('Error while sending the request: $error');
     }
@@ -249,7 +252,8 @@ class GameManagerService extends ChangeNotifier {
   }
 
   void resetAllPlayerData() {
-    isObservable = null;
+    isObservable = false;
+    limitedCoords = [];
     resetAllPlayersNbDifference();
   }
 

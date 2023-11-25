@@ -29,7 +29,7 @@ export class GameStateManager {
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 this.sio.to(gameId).emit(SocketEvent.Play, gameId);
                 this.gameManager.removeJoinableGame(gameId);
-                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+                // this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             } else {
                 const gameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
