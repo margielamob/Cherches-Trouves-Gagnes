@@ -74,11 +74,14 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       if (gameMode!.value == "Classique") {
-        currentRoomId = message;
         if (isObservable) {
           ObserveGameReceiveRequest request =
               ObserveGameReceiveRequest.fromJson(message);
+          currentRoomId = request.gameId;
+          gameCards = request.gameCard;
           limitedCoords = request.data.coords;
+        } else {
+          currentRoomId = message;
         }
         Get.offAll(Classic(gameId: currentRoomId!));
       } else if (gameMode!.value == "Temps Limité") {
