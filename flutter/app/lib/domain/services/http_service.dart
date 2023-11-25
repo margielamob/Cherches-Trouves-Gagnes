@@ -67,7 +67,7 @@ class HttpService {
         body: request.body(),
       );
 
-      if (response.statusCode == 202) {
+      if (response.statusCode == 201) {
         return true;
       }
       return false;
@@ -94,6 +94,10 @@ class HttpService {
         DifferenceVignetteResponse content =
             DifferenceVignetteResponse.fromJson(rawJson);
         return content;
+      } else if (response.statusCode == 406) {
+        DifferenceVignetteResponse response =
+            DifferenceVignetteResponse(statusCode: 406);
+        return response;
       }
       return null;
     } catch (error) {

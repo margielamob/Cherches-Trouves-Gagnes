@@ -40,14 +40,20 @@ class Stroke {
 
 class DrawingService extends ChangeNotifier {
   bool isSubmissionAvailable = true;
+  List<Stroke> strokes = [];
   ui.Image? background;
+
+  void resetForNewDrawing() {
+    isSubmissionAvailable = true;
+    background = null;
+    strokes = [];
+  }
 
   void toggleSubmission() {
     isSubmissionAvailable = !isSubmissionAvailable;
     notifyListeners();
   }
 
-  List<Stroke> strokes = [];
   void tap(TapUpDetails details) {
     final newStroke = Stroke();
     newStroke.addCoordinate(tapUpDetails: details);
