@@ -65,7 +65,6 @@ export class CreateJoinGameDialogueComponent {
                         card: { id: undefined, timer: result.duration, bonus: result.bonus },
                         isMulti: true,
                     });
-                    console.log(this.gameInformationHandlerService.player.displayName);
 
                     this.gameInformationHandlerService.setPlayerName(this.gameInformationHandlerService.player.displayName);
                     this.gameInformationHandlerService.handleSocketEvent();

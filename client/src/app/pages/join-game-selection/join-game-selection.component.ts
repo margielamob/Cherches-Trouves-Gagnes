@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
+
 @Component({
     selector: 'app-join-game-selection',
     templateUrl: './join-game-selection.component.html',
