@@ -9,10 +9,15 @@ import { BehaviorSubject, Subject, tap } from 'rxjs';
     providedIn: 'root',
 })
 export class JoinableGameService {
-    private _joinableGames = new BehaviorSubject<JoinableGameCard[]>([]);
-    private fetchGamesSubject = new Subject<void>();
+    isClassic: boolean;
+    private _joinObserveClassicGames = new BehaviorSubject<JoinableGameCard[]>([]);
+    private _joinObserveLimitedGames = new BehaviorSubject<JoinableGameCard[]>([]);
 
-    joinableGames$ = this._joinableGames.asObservable();
+    joinableClassicGames$ = this._joinObserveClassicGames.asObservable();
+    joinableLimitedGames$ = this._joinObserveLimitedGames.asObservable();
+
+    private fetchJoinableClassicGamesSubject = new Subject<void>();
+    private fetchJoinableLimitedGamesSubject = new Subject<void>();
 
     constructor(private readonly communicationSocket: CommunicationSocketService) {
         this.initSocketListeners();
@@ -21,26 +26,42 @@ export class JoinableGameService {
 
     private initSocketListeners(): void {
         this.communicationSocket.on(SocketEvent.ClassicGameCreated, (game: JoinableGameCard) => {
-            const updatedGames = [...this._joinableGames.value, game];
-            this._joinableGames.next(updatedGames);
+            const updatedClassicGames = [...this._joinObserveClassicGames.value, game];
+            this._joinObserveClassicGames.next(updatedClassicGames);
         });
 
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
-            this._joinableGames.next(payload.games);
+            console.log(payload.games);
+            this._joinObserveClassicGames.next(payload.games);
         });
-        this.communicationSocket.on(SocketEvent.SendingLimitedGameCreated, (payload: { games: JoinableGameCard[] }) => {
-            this._joinableGames.next(payload.games);
+
+        this.communicationSocket.on(SocketEvent.LimitedGameCreated, (game: JoinableGameCard) => {
+            const updatedLimitedGames = [...this._joinObserveLimitedGames.value, game];
+            this._joinObserveLimitedGames.next(updatedLimitedGames);
+        });
+
+        this.communicationSocket.on(SocketEvent.SendingJoinableLimitedGames, (payload: { games: JoinableGameCard[] }) => {
+            this._joinObserveLimitedGames.next(payload.games);
         });
     }
 
     private initRequestHandlers(): void {
-        this.fetchGamesSubject
+        this.fetchJoinableClassicGamesSubject
+            .asObservable()
+            .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetJoinableGames)))
+            .subscribe();
+        this.fetchJoinableLimitedGamesSubject
             .asObservable()
             .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetJoinableGames)))
             .subscribe();
     }
 
     fetchJoinableGames(): void {
-        this.fetchGamesSubject.next();
+        if (this.isClassic) {
+            console.log(this.isClassic);
+            this.fetchJoinableClassicGamesSubject.next();
+        } else {
+            this.fetchJoinableLimitedGamesSubject.next();
+        }
     }
 }

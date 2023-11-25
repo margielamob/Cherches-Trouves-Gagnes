@@ -1,6 +1,14 @@
 <main>
     <app-page-header [headerMessage]="'Sélectionnez votre partie'"></app-page-header>
     <div>
-        <app-game-card *ngFor="let game of joinableGames$ | async" [joinableGameCard]="game" [isJoining]="true"></app-game-card>
+        <span> Partie Classique</span>
+        <div class="cards-container">
+            <app-game-card *ngFor="let game of joinableClassicGames$ | async" [joinableGameCard]="game" [isJoining]="true"></app-game-card>
+        </div>
+
+        <span> Partie Limite</span>
+        <div class="cards-container">
+            <app-game-card *ngFor="let game of joinableLimitedGames$ | async" [joinableGameCard]="game" [isJoining]="true"></app-game-card>
+        </div>
     </div>
 </main>

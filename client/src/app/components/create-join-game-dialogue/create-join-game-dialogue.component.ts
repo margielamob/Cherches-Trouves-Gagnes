@@ -8,6 +8,7 @@ import { GameCarouselService } from '@app/services/carousel/game-carousel.servic
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
@@ -29,6 +30,7 @@ export class CreateJoinGameDialogueComponent {
         private readonly carouselService: GameCarouselService,
         private gameInformationHandlerService: GameInformationHandlerService,
         private communicationSocketService: CommunicationSocketService,
+        private joinableGameService: JoinableGameService,
     ) {
         this.isLimited = data.type === 'limited';
     }
@@ -72,6 +74,16 @@ export class CreateJoinGameDialogueComponent {
             });
         } else {
             this.router.navigate(['/select']);
+        }
+    }
+
+    onJoinClick(): void {
+        if (this.isLimited) {
+            this.joinableGameService.isClassic = false;
+            this.router.navigate(['/join-game']);
+        } else {
+            this.joinableGameService.isClassic = true;
+            this.router.navigate(['/join-game']);
         }
     }
 }
