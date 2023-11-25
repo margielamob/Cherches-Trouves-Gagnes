@@ -65,57 +65,6 @@ describe('DialogUploadFormComponent', () => {
         expect(image).toEqual(expectedImage);
     });
 
-    it('should return if the type is bmp', () => {
-        const expectedTypeTrue = 'image/bmp';
-        const expectedTypeFalse = 'image/png';
-        expect(component.isImageTypeCorrect({ type: expectedTypeTrue } as File)).toBeTrue();
-        expect(component.isImageTypeCorrect({ type: expectedTypeFalse } as File)).toBeFalse();
-    });
-
-    it('should check if the format of the image is 24bits', () => {
-        const expectedGoodFormat = 24;
-        const expectedWrongFormat = 8;
-        expect(component.isImageFormatCorrect(expectedGoodFormat)).toBeTrue();
-        expect(component.isImageFormatCorrect(expectedWrongFormat)).toBeFalse();
-    });
-
-    it('should check if the image is correct', async () => {
-        const lengthData = 30;
-        const mockFileData = new Array(lengthData);
-        const mockFile = new File(mockFileData, '');
-        const spySize = spyOn(component, 'isSizeCorrect').and.resolveTo(true);
-        const spyType = spyOn(component, 'isImageTypeCorrect').and.returnValue(true);
-        const spyFormat = spyOn(component, 'isImageFormatCorrect').and.returnValue(true);
-        expect(await component.isImageCorrect(mockFile)).toBeTrue();
-        expect(spySize).toHaveBeenCalled();
-        expect(spyType).toHaveBeenCalled();
-        expect(spyFormat).toHaveBeenCalled();
-        spySize.and.resolveTo(false);
-        spyType.and.returnValue(true);
-        spyFormat.and.returnValue(false);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-        spySize.and.resolveTo(true);
-        spyType.and.returnValue(false);
-        spyFormat.and.returnValue(false);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-        spySize.and.resolveTo(false);
-        spyType.and.returnValue(false);
-        spyFormat.and.returnValue(false);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-        spySize.and.resolveTo(true);
-        spyType.and.returnValue(true);
-        spyFormat.and.returnValue(false);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-        spySize.and.resolveTo(false);
-        spyType.and.returnValue(true);
-        spyFormat.and.returnValue(true);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-        spySize.and.resolveTo(true);
-        spyType.and.returnValue(false);
-        spyFormat.and.returnValue(true);
-        expect(await component.isImageCorrect(mockFile)).toBeFalse();
-    });
-
     it('should check the size of the image', async () => {
         const expectedSize = { width: 640, height: 480 };
         const spyCreateImage = spyOn(component, 'createImage').and.resolveTo(expectedSize as ImageBitmap);
@@ -129,42 +78,6 @@ describe('DialogUploadFormComponent', () => {
         notExpectedSize = { width: 600, height: 400 };
         spyCreateImage.and.resolveTo(notExpectedSize as ImageBitmap);
         expect(await component.isSizeCorrect({} as File)).toBeFalse();
-    });
-
-    it('should manage event to upload an image', async () => {
-        const spyImage = spyOn(component, 'isImageCorrect').and.callFake(async () => new Promise((resolve) => resolve(true)));
-        const expectedImage = {} as ImageBitmap;
-        const spyCreateImage = spyOn(component, 'createImage').and.callFake(async () => new Promise((resolve) => resolve(expectedImage)));
-        await component.uploadImage({
-            target: {
-                files: {
-                    item: () => {
-                        return {} as File;
-                    },
-                    length: 1,
-                } as FileList,
-            } as HTMLInputElement,
-        } as unknown as Event);
-        expect(spyImage).toHaveBeenCalled();
-        expect(spyCreateImage).toHaveBeenCalled();
-    });
-
-    it('should manage event to not upload an image if the image doesn t have the good requirement', async () => {
-        const spyImage = spyOn(component, 'isImageCorrect').and.callFake(async () => new Promise((resolve) => resolve(false)));
-        const expectedImage = {} as ImageBitmap;
-        const spyCreateImage = spyOn(component, 'createImage').and.callFake(async () => new Promise((resolve) => resolve(expectedImage)));
-        await component.uploadImage({
-            target: {
-                files: {
-                    item: () => {
-                        return {} as File;
-                    },
-                    length: 1,
-                } as FileList,
-            } as HTMLInputElement,
-        } as unknown as Event);
-        expect(spyImage).toHaveBeenCalled();
-        expect(spyCreateImage).not.toHaveBeenCalled();
     });
 
     it('should not submit a form because the type is not good', async () => {

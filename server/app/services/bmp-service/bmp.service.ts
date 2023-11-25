@@ -43,6 +43,16 @@ export class BmpService {
         };
     }
 
+    async convertToBase64(imageData: ImageData) {
+        const bmpData = {
+            data: Buffer.from(await Bmp.convertRGBAToARGB(Array.from(imageData.data))),
+            width: imageData.width,
+            height: imageData.height,
+        };
+        const rawData = bmp.encode(bmpData);
+        return rawData.data.toString('base64');
+    }
+
     async deleteGameImages(imageIds: string[], filepath: string): Promise<void> {
         for (const imageId of imageIds) {
             await fs.promises.unlink(path.join(filepath, ID_PREFIX + imageId + BMP_EXTENSION));

@@ -37,7 +37,9 @@ class DifferenceDetectionService extends ChangeNotifier {
     coordinates.addAll(data.data.coordinates);
     _gameManagerService.updatePlayersNbDifference(data);
     notifyListeners();
-    startBlinking(data.data.coordinates);
+    if (_gameManagerService.gameMode!.value != "Temps Limité") {
+      startBlinking(data.data.coordinates);
+    }
   }
 
   void showDifferenceNotFound() {
@@ -101,7 +103,6 @@ class DifferenceDetectionService extends ChangeNotifier {
   bool validate(Vec2 mousePosition, String gameId, bool isOriginal) {
     if (mousePosition.x < 0 || mousePosition.y < 0) return false;
     try {
-      print("pos x: ${mousePosition.x}, y: ${mousePosition.y}");
       final data = DifferenceFoundRequest(
           differenceCoord: mousePosition,
           gameId: gameId,
@@ -123,5 +124,10 @@ class DifferenceDetectionService extends ChangeNotifier {
           Offset(coord.x + 1, coord.y + 1)));
     }
     canvas.clipPath(path);
+  }
+
+  void addNewCoords(List<Vec2> coords) {
+    coordinates.addAll(coords);
+    notifyListeners();
   }
 }

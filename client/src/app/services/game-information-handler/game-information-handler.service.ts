@@ -37,6 +37,7 @@ export class GameInformationHandlerService {
     endedTime: number;
     isGameDone: boolean = false;
     isObserver: boolean = false;
+    startTimer: number;
     // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,
@@ -63,6 +64,14 @@ export class GameInformationHandlerService {
             }
             this.roomId = infos.gameId;
             this.routerService.navigateTo('game');
+        });
+
+        this.socket.on(SocketEvent.StartClock, (payload: { timer: number }) => {
+            this.startTimer = payload.timer;
+        });
+
+        this.socket.on(SocketEvent.StartLimitedClock, (payload: { timer: number }) => {
+            this.startTimer = payload.timer;
         });
 
         this.socket.on(SocketEvent.WaitPlayer, (info: WaitingRoomInfo) => {

@@ -11,4 +11,5 @@ export interface UserData {
     totalTimePlayed?: number;
     gameWins?: number;
     gamePlayed: number;
+    friends?: string[];
 }

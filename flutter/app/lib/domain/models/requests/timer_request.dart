@@ -1,17 +1,17 @@
 class TimerRequest {
-  final int time;
+  final int timer;
 
-  TimerRequest({required this.time});
+  TimerRequest({required this.timer});
 
   factory TimerRequest.fromJson(Map<String, dynamic> json) {
     return TimerRequest(
-      time: json['time'],
+      timer: json['timer'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'time': time,
+      'timer': timer,
     };
   }
 }

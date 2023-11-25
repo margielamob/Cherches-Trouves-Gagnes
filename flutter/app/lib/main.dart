@@ -4,9 +4,12 @@ import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/drawing_service_left.dart';
+import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -15,10 +18,11 @@ import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/time_formatter_service.dart';
+import 'package:app/domain/services/vignette_submission_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
-import 'package:app/pages/create_game.dart';
+import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
@@ -31,16 +35,20 @@ import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void registerDependencies() {
+  Get.put(GlobalVariables());
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(TimeFormatterService());
   Get.put(ClockService());
   Get.put(PersonalUserService());
   Get.put(AuthService());
+  Get.put(DrawingServiceLeft());
+  Get.put(DrawingServiceRight());
   Get.put(HttpService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
@@ -53,6 +61,7 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(VignetteSubmissionService());
 }
 
 late List<CameraDescription> cameras;
@@ -120,6 +129,24 @@ void main() async {
             return gameReplayService;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DrawingServiceRight drawingServiceRight = Get.find();
+            return drawingServiceRight;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DrawingServiceLeft drawingServiceLeft = Get.find();
+            return drawingServiceLeft;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            VignetteSubmissionService vignetteSubmissionService = Get.find();
+            return vignetteSubmissionService;
+          },
+        ),
       ],
       child: MyApp(),
     ),
@@ -158,6 +185,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       theme: theme,
       initialRoute: '/',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
@@ -165,7 +194,7 @@ class MyApp extends StatelessWidget {
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/signUpPage': (context) => SignUpPage(),
+        '/sign  Page': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),

@@ -22,6 +22,7 @@ import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
 import { AppLogoComponent } from './components/app-logo/app-logo.component';
@@ -41,6 +42,7 @@ import { CluesAreaComponent } from './components/clues-area/clues-area.component
 import { CommonToolBoxComponent } from './components/common-tool-box/common-tool-box.component';
 import { ConfirmDeleteDialogComponent } from './components/confirm-delete-dialog/confirm-delete-dialog.component';
 import { CreateJoinGameDialogueComponent } from './components/create-join-game-dialogue/create-join-game-dialogue.component';
+import { CropperDialogComponent } from './components/cropper-dialog/cropper-dialog.component';
 import { DialogChangeNameComponent } from './components/dialog-change-name/dialog-change-name.component';
 import { DialogConfirmResetPasswordComponent } from './components/dialog-confirm-reset-password/dialog-confirm-reset-password.component';
 import { DialogCreateGameComponent } from './components/dialog-create-game/dialog-create-game.component';
@@ -52,6 +54,8 @@ import { DialogUploadFormComponent } from './components/dialog-upload-form/dialo
 import { DialogUserAvatarComponent } from './components/dialog-user-avatar/dialog-user-avatar.component';
 import { DifferencesAreaComponent } from './components/differences-area/differences-area.component';
 import { ExitGameButtonComponent } from './components/exit-game-button/exit-game-button.component';
+import { FriendRequestsComponent } from './components/friend-requests/friend-requests.component';
+import { FriendsListComponent } from './components/friends-list/friends-list.component';
 import { GameCardButtonsComponent } from './components/game-card-buttons/game-card-buttons.component';
 import { GameCardComponent } from './components/game-card/game-card.component';
 import { GameCarouselComponent } from './components/game-carousel/game-carousel.component';
@@ -65,12 +69,14 @@ import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/p
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
+import { SearchBatComponent } from './components/search-bat/search-bat.component';
 import { TimerStopwatchComponent } from './components/timer-stopwatch/timer-stopwatch.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { UserNameInputComponent } from './components/user-name-input/user-name-input.component';
 import { UserProfilInformationComponent } from './components/user-profil-information/user-profil-information.component';
 import { UserStatisticComponent } from './components/user-statistic/user-statistic.component';
 import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+import { FriendsPageComponent } from './pages/friends-page/friends-page.component';
 import { GameSelectionPageComponent } from './pages/game-selection-page/game-selection-page.component';
 import { JoinGameSelectionComponent } from './pages/join-game-selection/join-game-selection.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
@@ -80,6 +86,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -155,8 +162,14 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         ResetPasswordComponent,
         CreateJoinGameDialogueComponent,
         ReplayBarComponent,
+        SearchBatComponent,
+        FriendRequestsComponent,
+        FriendsListComponent,
+        FriendsPageComponent,
+        CropperDialogComponent,
     ],
     imports: [
+        ImageCropperModule,
         MatCheckboxModule,
         AppMaterialModule,
         AppRoutingModule,

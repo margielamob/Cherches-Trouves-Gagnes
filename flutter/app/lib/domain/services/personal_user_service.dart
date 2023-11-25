@@ -9,8 +9,8 @@ import 'package:image_picker/image_picker.dart';
 class PersonalUserService {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
-
   String language = "En";
+  String? avatar;
 
   UserData? get currentUser => null;
 
@@ -97,10 +97,22 @@ class PersonalUserService {
     if (documentSnapshot.exists) {
       Map<String, dynamic>? data =
           documentSnapshot.data() as Map<String, dynamic>?;
-      // Vérifier si 'data' n'est pas nul et si 'theme' est une clé valide
       if (data != null && data.containsKey('theme')) {
-        return data['theme'] ??
-            'Default'; // Utilisation de '??' pour gérer les valeurs nulles
+        return data['theme'] ?? 'Default';
+      }
+    }
+    return 'Default';
+  }
+
+  Future<String> getUserLang(String uid) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic>? data =
+          documentSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('language')) {
+        return data['language'] ?? 'Fr';
       }
     }
     return 'Default';
@@ -155,6 +167,7 @@ class PersonalUserService {
   }
 
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
+    print(timePlayed);
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({
@@ -172,5 +185,17 @@ class PersonalUserService {
     } else {
       throw ('Le nom d\'utilisateur est déjà pris.');
     }
+  }
+
+  Future<String> initUser(UserData currentUser) async {
+    if (currentUser.photoURL == '') {
+      avatar = 'assets/default-user-icon.jpg';
+    }
+    if (currentUser.photoURL!.startsWith('assets/')) {
+      avatar = currentUser.photoURL;
+    } else {
+      avatar = await getPhotoURL(currentUser.uid);
+    }
+    return avatar!;
   }
 }

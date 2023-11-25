@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BMP_HEADER_OFFSET, FORMAT_IMAGE, IMAGE_TYPE, SIZE } from '@app/constants/canvas';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { CropperDialogComponent, CropperDialogData } from '@app/components/cropper-dialog/cropper-dialog.component';
+import { IMAGE_BMP, IMAGE_JPG, IMAGE_PNG, SIZE } from '@app/constants/canvas';
 import { CanvasType } from '@app/enums/canvas-type';
 import { ImageCorrect } from '@app/interfaces/image-correct';
 import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
@@ -12,33 +13,72 @@ import { Subject } from 'rxjs';
     styleUrls: ['./dialog-upload-form.component.scss'],
 })
 export class DialogUploadFormComponent {
-    isPropertiesImageCorrect: ImageCorrect = { size: true, type: true, format: true };
+    isPropertiesImageCorrect: ImageCorrect = { size: true };
     isFormSubmitted: boolean = false;
+    allowedFormats = [IMAGE_JPG, IMAGE_BMP, IMAGE_PNG];
+
     private img: ImageBitmap;
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: { canvas: CanvasType }, private toolService: ToolBoxService) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { canvas: CanvasType }, private dialog: MatDialog, private toolService: ToolBoxService) {}
 
     async uploadImage(event: Event) {
         const files: FileList = (event.target as HTMLInputElement).files as FileList;
-        this.isFormSubmitted = await this.isImageCorrect(files[0]);
-        if (files === null || !this.isFormSubmitted) {
+        let file = files[0];
+
+        if (await this.isTooSmall(file)) {
             return;
         }
 
-        this.img = await this.createImage(files[0]);
+        if (await this.isTooBig(file)) {
+            try {
+                file = await this.openCropperDialog(file);
+            } catch (error) {
+                return;
+            }
+        }
+
+        if (!file) {
+            return;
+        }
+
+        this.isFormSubmitted = await this.isSizeCorrect(file);
+        this.img = await this.createImage(file);
     }
 
-    isImageFormatCorrect(bmpFormat: number) {
-        return (this.isPropertiesImageCorrect.format = bmpFormat === FORMAT_IMAGE);
+    async openCropperDialog(file: File): Promise<File> {
+        return new Promise<File>((resolve, reject) => {
+            const dialogRef = this.dialog.open(CropperDialogComponent, {
+                data: {
+                    image: file,
+                    width: SIZE.x,
+                    height: SIZE.y,
+                } as CropperDialogData,
+            });
+
+            dialogRef.afterClosed().subscribe((croppedImage: File | undefined) => {
+                if (croppedImage) {
+                    resolve(croppedImage);
+                } else {
+                    reject('user canceled crop');
+                }
+            });
+        });
+    }
+
+    async isTooSmall(file: File) {
+        const img = await this.createImage(file);
+        const isTooSmall = img.width < SIZE.x || img.height < SIZE.y;
+        this.isPropertiesImageCorrect.size = !isTooSmall;
+        return isTooSmall;
+    }
+
+    async isTooBig(file: File) {
+        const img = await this.createImage(file);
+        return img.width > SIZE.x && img.height > SIZE.y;
     }
 
     async isImageCorrect(file: File): Promise<boolean> {
-        const bmpHeader = new DataView(await file.arrayBuffer());
-        return (
-            (await this.isSizeCorrect(file)) &&
-            this.isImageTypeCorrect(file) &&
-            this.isImageFormatCorrect(bmpHeader.getUint16(BMP_HEADER_OFFSET, true))
-        );
+        return (await this.isSizeCorrect(file)) && this.isImageTypeCorrect(file);
     }
 
     async createImage(file: File): Promise<ImageBitmap> {
@@ -46,11 +86,13 @@ export class DialogUploadFormComponent {
     }
 
     isImageTypeCorrect(file: File): boolean {
-        return (this.isPropertiesImageCorrect.type = file.type === IMAGE_TYPE);
+        this.isPropertiesImageCorrect.type = this.isFileSupported(file);
+        return this.isPropertiesImageCorrect.type;
     }
 
     async isSizeCorrect(file: File): Promise<boolean> {
         const img = await this.createImage(file);
+
         return (this.isPropertiesImageCorrect.size = img.width === SIZE.x && img.height === SIZE.y);
     }
 
@@ -65,5 +107,9 @@ export class DialogUploadFormComponent {
             return;
         }
         (this.toolService.$uploadImage.get(this.data.canvas) as Subject<ImageBitmap>).next(this.img);
+    }
+
+    isFileSupported(file: File) {
+        return this.allowedFormats.includes(file.type);
     }
 }

@@ -39,6 +39,6 @@ export class EventArray {
     }
 
     getTotalSeconds() {
-        return Math.floor(this.array[this.length - 1].timestamp - this.array[0].timestamp) / 1000;
+        return Math.round(this.array[this.length - 1].timestamp - this.array[0].timestamp) / 1000;
     }
 }

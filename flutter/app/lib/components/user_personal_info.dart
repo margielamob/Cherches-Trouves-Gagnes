@@ -7,6 +7,7 @@ import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -97,15 +98,22 @@ class CardWrapper extends StatelessWidget {
   }
 }
 
-class AccountSetting extends StatelessWidget {
-  final PersonalUserService userService = Get.find();
-
+class AccountSetting extends StatefulWidget {
   final UserData currentUserData;
+
   AccountSetting({required this.currentUserData});
+
+  @override
+  _AccountSettingState createState() => _AccountSettingState();
+}
+
+class _AccountSettingState extends State<AccountSetting> {
+  final PersonalUserService userService = Get.find();
+  String? avatar;
 
   void updateTheme(String newTheme) async {
     DocumentReference userDoc =
-        userService.db.collection('users').doc(currentUserData.uid);
+        userService.db.collection('users').doc(widget.currentUserData.uid);
 
     await userDoc.update({'theme': newTheme}).catchError((e) => print(e));
   }
@@ -113,14 +121,26 @@ class AccountSetting extends StatelessWidget {
   void updateLang(String newLang) async {
     userService.language = newLang == 'English' ? 'En' : 'Fr';
     DocumentReference userDoc =
-        userService.db.collection('users').doc(currentUserData.uid);
+        userService.db.collection('users').doc(widget.currentUserData.uid);
 
     await userDoc
         .update({'language': userService.language}).catchError((e) => print(e));
   }
 
+  Future<void> initUserAvatar() async {
+    String? newAvatar = await userService.initUser(widget.currentUserData);
+    setState(() {
+      avatar = newAvatar;
+    });
+  }
+
   @override
+  void initState() {
+    super.initState();
+    initUserAvatar();
+  }
   Widget build(BuildContext context) {
+    initUserAvatar();
     final profileManager = Provider.of<ProfilePageManager>(context);
     return CardWrapper(
       child: Column(
@@ -128,7 +148,7 @@ class AccountSetting extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 10),
-          Text("Account settings",
+          Text(AppLocalizations.of(context)!.settingsPageTitle,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           SizedBox(height: 20),
           Row(
@@ -136,7 +156,7 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Update Avatar",
+                content: AppLocalizations.of(context)!.settingsAvatar,
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -148,7 +168,9 @@ class AccountSetting extends StatelessWidget {
               ),
               SizedBox(width: 30),
               GestureDetector(
-                child: Avatar(),
+                child: Avatar(
+                  photoURL: avatar,
+                ),
                 onTap: () {
                   showDialog(
                     context: context,
@@ -166,18 +188,18 @@ class AccountSetting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               UserDetailButton(
-                content: "Update Username",
+                content: AppLocalizations.of(context)!.settingsPageName,
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return UsernameDialog(userId: currentUserData.uid);
+                      return UsernameDialog(userId: widget.currentUserData.uid);
                     },
                   );
                 },
               ),
               SizedBox(width: 30),
-              UserDetailContent(content: currentUserData.displayName),
+              UserDetailContent(content: widget.currentUserData.displayName),
             ],
           ),
           SizedBox(height: 10),
@@ -185,10 +207,11 @@ class AccountSetting extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Theme"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!.settingsPageTheme),
               SizedBox(width: 30),
               DropdownButton<String>(
-                value: currentUserData.theme,
+                value: widget.currentUserData.theme,
                 onChanged: (newValue) {
                   print(newValue);
                   updateTheme(newValue!);
@@ -209,13 +232,17 @@ class AccountSetting extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Language"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!.settingsPageLanguage),
               SizedBox(width: 30),
               DropdownButton<String>(
-                value:
-                    currentUserData.language == 'En' ? 'English' : 'Français',
+                value: widget.currentUserData.language == 'En'
+                    ? 'English'
+                    : 'Français',
                 onChanged: (newValue) {
                   updateLang(newValue!);
+                  profileManager.setLang(newValue);
+                  print(newValue);
                 },
                 items: ['English', 'Français']
                     .map<DropdownMenuItem<String>>((String value) {
