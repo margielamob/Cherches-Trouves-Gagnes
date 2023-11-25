@@ -90,7 +90,7 @@ export class GameCreationManager {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        const cheatMode = this.gameManager.isCheatMode(roomId);
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         socket.broadcast.emit(SocketEvent.UpdatePlayers, data);

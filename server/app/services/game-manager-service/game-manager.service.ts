@@ -20,8 +20,8 @@ import LZString = require('lz-string');
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
-    joinableGames: Map<string, Game> = new Map();
-    joinableLimitedGames: Map<string, Game> = new Map();
+    joinObserveClassicGames: Map<string, Game> = new Map();
+    joinObserveLimitedGames: Map<string, Game> = new Map();
     observableGames: Map<string, Game> = new Map();
     // eslint-disable-next-line max-params
     constructor(
@@ -39,11 +39,11 @@ export class GameManagerService {
             gameCard = gamesRandomized[0];
             game = new Game(playerInfo, { info: gameCard, mode });
             this.limitedTimeGame.gamesShuffled.set(game.identifier, gamesRandomized);
-            this.joinableLimitedGames.set(game.identifier, game);
+            this.joinObserveLimitedGames.set(game.identifier, game);
         } else {
             gameCard = (await this.gameInfo.getGameInfoById(gameCardId)) as PrivateGameInformation;
             game = new Game(playerInfo, { info: gameCard, mode });
-            this.joinableGames.set(game.identifier, game);
+            this.joinObserveClassicGames.set(game.identifier, game);
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
@@ -53,7 +53,7 @@ export class GameManagerService {
     }
 
     getLimitedJoinableGame(roomId: string): JoinableGameCard | undefined {
-        const game = this.joinableLimitedGames.get(roomId);
+        const game = this.joinObserveLimitedGames.get(roomId);
         if (!game) {
             return;
         }
@@ -75,18 +75,18 @@ export class GameManagerService {
         return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
     }
     getJoinableGames(): JoinableGameCard[] {
-        return Array.from(this.joinableGames.keys())
+        return Array.from(this.joinObserveClassicGames.keys())
             .map((roomId) => this.getJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
     getJoinableLimitedGames(): JoinableGameCard[] {
-        return Array.from(this.joinableLimitedGames.keys())
+        return Array.from(this.joinObserveLimitedGames.keys())
             .map((roomId) => this.getLimitedJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
 
     getJoinableGame(roomId: string): JoinableGameCard | undefined {
-        const game = this.joinableGames.get(roomId);
+        const game = this.joinObserveClassicGames.get(roomId);
         if (!game) {
             return;
         }
@@ -198,7 +198,7 @@ export class GameManagerService {
     }
 
     isCheatMode(gameId: string) {
-        return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isCheatMode : null;
+        return (this.findGame(gameId) as Game).isCheatMode;
     }
     setCheatMode(gameId: string, cheatMode: boolean) {
         const game = this.findGame(gameId);
@@ -320,8 +320,14 @@ export class GameManagerService {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
-    addObservableGame(gameId: string, game: Game) {
-        this.observableGames.set(gameId, game);
+    addObservableGame(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game) {
+            this.observableGames.set(gameId, game);
+        }
+    }
+    getObservableGames() {
+        return Array.from(this.observableGames.keys());
     }
     addDifferenceFound(gameId: string, difference: Coordinate[]) {
         const game = this.games.get(gameId);
@@ -330,7 +336,7 @@ export class GameManagerService {
         }
     }
     removeJoinableGame(gameId: string) {
-        this.joinableGames.delete(gameId);
+        this.joinObserveClassicGames.delete(gameId);
     }
     removeGame(gameId: string) {
         this.games.delete(gameId);
@@ -340,7 +346,7 @@ export class GameManagerService {
         return this.games.get(gameId);
     }
     getLimitedTimeGamePlayers(gameId: string) {
-        const game = this.joinableLimitedGames.get(gameId);
+        const game = this.joinObserveLimitedGames.get(gameId);
         return !game ? undefined : Array.from(game.players.values());
     }
 
@@ -348,11 +354,10 @@ export class GameManagerService {
         return this.games.get(gameId);
     }
     updateObservableGameState(gameId: string) {
-        const game = this.games.get(gameId);
+        const game = this.observableGames.get(gameId);
         if (game) {
             return game.getDifferenceFound();
         }
-
         return;
     }
 }

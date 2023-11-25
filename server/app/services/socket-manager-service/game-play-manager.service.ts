@@ -150,7 +150,6 @@ export class GamePlayManager {
                     isMulti: false,
                 };
                 const players = this.gameManager.getPlayers(gameId) || [];
-                console.log(players);
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 socket.emit(SocketEvent.Play, {
                     gameId,
