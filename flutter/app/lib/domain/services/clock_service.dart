@@ -16,6 +16,7 @@ class ClockService extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.clock, (timeData) {
+      time = timeData;
       timerDisplay = _timeFormatter.format(timeData, 2);
       notifyListeners();
     });

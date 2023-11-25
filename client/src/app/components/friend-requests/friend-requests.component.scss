@@ -1,0 +1,32 @@
+.friend-requests-container {
+    max-width: 500px;
+    margin: 0 auto;
+    .requests-list {
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            .user-details {
+                display: flex;
+                align-items: center;
+                .user-name {
+                    margin-left: 15px;
+                }
+            }
+            .actions {
+                button {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+    .no-requests {
+        text-align: center;
+    }
+}
+
+h2 {
+    margin: 20px;
+    text-align: center;
+}

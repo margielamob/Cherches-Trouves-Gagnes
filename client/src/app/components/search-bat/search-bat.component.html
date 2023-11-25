@@ -1,0 +1,28 @@
+<div class="search-container">
+    <input type="text" [formControl]="searchControl" placeholder="Rechercher des utilisateurs..." class="search-input" />
+    <div class="search-results" *ngIf="searchControl.value && (users$ | async) as users">
+        <ng-container *ngFor="let user of users">
+            <div class="user-item" *ngIf="user.uid !== currentUserId">
+                <img [src]="user.photoURL" alt="Avatar" class="user-avatar" />
+                <span class="user-name">{{ user.displayName }}</span>
+
+                <div class="button-row">
+                    <ng-container *ngIf="currentUserFriends$ | async as currentUserFriends">
+                        <span class="friend-status" *ngIf="currentUserFriends.includes(user.uid)">Ami(e)</span>
+                        <button
+                            mat-button
+                            color="primary"
+                            *ngIf="!currentUserFriends.includes(user.uid) && !friendRequestStatus[user.uid]"
+                            (click)="sendFriendRequest(user)"
+                        >
+                            Ajouter en ami
+                        </button>
+                        <button mat-button color="warn" *ngIf="friendRequestStatus[user.uid]" (click)="cancelFriendRequest(user)">
+                            Supprimer la demande
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

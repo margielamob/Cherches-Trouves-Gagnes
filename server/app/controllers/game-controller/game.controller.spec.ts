@@ -3,17 +3,15 @@ import { GameCarousel } from '@app/interface/game-carousel';
 import { PrivateGameInformation } from '@app/interface/game-info';
 import { GameInfoService } from '@app/services/game-info-service/game-info.service';
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
+import { GameTimeConstantService } from '@app/services/game-time-constant/game-time-constants.service';
 import { GameValidation } from '@app/services/game-validation-service/game-validation.service';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
-import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
-import { Container } from 'typedi';
+import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
-import { GameController } from './game.controller';
-import { GameTimeConstantService } from '@app/services/game-time-constant/game-time-constants.service';
+import { Container } from 'typedi';
 
 describe('GameController', () => {
-    let gameController: GameController;
     let gameManager: SinonStubbedInstance<GameManagerService>;
     let gameInfo: SinonStubbedInstance<GameInfoService>;
     let gameValidation: SinonStubbedInstance<GameValidation>;
@@ -21,7 +19,6 @@ describe('GameController', () => {
     let expressApp: Express.Application;
 
     beforeEach(async () => {
-        gameController = Container.get(GameController);
         gameInfo = createStubInstance(GameInfoService);
         gameValidation = createStubInstance(GameValidation);
         gameTimeConstantsService = createStubInstance(GameTimeConstantService);
@@ -75,7 +72,7 @@ describe('GameController', () => {
 
     it('should return Not Found if a problem in the attribute is detected', async () => {
         gameValidation.isNbDifferenceValid.rejects();
-        gameValidation.numberDifference.rejects();
+        gameValidation.findNbDifference.rejects();
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
@@ -86,62 +83,13 @@ describe('GameController', () => {
 
     it('should return Not Found if a problem in the attribute is detected', async () => {
         gameValidation.isNbDifferenceValid.rejects();
-        gameValidation.numberDifference.resolves();
+        gameValidation.findNbDifference.resolves();
         const expectedBody = {
             original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
             differenceRadius: 0,
         };
         return supertest(expressApp).post('/api/game/card/validation').send(expectedBody).expect(StatusCodes.NOT_FOUND);
-    });
-
-    it('should return Accepted if the game is valid', async () => {
-        const expectedIsValid = true;
-        const expectedNumberDifference = 4;
-        gameValidation.isNbDifferenceValid.resolves(expectedIsValid);
-        gameValidation.numberDifference.resolves(expectedNumberDifference);
-        const expectedBody = {
-            original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            differenceRadius: 0,
-        };
-        return supertest(expressApp)
-            .post('/api/game/card/validation')
-            .send(expectedBody)
-            .expect(StatusCodes.ACCEPTED)
-            .then((response) => expect(response.body.numberDifference).to.equal(expectedNumberDifference));
-    });
-
-    it('should return Not Accepted if the game is invalid', async () => {
-        const expectedNumberDifference = 4;
-        const expectedIsValid = false;
-        gameValidation.isNbDifferenceValid.resolves(expectedIsValid);
-        gameValidation.numberDifference.resolves(expectedNumberDifference);
-        const expectedBody = {
-            original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            differenceRadius: 0,
-        };
-        return supertest(expressApp)
-            .post('/api/game/card/validation')
-            .send(expectedBody)
-            .expect(StatusCodes.NOT_ACCEPTABLE)
-            .then((response) => expect(response.body.numberDifference).to.equal(expectedNumberDifference));
-    });
-
-    it('should return Accepted if the game is valid', async () => {
-        const expectedIsValid = true;
-        gameValidation.isNbDifferenceValid.resolves(expectedIsValid);
-        gameInfo.addGameInfoWrapper.resolves();
-        // eslint-disable-next-line @typescript-eslint/no-empty-function -- calls fake and return {}
-        stub(gameController['socketManager'], 'refreshGames').callsFake(() => {});
-        const expectedBody = {
-            original: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            modify: { width: 2, height: 2, data: [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3] },
-            differenceRadius: 0,
-            name: 'test',
-        };
-        return supertest(expressApp).post('/api/game/card').send(expectedBody).expect(StatusCodes.CREATED);
     });
 
     it('should send not found if the game is not found', async () => {

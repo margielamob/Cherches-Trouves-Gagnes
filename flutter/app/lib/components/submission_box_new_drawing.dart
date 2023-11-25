@@ -1,6 +1,11 @@
+import 'package:app/components/difference_vignette_modal.dart';
+import 'package:app/domain/services/http_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SubmissionBoxNewDrawing extends StatelessWidget {
+  final HttpService httpService = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -8,18 +13,7 @@ class SubmissionBoxNewDrawing extends StatelessWidget {
       width: 140,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FilledButton(
-            onPressed: () {},
-            child: Row(
-              children: <Widget>[
-                Text("Soumettre"),
-                SizedBox(width: 10),
-                Icon(Icons.send),
-              ],
-            ),
-          ),
-        ],
+        children: [DifferenceVignetteModal()],
       ),
     );
   }

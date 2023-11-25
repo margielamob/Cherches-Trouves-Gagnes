@@ -1,12 +1,18 @@
+import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class MenuUnderCanvas extends StatelessWidget {
+class MenuUnderCanvasRight extends StatelessWidget {
+  final DrawingServiceRight drawingServiceRight = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         FilledButton(
-          onPressed: () {},
+          onPressed: () {
+            drawingServiceRight.clearStrokes();
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -16,7 +22,9 @@ class MenuUnderCanvas extends StatelessWidget {
         ),
         SizedBox(width: 50),
         FilledButton(
-          onPressed: () {},
+          onPressed: () {
+            drawingServiceRight.setBackgroundImage();
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -26,7 +34,9 @@ class MenuUnderCanvas extends StatelessWidget {
         ),
         SizedBox(width: 50),
         FilledButton(
-          onPressed: () {},
+          onPressed: () {
+            drawingServiceRight.removeBackgroundImage();
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[

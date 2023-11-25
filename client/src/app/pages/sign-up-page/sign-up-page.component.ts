@@ -69,6 +69,7 @@ export class SignUpPageComponent {
                         totalTimePlayed: 0,
                         gameWins: 0,
                         gamePlayed: 0,
+                        friends: [],
                     };
                     return this.userService.adduser(user).pipe(
                         switchMap(() => {
