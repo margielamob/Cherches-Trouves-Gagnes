@@ -7,6 +7,7 @@ import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { GameMode } from '@common/game-mode';
 import { JoinableGameCard } from '@common/joinable-game-card';
 
 @Component({
@@ -64,6 +65,14 @@ export class GameCardButtonsComponent {
         this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
         this.gameInfoHandlerService.isMulti = true;
         this.gameInfoHandlerService.joinGame(this.joinableGameCard.roomId);
+    }
+
+    onClickObserveGame(): void {
+        this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
+        this.gameInfoHandlerService.isMulti = true;
+        this.gameInfoHandlerService.isObserver = true;
+        this.gameInfoHandlerService.gameMode = GameMode.Classic;
+        this.gameInfoHandlerService.observeGame(this.joinableGameCard.roomId);
     }
 
     onClickRefreshGame(): void {

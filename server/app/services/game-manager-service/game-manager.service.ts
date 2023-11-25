@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { Game } from '@app/classes/game/game';
@@ -21,6 +22,7 @@ export class GameManagerService {
     games: Map<string, Game> = new Map();
     joinableGames: Map<string, Game> = new Map();
     joinableLimitedGames: Map<string, Game> = new Map();
+    observableGames: Map<string, Game> = new Map();
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -318,6 +320,15 @@ export class GameManagerService {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
+    addObservableGame(gameId: string, game: Game) {
+        this.observableGames.set(gameId, game);
+    }
+    addDifferenceFound(gameId: string, difference: Coordinate[]) {
+        const game = this.games.get(gameId);
+        if (game) {
+            game.addDifferenceFound(difference);
+        }
+    }
     removeJoinableGame(gameId: string) {
         this.joinableGames.delete(gameId);
     }
@@ -335,5 +346,13 @@ export class GameManagerService {
 
     getGame(gameId: string) {
         return this.games.get(gameId);
+    }
+    updateObservableGameState(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game) {
+            return game.getDifferenceFound();
+        }
+
+        return;
     }
 }

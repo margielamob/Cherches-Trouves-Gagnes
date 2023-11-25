@@ -21,6 +21,7 @@ export class Game {
         coords: Coordinate[][];
         nbDifferencesLeft: 1;
     } = { coords: [], nbDifferencesLeft: 1 };
+    differencesAlreadyFound: Coordinate[][] = [];
     bonusTime: number = 0;
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
@@ -147,5 +148,11 @@ export class Game {
 
     hasNoPlayer() {
         return this.players.size === 0;
+    }
+    addDifferenceFound(difference: Coordinate[]) {
+        this.differencesAlreadyFound.push(difference);
+    }
+    getDifferenceFound() {
+        return this.differencesAlreadyFound;
     }
 }
