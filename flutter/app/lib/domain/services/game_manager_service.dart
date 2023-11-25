@@ -199,6 +199,12 @@ class GameManagerService extends ChangeNotifier {
     print("leavingArena");
   }
 
+  void leaveGame() {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: currentRoomId!);
+    _socket.send(SocketEvent.leaveGame, data.toJson());
+    Get.offAll(MainPage(), transition: Transition.leftToRight);
+  }
+
   void leaveWaitingRoom() {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
         roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);

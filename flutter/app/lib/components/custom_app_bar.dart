@@ -1,5 +1,6 @@
 import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/pages/main_page.dart';
@@ -44,16 +45,6 @@ class CustomAppBar {
             Get.offAll(MainPage(), transition: Transition.leftToRight);
           },
         ),
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return LogoutDialog();
-                });
-          },
-        ),
       ],
     );
   }
@@ -61,6 +52,8 @@ class CustomAppBar {
   static AppBar buildGameNavigationBar(context, String pageName) {
     DifferenceDetectionService differenceDetectionService = Get.find();
     GameReplayService gameReplayService = Get.find();
+    final EndGameService endGameService = Get.find();
+    final GameManagerService gameManagerService = Get.find();
 
     return AppBar(
       title: Text(pageName),
@@ -68,19 +61,11 @@ class CustomAppBar {
         IconButton(
           icon: Icon(Icons.home),
           onPressed: () {
+            gameManagerService.leaveGame();
             differenceDetectionService.resetForNextGame();
             gameReplayService.resetForNextGame();
+            endGameService.resetForNextGame();
             Get.offAll(MainPage(), transition: Transition.leftToRight);
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return LogoutDialog();
-                });
           },
         ),
       ],

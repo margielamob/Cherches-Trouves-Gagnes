@@ -31,4 +31,9 @@ class EndGameService extends ChangeNotifier {
     isGameFinished = true;
     notifyListeners();
   }
+
+  void resetForNextGame() {
+    endGameMessage = null;
+    isGameFinished = false;
+  }
 }
