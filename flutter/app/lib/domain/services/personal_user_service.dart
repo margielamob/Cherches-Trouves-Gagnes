@@ -197,4 +197,20 @@ class PersonalUserService {
     }
     return avatar!;
   }
+
+  Future getLog(String uid) async {
+    List<Timestamp> login = [];
+    List<Timestamp> logout = [];
+    CollectionReference usersLogs =
+        db.collection('users').doc(uid).collection('activityLogs');
+    QuerySnapshot querySnapshot = await usersLogs.get();
+    querySnapshot.docs.forEach((doc) {
+      if (doc['activity'] == 'connect') {
+        login.add(doc['timestamp']);
+      } else {
+        logout.add(doc['timestamp']);
+      }
+    });
+    return [login, logout];
+  }
 }
