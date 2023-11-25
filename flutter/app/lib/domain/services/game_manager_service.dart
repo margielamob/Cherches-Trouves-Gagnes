@@ -60,6 +60,7 @@ class GameManagerService extends ChangeNotifier {
   GameModeModel? gameMode;
   List<Vec2> limitedCoords = [];
   VoidCallback? onGameCardsChanged;
+  bool? isObservable;
 
   GameManagerService() {
     handleSockets();
@@ -107,10 +108,10 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {});
     _socket.on(SocketEvent.creatorLeft, (dynamic message) {});
     _socket.on(SocketEvent.win, (dynamic message) {
-      resetAllPlayersNbDifference();
+      resetAllPlayerData();
     });
     _socket.on(SocketEvent.lose, (dynamic message) {
-      resetAllPlayersNbDifference();
+      resetAllPlayerData();
     });
     _socket.on(SocketEvent.startClock, (dynamic message) {
       TimerRequest request = TimerRequest.fromJson(message);
@@ -247,6 +248,11 @@ class GameManagerService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetAllPlayerData() {
+    isObservable = null;
+    resetAllPlayersNbDifference();
+  }
+
   void resetAllPlayersNbDifference() {
     for (var player in players) {
       player.nbDifferenceFound = [];
@@ -297,9 +303,10 @@ class GameManagerService extends ChangeNotifier {
     }
   }
 
-  void observeGame() {
-    ObserveGameRequest data = ObserveGameRequest(
-        player: currentUser!, roomId: waitingRoomInfoRequest!.roomId);
+  void observeGame(String roomId) {
+    isObservable = true;
+    ObserveGameRequest data =
+        ObserveGameRequest(player: currentUser!, roomId: roomId);
     print(data.toJson());
     _socket.send(SocketEvent.observeGame, data.toJson());
   }
