@@ -69,7 +69,11 @@ export class GameCreationManager {
 
     // eslint-disable-next-line max-params
     async createLimitedGame(player: User, card: { id: string; timer: number; bonus: number }, isMulti: boolean, socket: Socket) {
-        const roomId = await this.gameManager.createGame({ player: { name: player.name, id: socket.id }, isMulti }, GameMode.LimitedTime, card.id);
+        const roomId = await this.gameManager.createGame(
+            { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
+            GameMode.LimitedTime,
+            card.id,
+        );
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
         const players = this.gameManager.getLimitedTimeGamePlayers(roomId) || [];
         const data: WaitingRoomInfo = { roomId, players, cheatMode: false };
