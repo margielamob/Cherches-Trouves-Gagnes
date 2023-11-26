@@ -17,7 +17,13 @@ class LoginPageState extends State<LoginPage> {
   String? credential = "";
   String? password = "";
   bool isEmail = false;
-  final AuthService authService = AuthService();
+  final AuthService authService = Get.find<AuthService>();
+
+  @override
+  void initState() {
+    super.initState();
+    authService.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {

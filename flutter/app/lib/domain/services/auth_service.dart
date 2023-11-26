@@ -13,17 +13,33 @@ class AuthService {
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      String? userId = await getUidByEmailAddress(email);
+      if (userId == null) {
+        throw 'Aucun utilisateur trouvé avec cet e-mail.';
+      }
+
+      bool active = await isUserActive(userId);
+      if (active) {
+        throw 'Utilisateur déjà actif sur un autre appareil.';
+      }
+
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      await userService.db
+          .collection('activeUsers')
+          .doc(userId)
+          .set({'active': true});
+
+      // Initialize user settings
       final profilePageManager = Get.find<ProfilePageManager>();
       await profilePageManager.initUserThemeAndLang();
+
       return userCredential;
     } on FirebaseAuthException catch (error) {
       String errorMessage;
-
       switch (error.code) {
         case 'user-not-found':
           errorMessage = 'Aucun utilisateur trouvé avec cet e-mail.';
@@ -38,7 +54,6 @@ class AuthService {
           errorMessage =
               'Une erreur inconnue s’est produite. Veuillez réessayer plus tard.';
       }
-
       throw errorMessage;
     }
   }
@@ -109,10 +124,20 @@ class AuthService {
   }
 
   Future<void> signOut() async {
+    String userId = auth.currentUser?.uid ?? '';
+
+    if (userId.isNotEmpty) {
+      await userService.db.collection('activeUsers').doc(userId).delete();
+    }
+
     await auth.signOut();
+    print('signout');
   }
 
   Future<String> getCurrentUserId() async {
+    if (auth.currentUser == null) {
+      throw 'Utilisateur non connecté';
+    }
     return auth.currentUser!.uid;
   }
 
@@ -159,5 +184,22 @@ class AuthService {
 
       throw errorMessage;
     }
+  }
+
+  Future<String?> getUidByEmailAddress(String email) async {
+    QuerySnapshot querySnapshot = await userService.db
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.id;
+    }
+    return null;
+  }
+
+  Future<bool> isUserActive(String userId) async {
+    DocumentSnapshot activeUserDoc =
+        await userService.db.collection('activeUsers').doc(userId).get();
+    return activeUserDoc.exists;
   }
 }
