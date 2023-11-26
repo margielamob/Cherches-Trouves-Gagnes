@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
-import { Observable, catchError, from, map, of, switchMap, take, throwError } from 'rxjs';
+import { Observable, catchError, forkJoin, from, map, of, switchMap, take, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -329,6 +329,9 @@ export class UserService {
     }
 
     updateTotalTimePlayed(timePlayed: number) {
+        if (timePlayed === undefined) {
+            return;
+        }
         this.getTotalTimePlayed()
             .pipe(take(1))
             .subscribe((totalTimePlayed) => {
@@ -376,6 +379,39 @@ export class UserService {
             }),
             catchError(() => {
                 return throwError(() => new Error('Error removing user from active users'));
+            }),
+        );
+    }
+
+    getFriends(): Observable<UserData[]> {
+        return this.user$.pipe(
+            switchMap((user) => {
+                if (user && user.friends && user.friends.length > 0) {
+                    return this.afs.collection<UserData>('users', (ref) => ref.where('uid', 'in', user.friends)).valueChanges({ idField: 'uid' });
+                } else {
+                    return of([]);
+                }
+            }),
+        );
+    }
+
+    deleteFriend(currentUserUid: string, friendUid: string): Observable<unknown> {
+        const currentUserDocRef = this.afs.doc<UserData>(`users/${currentUserUid}`);
+        const friendDocRef = this.afs.doc<UserData>(`users/${friendUid}`);
+
+        return forkJoin({
+            currentUser: currentUserDocRef.valueChanges().pipe(take(1)),
+            friendUser: friendDocRef.valueChanges().pipe(take(1)),
+        }).pipe(
+            switchMap(({ currentUser, friendUser }) => {
+                const updatedCurrentUserFriendsList = currentUser?.friends?.filter((id) => id !== friendUid) || [];
+
+                const updatedFriendFriendsList = friendUser?.friends?.filter((id) => id !== currentUserUid) || [];
+
+                return forkJoin({
+                    currentUserUpdate: from(currentUserDocRef.update({ friends: updatedCurrentUserFriendsList })),
+                    friendUpdate: from(friendDocRef.update({ friends: updatedFriendFriendsList })),
+                });
             }),
         );
     }

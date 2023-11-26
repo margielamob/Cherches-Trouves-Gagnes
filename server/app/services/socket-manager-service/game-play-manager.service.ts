@@ -100,6 +100,9 @@ export class GamePlayManager {
 
             if (this.gameManager.isLimitedTime(gameId)) {
                 this.gameManager.increaseTimer(gameId, this.gameManager.getGame(gameId)!.bonusTime);
+                this.sio.to(gameId).emit(SocketEvent.TimerBonus, {
+                    bonus: this.gameManager.getGame(gameId)!.bonusTime,
+                });
                 this.gameManager.setNextGame(gameId);
                 const nextGameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;

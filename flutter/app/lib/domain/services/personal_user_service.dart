@@ -9,8 +9,8 @@ import 'package:image_picker/image_picker.dart';
 class PersonalUserService {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
-
   String language = "En";
+  String? avatar;
 
   UserData? get currentUser => null;
 
@@ -184,5 +184,17 @@ class PersonalUserService {
     } else {
       throw ('Le nom d\'utilisateur est déjà pris.');
     }
+  }
+
+  Future<String> initUser(UserData currentUser) async {
+    if (currentUser.photoURL == '') {
+      avatar = 'assets/default-user-icon.jpg';
+    }
+    if (currentUser.photoURL!.startsWith('assets/')) {
+      avatar = currentUser.photoURL;
+    } else {
+      avatar = await getPhotoURL(currentUser.uid);
+    }
+    return avatar!;
   }
 }

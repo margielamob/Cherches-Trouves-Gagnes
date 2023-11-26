@@ -4,7 +4,8 @@ import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
-import 'package:app/domain/services/drawing_service.dart';
+import 'package:app/domain/services/drawing_service_left.dart';
+import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
@@ -17,6 +18,7 @@ import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/time_formatter_service.dart';
+import 'package:app/domain/services/vignette_submission_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
@@ -45,6 +47,8 @@ void registerDependencies() {
   Get.put(ClockService());
   Get.put(PersonalUserService());
   Get.put(AuthService());
+  Get.put(DrawingServiceLeft());
+  Get.put(DrawingServiceRight());
   Get.put(HttpService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
@@ -57,7 +61,7 @@ void registerDependencies() {
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
-  Get.put(DrawingService());
+  Get.put(VignetteSubmissionService());
 }
 
 late List<CameraDescription> cameras;
@@ -127,8 +131,20 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            DrawingService drawingService = Get.find();
-            return drawingService;
+            DrawingServiceRight drawingServiceRight = Get.find();
+            return drawingServiceRight;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            DrawingServiceLeft drawingServiceLeft = Get.find();
+            return drawingServiceLeft;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            VignetteSubmissionService vignetteSubmissionService = Get.find();
+            return vignetteSubmissionService;
           },
         ),
       ],
