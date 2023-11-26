@@ -40,6 +40,10 @@ export class GameCreationManager {
             await this.getJoinableGames();
         });
 
+        socket.on(SocketEvent.GetLimitedTimeGames, async () => {
+            await this.getLimitedTimeGames();
+        });
+
         socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
             this.leaveWaitingRoom(roomId, socket);
         });
@@ -65,7 +69,11 @@ export class GameCreationManager {
 
     // eslint-disable-next-line max-params
     async createLimitedGame(player: User, card: { id: string; timer: number; bonus: number }, isMulti: boolean, socket: Socket) {
-        const roomId = await this.gameManager.createGame({ player: { name: player.name, id: socket.id }, isMulti }, GameMode.LimitedTime, card.id);
+        const roomId = await this.gameManager.createGame(
+            { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
+            GameMode.LimitedTime,
+            card.id,
+        );
         socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
         const players = this.gameManager.getLimitedTimeGamePlayers(roomId) || [];
         const data: WaitingRoomInfo = { roomId, players, cheatMode: false };
@@ -90,7 +98,7 @@ export class GameCreationManager {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        const cheatMode = this.gameManager.isCheatMode(roomId);
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
@@ -111,10 +119,15 @@ export class GameCreationManager {
         }
     }
 
+    async getLimitedTimeGames() {
+        const games = this.gameManager.getJoinableLimitedGames();
+        this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+    }
     async getJoinableGames() {
-        let games = this.gameManager.getJoinableGames();
-        const limitedGames = this.gameManager.getJoinableLimitedGames();
-        games = [...games, ...limitedGames];
+        console.log('getJoinableGames');
+        const games = this.gameManager.getJoinableGames();
+        // const limitedGames = this.gameManager.getJoinableLimitedGames();
+        // games = [...games, ...limitedGames];
         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
     }
 }

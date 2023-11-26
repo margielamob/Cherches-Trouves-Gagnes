@@ -9,10 +9,15 @@ import { BehaviorSubject, Subject, tap } from 'rxjs';
     providedIn: 'root',
 })
 export class JoinableGameService {
-    private _joinableGames = new BehaviorSubject<JoinableGameCard[]>([]);
-    private fetchGamesSubject = new Subject<void>();
+    isClassic: boolean;
+    private _joinObserveClassicGames = new BehaviorSubject<JoinableGameCard[]>([]);
+    private _joinObserveLimitedGames = new BehaviorSubject<JoinableGameCard[]>([]);
 
-    joinableGames$ = this._joinableGames.asObservable();
+    joinableClassicGames$ = this._joinObserveClassicGames.asObservable();
+    joinableLimitedGames$ = this._joinObserveLimitedGames.asObservable();
+
+    private fetchJoinableClassicGamesSubject = new Subject<void>();
+    private fetchJoinableLimitedGamesSubject = new Subject<void>();
 
     constructor(private readonly communicationSocket: CommunicationSocketService) {
         this.initSocketListeners();
@@ -21,26 +26,68 @@ export class JoinableGameService {
 
     private initSocketListeners(): void {
         this.communicationSocket.on(SocketEvent.ClassicGameCreated, (game: JoinableGameCard) => {
-            const updatedGames = [...this._joinableGames.value, game];
-            this._joinableGames.next(updatedGames);
+            let updatedClassicGames = this._joinObserveClassicGames.value;
+
+            // Check if the game with the same gameId already exists
+            const existingGameIndex = updatedClassicGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
+
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (existingGameIndex > -1) {
+                // Replace the existing game with the new one
+                updatedClassicGames[existingGameIndex] = game;
+            } else {
+                // Add the new game to the list
+                updatedClassicGames = [...updatedClassicGames, game];
+            }
+
+            // Emit the updated list
+            this._joinObserveClassicGames.next(updatedClassicGames);
         });
 
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
-            this._joinableGames.next(payload.games);
+            this._joinObserveClassicGames.next(payload.games);
         });
-        this.communicationSocket.on(SocketEvent.SendingLimitedGameCreated, (payload: { games: JoinableGameCard[] }) => {
-            this._joinableGames.next(payload.games);
+
+        this.communicationSocket.on(SocketEvent.LimitedGameCreated, (game: JoinableGameCard) => {
+            let updatedLimitedGames = this._joinObserveLimitedGames.value;
+
+            // Check if the game with the same gameId already exists
+            const existingGameIndex = updatedLimitedGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
+
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (existingGameIndex > -1) {
+                // Replace the existing game with the new one
+                updatedLimitedGames[existingGameIndex] = game;
+            } else {
+                // Add the new game to the list
+                updatedLimitedGames = [...updatedLimitedGames, game];
+            }
+
+            // Emit the updated list
+            this._joinObserveLimitedGames.next(updatedLimitedGames);
+        });
+
+        this.communicationSocket.on(SocketEvent.SendingJoinableLimitedGames, (payload: { games: JoinableGameCard[] }) => {
+            this._joinObserveLimitedGames.next(payload.games);
         });
     }
 
     private initRequestHandlers(): void {
-        this.fetchGamesSubject
+        this.fetchJoinableClassicGamesSubject
             .asObservable()
             .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetJoinableGames)))
+            .subscribe();
+        this.fetchJoinableLimitedGamesSubject
+            .asObservable()
+            .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetLimitedTimeGames)))
             .subscribe();
     }
 
     fetchJoinableGames(): void {
-        this.fetchGamesSubject.next();
+        if (this.isClassic) {
+            this.fetchJoinableClassicGamesSubject.next();
+        } else {
+            this.fetchJoinableLimitedGamesSubject.next();
+        }
     }
 }

@@ -7,4 +7,5 @@ export interface JoinableGameCard {
     thumbnail: string;
     roomId: string;
     gameInformation: PublicGameInformation;
+    isObservable?: boolean;
 }

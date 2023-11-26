@@ -28,8 +28,18 @@ export class GameStateManager {
             if (this.gameManager.isClassic(gameId)) {
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 this.sio.to(gameId).emit(SocketEvent.Play, gameId);
-                this.gameManager.removeJoinableGame(gameId);
+                const game = this.gameManager.getGame(gameId);
+                if (game) {
+                    game.makeObservable();
+                }
+                const joinableGame = this.gameManager.getJoinableGame(gameId);
+                if (joinableGame) {
+                    this.sio.emit(SocketEvent.ClassicGameCreated, { ...joinableGame, gameId });
+                }
+                // this.gameManager.removeJoinableGame(gameId);
+                // this.gameManager.addObservableGame(gameId);
                 // this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+                // this.sio.emit(SocketEvent.SendingObservableGames, { games: this.gameManager.getObservableGames() });
             } else {
                 const gameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
@@ -45,9 +55,14 @@ export class GameStateManager {
                         soloScore: gameCard.soloScore,
                         isMulti: false,
                     };
+                    const game = this.gameManager.getGame(gameId);
+                    if (game) {
+                        game.makeObservable();
+                        const joinableGame = this.gameManager.getLimitedJoinableGame(gameId);
+                        this.sio.emit(SocketEvent.LimitedGameCreated, { ...joinableGame, gameId });
+                    }
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);
                     const players = this.gameManager.getPlayers(gameId);
-                    console.log(players);
                     socket.emit(SocketEvent.Play, {
                         gameId,
                         gameCard: gameCardInfo,
