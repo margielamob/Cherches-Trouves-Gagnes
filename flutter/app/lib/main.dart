@@ -28,6 +28,7 @@ import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
+import 'package:app/pages/historic_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
@@ -222,6 +223,7 @@ class MyApp extends StatelessWidget {
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
+        '/HistoricPage': (context) => HistoricPage(),
       },
     );
   }
