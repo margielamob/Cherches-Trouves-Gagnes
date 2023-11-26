@@ -5,11 +5,16 @@ import { DrawService } from '@app/services/draw-service/draw-service.service';
 
 export class DrawRectangleCommand implements DrawingCommand {
     private command: Command;
-    constructor(baseCommand: Command, private focusedCanvas: ElementRef<HTMLCanvasElement>, private readonly drawService: DrawService) {
+    constructor(
+        baseCommand: Command,
+        private focusedCanvas: ElementRef<HTMLCanvasElement>,
+        private fillColor: string,
+        private readonly drawService: DrawService,
+    ) {
         this.command = baseCommand;
     }
 
     execute(): void {
-        this.drawService.redrawRectangle(this.command, this.focusedCanvas);
+        this.drawService.redrawRectangle(this.command, this.focusedCanvas, this.fillColor);
     }
 }

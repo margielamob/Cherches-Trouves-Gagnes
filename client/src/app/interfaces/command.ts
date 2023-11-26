@@ -10,4 +10,11 @@ export interface Command {
     rectangleStart?: { x: number; y: number };
     rectangleWidth?: number;
     rectangleHeight?: number;
+    ellipseStart?: { x: number; y: number };
+    centerX?: number;
+    centerY?: number;
+    radiusX?: number;
+    radiusY?: number;
+    ellipseHeight?: number;
+    ellipseWidth?: number;
 }
