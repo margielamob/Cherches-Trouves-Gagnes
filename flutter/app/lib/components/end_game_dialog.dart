@@ -33,8 +33,13 @@ class EndGameDialog extends StatelessWidget {
                     onPressed: () {
                       if (endGameService.endGameMessage ==
                           "La partie est terminée vous avez gagné !") {
+                        _userService.addGamesHistoric(
+                            gameManagerService.currentUser!.id, true);
                         _userService.updateUserGameWins(
                             gameManagerService.currentUser!.id);
+                      } else {
+                        _userService.addGamesHistoric(
+                            gameManagerService.currentUser!.id, false);
                       }
                       differenceDetectionService.resetForNextGame();
                       Get.offAll(MainPage());
@@ -51,8 +56,13 @@ class EndGameDialog extends StatelessWidget {
                           onPressed: () {
                             if (endGameService.endGameMessage ==
                                 "La partie est terminée vous avez gagné !") {
+                              _userService.addGamesHistoric(
+                                  gameManagerService.currentUser!.id, true);
                               _userService.updateUserGameWins(
                                   gameManagerService.currentUser!.id);
+                            } else {
+                              _userService.addGamesHistoric(
+                                  gameManagerService.currentUser!.id, false);
                             }
                             Navigator.of(context).pop();
                             gameReplayService.activateReplayMode();
