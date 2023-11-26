@@ -10,10 +10,10 @@ class SubmissionBoxNewDrawing extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
-      width: 140,
+      width: 200,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [DifferenceVignetteModal()],
+        children: [EnlargementRadiusSelection()],
       ),
     );
   }
