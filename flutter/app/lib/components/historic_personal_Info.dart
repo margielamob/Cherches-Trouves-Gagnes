@@ -30,13 +30,17 @@ class HistoricConnectionState extends State<HistoricConnection> {
   final AuthService authService = Get.find();
   UserData? currentUser;
   List<List<Timestamp>>? listLog;
+  List<GameHistoric>? listGamesHistoric;
 
   Future<List<List<Timestamp>>?> initUserHistoric() async {
     currentUser = await authService.getCurrentUser();
     if (currentUser != null) {
       listLog = await userService.getLog(currentUser!.uid);
+      listGamesHistoric =
+          await userService.getUserGamesHistoric(currentUser!.uid);
       return listLog;
     } else {
+      listGamesHistoric = [];
       return listLog = [];
     }
   }
@@ -118,7 +122,6 @@ class HistoricConnectionState extends State<HistoricConnection> {
                     width: 400,
                     height: 400,
                     child: Card(
-                      // Use a Card widget for the box appearance
                       elevation: 5,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -152,25 +155,63 @@ class HistoricConnectionState extends State<HistoricConnection> {
                       ),
                     ),
                   ),
+                  SizedBox(width: 50),
+                  SizedBox(
+                    width: 400,
+                    height: 400,
+                    child: Card(
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Historique des parties",
+                                style: TextStyle(fontSize: 20)),
+                            SizedBox(height: 10),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight: 400,
+                                  ),
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: listGamesHistoric!.length,
+                                    itemBuilder: (context, index) {
+                                      bool isGameWin =
+                                          listGamesHistoric![index].isGameWin;
+                                      return Row(
+                                        children: [
+                                          Text(
+                                              '${listGamesHistoric![index].timestamp.toDate()}'),
+                                          SizedBox(width: 10),
+                                          isGameWin
+                                              ? Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                )
+                                              : Icon(
+                                                  Icons.cancel,
+                                                  color: Colors.red,
+                                                ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );
-
-            // SizedBox(width: 20),
-            // Expanded(
-            //   child: Container(
-            //     constraints: BoxConstraints(maxWidth: 400),
-            //     child: ListView.builder(
-            //       shrinkWrap: true,
-            //       itemCount: logout!.length,
-            //       itemBuilder: (context, index) {
-            //         return Text('${logout![index].toDate()}');
-            //       },
-            //     ),
-            //   ),
-            // ),
-            //   ],
-            // );
           }
         }
       },
