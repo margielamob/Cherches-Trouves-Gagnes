@@ -40,6 +40,10 @@ export class GameCreationManager {
             await this.getJoinableGames();
         });
 
+        socket.on(SocketEvent.GetLimitedTimeGames, async () => {
+            await this.getLimitedTimeGames();
+        });
+
         socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
             this.leaveWaitingRoom(roomId, socket);
         });
@@ -111,10 +115,15 @@ export class GameCreationManager {
         }
     }
 
+    async getLimitedTimeGames() {
+        const games = this.gameManager.getJoinableLimitedGames();
+        this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+    }
     async getJoinableGames() {
-        let games = this.gameManager.getJoinableGames();
-        const limitedGames = this.gameManager.getJoinableLimitedGames();
-        games = [...games, ...limitedGames];
+        console.log('getJoinableGames');
+        const games = this.gameManager.getJoinableGames();
+        // const limitedGames = this.gameManager.getJoinableLimitedGames();
+        // games = [...games, ...limitedGames];
         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
     }
 }

@@ -23,6 +23,7 @@ export class Game {
     } = { coords: [], nbDifferencesLeft: 1 };
     differencesAlreadyFound: Coordinate[][] = [];
     bonusTime: number = 0;
+    isObservable: boolean = false;
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
     private id: string;
@@ -61,6 +62,10 @@ export class Game {
 
     get status(): GameStatus {
         return this.context.gameState();
+    }
+
+    makeObservable() {
+        this.isObservable = true;
     }
 
     incrementPlayers() {

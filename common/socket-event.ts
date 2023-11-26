@@ -78,4 +78,5 @@ export enum SocketEvent {
     SendingObservableGames = 'SendingObservableGames',
     MakeObservableClassic = 'MakeObservableClassic',
     SendingJoinableLimitedGames = 'SendingJoinableLimitedGames',
+    GetLimitedTimeGames = 'GetLimitedTimeGames',
 }

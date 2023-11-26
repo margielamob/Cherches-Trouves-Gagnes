@@ -26,17 +26,44 @@ export class JoinableGameService {
 
     private initSocketListeners(): void {
         this.communicationSocket.on(SocketEvent.ClassicGameCreated, (game: JoinableGameCard) => {
-            const updatedClassicGames = [...this._joinObserveClassicGames.value, game];
+            let updatedClassicGames = this._joinObserveClassicGames.value;
+
+            // Check if the game with the same gameId already exists
+            const existingGameIndex = updatedClassicGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
+
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (existingGameIndex > -1) {
+                // Replace the existing game with the new one
+                updatedClassicGames[existingGameIndex] = game;
+            } else {
+                // Add the new game to the list
+                updatedClassicGames = [...updatedClassicGames, game];
+            }
+
+            // Emit the updated list
             this._joinObserveClassicGames.next(updatedClassicGames);
         });
 
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
-            console.log(payload.games);
             this._joinObserveClassicGames.next(payload.games);
         });
 
         this.communicationSocket.on(SocketEvent.LimitedGameCreated, (game: JoinableGameCard) => {
-            const updatedLimitedGames = [...this._joinObserveLimitedGames.value, game];
+            let updatedLimitedGames = this._joinObserveLimitedGames.value;
+
+            // Check if the game with the same gameId already exists
+            const existingGameIndex = updatedLimitedGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
+
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (existingGameIndex > -1) {
+                // Replace the existing game with the new one
+                updatedLimitedGames[existingGameIndex] = game;
+            } else {
+                // Add the new game to the list
+                updatedLimitedGames = [...updatedLimitedGames, game];
+            }
+
+            // Emit the updated list
             this._joinObserveLimitedGames.next(updatedLimitedGames);
         });
 
@@ -52,13 +79,12 @@ export class JoinableGameService {
             .subscribe();
         this.fetchJoinableLimitedGamesSubject
             .asObservable()
-            .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetJoinableGames)))
+            .pipe(tap(() => this.communicationSocket.send(SocketEvent.GetLimitedTimeGames)))
             .subscribe();
     }
 
     fetchJoinableGames(): void {
         if (this.isClassic) {
-            console.log(this.isClassic);
             this.fetchJoinableClassicGamesSubject.next();
         } else {
             this.fetchJoinableLimitedGamesSubject.next();

@@ -18,8 +18,8 @@ import { JoinableGameCard } from '@common/joinable-game-card';
 export class GameCardButtonsComponent {
     @Input() gameCard: GameCard;
     @Input() joinableGameCard: JoinableGameCard;
+    isObservable: boolean = false;
 
-    // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly router: RouterService,
@@ -57,8 +57,6 @@ export class GameCardButtonsComponent {
                 this.gameInfoHandlerService.waitingRoom();
             }
         });
-
-        // this.openNameDialog(true);
     }
 
     onClickJoinGame(): void {

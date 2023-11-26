@@ -28,7 +28,14 @@ export class GameStateManager {
             if (this.gameManager.isClassic(gameId)) {
                 this.gameManager.sendTimer(this.sio, gameId, socket.id);
                 this.sio.to(gameId).emit(SocketEvent.Play, gameId);
-                this.sio.emit(SocketEvent.MakeObservableClassic, gameId);
+                const game = this.gameManager.getGame(gameId);
+                if (game) {
+                    game.makeObservable();
+                }
+                const joinableGame = this.gameManager.getJoinableGame(gameId);
+                if (joinableGame) {
+                    this.sio.emit(SocketEvent.ClassicGameCreated, { ...joinableGame, gameId });
+                }
                 // this.gameManager.removeJoinableGame(gameId);
                 // this.gameManager.addObservableGame(gameId);
                 // this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
@@ -48,6 +55,12 @@ export class GameStateManager {
                         soloScore: gameCard.soloScore,
                         isMulti: false,
                     };
+                    const game = this.gameManager.getGame(gameId);
+                    if (game) {
+                        game.makeObservable();
+                        const joinableGame = this.gameManager.getLimitedJoinableGame(gameId);
+                        this.sio.emit(SocketEvent.LimitedGameCreated, { ...joinableGame, gameId });
+                    }
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);
                     const players = this.gameManager.getPlayers(gameId);
                     socket.emit(SocketEvent.Play, {

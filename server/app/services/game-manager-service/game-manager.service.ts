@@ -20,6 +20,8 @@ import LZString = require('lz-string');
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
+    limitedTimeGames: Map<string, Game> = new Map();
+    classicGames: Map<string, Game> = new Map();
     joinObserveClassicGames: Map<string, Game> = new Map();
     joinObserveLimitedGames: Map<string, Game> = new Map();
     observableGames: Map<string, Game> = new Map();
@@ -40,10 +42,12 @@ export class GameManagerService {
             game = new Game(playerInfo, { info: gameCard, mode });
             this.limitedTimeGame.gamesShuffled.set(game.identifier, gamesRandomized);
             this.joinObserveLimitedGames.set(game.identifier, game);
+            this.limitedTimeGames.set(game.identifier, game);
         } else {
             gameCard = (await this.gameInfo.getGameInfoById(gameCardId)) as PrivateGameInformation;
             game = new Game(playerInfo, { info: gameCard, mode });
             this.joinObserveClassicGames.set(game.identifier, game);
+            this.classicGames.set(game.identifier, game);
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
@@ -72,7 +76,7 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
+        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo, isObservable: game.isObservable };
     }
     getJoinableGames(): JoinableGameCard[] {
         return Array.from(this.joinObserveClassicGames.keys())
@@ -104,7 +108,8 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
+        // const isObservable = game.isObservable;
+        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo, isObservable: game.isObservable };
     }
 
     getGameInfo(gameId: string) {
@@ -354,10 +359,13 @@ export class GameManagerService {
         return this.games.get(gameId);
     }
     updateObservableGameState(gameId: string) {
-        const game = this.observableGames.get(gameId);
+        const game = this.games.get(gameId);
         if (game) {
             return game.getDifferenceFound();
         }
         return;
+    }
+    getLimitedTimeGames() {
+        return Array.from(this.limitedTimeGames.keys());
     }
 }

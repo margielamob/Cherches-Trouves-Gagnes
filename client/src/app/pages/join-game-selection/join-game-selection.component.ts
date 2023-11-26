@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
 
 @Component({
@@ -7,16 +7,14 @@ import { JoinableGameService } from '@app/services/joinable-game/joinable-game.s
     styleUrls: ['./join-game-selection.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JoinGameSelectionComponent implements OnInit, AfterViewInit {
+export class JoinGameSelectionComponent implements OnInit {
     joinableClassicGames$ = this.joinableGameService.joinableClassicGames$;
     joinableLimitedGames$ = this.joinableGameService.joinableLimitedGames$;
     isClassic: boolean;
     constructor(public joinableGameService: JoinableGameService) {}
 
     ngOnInit(): void {
-        this.joinableGameService.fetchJoinableGames();
-    }
-    ngAfterViewInit(): void {
         this.isClassic = this.joinableGameService.isClassic;
+        this.joinableGameService.fetchJoinableGames();
     }
 }
