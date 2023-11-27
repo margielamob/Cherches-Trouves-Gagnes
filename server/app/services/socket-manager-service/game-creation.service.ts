@@ -107,7 +107,7 @@ export class GameCreationManager {
     async leaveWaitingRoom(roomId: string, socket: Socket) {
         if (this.gameManager.isGameCreator(roomId, socket.id)) {
             const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
-            socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
+            socket.broadcast.to(roomId).emit(SocketEvent.CreatorLeft, { player: gameCreator });
             this.gameManager.removeJoinableGame(roomId);
             this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
             this.sio.in(roomId).socketsLeave(roomId);
