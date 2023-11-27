@@ -405,7 +405,6 @@ export class GameManagerService {
     updateObservableGameState(gameId: string) {
         const game = this.games.get(gameId);
         if (game) {
-            console.log('game found' + game.identifier);
             return game.getDifferenceFound();
         }
         return;
