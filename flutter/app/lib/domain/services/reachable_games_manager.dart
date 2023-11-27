@@ -6,32 +6,54 @@ import 'package:get/get.dart';
 
 class ReachableGameManager extends ChangeNotifier {
   final SocketService _socket = Get.find();
-  JoinableGamesRequest? joinableGames;
+  JoinableGamesRequest? joinableClassicGames;
+  JoinableGamesRequest? joinableLimitedGames;
 
   ReachableGameManager() {
     handleSockets();
   }
 
-  void getReachableGames() {
-    _socket.send(SocketEvent.getJoinableGames);
+  void getReachableGames(bool isClassicGame) {
+    print(isClassicGame);
+    isClassicGame
+        ? _socket.send(SocketEvent.getJoinableGames)
+        : _socket.send(SocketEvent.getLimitedTimeGames);
   }
 
   void handleSockets() {
     _socket.on(SocketEvent.classicGameCreated, (dynamic message) {
       JoinableGamesModel request = JoinableGamesModel.fromJson(message);
-      if (joinableGames == null) {
+      if (joinableClassicGames == null) {
         final List<JoinableGamesModel> games = [];
         games.add(request);
-        joinableGames = JoinableGamesRequest(games: games);
+        joinableClassicGames = JoinableGamesRequest(games: games);
       } else {
-        joinableGames!.games.add(request);
+        joinableClassicGames!.games.add(request);
+      }
+      notifyListeners();
+    });
+
+    _socket.on(SocketEvent.limitedGameCreated, (dynamic message) {
+      JoinableGamesModel request = JoinableGamesModel.fromJson(message);
+      if (joinableLimitedGames == null) {
+        final List<JoinableGamesModel> games = [];
+        games.add(request);
+        joinableLimitedGames = JoinableGamesRequest(games: games);
+      } else {
+        joinableLimitedGames!.games.add(request);
       }
       notifyListeners();
     });
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
-      joinableGames = request;
+      joinableClassicGames = request;
+      notifyListeners();
+    });
+
+    _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
+      JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      joinableClassicGames = request;
       notifyListeners();
     });
 

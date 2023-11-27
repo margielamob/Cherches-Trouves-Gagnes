@@ -49,14 +49,6 @@ class ClassicGameDialog extends StatelessWidget {
               ),
               child: Text("Rejoindre"),
             ),
-            SizedBox(width: 20),
-            FilledButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
-              ),
-              child: Text("Observer"),
-            ),
           ],
         ),
         SizedBox(height: 10),

@@ -8,9 +8,10 @@ import 'package:provider/provider.dart';
 
 class ReachableGamesCarrousel extends StatelessWidget {
   final ReachableGameManager reachableGamesManager = Get.find();
+  final bool isClassicGame;
 
-  ReachableGamesCarrousel() {
-    reachableGamesManager.getReachableGames();
+  ReachableGamesCarrousel({required this.isClassicGame}) {
+    reachableGamesManager.getReachableGames(isClassicGame);
   }
 
   @override
@@ -18,15 +19,16 @@ class ReachableGamesCarrousel extends StatelessWidget {
     final ReachableGameManager gameManager =
         Provider.of<ReachableGameManager>(context);
 
-    if (gameManager.joinableGames == null) {
+    if (gameManager.joinableClassicGames == null) {
       return Center(child: CircularProgressIndicator());
     }
 
-    if (gameManager.joinableGames!.games.isEmpty) {
+    if (gameManager.joinableClassicGames!.games.isEmpty) {
       return Center(child: NoGameReachable());
     }
 
-    final List<JoinableGamesModel> games = gameManager.joinableGames!.games;
+    final List<JoinableGamesModel> games =
+        gameManager.joinableClassicGames!.games;
 
     return Column(
       children: [
