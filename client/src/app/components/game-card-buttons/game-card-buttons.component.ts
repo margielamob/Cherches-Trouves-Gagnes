@@ -69,7 +69,7 @@ export class GameCardButtonsComponent {
         this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
         this.gameInfoHandlerService.isMulti = true;
         this.gameInfoHandlerService.isObserver = true;
-        this.gameInfoHandlerService.gameMode = GameMode.Classic;
+        this.gameInfoHandlerService.gameMode = this.joinableGameCard.gameMode as GameMode;
         this.gameInfoHandlerService.observeGame(this.joinableGameCard.roomId);
     }
 

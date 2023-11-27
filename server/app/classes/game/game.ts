@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { EndGameState } from '@app/classes/end-game-state/end-game-state';
 import { GameContext } from '@app/classes/game-context/game-context';
 import { InitGameState } from '@app/classes/init-game-state/init-game-state';
@@ -24,6 +25,7 @@ export class Game {
     differencesAlreadyFound: Coordinate[][] = [];
     bonusTime: number = 0;
     isObservable: boolean = false;
+    wasLastPlayer: boolean = false;
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
     private id: string;
@@ -117,6 +119,10 @@ export class Game {
         return this.isMulti && this.players.size === 4;
     }
 
+    hasOnePlayer() {
+        return this.players.size === 1;
+    }
+
     setGameCardDeleted() {
         this.isCardDeleted = true;
     }
@@ -128,6 +134,9 @@ export class Game {
         this.players.set(player.id, player);
     }
 
+    isLastPlayer() {
+        return this.players.size === 4;
+    }
     findPlayer(playerId: string) {
         return this.players.get(playerId);
     }

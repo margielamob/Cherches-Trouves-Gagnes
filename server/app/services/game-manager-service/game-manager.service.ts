@@ -22,9 +22,10 @@ export class GameManagerService {
     games: Map<string, Game> = new Map();
     limitedTimeGames: Map<string, Game> = new Map();
     classicGames: Map<string, Game> = new Map();
-    joinObserveClassicGames: Map<string, Game> = new Map();
-    joinObserveLimitedGames: Map<string, Game> = new Map();
+    joinableClassicGames: Map<string, Game> = new Map();
+    joinableLimitedGames: Map<string, Game> = new Map();
     observableGames: Map<string, Game> = new Map();
+
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -41,12 +42,12 @@ export class GameManagerService {
             gameCard = gamesRandomized[0];
             game = new Game(playerInfo, { info: gameCard, mode });
             this.limitedTimeGame.gamesShuffled.set(game.identifier, gamesRandomized);
-            this.joinObserveLimitedGames.set(game.identifier, game);
+            this.joinableLimitedGames.set(game.identifier, game);
             this.limitedTimeGames.set(game.identifier, game);
         } else {
             gameCard = (await this.gameInfo.getGameInfoById(gameCardId)) as PrivateGameInformation;
             game = new Game(playerInfo, { info: gameCard, mode });
-            this.joinObserveClassicGames.set(game.identifier, game);
+            this.joinableClassicGames.set(game.identifier, game);
             this.classicGames.set(game.identifier, game);
         }
         await this.timer.setTimerConstant(game.identifier);
@@ -55,9 +56,8 @@ export class GameManagerService {
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
         return game.identifier;
     }
-
     getLimitedJoinableGame(roomId: string): JoinableGameCard | undefined {
-        const game = this.joinObserveLimitedGames.get(roomId);
+        const game = this.joinableLimitedGames.get(roomId);
         if (!game) {
             return;
         }
@@ -76,21 +76,29 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo, isObservable: game.isObservable };
+        return {
+            players,
+            nbDifferences,
+            thumbnail,
+            roomId,
+            gameInformation: gameCardInfo,
+            isObservable: game.isObservable,
+            gameMode: GameMode.LimitedTime,
+        };
     }
     getJoinableGames(): JoinableGameCard[] {
-        return Array.from(this.joinObserveClassicGames.keys())
+        return Array.from(this.joinableClassicGames.keys())
             .map((roomId) => this.getJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
     getJoinableLimitedGames(): JoinableGameCard[] {
-        return Array.from(this.joinObserveLimitedGames.keys())
+        return Array.from(this.joinableLimitedGames.keys())
             .map((roomId) => this.getLimitedJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
 
     getJoinableGame(roomId: string): JoinableGameCard | undefined {
-        const game = this.joinObserveClassicGames.get(roomId);
+        const game = this.games.get(roomId);
         if (!game) {
             return;
         }
@@ -108,10 +116,28 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        // const isObservable = game.isObservable;
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo, isObservable: game.isObservable };
+
+        return {
+            players,
+            nbDifferences,
+            thumbnail,
+            roomId,
+            gameInformation: gameCardInfo,
+            isObservable: game.isObservable,
+            gameMode: GameMode.LimitedTime,
+        };
     }
 
+    addJoinableGame(roomId: string) {
+        const game = this.games.get(roomId);
+        if (game) {
+            if (game.isLimitedTime()) {
+                this.joinableLimitedGames.set(roomId, game);
+            } else {
+                this.joinableClassicGames.set(roomId, game);
+            }
+        }
+    }
     getGameInfo(gameId: string) {
         return this.findGame(gameId)?.information;
     }
@@ -265,16 +291,31 @@ export class GameManagerService {
         return !game ? undefined : this.difference.getAllDifferencesNotFound(game.information.differences, gameId);
     }
 
-    // hasSameName(roomId: string, playersName: string) {
-    //     const game = this.findGame(roomId);
-    //     return !game ? false : Array.from(game.players.values()).includes(playersName);
-    // }
+    isLastPlayer(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : game.isLastPlayer();
+    }
+
+    onePlayerLeft(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : game.hasOnePlayer();
+    }
 
     isGameMultiplayer(gameId: string) {
         const game = this.findGame(gameId);
         return game?.multi;
     }
 
+    setWasLastPlayer(gameId: string, b: boolean) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.wasLastPlayer = b;
+        }
+    }
+    wasLastPlayer(gameId: string) {
+        const game = this.findGame(gameId);
+        return game?.wasLastPlayer;
+    }
     leaveGame(playerId: string, gameId: string) {
         const game = this.findGame(gameId);
         game?.leaveGame(playerId);
@@ -341,7 +382,10 @@ export class GameManagerService {
         }
     }
     removeJoinableGame(gameId: string) {
-        this.joinObserveClassicGames.delete(gameId);
+        this.joinableClassicGames.delete(gameId);
+    }
+    removeJoinableLimitedGame(gameId: string) {
+        this.joinableLimitedGames.delete(gameId);
     }
     removeGame(gameId: string) {
         this.games.delete(gameId);
@@ -351,7 +395,7 @@ export class GameManagerService {
         return this.games.get(gameId);
     }
     getLimitedTimeGamePlayers(gameId: string) {
-        const game = this.joinObserveLimitedGames.get(gameId);
+        const game = this.joinableLimitedGames.get(gameId);
         return !game ? undefined : Array.from(game.players.values());
     }
 
@@ -361,6 +405,7 @@ export class GameManagerService {
     updateObservableGameState(gameId: string) {
         const game = this.games.get(gameId);
         if (game) {
+            console.log('game found' + game.identifier);
             return game.getDifferenceFound();
         }
         return;
