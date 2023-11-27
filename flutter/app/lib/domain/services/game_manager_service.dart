@@ -314,7 +314,6 @@ class GameManagerService extends ChangeNotifier {
     isObservable = true;
     ObserveGameRequest data =
         ObserveGameRequest(player: currentUser!, roomId: roomId);
-    print(data.toJson());
     _socket.send(SocketEvent.observeGame, data.toJson());
   }
 }

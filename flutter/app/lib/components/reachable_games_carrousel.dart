@@ -19,16 +19,15 @@ class ReachableGamesCarrousel extends StatelessWidget {
     final ReachableGameManager gameManager =
         Provider.of<ReachableGameManager>(context);
 
-    if (gameManager.joinableClassicGames == null) {
+    if (gameManager.joinableGames == null) {
       return Center(child: CircularProgressIndicator());
     }
 
-    if (gameManager.joinableClassicGames!.games.isEmpty) {
+    if (gameManager.joinableGames!.games.isEmpty) {
       return Center(child: NoGameReachable());
     }
 
-    final List<JoinableGamesModel> games =
-        gameManager.joinableClassicGames!.games;
+    final List<JoinableGamesModel> games = gameManager.joinableGames!.games;
 
     return Column(
       children: [

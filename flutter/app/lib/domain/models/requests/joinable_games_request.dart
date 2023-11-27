@@ -24,26 +24,40 @@ class JoinableGamesModel {
   final Uint8List thumbnail;
   final String roomId;
   final GameCardMultiModel gameInformation;
+  bool? isObservable;
 
   JoinableGamesModel(
       {required this.players,
       required this.nbDifferences,
       required this.thumbnail,
       required this.roomId,
-      required this.gameInformation});
+      required this.gameInformation,
+      this.isObservable});
 
   factory JoinableGamesModel.fromJson(Map<String, dynamic> json) {
     final playersList = json['players'] as List<dynamic>;
     final gameInformation = json['gameInformation'];
 
-    return JoinableGamesModel(
-      players:
-          playersList.map((player) => PlayerModel.fromJson(player)).toList(),
-      nbDifferences: json['nbDifferences'],
-      thumbnail: base64Decode(json['thumbnail'].split(',').last),
-      roomId: json['roomId'],
-      gameInformation: GameCardMultiModel.fromJson(gameInformation),
-    );
+    if (json['isObservable'] == null) {
+      return JoinableGamesModel(
+        players:
+            playersList.map((player) => PlayerModel.fromJson(player)).toList(),
+        nbDifferences: json['nbDifferences'],
+        thumbnail: base64Decode(json['thumbnail'].split(',').last),
+        roomId: json['roomId'],
+        gameInformation: GameCardMultiModel.fromJson(gameInformation),
+      );
+    } else {
+      return JoinableGamesModel(
+        players:
+            playersList.map((player) => PlayerModel.fromJson(player)).toList(),
+        nbDifferences: json['nbDifferences'],
+        thumbnail: base64Decode(json['thumbnail'].split(',').last),
+        roomId: json['roomId'],
+        gameInformation: GameCardMultiModel.fromJson(gameInformation),
+        isObservable: json['isObservable'],
+      );
+    }
   }
 }
 
@@ -65,5 +79,15 @@ class JoinableGamesRequest {
     return {
       'games': games,
     };
+  }
+
+  int findExistingGameIndex(String gameId) {
+    int existingGameIndex = games.indexWhere((g) => g.roomId == gameId);
+    return existingGameIndex;
+  }
+
+  void replaceGame(JoinableGamesModel game, int index) {
+    games.removeAt(index);
+    games.insert(index, game);
   }
 }
