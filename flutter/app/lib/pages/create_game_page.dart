@@ -44,7 +44,7 @@ class CreateGamePage extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 190),
+                  padding: const EdgeInsets.only(left: 210),
                   child: PencilBox(),
                 ),
               ),

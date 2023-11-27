@@ -167,7 +167,6 @@ class PersonalUserService {
   }
 
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
-    print(timePlayed);
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({
@@ -198,4 +197,49 @@ class PersonalUserService {
     }
     return avatar!;
   }
+
+  Future getLog(String uid) async {
+    List<Timestamp> login = [];
+    List<Timestamp> logout = [];
+    CollectionReference usersLogs =
+        db.collection('users').doc(uid).collection('activityLogs');
+    QuerySnapshot querySnapshot = await usersLogs.get();
+    querySnapshot.docs.forEach((doc) {
+      if (doc['activity'] == 'connect') {
+        login.add(doc['timestamp']);
+      } else {
+        logout.add(doc['timestamp']);
+      }
+    });
+    return [login, logout];
+  }
+
+  Future addGamesHistoric(String uid, bool isGameWin) async {
+    CollectionReference userGameHistoric =
+        db.collection('users').doc(uid).collection('gamesHistoric');
+    await userGameHistoric
+        .add({'isGameWin': isGameWin, 'Timestamp': Timestamp.now()});
+  }
+
+  Future getUserGamesHistoric(String uid) async {
+    List<GameHistoric> gamesHistoric = [];
+    CollectionReference usersLogs =
+        db.collection('users').doc(uid).collection('gamesHistoric');
+    QuerySnapshot querySnapshot = await usersLogs.get();
+    querySnapshot.docs.forEach((doc) {
+      GameHistoric game = GameHistoric(
+        isGameWin: doc['isGameWin'],
+        timestamp: doc['Timestamp'],
+      );
+      gamesHistoric.add(game);
+    });
+    return gamesHistoric;
+  }
+}
+
+class GameHistoric {
+  bool isGameWin; // Replace with the actual property name
+  Timestamp timestamp; // Replace with the actual property name
+
+  GameHistoric({required this.isGameWin, required this.timestamp});
 }

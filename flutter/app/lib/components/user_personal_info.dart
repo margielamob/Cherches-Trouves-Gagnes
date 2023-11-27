@@ -139,6 +139,7 @@ class _AccountSettingState extends State<AccountSetting> {
     super.initState();
     initUserAvatar();
   }
+
   Widget build(BuildContext context) {
     initUserAvatar();
     final profileManager = Provider.of<ProfilePageManager>(context);
@@ -377,13 +378,27 @@ class UserPersonalInfo extends StatelessWidget {
 
             final currentUserData = UserData.fromSnapshot(snapshot.data!);
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AccountSetting(currentUserData: currentUserData),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AccountSetting(currentUserData: currentUserData),
+                    SizedBox(width: 50),
+                    AccountStatistics(currentUserData: currentUserData),
+                  ],
+                ),
                 SizedBox(height: 20),
-                AccountStatistics(currentUserData: currentUserData),
+                FilledButton(
+                    onPressed: () => {
+                          Navigator.pushNamed(context, '/HistoricPage'),
+                        },
+                    style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+                    ),
+                    child: Text("Historique des parties et connexions")),
               ],
             );
           },

@@ -1,18 +1,32 @@
 <mat-card class="card-adjustment">
     <div class="common-section">
-        <button mat-mini-fab [color]="this.colorButton.eraser" type="button" (click)="this.changePencilState(this.tool.Eraser)" name="eraser">
+        <button
+            mat-mini-fab
+            type="button"
+            (click)="this.changePencilState(this.tool.Eraser)"
+            [class.mat-accent]="isEraserSelected"
+            name="eraser"
+            color="primary"
+        >
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.DELETE' | translate }}">
                 <img class="icon" src="assets/eraser-icon-white.png" *ngIf="this.colorButton.eraser === 'primary'" />
                 <img class="icon" src="assets/eraser-icon-black.png" *ngIf="this.colorButton.eraser === 'accent'" />
             </mat-icon>
         </button>
-        <button mat-mini-fab type="button" (click)="changePencilState(this.tool.Pencil)" [color]="this.colorButton.pencil" name="pencil">
+        <button
+            mat-mini-fab
+            type="button"
+            (click)="changePencilState(this.tool.Pencil)"
+            [class.mat-accent]="isPencilSelected"
+            name="pencil"
+            color="primary"
+        >
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.DRAW' | translate }}">edit</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" type="button" (click)="onClickRectangle()" [class.mat-accent]="isRectangleSelected">
+        <button mat-mini-fab color="primary" type="button" (click)="changePencilState(this.tool.Rectangle)" [class.mat-accent]="isRectangleSelected">
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.CREATE_RECTANGLE' | translate }}">crop_square</mat-icon>
         </button>
-        <button mat-mini-fab color="primary" [class.mat-accent]="isEllipseSelected" type="button" (click)="onClickEllipse()">
+        <button mat-mini-fab color="primary" [class.mat-accent]="isEllipseSelected" type="button" (click)="changePencilState(this.tool.Ellipse)">
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.CREATE_ELLIPSE' | translate }}">panorama_fish_eye</mat-icon>
         </button>
 

@@ -329,6 +329,9 @@ export class UserService {
     }
 
     updateTotalTimePlayed(timePlayed: number) {
+        if (timePlayed === undefined) {
+            return;
+        }
         this.getTotalTimePlayed()
             .pipe(take(1))
             .subscribe((totalTimePlayed) => {
