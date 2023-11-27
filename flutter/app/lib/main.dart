@@ -12,6 +12,7 @@ import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
@@ -26,6 +27,7 @@ import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
+import 'package:app/pages/observableGamePage.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/reset_password_page.dart';
@@ -60,6 +62,7 @@ void registerDependencies() {
   Get.put(GameReplayService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
+  Get.put(ObservableGameManager());
   Get.put(ProfilePageManager());
   Get.put(VignetteSubmissionService());
 }
@@ -115,6 +118,12 @@ void main() async {
           create: (context) {
             ReachableGameManager reachableGameManager = Get.find();
             return reachableGameManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            ObservableGameManager observableGameManager = Get.find();
+            return observableGameManager;
           },
         ),
         ChangeNotifierProvider(
@@ -199,6 +208,7 @@ class MyApp extends StatelessWidget {
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),
         '/ReachableGamePage': (context) => ReachableGamePage(),
+        '/ObservableGamePage': (context) => ObservableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
