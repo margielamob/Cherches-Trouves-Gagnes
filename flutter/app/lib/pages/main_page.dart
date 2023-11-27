@@ -3,17 +3,20 @@ import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   final GameManagerService gameManagerService = Get.find();
   final PersonalUserService userService = Get.find();
-
   @override
   Widget build(BuildContext context) {
+    final profilePageManager = Provider.of<ProfilePageManager>(context);
+    final imagePath = profilePageManager.getImagePath();
     gameManagerService.setCurrentUser();
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +148,7 @@ class MainPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/quote.png',
+                      imagePath,
                       height: 600,
                     ),
                   ],

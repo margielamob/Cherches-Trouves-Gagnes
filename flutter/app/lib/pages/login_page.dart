@@ -129,7 +129,7 @@ class LoginPageState extends State<LoginPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'assets/quote.png',
+                  'assets/quote_d.png',
                   height: 600,
                 ),
               ),
