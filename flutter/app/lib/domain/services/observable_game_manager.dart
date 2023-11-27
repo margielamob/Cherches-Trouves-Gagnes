@@ -49,24 +49,24 @@ class ObservableGameManager extends ChangeNotifier {
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
-      final List<JoinableGamesModel> games = [];
-      for (var game in request.games) {
-        if (game.isObservable == true) {
-          if (observableGames == null) {
-            games.add(game);
-            observableGames = JoinableGamesRequest(games: games);
-          } else {
-            observableGames!.games.add(game);
-          }
-        }
-      }
-      notifyListeners();
+      observableGames = request;
     });
 
     _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
       observableGames = request;
       notifyListeners();
+      // JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      // final List<JoinableGamesModel> games = [];
+      // for (var game in request.games) {
+      //   if (game.isObservable == true) {
+      //     if (observableGames == null) {
+      //       games.add(game);
+      //     }
+      //   }
+      // }
+      // observableGames!.games = games;
+      // notifyListeners();
     });
 
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {});

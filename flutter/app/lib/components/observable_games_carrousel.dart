@@ -1,5 +1,4 @@
-
-import 'package:app/components/no_game_reachable.dart';
+import 'package:app/components/no_game_observable.dart';
 import 'package:app/components/reachable_games_card.dart';
 import 'package:app/domain/models/requests/joinable_games_request.dart';
 import 'package:app/domain/services/observable_game_manager.dart';
@@ -9,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class ObservableGamesCarrousel extends StatelessWidget {
   final ObservableGameManager observableGameManager = Get.find();
-    final bool isClassicGame;
+  final bool isClassicGame;
 
   ObservableGamesCarrousel({required this.isClassicGame}) {
     observableGameManager.getReachableGames(isClassicGame);
@@ -25,7 +24,7 @@ class ObservableGamesCarrousel extends StatelessWidget {
     }
 
     if (gameManager.observableGames!.games.isEmpty) {
-      return Center(child: NoGameReachable());
+      return Center(child: NoGameObservable());
     }
 
     final List<JoinableGamesModel> games = gameManager.observableGames!.games;

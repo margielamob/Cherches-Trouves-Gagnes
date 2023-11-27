@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ObservableGamePage extends StatelessWidget {
-    final GameManagerService gameManagerService = Get.find();
+  final GameManagerService gameManagerService = Get.find();
   final bool enabled = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.buildLogoutOnly(context, 'Games available'),
+      appBar:
+          CustomAppBar.buildLogoutOnly(context, 'Observables Games available'),
       body: Padding(
         padding: EdgeInsets.all(20.0),
         child: ObservableGamesCarrousel(

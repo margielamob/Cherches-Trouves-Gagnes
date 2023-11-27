@@ -103,18 +103,6 @@ class ReachableGamesCard extends StatelessWidget {
                       child: Text("Joindre"),
                     ),
                     SizedBox(width: 20),
-                    FilledButton(
-                      style: ButtonStyle(
-                        minimumSize:
-                            MaterialStateProperty.all(Size(100.0, 40.0)),
-                      ),
-                      onPressed: () {
-                        gameManagerService.gameCards =
-                            game.gameInformation.toGameCardModel();
-                        gameManagerService.observeGame(game.roomId);
-                      },
-                      child: Text("Observer"),
-                    ),
                   ]),
                 ],
               ),

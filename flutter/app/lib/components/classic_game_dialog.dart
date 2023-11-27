@@ -2,6 +2,7 @@ import 'package:app/components/limited_constants_dialog.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:app/pages/game_selection_page.dart';
+import 'package:app/pages/observableGamePage.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,6 +49,17 @@ class ClassicGameDialog extends StatelessWidget {
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
               child: Text("Rejoindre"),
+            ),
+            SizedBox(width: 20),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Get.to(ObservableGamePage());
+              },
+              style: ButtonStyle(
+                minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+              ),
+              child: Text("Observer"),
             ),
           ],
         ),

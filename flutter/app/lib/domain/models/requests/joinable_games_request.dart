@@ -62,7 +62,7 @@ class JoinableGamesModel {
 }
 
 class JoinableGamesRequest {
-  final List<JoinableGamesModel> games;
+  List<JoinableGamesModel> games;
 
   JoinableGamesRequest({required this.games});
 
