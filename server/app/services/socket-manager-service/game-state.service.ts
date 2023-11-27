@@ -33,13 +33,10 @@ export class GameStateManager {
                     game.makeObservable();
                 }
                 const joinableGame = this.gameManager.getJoinableGame(gameId);
+                this.gameManager.addJoinableGame(gameId);
                 if (joinableGame) {
                     this.sio.emit(SocketEvent.ClassicGameCreated, { ...joinableGame, gameId });
                 }
-                // this.gameManager.removeJoinableGame(gameId);
-                // this.gameManager.addObservableGame(gameId);
-                // this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
-                // this.sio.emit(SocketEvent.SendingObservableGames, { games: this.gameManager.getObservableGames() });
             } else {
                 const gameCard = this.gameManager.getGameInfo(gameId);
                 let gameCardInfo: PublicGameInformation;
@@ -58,7 +55,8 @@ export class GameStateManager {
                     const game = this.gameManager.getGame(gameId);
                     if (game) {
                         game.makeObservable();
-                        const joinableGame = this.gameManager.getLimitedJoinableGame(gameId);
+                        const joinableGame = this.gameManager.getJoinableGame(gameId);
+                        this.gameManager.addJoinableGame(gameId);
                         this.sio.emit(SocketEvent.LimitedGameCreated, { ...joinableGame, gameId });
                     }
                     this.gameManager.sendTimer(this.sio, gameId, socket.id);

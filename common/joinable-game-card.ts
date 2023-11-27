@@ -8,4 +8,5 @@ export interface JoinableGameCard {
     roomId: string;
     gameInformation: PublicGameInformation;
     isObservable?: boolean;
+    gameMode?: string;
 }

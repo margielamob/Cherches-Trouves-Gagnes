@@ -102,19 +102,49 @@ export class GameCreationManager {
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
+        if (this.gameManager.isLastPlayer(roomId)) {
+            this.gameManager.setWasLastPlayer(roomId, true);
+            if (this.gameManager.isClassic(roomId)) {
+                this.gameManager.removeJoinableGame(roomId);
+                const games = this.gameManager.getJoinableGames();
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
+            } else {
+                this.gameManager.removeJoinableLimitedGame(roomId);
+                const games = this.gameManager.getJoinableLimitedGames();
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+            }
+        }
     }
 
     async leaveWaitingRoom(roomId: string, socket: Socket) {
         if (this.gameManager.isGameCreator(roomId, socket.id)) {
             const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
-            socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
-            this.gameManager.removeJoinableGame(roomId);
-            this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            socket.broadcast.to(roomId).emit(SocketEvent.CreatorLeft, { player: gameCreator });
+            if (this.gameManager.isClassic(roomId)) {
+                this.gameManager.removeJoinableGame(roomId);
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            } else {
+                this.gameManager.removeJoinableLimitedGame(roomId);
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games: this.gameManager.getJoinableLimitedGames() });
+            }
+            this.gameManager.discardGame(roomId);
             this.sio.in(roomId).socketsLeave(roomId);
         } else {
             this.gameManager.removePlayer(roomId, socket.id);
             socket.leave(roomId);
             const players = this.gameManager.getPlayers(roomId) || [];
+            if (this.gameManager.wasLastPlayer(roomId)) {
+                this.gameManager.setWasLastPlayer(roomId, false);
+                const game = this.gameManager.getGame(roomId);
+                if (game) {
+                    this.gameManager.addJoinableGame(roomId);
+                    if (this.gameManager.isClassic(roomId)) {
+                        this.sio.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
+                    } else {
+                        this.sio.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
+                    }
+                }
+            }
             socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
         }
     }
@@ -124,10 +154,7 @@ export class GameCreationManager {
         this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
     }
     async getJoinableGames() {
-        console.log('getJoinableGames');
         const games = this.gameManager.getJoinableGames();
-        // const limitedGames = this.gameManager.getJoinableLimitedGames();
-        // games = [...games, ...limitedGames];
         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
     }
 }

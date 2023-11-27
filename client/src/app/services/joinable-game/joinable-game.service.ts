@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
@@ -18,7 +19,6 @@ export class JoinableGameService {
 
     private fetchJoinableClassicGamesSubject = new Subject<void>();
     private fetchJoinableLimitedGamesSubject = new Subject<void>();
-
     constructor(private readonly communicationSocket: CommunicationSocketService) {
         this.initSocketListeners();
         this.initRequestHandlers();
@@ -26,22 +26,8 @@ export class JoinableGameService {
 
     private initSocketListeners(): void {
         this.communicationSocket.on(SocketEvent.ClassicGameCreated, (game: JoinableGameCard) => {
-            let updatedClassicGames = this._joinObserveClassicGames.value;
-
-            // Check if the game with the same gameId already exists
-            const existingGameIndex = updatedClassicGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
-
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            if (existingGameIndex > -1) {
-                // Replace the existing game with the new one
-                updatedClassicGames[existingGameIndex] = game;
-            } else {
-                // Add the new game to the list
-                updatedClassicGames = [...updatedClassicGames, game];
-            }
-
-            // Emit the updated list
-            this._joinObserveClassicGames.next(updatedClassicGames);
+            const currentGames = this._joinObserveLimitedGames.value;
+            this._joinObserveClassicGames.next([...currentGames, game]);
         });
 
         this.communicationSocket.on(SocketEvent.SendingJoinableClassicGames, (payload: { games: JoinableGameCard[] }) => {
@@ -51,19 +37,14 @@ export class JoinableGameService {
         this.communicationSocket.on(SocketEvent.LimitedGameCreated, (game: JoinableGameCard) => {
             let updatedLimitedGames = this._joinObserveLimitedGames.value;
 
-            // Check if the game with the same gameId already exists
             const existingGameIndex = updatedLimitedGames.findIndex((g) => g.gameInformation.id === game.gameInformation.id);
 
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             if (existingGameIndex > -1) {
-                // Replace the existing game with the new one
                 updatedLimitedGames[existingGameIndex] = game;
             } else {
-                // Add the new game to the list
                 updatedLimitedGames = [...updatedLimitedGames, game];
             }
 
-            // Emit the updated list
             this._joinObserveLimitedGames.next(updatedLimitedGames);
         });
 

@@ -10,6 +10,7 @@ import { JoinableGameService } from '@app/services/joinable-game/joinable-game.s
 export class JoinGameSelectionComponent implements OnInit {
     joinableClassicGames$ = this.joinableGameService.joinableClassicGames$;
     joinableLimitedGames$ = this.joinableGameService.joinableLimitedGames$;
+
     isClassic: boolean;
     constructor(public joinableGameService: JoinableGameService) {}
 

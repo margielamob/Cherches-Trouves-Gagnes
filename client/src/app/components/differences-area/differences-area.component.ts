@@ -54,7 +54,6 @@ export class DifferencesAreaComponent {
 
             this.players[this.getPlayerIndex(playerName)].nbDifference = this.setNbDifferencesFound(playerName);
         });
-        console.log(opponents);
     }
 
     // setPlayerLimitedTime() {
