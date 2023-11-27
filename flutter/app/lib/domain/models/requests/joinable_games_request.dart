@@ -63,7 +63,6 @@ class JoinableGamesModel {
 
 class JoinableGamesRequest {
   List<JoinableGamesModel> games;
-
   JoinableGamesRequest({required this.games});
 
   factory JoinableGamesRequest.fromJson(Map<String, dynamic> json) {
@@ -81,13 +80,9 @@ class JoinableGamesRequest {
     };
   }
 
-  int findExistingGameIndex(String gameId) {
-    int existingGameIndex = games.indexWhere((g) => g.roomId == gameId);
-    return existingGameIndex;
-  }
-
-  void replaceGame(JoinableGamesModel game, int index) {
-    games.removeAt(index);
-    games.insert(index, game);
+  List<JoinableGamesModel> filterGamesByObservable(bool isObservableFilter) {
+    return games.where((game) => 
+        game.isObservable == isObservableFilter || 
+        (game.isObservable == null && !isObservableFilter)).toList();
   }
 }

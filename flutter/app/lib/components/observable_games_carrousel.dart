@@ -1,5 +1,5 @@
 import 'package:app/components/no_game_observable.dart';
-import 'package:app/components/reachable_games_card.dart';
+import 'package:app/components/observable_game_card.dart';
 import 'package:app/domain/models/requests/joinable_games_request.dart';
 import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class ObservableGamesCarrousel extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: games.length,
               itemBuilder: (_, index) {
-                return ReachableGamesCard(game: games[index]);
+                return ObservableGamesCard(game: games[index]);
               },
             ),
           ),

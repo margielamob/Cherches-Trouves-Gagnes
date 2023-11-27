@@ -29,14 +29,6 @@ class ReachableGameManager extends ChangeNotifier {
       } else {
         joinableGames!.games.add(request);
       }
-      // } else {
-      //   var index = joinableClassicGames!.findExistingGameIndex(request.roomId);
-      //   if (index == -1) {
-      //     joinableClassicGames!.games.add(request);
-      //   } else {
-      //     joinableClassicGames!.replaceGame(request, index);
-      //   }
-      // }
       notifyListeners();
     });
 
@@ -54,6 +46,8 @@ class ReachableGameManager extends ChangeNotifier {
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      request.games = request.filterGamesByObservable(false);
+      print(request.games);
       joinableGames = request;
       notifyListeners();
     });
