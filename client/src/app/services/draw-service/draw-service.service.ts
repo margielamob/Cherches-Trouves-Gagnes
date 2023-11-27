@@ -20,6 +20,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { CanvasStateService } from '@app/services/canvas-state/canvas-state.service';
 import { PencilService } from '@app/services/pencil-service/pencil.service';
 import { Subject } from 'rxjs';
+import { DrawingToolsService } from './drawing-tools.service';
 
 @Injectable({
     providedIn: 'root',
@@ -43,6 +44,8 @@ export class DrawService {
     isClick: boolean = DEFAULT_DRAW_CLIENT;
     isDrawingRectangle = false;
     isDrawingEllipse = false;
+    isPipette: boolean = false;
+    isBucket: boolean = false;
     currentHeight: number;
     currentWidth: number;
     animatedFrameID: number;
@@ -52,8 +55,16 @@ export class DrawService {
     radiusY: number;
     startPos: { posX: number; posY: number };
 
-    constructor(private canvasStateService: CanvasStateService, private pencil: PencilService) {
+    constructor(private canvasStateService: CanvasStateService, private pencil: PencilService, private drawTools: DrawingToolsService) {
         this.$drawingImage = new Map();
+    }
+
+    changeBackgroundColor(color: string, canvas: ElementRef<HTMLCanvasElement>) {
+        this.drawTools.setBackgroundColor(color, canvas);
+    }
+
+    getPixelColor(event: MouseEvent, canvas: ElementRef<HTMLCanvasElement>) {
+        return this.drawTools.getColor(event.offsetX, event.offsetY, canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
     }
 
     initialize() {
@@ -103,6 +114,17 @@ export class DrawService {
         this.animatedFrameID = requestAnimationFrame(() => {
             this.drawEllipseShape(this.startPos.posX, this.startPos.posY, width, height, tempCanvas);
         });
+    }
+
+    updatePencilColor(event: MouseEvent) {
+        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground;
+        const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.pencil.color = this.drawTools.getColor(event.offsetX, event.offsetY, ctx);
+    }
+
+    updateBackgroundColor() {
+        this.drawTools.setBackgroundColor(this.pencil.color, this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef<HTMLCanvasElement>);
     }
 
     saveEllipse(saveCanvas: ElementRef<HTMLCanvasElement>) {

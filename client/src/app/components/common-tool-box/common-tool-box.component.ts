@@ -21,6 +21,8 @@ export class CommonToolBoxComponent implements OnInit {
     isEllipseSelected: boolean = false;
     isPencilSelected: boolean = true;
     isEraserSelected: boolean = false;
+    isPipette: boolean = false;
+    isPaintBucket: boolean = false;
 
     /* Michel prefers to have more services uncoupled than tighly bounded components and services*/
     // eslint-disable-next-line max-params
@@ -31,6 +33,16 @@ export class CommonToolBoxComponent implements OnInit {
 
     ngOnInit(): void {
         this.toolService.addCanvasType(this.canvasType);
+    }
+
+    onPaintBucketClick() {
+        console.log('bucket');
+        this.isPaintBucket = !this.isPaintBucket;
+    }
+
+    onPipetteClick() {
+        console.log('pipette');
+        this.isPaintBucket = !this.isPaintBucket;
     }
 
     changePencilState(tool: Tool): void {

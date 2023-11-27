@@ -61,6 +61,15 @@ export class DrawCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     startDrawing(event: MouseEvent) {
+        if (this.drawService.isPipette) {
+            this.drawService.updatePencilColor(event);
+            return;
+        }
+
+        if (this.drawService.isBucket) {
+            this.drawService.updateBackgroundColor();
+            return;
+        }
         this.canvasStateService.setFocusedCanvas(this.canvasType);
         this.drawService.startDrawing(event);
     }
