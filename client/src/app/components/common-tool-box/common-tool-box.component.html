@@ -62,11 +62,10 @@
         <button mat-mini-fab color="primary" type="button" (click)="this.drawService.resetBackground(this.canvasType)">
             <mat-icon matTooltip="{{ 'COMMON_TOOL_BOX.RESET_BACKGROUND' | translate }}">image_not_supported</mat-icon>
         </button>
-        <button mat-button color="primary" (click)="onPaintBucketClick()">
-            <mat-icon>format_paint</mat-icon>
+        <button mat-button color="primary" type="button" (click)="changePencilState(this.tool.Bucket)" [class.mat-accent]="isPaintBucket">
+            <mat-icon>format_color_fill</mat-icon>
         </button>
-        <!-- Include an Angular Material button with a pipette icon -->
-        <button mat-button color="primary" (click)="onPipetteClick()">
+        <button mat-button color="primary" type="button" (click)="changePencilState(this.tool.Pipette)" [class.mat-accent]="isPipette">
             <mat-icon>colorize</mat-icon>
         </button>
     </div>

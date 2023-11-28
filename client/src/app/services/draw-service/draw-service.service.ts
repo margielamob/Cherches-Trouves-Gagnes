@@ -19,7 +19,7 @@ import { StrokeStyle } from '@app/interfaces/stroke-style';
 import { Vec2 } from '@app/interfaces/vec2';
 import { CanvasStateService } from '@app/services/canvas-state/canvas-state.service';
 import { PencilService } from '@app/services/pencil-service/pencil.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { DrawingToolsService } from './drawing-tools.service';
 
 @Injectable({
@@ -27,6 +27,8 @@ import { DrawingToolsService } from './drawing-tools.service';
 })
 export class DrawService {
     $drawingImage: Map<CanvasType, Subject<ImageData>>;
+    inputColorChanged: BehaviorSubject<string> = new BehaviorSubject('');
+    inputColorChanged$ = this.inputColorChanged.asObservable();
 
     // Having an index of -1 makes way more sens, because the default index is out of bound.
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
@@ -55,16 +57,19 @@ export class DrawService {
     radiusY: number;
     startPos: { posX: number; posY: number };
 
+    rectangleProperties = {
+        width: 0,
+        height: 0,
+        startX: 0,
+        startY: 0,
+    };
+
     constructor(private canvasStateService: CanvasStateService, private pencil: PencilService, private drawTools: DrawingToolsService) {
         this.$drawingImage = new Map();
     }
 
     changeBackgroundColor(color: string, canvas: ElementRef<HTMLCanvasElement>) {
         this.drawTools.setBackgroundColor(color, canvas);
-    }
-
-    getPixelColor(event: MouseEvent, canvas: ElementRef<HTMLCanvasElement>) {
-        return this.drawTools.getColor(event.offsetX, event.offsetY, canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
     }
 
     initialize() {
@@ -83,12 +88,14 @@ export class DrawService {
         if (this.pencil.state === Tool.Rectangle) {
             this.isDrawingRectangle = true;
             this.startPos = { posX: event.offsetX, posY: event.offsetY };
+            this.rectangleProperties.startX = this.startPos.posX;
+            this.rectangleProperties.startY = this.startPos.posY;
+
             this.drawRectangle(event, focusedCanvas.temporary);
             return;
         }
 
         if (this.pencil.state === Tool.Ellipse) {
-            console.log('selected ellipse');
             this.isDrawingEllipse = true;
             this.startPos = { posX: event.offsetX, posY: event.offsetY };
             this.drawEllipse(event, focusedCanvas.temporary);
@@ -117,14 +124,26 @@ export class DrawService {
     }
 
     updatePencilColor(event: MouseEvent) {
-        const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground;
-        const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        const tempCanvas = this.canvasStateService.getFocusedCanvas()?.temporary as ElementRef<HTMLCanvasElement>;
+        const foreground = this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef<HTMLCanvasElement>;
+        const background = this.canvasStateService.getFocusedCanvas()?.background as ElementRef<HTMLCanvasElement>;
+
+        const ctx = tempCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        ctx.drawImage(background.nativeElement, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.drawImage(foreground.nativeElement, 0, 0);
 
         this.pencil.color = this.drawTools.getColor(event.offsetX, event.offsetY, ctx);
+        this.inputColorChanged.next(this.pencil.color);
     }
 
     updateBackgroundColor() {
-        this.drawTools.setBackgroundColor(this.pencil.color, this.canvasStateService.getFocusedCanvas()?.foreground as ElementRef<HTMLCanvasElement>);
+        const canvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef<HTMLCanvasElement>;
+        const ctx = canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
+        this.drawTools.setBackgroundColor(this.pencil.color, canvas);
     }
 
     saveEllipse(saveCanvas: ElementRef<HTMLCanvasElement>) {
@@ -165,6 +184,7 @@ export class DrawService {
         ctxTemp.clearRect(0, 0, focusedCanvas.nativeElement.width, focusedCanvas.nativeElement.height);
         ctxTemp.beginPath();
         ctxTemp.ellipse(this.centerX, this.centerY, this.radiusX, this.radiusY, 0, 0, 2 * Math.PI);
+
         ctxTemp.fill();
         ctxTemp.stroke();
     }
@@ -176,10 +196,18 @@ export class DrawService {
 
         this.currentWidth = width;
         this.currentHeight = height;
+
+        this.rectangleProperties.width = width;
+        this.rectangleProperties.height = height;
+
         cancelAnimationFrame(this.animatedFrameID);
         this.animatedFrameID = requestAnimationFrame(() => {
             this.drawRectangleShape(this.coordDraw.x, this.coordDraw.y, width, height, tempCanvas);
         });
+    }
+    clearPreviousRectangle(canvas: HTMLCanvasElement) {
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        ctx.clearRect(this.coordDraw.x, this.coordDraw.y, this.currentWidth, this.currentHeight);
     }
 
     drawRectangleShape(startX: number, startY: number, width: number, height: number, focusedCanvas: ElementRef<HTMLCanvasElement>) {
@@ -208,6 +236,15 @@ export class DrawService {
         this.updateCurrentCommand(line, startOrEndErasing ? true : undefined);
         this.createStroke(line, this.currentCommand.style);
         this.updateImages();
+    }
+
+    getRectangleProps() {
+        // const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground.nativeElement;
+        // // if (focusedCanvas) {
+        // //     this.rectangleProperties.startX;
+        // //     this.rectangleProperties.startY;
+        // // }
+        return this.rectangleProperties;
     }
 
     redraw(command: Command) {
@@ -253,6 +290,7 @@ export class DrawService {
         this.saveRectangle(saveCanvas);
         this.isDrawingRectangle = false;
         this.removeCommandsPastIndex();
+        this.isClick = false;
     }
 
     stopDrawingEllipse() {
@@ -260,6 +298,7 @@ export class DrawService {
         this.saveEllipse(saveCanvas);
         this.isDrawingEllipse = false;
         this.removeCommandsPastIndex();
+        this.isClick = false;
     }
 
     stopDrawing(event: MouseEvent) {
