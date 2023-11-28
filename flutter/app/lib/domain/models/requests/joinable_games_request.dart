@@ -81,8 +81,22 @@ class JoinableGamesRequest {
   }
 
   List<JoinableGamesModel> filterGamesByObservable(bool isObservableFilter) {
-    return games.where((game) => 
-        game.isObservable == isObservableFilter || 
-        (game.isObservable == null && !isObservableFilter)).toList();
+    return games
+        .where((game) =>
+            game.isObservable == isObservableFilter ||
+            (game.isObservable == null && !isObservableFilter))
+        .toList();
+  }
+
+  List<JoinableGamesModel> removeDoubloons() {
+    final List<JoinableGamesModel> gamesWithoutDoubloons = [];
+    final List<String> ids = [];
+    for (final game in games) {
+      if (!ids.contains(game.roomId)) {
+        gamesWithoutDoubloons.add(game);
+        ids.add(game.roomId);
+      }
+    }
+    return gamesWithoutDoubloons;
   }
 }

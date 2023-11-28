@@ -47,13 +47,13 @@ class ReachableGameManager extends ChangeNotifier {
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
       request.games = request.filterGamesByObservable(false);
-      print(request.games);
       joinableGames = request;
       notifyListeners();
     });
 
     _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      request.games = request.filterGamesByObservable(false);
       joinableGames = request;
       notifyListeners();
     });
