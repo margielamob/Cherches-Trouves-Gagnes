@@ -20,7 +20,7 @@ class AuthService {
 
       bool active = await isUserActive(userId);
       if (active) {
-        throw 'Utilisateur déjà actif sur un autre appareil.';
+        throw ' Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter';
       }
 
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
