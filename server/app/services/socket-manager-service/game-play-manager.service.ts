@@ -136,6 +136,7 @@ export class GamePlayManager {
             socket.join(gameId);
             const pastPlayerDiffs = this.gameManager.updateObservableGameState(gameId);
             const gameCard = this.gameManager.getGameInfo(gameId);
+            this.gameManager.addObserver(gameId, { name: player.name, id: socket.id, avatar: player.avatar });
             let gameCardInfo: PublicGameInformation;
             if (gameCard) {
                 gameCardInfo = {

@@ -54,7 +54,7 @@ export class GameStateManager {
                     const game = this.gameManager.getGame(gameId);
                     if (game) {
                         game.makeObservable();
-                        const joinableGame = this.gameManager.getJoinableGame(gameId);
+                        const joinableGame = this.gameManager.getLimitedJoinableGame(gameId);
                         this.gameManager.addJoinableGame(gameId);
                         this.sio.emit(SocketEvent.LimitedGameCreated, { ...joinableGame, gameId });
                     }
@@ -78,19 +78,31 @@ export class GameStateManager {
                 socket.emit(SocketEvent.Error);
                 return;
             }
-            if (!this.gameManager.isGameOver(gameId)) {
+            if (this.gameManager.isObserver(gameId, socket.id)) {
+                this.gameManager.removeObserver(gameId, socket.id);
                 socket.leave(gameId);
+                return;
+            }
+            if (!this.gameManager.isGameOver(gameId)) {
                 this.gameManager.removePlayer(gameId, socket.id);
                 if (this.gameManager.onePlayerLeft(gameId)) {
                     this.gameManager.leaveGame(socket.id, gameId);
                     socket.broadcast.to(gameId).emit(this.gameManager.isClassic(gameId) ? SocketEvent.Win : SocketEvent.PlayerLeft);
+                    socket.leave(gameId);
                     if (this.gameManager.isClassic(gameId)) {
+                        this.gameManager.deleteTimer(gameId);
+                        this.gameManager.removeGame(gameId);
+                        const games = this.gameManager.getJoinableGames();
+                        this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
                         this.sio.in(gameId).socketsLeave(gameId);
                     }
                 }
             } else {
                 this.gameManager.deleteTimer(gameId);
                 this.gameManager.removeGame(gameId);
+                const games = this.gameManager.getJoinableLimitedGames();
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+                this.sio.in(gameId).socketsLeave(gameId);
                 this.sio.in(gameId).socketsLeave(gameId);
             }
         });

@@ -65,6 +65,7 @@ export class GameManagerService {
         const nbDifferences = game.information.differences.length;
 
         const players = this.getPlayers(roomId) || [];
+        const observers = this.getObservers(roomId) || [];
         const gameCardInfo = {
             id: game.information.id,
             name: game.information.name,
@@ -84,6 +85,7 @@ export class GameManagerService {
             gameInformation: gameCardInfo,
             isObservable: game.isObservable,
             gameMode: GameMode.LimitedTime,
+            observers,
         };
     }
     getJoinableGames(): JoinableGameCard[] {
@@ -105,6 +107,7 @@ export class GameManagerService {
         const thumbnail = BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail);
         const nbDifferences = game.information.differences.length;
         const players = this.getPlayers(roomId) || [];
+        const observers = this.getObservers(roomId) || [];
         const gameCardInfo = {
             id: game.information.id,
             name: game.information.name,
@@ -124,7 +127,8 @@ export class GameManagerService {
             roomId,
             gameInformation: gameCardInfo,
             isObservable: game.isObservable,
-            gameMode: GameMode.LimitedTime,
+            gameMode: GameMode.Classic,
+            observers,
         };
     }
 
@@ -419,5 +423,25 @@ export class GameManagerService {
     }
     getLimitedTimeGames() {
         return Array.from(this.limitedTimeGames.keys());
+    }
+    addObserver(gameId: string, player: User) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.addObserver(player);
+        }
+    }
+    getObservers(gameId: string) {
+        const game = this.findGame(gameId);
+        return game?.observers;
+    }
+    removeObserver(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.removeObserver(playerId);
+        }
+    }
+    isObserver(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        return game?.isObserver(playerId);
     }
 }

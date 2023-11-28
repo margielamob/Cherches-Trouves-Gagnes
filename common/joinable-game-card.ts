@@ -9,4 +9,5 @@ export interface JoinableGameCard {
     gameInformation: PublicGameInformation;
     isObservable?: boolean;
     gameMode?: string;
+    observers?: User[];
 }

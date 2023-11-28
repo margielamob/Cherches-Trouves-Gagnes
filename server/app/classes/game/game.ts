@@ -26,6 +26,7 @@ export class Game {
     bonusTime: number = 0;
     isObservable: boolean = false;
     wasLastPlayer: boolean = false;
+    observers: User[] = [];
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
     private id: string;
@@ -168,5 +169,14 @@ export class Game {
     }
     getDifferenceFound() {
         return this.differencesAlreadyFound;
+    }
+    addObserver(observer: User) {
+        this.observers.push(observer);
+    }
+    removeObserver(playerName: string) {
+        this.observers = this.observers.filter((observer) => observer.name !== playerName);
+    }
+    isObserver(playerId: string) {
+        return this.observers.some((observer) => observer.id === playerId);
     }
 }
