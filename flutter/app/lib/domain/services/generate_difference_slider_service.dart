@@ -1,7 +1,7 @@
 import 'package:app/domain/utils/numeric_slider.dart';
 import 'package:flutter/material.dart';
 
-class RadiusSlider extends NumericSlider {
+class DifferencesSlider extends NumericSlider {
   @override
   void updateProgression(double progression) {
     if (progression < 0.10) {
@@ -17,19 +17,19 @@ class RadiusSlider extends NumericSlider {
 
   @override
   double getValue() {
-    if (currentProgression == 0.0) return 0.0;
-    if (currentProgression == 0.33) return 3.0;
-    if (currentProgression == 0.66) return 9.0;
-    if (currentProgression == 1.0) return 15.0;
-    return 3.0;
+    if (currentProgression == 0.0) return 1.0;
+    if (currentProgression == 0.33) return 2.0;
+    if (currentProgression == 0.66) return 3.0;
+    if (currentProgression == 1.0) return 4.0;
+    return 0;
   }
 }
 
-class RadiusSliderService extends ChangeNotifier {
-  RadiusSlider radiusSlider = RadiusSlider();
+class GenerateDifferenceSliderService extends ChangeNotifier {
+  DifferencesSlider differencesSlider = DifferencesSlider();
 
   void updateProgression(double progression) {
-    radiusSlider.updateProgression(progression);
+    differencesSlider.updateProgression(progression);
     notifyListeners();
   }
 }

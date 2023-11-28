@@ -1,4 +1,6 @@
 import 'package:app/components/block_color_picker.dart';
+import 'package:app/components/remove_background_button.dart';
+import 'package:app/components/select_background_button.dart';
 import 'package:app/domain/services/pencil_box_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +17,7 @@ class PencilBox extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: SizedBox(
             height: 40,
-            width: 550,
+            width: 1000,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -75,6 +77,12 @@ class PencilBox extends StatelessWidget {
                   ),
                 ),
                 Text("${pencilBoxManager.pencilService.currentStrokeWidth} px"),
+                SizedBox(width: 30),
+                SelectBackGroundButton(
+                    shouldDrawRight: true, shouldDrawLeft: true),
+                SizedBox(width: 30),
+                RemoveBackgroundButton(
+                    shouldRemoveRight: true, shouldRemoveLeft: true),
               ],
             ),
           ),

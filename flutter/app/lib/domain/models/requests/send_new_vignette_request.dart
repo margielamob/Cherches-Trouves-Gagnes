@@ -27,7 +27,7 @@ class SendNewVignetteRequest {
         'height': 480,
         'data': rightImage,
       },
-      'differenceRadius': radiusManager.radiusSlider.getEnlargementRadius(),
+      'differenceRadius': radiusManager.radiusSlider.getValue(),
       'name': 'newTest',
     };
   }
