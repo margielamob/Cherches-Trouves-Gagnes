@@ -36,6 +36,7 @@ export class GameInformationHandlerService {
     endedTime: number;
     isGameDone: boolean = false;
     startTimer: number;
+    emailTimer: number;
     // eslint-disable-next-line max-params
     constructor(
         private readonly routerService: RouterService,
