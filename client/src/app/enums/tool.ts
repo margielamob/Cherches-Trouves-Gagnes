@@ -3,4 +3,6 @@ export enum Tool {
     Eraser = 'Eraser',
     Rectangle = 'Rectangle',
     Ellipse = 'Ellipse',
+    Pipette = 'Pipette',
+    Bucket = 'Bucket',
 }

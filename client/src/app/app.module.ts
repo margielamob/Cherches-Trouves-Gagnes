@@ -86,6 +86,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
+import { RectangleOutlineComponent } from './components/rectangle-outline/rectangle-outline.component';
 
 /**
  * Main module that is used in main.ts.
@@ -167,6 +168,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         FriendsListComponent,
         FriendsPageComponent,
         CropperDialogComponent,
+        RectangleOutlineComponent,
     ],
     imports: [
         ImageCropperModule,
