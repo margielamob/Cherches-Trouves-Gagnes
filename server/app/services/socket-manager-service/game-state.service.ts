@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GameManagerService } from '@app/services/game-manager-service/game-manager.service';
-import { EventMessageService } from '@app/services/message-event-service/message-event.service';
 import { BASE_64_HEADER } from '@common/base64';
 import { PublicGameInformation } from '@common/game-information';
 import { SocketEvent } from '@common/socket-event';
@@ -13,7 +12,7 @@ import { SocketServer } from './server-socket-manager.service';
 @Service()
 export class GameStateManager {
     // eslint-disable-next-line max-params
-    constructor(private serverSocket: SocketServer, private gameManager: GameManagerService, private eventMessageService: EventMessageService) {}
+    constructor(private serverSocket: SocketServer, private gameManager: GameManagerService) {}
 
     private get sio(): io.Server {
         return this.serverSocket.sio;
@@ -55,7 +54,7 @@ export class GameStateManager {
                     const game = this.gameManager.getGame(gameId);
                     if (game) {
                         game.makeObservable();
-                        const joinableGame = this.gameManager.getJoinableGame(gameId);
+                        const joinableGame = this.gameManager.getLimitedJoinableGame(gameId);
                         this.gameManager.addJoinableGame(gameId);
                         this.sio.emit(SocketEvent.LimitedGameCreated, { ...joinableGame, gameId });
                     }
@@ -79,24 +78,33 @@ export class GameStateManager {
                 socket.emit(SocketEvent.Error);
                 return;
             }
-            if (this.gameManager.isGameMultiplayer(gameId) && !this.gameManager.isGameOver(gameId)) {
+            if (this.gameManager.isObserver(gameId, socket.id)) {
+                this.gameManager.removeObserver(gameId, socket.id);
                 socket.leave(gameId);
-                socket.broadcast
-                    .to(gameId)
-                    .emit(
-                        SocketEvent.EventMessage,
-                        this.eventMessageService.leavingGameMessage(this.gameManager.findPlayer(gameId, socket.id)?.name as string),
-                    );
-                if (this.gameManager.isClassic(gameId)) {
-                    socket.leave(gameId);
-                    this.gameManager.leaveGame(socket.id, gameId);
-                }
-                socket.broadcast.to(gameId).emit(this.gameManager.isClassic(gameId) ? SocketEvent.Win : SocketEvent.PlayerLeft);
-            } else if (!this.gameManager.isGameMultiplayer(gameId)) {
-                socket.leave(gameId);
-                this.gameManager.leaveGame(socket.id, gameId);
+                return;
             }
-            this.sio.in(gameId).socketsLeave(gameId);
+            if (!this.gameManager.isGameOver(gameId)) {
+                this.gameManager.removePlayer(gameId, socket.id);
+                if (this.gameManager.onePlayerLeft(gameId)) {
+                    this.gameManager.leaveGame(socket.id, gameId);
+                    socket.broadcast.to(gameId).emit(this.gameManager.isClassic(gameId) ? SocketEvent.Win : SocketEvent.PlayerLeft);
+                    socket.leave(gameId);
+                    if (this.gameManager.isClassic(gameId)) {
+                        this.gameManager.deleteTimer(gameId);
+                        this.gameManager.removeGame(gameId);
+                        const games = this.gameManager.getJoinableGames();
+                        this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
+                        this.sio.in(gameId).socketsLeave(gameId);
+                    }
+                }
+            } else {
+                this.gameManager.deleteTimer(gameId);
+                this.gameManager.removeGame(gameId);
+                const games = this.gameManager.getJoinableLimitedGames();
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+                this.sio.in(gameId).socketsLeave(gameId);
+                this.sio.in(gameId).socketsLeave(gameId);
+            }
         });
     }
 }

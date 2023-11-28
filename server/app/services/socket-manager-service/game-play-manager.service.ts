@@ -135,8 +135,8 @@ export class GamePlayManager {
         socket.on(SocketEvent.ObserveGame, (player: { name: string; avatar: string }, gameId: string) => {
             socket.join(gameId);
             const pastPlayerDiffs = this.gameManager.updateObservableGameState(gameId);
-            console.log(pastPlayerDiffs);
             const gameCard = this.gameManager.getGameInfo(gameId);
+            this.gameManager.addObserver(gameId, { name: player.name, id: socket.id, avatar: player.avatar });
             let gameCardInfo: PublicGameInformation;
             if (gameCard) {
                 gameCardInfo = {

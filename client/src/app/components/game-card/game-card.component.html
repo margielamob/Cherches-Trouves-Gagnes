@@ -16,6 +16,12 @@
             <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
             {{ player.name }} <br />
         </span>
+        <ng-template *ngIf="joinableGameCard.observers">
+            <span *ngFor="let observers of joinableGameCard.observers">
+                <img [src]="observers.avatar" alt="{{ observers.name }}'s avatar" width="16px" height="16px" />
+                {{ observers.name }} <br />
+            </span>
+        </ng-template>
         <div>{{ joinableGameCard.nbDifferences }}</div>
     </mat-card-content>
     <ng-container *ngIf="isJoining; then joiningTemplate; else notJoiningTemplate"></ng-container>

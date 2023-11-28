@@ -74,7 +74,7 @@ export class GameCreationManager {
             GameMode.LimitedTime,
             card.id,
         );
-        socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
+        socket.broadcast.emit(SocketEvent.LimitedGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
         const players = this.gameManager.getLimitedTimeGamePlayers(roomId) || [];
         const data: WaitingRoomInfo = { roomId, players, cheatMode: false };
         socket.emit(SocketEvent.WaitPlayer, data);

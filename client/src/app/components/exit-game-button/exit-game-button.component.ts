@@ -29,12 +29,11 @@ export class ExitGameButtonComponent {
     }
 
     onLeaveWaiting() {
-        if (this.gameInfoHandlerService.roomId) {
-            this.chatManager.leaveGameChat();
-            this.socket.send(SocketEvent.LeaveWaiting, { roomId: this.gameInfoHandlerService.roomId, gameCard: this.gameInfoHandlerService.getId() });
-        } else {
-            this.socket.send(SocketEvent.LeaveWaiting, { roomId: undefined, gameCard: this.gameInfoHandlerService.getId() });
-        }
+        this.chatManager.leaveGameChat();
+        this.socket.send(SocketEvent.LeaveWaitingRoom, {
+            roomId: this.gameInfoHandlerService.roomId,
+            name: this.gameInfoHandlerService.getPlayer().name,
+        });
     }
 
     onQuiteGame() {
