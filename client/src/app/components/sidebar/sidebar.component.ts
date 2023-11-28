@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { EmailService } from '@app/services/email-service/email.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { GameMode } from '@common/game-mode';
 @Component({
@@ -12,7 +13,7 @@ export class SidebarComponent {
     penaltyTime: number;
     differenceTime: number;
 
-    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService) {
+    constructor(private readonly gameInformationHandlerService: GameInformationHandlerService, private emailService: EmailService) {
         this.setInfos();
     }
 
@@ -25,6 +26,8 @@ export class SidebarComponent {
             this.gameMode = this.gameInformationHandlerService.getGameMode();
             this.gameName = this.gameInformationHandlerService.getGameName();
         });
+
+        this.emailService.setGameTitle(this.gameName);
     }
 
     isSoloMode() {

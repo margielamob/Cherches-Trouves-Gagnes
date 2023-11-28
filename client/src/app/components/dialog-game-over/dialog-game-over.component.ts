@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { EmailService } from '@app/services/email-service/email.service';
 import { ReplayService } from '@app/services/replay-service/replay.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
@@ -28,6 +29,7 @@ export class DialogGameOverComponent {
         public dialog: MatDialog,
         private chatManager: ChatManagerService,
         private replayService: ReplayService,
+        private emailService: EmailService,
     ) {
         this.isWin = data.win;
         this.winner = data.winner;
@@ -47,6 +49,7 @@ export class DialogGameOverComponent {
         if (this.isWin) {
             this.userService.updateUserGameWin();
         }
+
         this.userService.updateUserGamePlayed();
         this.isReplayToggled.emit(true);
         this.replayService.isReplayMode = true;
@@ -60,5 +63,15 @@ export class DialogGameOverComponent {
         }
         this.userService.updateUserGamePlayed();
         this.dialog.closeAll();
+    }
+
+    sendEmail() {
+        if (this.isWin) {
+            this.emailService.setWinner('Vous avez gagné');
+        } else {
+            this.emailService.setWinner('Vous avez perdu');
+        }
+        this.quitGame();
+        this.emailService.sendEmail();
     }
 }
