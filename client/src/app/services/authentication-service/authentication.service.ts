@@ -21,13 +21,13 @@ export class AuthenticationService {
                     throw new Error('Echec de la connexion.');
                 }
                 return this.afs
-                    .collection('activeUser')
+                    .collection('activeUsers')
                     .doc(user.uid)
                     .get()
                     .pipe(
-                        switchMap(() => {
+                        switchMap((doc) => {
                             // eslint-disable-next-line no-constant-condition
-                            if (false) {
+                            if (doc.exists) {
                                 return this.afAuth.signOut().then(() => {
                                     throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
                                 });

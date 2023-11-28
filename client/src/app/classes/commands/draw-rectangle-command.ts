@@ -5,6 +5,7 @@ import { DrawService } from '@app/services/draw-service/draw-service.service';
 
 export class DrawRectangleCommand implements DrawingCommand {
     private command: Command;
+    // eslint-disable-next-line max-params
     constructor(
         baseCommand: Command,
         private focusedCanvas: ElementRef<HTMLCanvasElement>,
