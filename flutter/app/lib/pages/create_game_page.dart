@@ -1,5 +1,6 @@
 import 'package:app/components/drawing_canvas_left.dart';
 import 'package:app/components/drawing_canvas_right.dart';
+import 'package:app/components/generate_difference_button.dart';
 import 'package:app/components/menu_between_canvas.dart';
 import 'package:app/components/menu_under_canvas_left.dart';
 import 'package:app/components/menu_under_canvas_right.dart';
@@ -17,6 +18,16 @@ class CreateGamePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GenerateDifferencesButton(),
+              SizedBox(
+                width: 75,
+              ),
+            ],
+          ),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -44,14 +55,15 @@ class CreateGamePage extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 210),
+                  padding: const EdgeInsets.only(left: 230),
                   child: PencilBox(),
                 ),
               ),
               SubmissionBoxNewDrawing(),
-              SizedBox(width: 50),
+              SizedBox(width: 25),
             ],
           ),
+          SizedBox(height: 40),
         ],
       ),
     );

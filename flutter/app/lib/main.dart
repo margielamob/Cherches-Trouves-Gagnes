@@ -4,11 +4,13 @@ import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/difference_generator_service.dart';
 import 'package:app/domain/services/drawing_service_left.dart';
 import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/generate_difference_slider_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
@@ -54,9 +56,11 @@ void registerDependencies() {
   Get.put(PersonalUserService());
   Get.put(AuthService());
   Get.put(RadiusSliderService());
+  Get.put(GenerateDifferenceSliderService());
   Get.put(PencilService());
   Get.put(DrawingServiceLeft());
   Get.put(DrawingServiceRight());
+  Get.put(DifferenceGeneratorService());
   Get.put(HttpService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
@@ -166,6 +170,13 @@ void main() async {
           create: (context) {
             RadiusSliderService radiusSliderService = Get.find();
             return radiusSliderService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            GenerateDifferenceSliderService generateDifferenceSliderService =
+                Get.find();
+            return generateDifferenceSliderService;
           },
         ),
       ],

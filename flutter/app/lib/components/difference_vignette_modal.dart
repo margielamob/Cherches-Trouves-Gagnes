@@ -77,8 +77,7 @@ class EnlargementRadiusSelection extends StatelessWidget {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                      'Radius : ${radiusService.radiusSlider.getEnlargementRadius()} px'),
+                  Text('Radius : ${radiusService.radiusSlider.getValue()} px'),
                   SizedBox(
                     width: 300,
                     child: Slider(
@@ -106,11 +105,7 @@ class EnlargementRadiusSelection extends StatelessWidget {
         );
       },
       child: Row(
-        children: [
-          Text("Begin Submission"),
-          SizedBox(width: 10),
-          Icon(Icons.send)
-        ],
+        children: [Text("Submit"), SizedBox(width: 10), Icon(Icons.send)],
       ),
     );
   }
