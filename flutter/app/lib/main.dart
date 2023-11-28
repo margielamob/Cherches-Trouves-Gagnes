@@ -12,8 +12,12 @@ import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/image_selection_service.dart';
+import 'package:app/domain/services/pencil_box_manager.dart';
+import 'package:app/domain/services/pencil_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
+import 'package:app/domain/services/radius_slider_service.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
@@ -24,6 +28,7 @@ import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
+import 'package:app/pages/historic_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/profile_page.dart';
@@ -41,12 +46,15 @@ import 'package:provider/provider.dart';
 
 void registerDependencies() {
   Get.put(GlobalVariables());
+  Get.put(ImageSelectionService());
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(TimeFormatterService());
   Get.put(ClockService());
   Get.put(PersonalUserService());
   Get.put(AuthService());
+  Get.put(RadiusSliderService());
+  Get.put(PencilService());
   Get.put(DrawingServiceLeft());
   Get.put(DrawingServiceRight());
   Get.put(HttpService());
@@ -62,6 +70,7 @@ void registerDependencies() {
   Get.put(ReachableGameManager());
   Get.put(ProfilePageManager());
   Get.put(VignetteSubmissionService());
+  Get.put(PencilBoxManager());
 }
 
 late List<CameraDescription> cameras;
@@ -147,6 +156,18 @@ void main() async {
             return vignetteSubmissionService;
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            PencilBoxManager pencilBoxManager = Get.find();
+            return pencilBoxManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            RadiusSliderService radiusSliderService = Get.find();
+            return radiusSliderService;
+          },
+        ),
       ],
       child: MyApp(),
     ),
@@ -202,6 +223,7 @@ class MyApp extends StatelessWidget {
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
+        '/HistoricPage': (context) => HistoricPage(),
       },
     );
   }

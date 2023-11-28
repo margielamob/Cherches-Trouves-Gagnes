@@ -1,13 +1,26 @@
 import 'dart:ui' as ui;
 import 'dart:ui';
 
+import 'package:app/components/drawing_canvas.dart';
+import 'package:app/domain/services/image_selection_service.dart';
+import 'package:app/domain/services/pencil_service.dart';
 import 'package:app/domain/utils/vec2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image/image.dart' as image;
 
 class Stroke {
   List<Vec2> coordinates = [];
+
+  Paint paint;
+
+  Stroke(Color color, double strokeWidth, bool isEraser)
+      : paint = Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..blendMode = isEraser ? BlendMode.clear : BlendMode.srcOver;
 
   void addCoordinate(
       {DragStartDetails? startDetails,
@@ -39,9 +52,21 @@ class Stroke {
 }
 
 class DrawingService extends ChangeNotifier {
+  final ImageSelectionService imageSelectionService = Get.find();
+  final PencilService pencil = Get.find();
   bool isSubmissionAvailable = true;
+  bool wasDrawingOutsideCanvas = false;
   List<Stroke> strokes = [];
   ui.Image? background;
+  Size? size;
+
+  void changeColor(Color color) {
+    pencil.currentColor = color;
+  }
+
+  void changeColors(List<Color> colors) {
+    pencil.currentColors = colors;
+  }
 
   void resetForNewDrawing() {
     isSubmissionAvailable = true;
@@ -55,22 +80,52 @@ class DrawingService extends ChangeNotifier {
   }
 
   void tap(TapUpDetails details) {
-    final newStroke = Stroke();
+    final newStroke = Stroke(
+        pencil.currentColor, pencil.currentStrokeWidth, pencil.isErasing());
     newStroke.addCoordinate(tapUpDetails: details);
     strokes.add(newStroke);
     notifyListeners();
   }
 
   void beginDrag(DragStartDetails details) {
-    final newStroke = Stroke();
-    strokes.add(newStroke);
+    if (pencil.isErasing()) {
+      final newStroke = Stroke(Colors.white, pencil.currentStrokeWidth, true);
+      strokes.add(newStroke);
+    } else {
+      final newStroke =
+          Stroke(pencil.currentColor, pencil.currentStrokeWidth, false);
+      strokes.add(newStroke);
+    }
     notifyListeners();
   }
 
   void onDrag(DragUpdateDetails details) {
-    final lastStroke = strokes.last;
-    lastStroke.addCoordinate(updateDetails: details);
+    final x = details.localPosition.dx;
+    final y = details.localPosition.dy;
+
+    print("x : $x, y: $y");
+
+    if (_isStrokeInsideCanvas(x, y)) {
+      if (wasDrawingOutsideCanvas) {
+        final newStroke = Stroke(
+            pencil.currentColor, pencil.currentStrokeWidth, pencil.isErasing());
+        strokes.add(newStroke);
+      } else {
+        final lastStroke = strokes.last;
+        lastStroke.addCoordinate(updateDetails: details);
+      }
+      wasDrawingOutsideCanvas = false;
+    } else {
+      wasDrawingOutsideCanvas = true;
+    }
     notifyListeners();
+  }
+
+  bool _isStrokeInsideCanvas(double x, double y) {
+    return x <= DrawingCanvas.defaultWidth * DrawingCanvas.tabletScalingRatio &&
+        x >= 0 &&
+        y <= DrawingCanvas.defaultHeight * DrawingCanvas.tabletScalingRatio &&
+        y >= 0;
   }
 
   void endDrag(DragEndDetails details) {}
@@ -93,9 +148,20 @@ class DrawingService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setBackgroundImage() async {
-    background = await _getUiImage('assets/default_image.bmp', 480, 640);
-    notifyListeners();
+  Future<bool> setBackgroundImage() async {
+    try {
+      ui.Image? newBackground = await imageSelectionService.selectImage();
+
+      if (newBackground == null) false;
+      if (newBackground!.height > 480 || newBackground.width > 640) {
+        return false;
+      }
+      background = newBackground;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   Future<ui.Image> _getUiImage(
@@ -111,15 +177,12 @@ class DrawingService extends ChangeNotifier {
     return frameInfo.image;
   }
 
-  void showDrawing(Canvas canvas, bool needsToShowBackground) {
-    Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
-
+  void showDrawing(Canvas canvas, Size size, bool needsToShowBackground) {
     if (background != null && needsToShowBackground) {
-      canvas.drawImage(background!, Offset.zero, paint);
+      canvas.drawImage(background!, Offset.zero, Paint());
     }
+    canvas.saveLayer(Offset.zero & size, Paint());
+    this.size = size;
 
     for (var stroke in strokes) {
       final path = Path();
@@ -153,16 +216,17 @@ class DrawingService extends ChangeNotifier {
         final lastPoint = stroke.coordinates.last;
         path.lineTo(lastPoint.x.toDouble(), lastPoint.y.toDouble());
       }
-
-      canvas.drawPath(path, paint);
+      canvas.drawPath(path, stroke.paint);
     }
+    canvas.restore();
   }
 
   Future<Uint8List> takeSnapShot() async {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
-    showDrawing(canvas, true);
+    Size size = Size(640, 480);
+    showDrawing(canvas, size, true);
 
     final picture = recorder.endRecording();
     final img = await picture.toImage(640, 480);
