@@ -388,6 +388,14 @@ export class GameManagerService {
         this.joinableLimitedGames.delete(gameId);
     }
     removeGame(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game?.isClassic) {
+            this.joinableClassicGames.delete(gameId);
+            this.classicGames.delete(gameId);
+        } else {
+            this.joinableLimitedGames.delete(gameId);
+            this.limitedTimeGames.delete(gameId);
+        }
         this.games.delete(gameId);
     }
 

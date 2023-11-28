@@ -30,9 +30,10 @@ export class DifferencesAreaComponent {
     }
 
     setPlayersInfo() {
-        this.mainPlayer = this.gameInformationHandlerService.getPlayer();
+        if (!this.gameInformationHandlerService.isObserver) {
+            this.mainPlayer = this.gameInformationHandlerService.getPlayer();
+        }
         this.opponentPlayers = this.gameInformationHandlerService.getOpponents();
-
         this.setPlayerInfosClassic();
     }
 

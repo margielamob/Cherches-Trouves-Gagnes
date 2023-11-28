@@ -53,7 +53,6 @@ export class ChatManagerService {
             this.allRoomsList.next(rooms);
         });
         this.socket.on(SocketEvent.UpdateUserRooms, (rooms: string[]) => {
-            console.log(rooms);
             this.userRoomList.next(rooms);
         });
         this.socket.on(SocketEvent.RoomCreated, (rooms: { all: string[]; user: string[] }) => {
