@@ -85,7 +85,7 @@ export class SignUpPageComponent {
             .pipe(take(1))
             .subscribe({
                 next: () => {
-                    this.router.navigate(['/login']);
+                    this.router.navigate(['/verify-email']);
                 },
                 error: (error: Error) => {
                     this.errorMessage = error.message;
