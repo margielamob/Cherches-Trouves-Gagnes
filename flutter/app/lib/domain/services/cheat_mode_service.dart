@@ -5,9 +5,10 @@ import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/domain/utils/vec2.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CheatModeService {
+class CheatModeService extends ChangeNotifier {
   final DifferenceDetectionService diffService = Get.find();
   final GameManagerService gameManagerService = Get.find();
   final SocketService _socket = Get.find();
@@ -31,14 +32,14 @@ class CheatModeService {
     });
   }
 
-  void startCheating() {
+  Future<void> startCheating() async {
     try {
       FetchDifferenceRequest data =
           FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
       _socket.send(SocketEvent.fetchDifferences, data.toJson());
-      diffService.showDifferences(lastDifferencesToFind);
       isCheating = true;
+      await diffService.showDifferences(lastDifferencesToFind);
     } catch (error) {
       print("error");
     }
@@ -46,7 +47,6 @@ class CheatModeService {
 
   void stopCheating() {
     if (!isCheating) return;
-
     diffService.stopShowingDifferences();
   }
 }

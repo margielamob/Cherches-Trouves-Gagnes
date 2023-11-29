@@ -64,11 +64,15 @@ class DifferenceDetectionService extends ChangeNotifier {
     blinkingDifference = path;
   }
 
-  void showDifferences(List<Vec2> coords) {
+  Future<void> showDifferences(List<Vec2> coords) async {
     initDataToBlink(coords);
     if (blinkingDifference == null) return;
     final Path blinkingPath = blinkingDifference!;
-    setCoordinates(blinkingPath);
+    while (true) {
+      setCoordinates(blinkingPath);
+      await Future.delayed(Duration(milliseconds: 250));
+      resetBlinkingDifference();
+    }
   }
 
   void stopShowingDifferences() {

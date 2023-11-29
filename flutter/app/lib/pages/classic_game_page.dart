@@ -102,8 +102,8 @@ class _ClassicState extends State<Classic> {
                               ),
                             ),
                             GestureDetector(
-                              onLongPressDown: (details) {
-                                _cheatModeService.startCheating();
+                              onLongPressDown: (details) async {
+                                await _cheatModeService.startCheating();
                               },
                               onLongPressUp: () {
                                 _cheatModeService.stopCheating();

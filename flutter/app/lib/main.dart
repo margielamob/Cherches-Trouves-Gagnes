@@ -15,8 +15,8 @@ import 'package:app/domain/services/generate_difference_slider_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
-import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:app/domain/services/image_selection_service.dart';
+import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:app/domain/services/pencil_box_manager.dart';
 import 'package:app/domain/services/pencil_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -188,6 +188,12 @@ void main() async {
             GenerateDifferenceSliderService generateDifferenceSliderService =
                 Get.find();
             return generateDifferenceSliderService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            CheatModeService cheatModeService = Get.find();
+            return cheatModeService;
           },
         ),
       ],
