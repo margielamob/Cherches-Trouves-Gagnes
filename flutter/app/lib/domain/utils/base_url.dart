@@ -1,5 +1,5 @@
 class BaseURL {
-  static String base = 'https://a3bf-173-176-131-192.ngrok-free.app';
+  static String base = 'http://localhost:3000';
   static String socket = base;
   static String httpServer = '$base/api';
 }

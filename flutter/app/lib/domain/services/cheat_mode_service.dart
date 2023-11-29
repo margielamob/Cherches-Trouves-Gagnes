@@ -1,4 +1,5 @@
 import 'package:app/domain/models/requests/fetch_difference_request.dart';
+import 'package:app/domain/models/requests/fetch_difference_response.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/socket_service.dart';
@@ -29,8 +30,12 @@ class CheatModeService {
 
   void handleSocketEvents() {
     _socket.on(SocketEvent.fetchDifferences, (dynamic message) {
-      print("receiving coordinates");
-      // TODO: modified lastDifferencesToFind
+      FetchDifferenceResponse fetchDifferenceResponse =
+          FetchDifferenceResponse.fromJson(message);
+      lastDifferencesToFind = [];
+      for (var difference in fetchDifferenceResponse.coordinates) {
+        lastDifferencesToFind.addAll(difference);
+      }
     });
   }
 
