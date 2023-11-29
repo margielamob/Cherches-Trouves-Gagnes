@@ -101,7 +101,7 @@ export class GameCreationManager {
         const cheatMode = this.gameManager.isCheatMode(roomId);
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
-        socket.broadcast.to(roomId).emit(SocketEvent.UpdatePlayers, data);
+        socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
         if (this.gameManager.isLastPlayer(roomId)) {
             this.gameManager.setWasLastPlayer(roomId, true);
             if (this.gameManager.isClassic(roomId)) {
@@ -145,7 +145,7 @@ export class GameCreationManager {
                     }
                 }
             }
-            socket.broadcast.to(roomId).emit(SocketEvent.UpdatePlayers, { roomId, players });
+            socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
         }
     }
 
