@@ -1,7 +1,7 @@
 <div class="main-wrapper">
-    <button (click)="toggleChat()" class="home-button" mat-fab color="primary">
+    <button (click)="toggleChat()" class="home-button" mat-fab color="primary" #button>
         <mat-icon>chat</mat-icon>
     </button>
 
-    <app-chat-overlay *ngIf="isChatVisible" class="overlay"></app-chat-overlay>
+    <app-chat-overlay *ngIf="isChatVisible" class="overlay" #overlay></app-chat-overlay>
 </div>

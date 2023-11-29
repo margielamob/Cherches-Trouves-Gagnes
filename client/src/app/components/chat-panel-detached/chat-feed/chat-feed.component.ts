@@ -1,15 +1,13 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
-// import { ChatMessage } from '@app/interfaces/chat-message';
-import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { AfterViewChecked, AfterViewInit, ApplicationRef, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DetachedChatManagerService } from '@app/services/chat-service/chat-manager-detached.service';
 import { ChatMessage } from '@common/chat';
 
 @Component({
-    selector: 'app-chat-feed',
+    selector: 'app-detached-chat-feed',
     templateUrl: './chat-feed.component.html',
     styleUrls: ['./chat-feed.component.scss'],
 })
-export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecked {
+export class ChatFeedDetachedComponent implements AfterViewInit, OnInit, AfterViewChecked {
     @ViewChild('scroll', { static: true }) private scroll: ElementRef;
     messages: ChatMessage[] = [];
     currentMessage: string;
@@ -18,14 +16,17 @@ export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecke
 
     constructor(
         // private communicationSocket: CommunicationSocketService,
-        private chatManager: ChatManagerService,
-        private chatDisplay: ChatDisplayService,
+        private chatManager: DetachedChatManagerService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private applicationRef: ApplicationRef,
     ) {}
 
     ngOnInit(): void {
         this.chatManager.messages.subscribe((messages) => {
+            console.log('messages updated');
             this.messages = messages;
             this.newMessage = true;
+            this.changeDetectorRef.detectChanges();
         });
         // this.chatManager.fetchMessages();
         this.chatManager.activeRoom.subscribe((room) => {
@@ -63,8 +64,8 @@ export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecke
     }
 
     goToList() {
-        this.chatDisplay.deselectRoom();
         this.chatManager.deselectRoom();
+        this.applicationRef.tick();
     }
 
     isPersonalMessage(message: ChatMessage): boolean {

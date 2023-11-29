@@ -1,18 +1,17 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ApplicationRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
-import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { DetachedChatManagerService } from '@app/services/chat-service/chat-manager-detached.service';
 import { UserRoom } from '@common/chat';
 
 @Component({
-    selector: 'app-room-card',
+    selector: 'app-detached-room-card',
     templateUrl: './room-card.component.html',
     styleUrls: ['./room-card.component.scss'],
 })
-export class RoomCardComponent implements OnInit {
+export class RoomCardDetachedComponent implements OnInit {
     @Input() room: UserRoom;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-    constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
+    constructor(private chatManager: DetachedChatManagerService, private changeDetectorRef: ApplicationRef) {}
 
     ngOnInit(): void {
         return;
@@ -27,7 +26,8 @@ export class RoomCardComponent implements OnInit {
     }
 
     selectRoom(room: string) {
+        console.log(room);
         this.chatManager.selectRoom(room);
-        this.chatDisplay.selectRoom();
+        this.changeDetectorRef.tick();
     }
 }

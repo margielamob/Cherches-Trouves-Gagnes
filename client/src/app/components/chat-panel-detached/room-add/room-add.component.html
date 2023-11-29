@@ -1,0 +1,18 @@
+<mat-form-field class="search">
+    <mat-label class="search-label">Search</mat-label>
+    <input matInput [formControl]="search" class="search-input" />
+</mat-form-field>
+
+<!-- <mat-selection-list #list [(ngModel)]="selectedRooms">
+    <mat-list-option *ngFor="let room of $search | async" [value]="room">
+        {{ room }}
+    </mat-list-option>
+</mat-selection-list> -->
+
+<mat-list class="room-list">
+    <mat-list-item *ngFor="let room of $search | async" (click)="selectRoom(room)" [ngClass]="{ selected: selectedRooms.includes(room) }">
+        {{ room }}
+    </mat-list-item>
+</mat-list>
+
+<button mat-flat-button (click)="joinRooms()">Join</button>

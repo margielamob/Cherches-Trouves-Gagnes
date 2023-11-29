@@ -22,6 +22,7 @@ import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+// import { NgxElectronModule } from 'ngx-electron';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
@@ -29,6 +30,14 @@ import { AppLogoComponent } from './components/app-logo/app-logo.component';
 import { ApprovalDialogComponent } from './components/approval-dialog/approval-dialog.component';
 import { CentralBoxComponent } from './components/central-tool-box/central-tool-box.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
+import { ChatFeedDetachedComponent } from './components/chat-panel-detached/chat-feed/chat-feed.component';
+import { ChatListDetachedComponent } from './components/chat-panel-detached/chat-list/chat-list.component';
+import { ChatOverlayDetachedComponent } from './components/chat-panel-detached/chat-overlay/chat-overlay.component';
+import { ChatPanelDetachedComponent } from './components/chat-panel-detached/chat-panel/chat-panel.component';
+import { RoomAddDetachedComponent } from './components/chat-panel-detached/room-add/room-add.component';
+import { RoomCardDetachedComponent } from './components/chat-panel-detached/room-card/room-card.component';
+import { RoomCreateDetachedComponent } from './components/chat-panel-detached/room-create/room-create.component';
+import { RoomSearchDetachedComponent } from './components/chat-panel-detached/room-search/room-search.component';
 import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-button.component';
 import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
 import { ChatListComponent } from './components/chat-panel/chat-list/chat-list.component';
@@ -167,6 +176,14 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         FriendsListComponent,
         FriendsPageComponent,
         CropperDialogComponent,
+        ChatFeedDetachedComponent,
+        ChatListDetachedComponent,
+        ChatPanelDetachedComponent,
+        RoomAddDetachedComponent,
+        RoomCardDetachedComponent,
+        RoomCreateDetachedComponent,
+        RoomSearchDetachedComponent,
+        ChatOverlayDetachedComponent,
     ],
     imports: [
         ImageCropperModule,
@@ -183,6 +200,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         AngularFireDatabaseModule,
         AngularFireStorageModule,
         HttpClientModule,
+        // NgxElectronModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

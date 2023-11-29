@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { UserRoom } from '@common/chat';
 
 @Component({
     selector: 'app-chat-list',
@@ -8,7 +9,7 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
     styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent implements OnInit {
-    rooms: string[] = this.chatManager.userRoomList.value;
+    rooms: UserRoom[] = this.chatManager.userRoomList.value;
 
     constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
@@ -18,12 +19,17 @@ export class ChatListComponent implements OnInit {
         });
     }
 
-    selectRoom(room: string) {
-        this.chatManager.selectRoom(room);
-        this.chatDisplay.selectRoom();
-    }
+    // selectRoom(room: string) {
+    //     this.chatManager.selectRoom(room);
+    //     this.chatDisplay.selectRoom();
+    // }
 
     goToSearch() {
         this.chatDisplay.selectSearch();
+    }
+
+    detach() {
+        this.chatManager.detach();
+        this.chatDisplay.toggleChat();
     }
 }

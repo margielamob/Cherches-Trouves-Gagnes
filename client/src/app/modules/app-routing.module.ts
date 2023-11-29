@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ChatOverlayDetachedComponent } from '@app/components/chat-panel-detached/chat-overlay/chat-overlay.component';
 import { DrawCanvasComponent } from '@app/components/draw-canvas/draw-canvas.component';
 import { FriendRequestsComponent } from '@app/components/friend-requests/friend-requests.component';
 import { FriendsListComponent } from '@app/components/friends-list/friends-list.component';
@@ -35,6 +36,7 @@ const routes: Routes = [
     { path: 'verify-email', component: EmailVerificationComponent },
     { path: 'join-game', component: JoinGameSelectionComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'detached', component: ChatOverlayDetachedComponent },
     {
         path: 'friends',
         component: FriendsPageComponent,

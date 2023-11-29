@@ -8,7 +8,6 @@ export class ChatDisplayService {
     isRoomSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isSearchSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isChatVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
     selectRoom() {
         this.isRoomSelected.next(true);
     }
@@ -23,5 +22,11 @@ export class ChatDisplayService {
     }
     toggleChat() {
         this.isChatVisible.next(!this.isChatVisible.value);
+    }
+
+    reset() {
+        this.isRoomSelected.next(false);
+        this.isSearchSelected.next(false);
+        this.isChatVisible.next(false);
     }
 }

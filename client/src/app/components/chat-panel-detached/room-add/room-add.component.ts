@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
-import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { DetachedChatManagerService } from '@app/services/chat-service/chat-manager-detached.service';
 import { debounceTime, of, startWith, switchMap } from 'rxjs';
 
 const time = 200;
 
 @Component({
-    selector: 'app-room-add',
+    selector: 'app-detached-room-add',
     templateUrl: './room-add.component.html',
     styleUrls: ['./room-add.component.scss'],
 })
-export class RoomAddComponent implements OnInit {
+export class RoomAddDetachedComponent implements OnInit {
     unjoinedRooms: string[] = [];
     selectedRooms: string[] = [];
     search = new FormControl();
@@ -25,12 +24,11 @@ export class RoomAddComponent implements OnInit {
         }),
     );
 
-    constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
+    constructor(private chatManager: DetachedChatManagerService) {}
 
     ngOnInit(): void {
         this.chatManager.allRoomsList.subscribe((rooms) => {
             const userRoomNames: string[] = this.chatManager.userRoomList.value.map((e) => e.room);
-            console.log(userRoomNames);
             this.unjoinedRooms = rooms.filter((room) => room !== 'all' && !userRoomNames.includes(room));
             console.log(this.unjoinedRooms);
         });
@@ -45,6 +43,6 @@ export class RoomAddComponent implements OnInit {
     }
     joinRooms() {
         this.chatManager.joinRooms(this.selectedRooms);
-        this.chatDisplay.deselectSearch();
+        this.chatManager.deselectSearch();
     }
 }

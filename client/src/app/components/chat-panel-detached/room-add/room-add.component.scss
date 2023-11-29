@@ -1,7 +1,7 @@
 .search {
     width: 100%;
     color: black;
-    flex: 0 1 auto;
+    flex: 0 0 content;
 }
 
 .search-lsbel {
@@ -18,7 +18,7 @@
 
 button {
     align-self: flex-end;
-    flex: 0 1 auto;
+    flex: 0 0 content;
 }
 
 // .room-list {
@@ -30,11 +30,6 @@ button {
 //     overflow-block: scroll;
 //     flex: 1 1 auto;
 // }
-
-.wrapper {
-    display: flex;
-    flex-flow: column;
-}
 
 mat-list {
     flex: 1 1 auto;

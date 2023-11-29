@@ -9,6 +9,7 @@
 
 .toolbar {
     flex: 0 1 auto;
+    position: sticky;
 }
 
 app-room-create {
@@ -17,4 +18,9 @@ app-room-create {
 
 app-room-add {
     flex: 1 1 auto;
+    display: flex;
+}
+
+.search-body {
+    overflow: scroll;
 }

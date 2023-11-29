@@ -53,6 +53,61 @@ export class ChatSocketManager {
             messages: [],
             users: [],
         });
+        this.allRooms.set('room7', {
+            info: { name: 'room7' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room8', {
+            info: { name: 'room8' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room9', {
+            info: { name: 'room9' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room10', {
+            info: { name: 'room10' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room11', {
+            info: { name: 'room11' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room12', {
+            info: { name: 'room12' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room13', {
+            info: { name: 'room13' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room14', {
+            info: { name: 'room14' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room15', {
+            info: { name: 'room15' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room16', {
+            info: { name: 'room16' },
+            messages: [],
+            users: [],
+        });
+        this.allRooms.set('room17', {
+            info: { name: 'room17' },
+            messages: [],
+            users: [],
+        });
     }
 
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
@@ -75,6 +130,7 @@ export class ChatSocketManager {
                             : undefined,
                     },
                 ]);
+                this.allRooms.get('all')!.users.push(userName);
                 socket.join('all');
             }
             console.log(this.userRooms.keys());
@@ -85,25 +141,20 @@ export class ChatSocketManager {
         socket.on(SocketEvent.Message, (message: ChatMessage) => {
             console.log('message : ' + message.message + ' ' + message.room + ' ' + message.user);
             if (this.allRooms.get(message.room)) {
-                // get all socket in room
-                this.server.sio
-                    .in(message.room)
-                    .fetchSockets()
-                    .then((sockets) => {
-                        console.log('sockets in room : ' + sockets.map((s) => s.id));
-                    });
+                console.log(this.allRooms.get(message.room)?.users);
                 this.allRooms.get(message.room)!.users.forEach((user) => {
-                    this.userRooms.get(user)![this.userRooms.get(user)!.findIndex((room) => room.room === message.room)].lastMessage = message;
-                    // this.userRooms.set(
-                    //     user,
-                    //     this.userRooms.get(user)!.map((room) => {
-                    //         if (room.room === message.room) {
-                    //             return { ...room, lastMessage: message };
-                    //         }
-                    //         return room;
-                    //     }),
-                    // );
+                    const currentUserRooms = this.userRooms.get(user);
+                    this.userRooms.set(
+                        user,
+                        currentUserRooms!.map((room) => {
+                            if (room.room === message.room) {
+                                return { room: room.room, read: room.read, lastMessage: message };
+                            }
+                            return room;
+                        }),
+                    );
                 });
+                console.log(this.userRooms.get(message.user));
                 this.allRooms.get(message.room)?.messages.push(message);
                 this.server.sio.to(message.room).emit(SocketEvent.Message, message);
             } else if (this.gameRooms.get(message.room)) {
