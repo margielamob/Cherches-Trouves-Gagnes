@@ -99,8 +99,17 @@ class _ClassicState extends State<Classic> {
                                 child: Clock(),
                               ),
                             ),
-                            FilledButton(
-                                onPressed: () => {}, child: Text("Cheat")),
+                            GestureDetector(
+                              onLongPressDown: (details) =>
+                                  {print("on Long Press down")},
+                              onLongPressEnd: (details) => {
+                                print("end the cheat mode"),
+                              },
+                              child: FilledButton(
+                                onPressed: () => {},
+                                child: Text("Cheat"),
+                              ),
+                            ),
                             SizedBox(width: 60),
                           ],
                         ),
