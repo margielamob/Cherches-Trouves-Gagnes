@@ -39,7 +39,7 @@ class DifferenceDetectionService extends ChangeNotifier {
     _gameManagerService.updatePlayersNbDifference(data);
     notifyListeners();
     if (_gameManagerService.gameMode!.value != "Temps Limité") {
-      startBlinking(data.data.coordinates);
+      startBlinking(data.data.coordinates, 500);
     }
   }
 
@@ -64,12 +64,11 @@ class DifferenceDetectionService extends ChangeNotifier {
     blinkingDifference = path;
   }
 
-  Future<void> startBlinking(List<Vec2> coords) async {
+  Future<void> startBlinking(List<Vec2> coords, timeToBlinkMs) async {
     initDataToBlink(coords);
     if (blinkingDifference == null) return;
 
     final Path blinkingPath = blinkingDifference!;
-    const int timeToBlinkMs = 500;
 
     for (int i = 0; i < 3; i++) {
       await showDifferenceAndWait(blinkingPath, timeToBlinkMs);
