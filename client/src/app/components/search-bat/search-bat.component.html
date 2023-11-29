@@ -1,5 +1,5 @@
 <div class="search-container">
-    <input type="text" [formControl]="searchControl" placeholder="Rechercher des utilisateurs..." class="search-input" />
+    <input type="text" [formControl]="searchControl" placeholder="{{ 'FRIENDS.SEARCH' | translate }}" class="search-input" />
     <div class="search-results" *ngIf="searchControl.value && (users$ | async) as users">
         <ng-container *ngFor="let user of users">
             <div class="user-item" *ngIf="user.uid !== currentUserId">
@@ -8,17 +8,17 @@
 
                 <div class="button-row">
                     <ng-container *ngIf="currentUserFriends$ | async as currentUserFriends">
-                        <span class="friend-status" *ngIf="currentUserFriends.includes(user.uid)">Ami(e)</span>
+                        <span class="friend-status" *ngIf="currentUserFriends.includes(user.uid)">{{ 'FRIENDS.FRIEND' | translate }}</span>
                         <button
                             mat-button
                             color="primary"
                             *ngIf="!currentUserFriends.includes(user.uid) && !friendRequestStatus[user.uid]"
                             (click)="sendFriendRequest(user)"
                         >
-                            Ajouter en ami
+                            {{ 'FRIENDS.ADD' | translate }}
                         </button>
                         <button mat-button color="warn" *ngIf="friendRequestStatus[user.uid]" (click)="cancelFriendRequest(user)">
-                            Supprimer la demande
+                            {{ 'FRIENDS.DELETE_REQUEST' | translate }}
                         </button>
                     </ng-container>
                 </div>
