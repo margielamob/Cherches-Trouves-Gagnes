@@ -173,8 +173,8 @@ export class Game {
     addObserver(observer: User) {
         this.observers.push(observer);
     }
-    removeObserver(playerName: string) {
-        this.observers = this.observers.filter((observer) => observer.name !== playerName);
+    removeObserver(playerId: string) {
+        this.observers = this.observers.filter((observer) => observer.id !== playerId);
     }
     isObserver(playerId: string) {
         return this.observers.some((observer) => observer.id === playerId);
