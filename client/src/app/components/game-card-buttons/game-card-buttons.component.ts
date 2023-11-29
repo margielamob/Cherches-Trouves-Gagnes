@@ -7,6 +7,7 @@ import { GameCard } from '@app/interfaces/game-card';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { GameMode } from '@common/game-mode';
 import { JoinableGameCard } from '@common/joinable-game-card';
 
 @Component({
@@ -17,8 +18,8 @@ import { JoinableGameCard } from '@common/joinable-game-card';
 export class GameCardButtonsComponent {
     @Input() gameCard: GameCard;
     @Input() joinableGameCard: JoinableGameCard;
+    isObservable: boolean = false;
 
-    // eslint-disable-next-line max-params -- absolutely need all the imported services
     constructor(
         private readonly gameInfoHandlerService: GameInformationHandlerService,
         private readonly router: RouterService,
@@ -56,14 +57,20 @@ export class GameCardButtonsComponent {
                 this.gameInfoHandlerService.waitingRoom();
             }
         });
-
-        // this.openNameDialog(true);
     }
 
     onClickJoinGame(): void {
         this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
         this.gameInfoHandlerService.isMulti = true;
         this.gameInfoHandlerService.joinGame(this.joinableGameCard.roomId);
+    }
+
+    onClickObserveGame(): void {
+        this.gameInfoHandlerService.setGameInformation(this.joinableGameCard.gameInformation);
+        this.gameInfoHandlerService.isMulti = true;
+        this.gameInfoHandlerService.isObserver = true;
+        this.gameInfoHandlerService.gameMode = this.joinableGameCard.gameMode as GameMode;
+        this.gameInfoHandlerService.observeGame(this.joinableGameCard.roomId);
     }
 
     onClickRefreshGame(): void {

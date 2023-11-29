@@ -93,11 +93,12 @@ export class GamePlayManager {
                 playerName,
                 differenceCoord,
             });
+            this.gameManager.addDifferenceFound(gameId, differences);
 
             if (this.gameManager.isGameOver(gameId)) {
                 this.handleEndGame(gameId, socket);
             }
-
+            this.gameManager.addDifferenceFoundToPlayer(gameId, socket.id);
             if (this.gameManager.isLimitedTime(gameId)) {
                 this.gameManager.increaseTimer(gameId, this.gameManager.getGame(gameId)!.bonusTime);
                 this.sio.to(gameId).emit(SocketEvent.TimerBonus, {
@@ -126,6 +127,53 @@ export class GamePlayManager {
                     this.sio.to(gameId).emit(SocketEvent.NewGameBoard, {
                         gameInfo: gameCardInfo,
                         coords: this.gameManager.getGame(gameId)!.differencesToClear.coords,
+                    });
+                }
+            }
+        });
+
+        socket.on(SocketEvent.ObserveGame, (player: { name: string; avatar: string }, gameId: string) => {
+            socket.join(gameId);
+            const pastPlayerDiffs = this.gameManager.updateObservableGameState(gameId);
+            const gameCard = this.gameManager.getGameInfo(gameId);
+            this.gameManager.addObserver(gameId, { name: player.name, id: socket.id, avatar: player.avatar });
+            let gameCardInfo: PublicGameInformation;
+            if (gameCard) {
+                gameCardInfo = {
+                    id: gameCard.id,
+                    name: gameCard.name,
+                    thumbnail: BASE_64_HEADER + LZString.decompressFromUTF16(gameCard.thumbnail),
+                    nbDifferences: gameCard.differences.length,
+                    idEditedBmp: gameCard.idEditedBmp,
+                    idOriginalBmp: gameCard.idOriginalBmp,
+                    multiplayerScore: gameCard.multiplayerScore,
+                    soloScore: gameCard.soloScore,
+                    isMulti: false,
+                };
+
+                const players = this.gameManager.getPlayers(gameId) || [];
+                this.gameManager.sendTimer(this.sio, gameId, socket.id);
+                if (this.gameManager.isLimitedTime(gameId)) {
+                    socket.emit(SocketEvent.Play, {
+                        gameId,
+                        gameCard: gameCardInfo,
+                        data: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            coords: this.gameManager.getGame(gameId)!.differencesToClear.coords,
+                            nbDifferencesLeft: 1,
+                            players,
+                        },
+                    });
+                } else {
+                    socket.emit(SocketEvent.Play, {
+                        gameId,
+                        gameCard: gameCardInfo,
+                        data: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            coords: pastPlayerDiffs,
+                            nbDifferencesLeft: 1,
+                            players,
+                        },
                     });
                 }
             }

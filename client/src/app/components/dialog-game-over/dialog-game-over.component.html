@@ -18,7 +18,13 @@
     </div>
     <div class="bottom-buttons">
         <div mat-dialog-actions align="end">
-            <button *ngIf="isClassic" mat-raised-button (click)="toggleReplay()" color="primary" mat-primary>
+            <button
+                *ngIf="isClassic && !this.gameInformationHandler.isObserver"
+                mat-raised-button
+                (click)="toggleReplay()"
+                color="primary"
+                mat-primary
+            >
                 {{ 'GAME_OVER_DIALOG.REPLAY' | translate }}
             </button>
         </div>
@@ -26,6 +32,9 @@
             <button mat-raised-button routerLink="/home" (click)="quitGame()" color="primary" mat-primary>
                 {{ 'GAME_OVER_DIALOG.LEAVE' | translate }}
             </button>
+        </div>
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button routerLink="/home" color="primary" (click)="sendEmail()" mat-primary>Envoyer resumé par mail</button>
         </div>
     </div>
 </div>

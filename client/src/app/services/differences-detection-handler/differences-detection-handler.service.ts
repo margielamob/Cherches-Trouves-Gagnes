@@ -27,9 +27,11 @@ export class DifferencesDetectionHandlerService {
 
     setNumberDifferencesFound(playerName: string) {
         const index = this.gameInfoHandlerService.players.findIndex((p) => p.name === playerName);
-        this.gameInfoHandlerService.players[index].nbDifferences++;
-        this.userService.updateNbDifferenceFound(playerName);
-        this.gameInfoHandlerService.$differenceFound.next(playerName);
+        if (this.gameInfoHandlerService.players[index]) {
+            this.gameInfoHandlerService.players[index].nbDifferences++;
+            this.userService.updateNbDifferenceFound(playerName);
+            this.gameInfoHandlerService.$differenceFound.next(playerName);
+        }
     }
 
     playWrongSound() {
