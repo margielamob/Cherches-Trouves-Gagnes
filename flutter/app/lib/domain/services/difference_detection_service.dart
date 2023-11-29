@@ -64,7 +64,16 @@ class DifferenceDetectionService extends ChangeNotifier {
     blinkingDifference = path;
   }
 
-  Future<void> startBlinking(List<Vec2> coords, timeToBlinkMs) async {
+  Future<void> startBlinking(List<Vec2> coords, int timeToBlinkMs) async {
+    blink(coords, timeToBlinkMs);
+  }
+
+  Future<void> cheat(List<Vec2> coords) async {
+    int timeToBlinkMs = 250;
+    blink(coords, timeToBlinkMs);
+  }
+
+  Future<void> blink(List<Vec2> coords, int timeToBlinkMs) async {
     initDataToBlink(coords);
     if (blinkingDifference == null) return;
 

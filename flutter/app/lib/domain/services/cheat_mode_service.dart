@@ -12,13 +12,11 @@ class CheatModeService {
   final GameManagerService gameManagerService = Get.find();
   final SocketService _socket = Get.find();
 
-  bool isCheatModeActivated = false;
   bool isCheating = false;
 
   List<Vec2> lastDifferencesToFind = [];
 
   CheatModeService() {
-    isCheatModeActivated = _isCheatingActivated();
     handleSocketEvents();
   }
 
@@ -33,31 +31,23 @@ class CheatModeService {
     });
   }
 
-  void startCheating() {
-    print("start cheating");
-    //if (isCheatModeActivated) return;
-    isCheating = true;
+  Future<void> startCheating() async {
+    try {
+      print("start cheating");
 
-    FetchDifferenceRequest data =
-        FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
+      FetchDifferenceRequest data =
+          FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
-    _socket.send(SocketEvent.fetchDifferences, data.toJson());
-    diffService.startBlinking(lastDifferencesToFind, 250);
-    // start the cheating
+      _socket.send(SocketEvent.fetchDifferences, data.toJson());
+      await diffService.cheat(lastDifferencesToFind);
+    } catch (error) {
+      print("error");
+    }
   }
 
   void stopCheating() {
     if (!isCheating) return;
 
     // Stop the cheating
-    isCheating = false;
-  }
-
-  bool _isCheatingActivated() {
-    if (gameManagerService.waitingRoomInfoRequest == null) return false;
-    if (gameManagerService.waitingRoomInfoRequest!.cheatMode == null) {
-      return false;
-    }
-    return gameManagerService.waitingRoomInfoRequest!.cheatMode!;
   }
 }
