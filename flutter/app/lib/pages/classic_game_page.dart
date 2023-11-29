@@ -89,10 +89,21 @@ class _ClassicState extends State<Classic> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Clock(),
-                        ],
+                      SizedBox(
+                        width: 1200,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 520),
+                                child: Clock(),
+                              ),
+                            ),
+                            FilledButton(
+                                onPressed: () => {}, child: Text("Cheat")),
+                            SizedBox(width: 60),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 10),
                       AbsorbPointer(
