@@ -33,8 +33,6 @@ class CheatModeService {
 
   void startCheating() {
     try {
-      print("start cheating");
-
       FetchDifferenceRequest data =
           FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
@@ -50,7 +48,5 @@ class CheatModeService {
     if (!isCheating) return;
 
     diffService.stopShowingDifferences();
-
-    // Stop the cheating
   }
 }
