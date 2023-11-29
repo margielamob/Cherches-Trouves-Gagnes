@@ -19,6 +19,8 @@ class DifferenceDetectionService extends ChangeNotifier {
     ..color = Colors.yellow
     ..style = PaintingStyle.fill;
 
+  bool isCheating = false;
+
   void handleDifferences() {
     _socket.on(SocketEvent.differenceNotFound, (dynamic message) {
       showDifferenceNotFound();
@@ -68,10 +70,11 @@ class DifferenceDetectionService extends ChangeNotifier {
     initDataToBlink(coords);
     if (blinkingDifference == null) return;
     final Path blinkingPath = blinkingDifference!;
-    while (true) {
+    while (isCheating) {
       setCoordinates(blinkingPath);
       await Future.delayed(Duration(milliseconds: 250));
       resetBlinkingDifference();
+      await Future.delayed(Duration(milliseconds: 250));
     }
   }
 

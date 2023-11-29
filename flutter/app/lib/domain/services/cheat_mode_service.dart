@@ -38,7 +38,7 @@ class CheatModeService extends ChangeNotifier {
           FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
       _socket.send(SocketEvent.fetchDifferences, data.toJson());
-      isCheating = true;
+      diffService.isCheating = true;
       await diffService.showDifferences(lastDifferencesToFind);
     } catch (error) {
       print("error");
@@ -46,7 +46,6 @@ class CheatModeService extends ChangeNotifier {
   }
 
   void stopCheating() {
-    if (!isCheating) return;
-    diffService.stopShowingDifferences();
+    diffService.isCheating = false;
   }
 }
