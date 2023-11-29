@@ -22,12 +22,6 @@ class CheatModeService {
     handleSocketEvents();
   }
 
-  /*
-  socket.on(SocketEvent.FetchDifferences, (gameId: string) => {
-              socket.emit(SocketEvent.FetchDifferences, this.gameManager.getNbDifferenceNotFound(gameId));
-          });
-  */
-
   void handleSocketEvents() {
     _socket.on(SocketEvent.fetchDifferences, (dynamic message) {
       FetchDifferenceResponse fetchDifferenceResponse =
