@@ -3,6 +3,7 @@ import 'package:app/components/carousel_bottom_delete.dart';
 import 'package:app/components/image_border.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CarouselCard extends StatelessWidget {
   final GameCardModel data;
@@ -44,7 +45,7 @@ class CarouselCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Nombre de différences : ${data.nbDifferences}",
+                    "${AppLocalizations.of(context)!.diffNumber} : ${data.nbDifferences}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

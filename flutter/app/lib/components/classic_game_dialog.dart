@@ -5,6 +5,7 @@ import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/observableGamePage.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class ClassicGameDialog extends StatelessWidget {
@@ -13,7 +14,7 @@ class ClassicGameDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Créer, rejoindre ou observer une partie"),
+      title: Text(AppLocalizations.of(context)!.createDialog),
       actions: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +38,7 @@ class ClassicGameDialog extends StatelessWidget {
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
-              child: Text("Créer"),
+              child: Text(AppLocalizations.of(context)!.createButton),
             ),
             SizedBox(width: 20),
             FilledButton(
@@ -48,7 +49,7 @@ class ClassicGameDialog extends StatelessWidget {
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
-              child: Text("Rejoindre"),
+              child: Text(AppLocalizations.of(context)!.joinButton),
             ),
             SizedBox(width: 20),
             FilledButton(
@@ -59,7 +60,7 @@ class ClassicGameDialog extends StatelessWidget {
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
               ),
-              child: Text("Observer"),
+              child: Text(AppLocalizations.of(context)!.observeButton),
             ),
           ],
         ),
