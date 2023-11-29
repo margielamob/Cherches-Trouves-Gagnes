@@ -1,6 +1,7 @@
 import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/cheat_mode_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -78,6 +79,7 @@ void registerDependencies() {
   Get.put(ProfilePageManager());
   Get.put(VignetteSubmissionService());
   Get.put(PencilBoxManager());
+  Get.put(CheatModeService());
 }
 
 late List<CameraDescription> cameras;

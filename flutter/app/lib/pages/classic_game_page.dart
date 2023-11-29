@@ -6,6 +6,7 @@ import 'package:app/components/game_vignette_modified.dart';
 import 'package:app/components/game_vignette_original.dart';
 import 'package:app/components/video_player.dart';
 import 'package:app/domain/models/vignettes_model.dart';
+import 'package:app/domain/services/cheat_mode_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
@@ -32,6 +33,7 @@ class _ClassicState extends State<Classic> {
   final GameManagerService gameManagerService = Get.find();
   final SocketService _socket = Get.find();
   final PersonalUserService _userService = Get.find();
+  final CheatModeService _cheatModeService = Get.find();
 
   @override
   void initState() {
@@ -100,10 +102,11 @@ class _ClassicState extends State<Classic> {
                               ),
                             ),
                             GestureDetector(
-                              onLongPressDown: (details) =>
-                                  {print("on Long Press down")},
-                              onLongPressEnd: (details) => {
-                                print("end the cheat mode"),
+                              onLongPressDown: (details) {
+                                _cheatModeService.startCheating();
+                              },
+                              onLongPressEnd: (details) {
+                                _cheatModeService.stopCheating();
                               },
                               child: FilledButton(
                                 onPressed: () => {},
