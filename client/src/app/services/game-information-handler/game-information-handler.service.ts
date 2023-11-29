@@ -33,8 +33,10 @@ export class GameInformationHandlerService {
     timer: number = 0;
     isCreator: boolean = false;
     differencesToClear: Coordinate[][];
+    differencesObserved: Coordinate[][];
     endedTime: number;
     isGameDone: boolean = false;
+    isObserver: boolean = false;
     startTimer: number;
     emailTimer: number;
     // eslint-disable-next-line max-params
@@ -55,6 +57,11 @@ export class GameInformationHandlerService {
                 this.setGameInformation(infos.gameCard);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.setDifferencesToClear(infos.data!.coords);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                if ((this.isObserver && infos.data!.players) || this.isLimitedTime()) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    infos.data!.players!.forEach((player: User) => this.setPlayerName(player.name, player.nbDifferenceFound));
+                }
             }
             this.roomId = infos.gameId;
             this.routerService.navigateTo('game');
@@ -76,7 +83,6 @@ export class GameInformationHandlerService {
             this.routerService.navigateTo('waiting');
         });
     }
-
     setDifferencesToClear(differences: Coordinate[][]) {
         this.differencesToClear = differences;
     }
@@ -102,8 +108,8 @@ export class GameInformationHandlerService {
         this.players = [];
     }
 
-    setPlayerName(name: string): void {
-        this.players.push({ name, nbDifferences: 0 });
+    setPlayerName(name: string, nbDifferenceFound?: number): void {
+        this.players.push({ name, nbDifferences: nbDifferenceFound ? nbDifferenceFound : 0 });
     }
 
     getOriginalBmpId(): string {
@@ -194,6 +200,16 @@ export class GameInformationHandlerService {
         this.handleSocketEvent();
     }
 
+    observeGame(roomId: string) {
+        this.player.displayName = this.userService.activeUser.displayName;
+        this.player.avatar = this.userService.activeUser.photoURL;
+        this.socket.send(SocketEvent.ObserveGame, {
+            player: { name: this.player.displayName, avatar: this.player.avatar, socketId: this.socket.socket.id },
+            roomId,
+        });
+        this.setPlayerName(this.player.displayName);
+        this.handleSocketEvent();
+    }
     resetGameVariables(): void {
         this.playersEX = [];
         this.players = [];

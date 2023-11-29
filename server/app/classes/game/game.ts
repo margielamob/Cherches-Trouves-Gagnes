@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { EndGameState } from '@app/classes/end-game-state/end-game-state';
 import { GameContext } from '@app/classes/game-context/game-context';
 import { InitGameState } from '@app/classes/init-game-state/init-game-state';
@@ -21,7 +22,11 @@ export class Game {
         coords: Coordinate[][];
         nbDifferencesLeft: 1;
     } = { coords: [], nbDifferencesLeft: 1 };
+    differencesAlreadyFound: Coordinate[][] = [];
     bonusTime: number = 0;
+    isObservable: boolean = false;
+    wasLastPlayer: boolean = false;
+    observers: User[] = [];
     private numberOfPlayers: number = 0;
     private numberOfPlayersLeftArena: number = 0;
     private id: string;
@@ -60,6 +65,10 @@ export class Game {
 
     get status(): GameStatus {
         return this.context.gameState();
+    }
+
+    makeObservable() {
+        this.isObservable = true;
     }
 
     incrementPlayers() {
@@ -111,6 +120,10 @@ export class Game {
         return this.isMulti && this.players.size === 4;
     }
 
+    hasOnePlayer() {
+        return this.players.size === 1;
+    }
+
     setGameCardDeleted() {
         this.isCardDeleted = true;
     }
@@ -122,6 +135,9 @@ export class Game {
         this.players.set(player.id, player);
     }
 
+    isLastPlayer() {
+        return this.players.size === 4;
+    }
     findPlayer(playerId: string) {
         return this.players.get(playerId);
     }
@@ -147,5 +163,31 @@ export class Game {
 
     hasNoPlayer() {
         return this.players.size === 0;
+    }
+    addDifferenceFound(difference: Coordinate[]) {
+        this.differencesAlreadyFound.push(difference);
+    }
+    addDifferenceFoundToPlayer(playerId: string) {
+        const player = this.findPlayer(playerId);
+        if (!player) {
+            return;
+        }
+        if (player.nbDifferenceFound === undefined) {
+            player.nbDifferenceFound = 1;
+        } else {
+            player.nbDifferenceFound++;
+        }
+    }
+    getDifferenceFound() {
+        return this.differencesAlreadyFound;
+    }
+    addObserver(observer: User) {
+        this.observers.push(observer);
+    }
+    removeObserver(playerId: string) {
+        this.observers = this.observers.filter((observer) => observer.id !== playerId);
+    }
+    isObserver(playerId: string) {
+        return this.observers.some((observer) => observer.id === playerId);
     }
 }

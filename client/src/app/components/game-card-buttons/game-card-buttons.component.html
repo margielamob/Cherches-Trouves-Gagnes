@@ -1,5 +1,23 @@
 <mat-card-actions class="game-card-buttons">
-    <button *ngIf="joinableGameCard" mat-flat-button color="primary" aria-label="Boutton Joindre" (click)="onClickJoinGame()">Joindre</button>
+    <button
+        *ngIf="joinableGameCard && !joinableGameCard.isObservable"
+        mat-flat-button
+        color="primary"
+        aria-label="Button Join"
+        (click)="onClickJoinGame()"
+    >
+        Joindre
+    </button>
+
+    <button
+        *ngIf="joinableGameCard && joinableGameCard.isObservable === true"
+        mat-flat-button
+        color="primary"
+        aria-label="Button Observe"
+        (click)="onClickObserveGame()"
+    >
+        Observer
+    </button>
 
     <ng-container *ngIf="gameCard && !joinableGameCard">
         <div class="admin-buttons" *ngIf="gameCard.isAdminCard; else selectPage">

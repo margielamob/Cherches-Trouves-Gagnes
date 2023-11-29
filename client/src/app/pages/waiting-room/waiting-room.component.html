@@ -19,6 +19,5 @@
         </ul>
         <ng-template #noPlayers><p>No players in the waiting room.</p></ng-template>
     </div>
-    <button (click)="quit()">Quitter la partie</button>
     <button *ngIf="isCreator" (click)="play()" [disabled]="!canStartGame">play</button>
 </main>

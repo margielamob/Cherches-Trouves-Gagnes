@@ -7,13 +7,10 @@
                 </p>
                 <p [innerHTML]="'SIDEBAR.NAME' | translate: { gameName: gameName }"></p>
                 <p [innerHTML]="'SIDEBAR.MODE' | translate: { gameMode: gameMode }"></p>
-                <p [innerHTML]="'SIDBAR.PENALTY' | translate: { penaltyTime: penaltyTime }" *ngIf="isSoloMode()"></p>
-                <p [innerHTML]="'SIDEBAR.BONUS_TIME' | translate: { differenceTime: differenceTime }" *ngIf="isLimitedTimeMode()"></p>
             </section>
         </mat-grid-tile>
         <mat-grid-tile>
             <div class="middle-col">
-                <app-clues-area *ngIf="!isMulti()"></app-clues-area>
                 <app-timer-stopwatch></app-timer-stopwatch>
             </div>
         </mat-grid-tile>

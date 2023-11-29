@@ -25,6 +25,7 @@ class DifferenceDetectionService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
+      print(data);
       showDifferenceFound(data);
     });
     _socket.on(SocketEvent.error, (dynamic message) {
