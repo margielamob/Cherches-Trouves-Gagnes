@@ -18,6 +18,7 @@ class CheatModeService {
 
   CheatModeService() {
     isCheatModeActivated = _isCheatingActivated();
+    handleSocketEvents();
   }
 
   /*
@@ -34,6 +35,7 @@ class CheatModeService {
   }
 
   void startCheating() {
+    print("start cheating");
     //if (isCheatModeActivated) return;
     isCheating = true;
 
@@ -41,7 +43,6 @@ class CheatModeService {
         FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
     _socket.send(SocketEvent.fetchDifferences, data.toJson());
-
     diffService.startBlinking(lastDifferencesToFind, 250);
     // start the cheating
   }
