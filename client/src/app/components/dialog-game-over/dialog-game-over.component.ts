@@ -7,6 +7,7 @@ import { TimeFormatterService } from '@app/services/time-formatter/time-formatte
 import { UserService } from '@app/services/user-service/user.service';
 // eslint-disable-next-line import/no-unresolved
 import { GameRecord } from '@common/game-record';
+import { take } from 'rxjs';
 @Component({
     selector: 'app-dialog-game-over',
     templateUrl: './dialog-game-over.component.html',
@@ -38,6 +39,7 @@ export class DialogGameOverComponent {
         this.userService
             .getUserTheme()
 
+            .pipe(take(1))
             .subscribe((theme) => {
                 this.theme = theme as string;
             });

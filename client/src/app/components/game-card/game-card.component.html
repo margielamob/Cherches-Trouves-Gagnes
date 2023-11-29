@@ -7,7 +7,7 @@
             <b>{{ 'GAME_CARD.BEST_SCORE' | translate }}</b>
         </h3>
         <div class="scores">
-            <span> Nombre de différences : {{ getNbDifferences() }}</span>
+            <span [innerHTML]="'GAME_CARD.DIFFERENCE' | translate: { difference: getNbDifferences() }"></span>
             <!-- <app-game-score [title]="'1 vs 1'" [scores]="getMultiplayerScores()" [isMultiplayer]="true"></app-game-score> -->
         </div>
     </mat-card-content>
