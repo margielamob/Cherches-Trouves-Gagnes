@@ -5,7 +5,7 @@ import 'package:app/domain/models/limited_game_model.dart';
 import 'package:app/domain/models/requests/bonus_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/create_limited_game_request.dart';
-// import 'package:app/domain/models/requests/difference_found_message.dart';
+import 'package:app/domain/models/requests/difference_found_message.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
@@ -77,10 +77,10 @@ class GameManagerService extends ChangeNotifier {
         if (isObservable) {
           ObserveGameReceiveRequest request =
               ObserveGameReceiveRequest.fromJson(message);
+          print(request);
           currentRoomId = request.gameId;
           gameCards = request.gameCard;
           limitedCoords = request.data.coords;
-          players = request.players!;
         } else {
           currentRoomId = message;
         }
@@ -214,6 +214,7 @@ class GameManagerService extends ChangeNotifier {
   void leaveGame() {
     LeaveArenaRequest data = LeaveArenaRequest(gameId: currentRoomId!);
     _socket.send(SocketEvent.leaveGame, data.toJson());
+    resetAllPlayerData();
     Get.offAll(MainPage(), transition: Transition.leftToRight);
   }
 
@@ -246,20 +247,29 @@ class GameManagerService extends ChangeNotifier {
   // void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
   //   for (var player in players) {
   //     if (player.name == differenceFound.playerName) {
-  //       for (var diff in player.nbDifferenceFound) {
-  //         if (diff.x == differenceFound.differenceCoord.x &&
-  //             diff.y == differenceFound.differenceCoord.y) {
-  //           return;
-  //         }
-  //       }
-  //       if (player.name == currentUser!.name && !global.isModeReplayActivated) {
-  //         _userService.updateUserNbDiffFound(currentUser!.id);
-  //       }
-  //       player.nbDifferenceFound.add(differenceFound.differenceCoord);
+  //       player.nbDifferenceFound = player.nbDifferenceFound! + 1;
   //     }
   //   }
   //   notifyListeners();
   // }
+
+  void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
+    for (var player in players) {
+      if (player.name == differenceFound.playerName) {
+        for (var diff in player.nbDifferenceFound) {
+          if (diff.x == differenceFound.differenceCoord.x &&
+              diff.y == differenceFound.differenceCoord.y) {
+            return;
+          }
+        }
+        if (player.name == currentUser!.name && !global.isModeReplayActivated) {
+          _userService.updateUserNbDiffFound(currentUser!.id);
+        }
+        player.nbDifferenceFound.add(differenceFound.differenceCoord);
+      }
+    }
+    notifyListeners();
+  }
 
   void resetAllPlayerData() {
     isObservable = false;
@@ -269,8 +279,8 @@ class GameManagerService extends ChangeNotifier {
 
   void resetAllPlayersNbDifference() {
     for (var player in players) {
-      // player.nbDifferenceFound = [];
-      player.nbDifferenceFound = 0;
+      player.nbDifferenceFound = [];
+      // player.nbDifferenceFound = 0;
     }
     notifyListeners();
   }
@@ -278,8 +288,8 @@ class GameManagerService extends ChangeNotifier {
   void resetPlayerNbDifference(String playerName) {
     for (var player in players) {
       if (player.name == playerName) {
-        // player.nbDifferenceFound = [];
-        player.nbDifferenceFound = 0;
+        player.nbDifferenceFound = [];
+        // player.nbDifferenceFound = 0;
       }
     }
   }
