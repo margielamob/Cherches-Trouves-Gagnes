@@ -14,8 +14,8 @@ import 'package:app/domain/services/generate_difference_slider_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
-import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:app/domain/services/image_selection_service.dart';
+import 'package:app/domain/services/observable_game_manager.dart';
 import 'package:app/domain/services/pencil_box_manager.dart';
 import 'package:app/domain/services/pencil_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
@@ -235,7 +235,7 @@ class MyApp extends StatelessWidget {
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/sign  Page': (context) => SignUpPage(),
+        '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),
