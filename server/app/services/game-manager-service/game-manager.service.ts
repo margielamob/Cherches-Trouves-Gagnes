@@ -370,6 +370,12 @@ export class GameManagerService {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
+    addDifferenceFoundToPlayer(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.addDifferenceFoundToPlayer(playerId);
+        }
+    }
     addObservableGame(gameId: string) {
         const game = this.games.get(gameId);
         if (game) {

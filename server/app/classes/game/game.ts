@@ -167,6 +167,17 @@ export class Game {
     addDifferenceFound(difference: Coordinate[]) {
         this.differencesAlreadyFound.push(difference);
     }
+    addDifferenceFoundToPlayer(playerId: string) {
+        const player = this.findPlayer(playerId);
+        if (!player) {
+            return;
+        }
+        if (player.nbDifferenceFound === undefined) {
+            player.nbDifferenceFound = 1;
+        } else {
+            player.nbDifferenceFound++;
+        }
+    }
     getDifferenceFound() {
         return this.differencesAlreadyFound;
     }

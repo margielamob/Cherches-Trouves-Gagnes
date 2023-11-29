@@ -98,7 +98,7 @@ export class GamePlayManager {
             if (this.gameManager.isGameOver(gameId)) {
                 this.handleEndGame(gameId, socket);
             }
-
+            this.gameManager.addDifferenceFoundToPlayer(gameId, socket.id);
             if (this.gameManager.isLimitedTime(gameId)) {
                 this.gameManager.increaseTimer(gameId, this.gameManager.getGame(gameId)!.bonusTime);
                 this.sio.to(gameId).emit(SocketEvent.TimerBonus, {
