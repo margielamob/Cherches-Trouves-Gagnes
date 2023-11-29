@@ -105,7 +105,7 @@ class _ClassicState extends State<Classic> {
                               onLongPressDown: (details) {
                                 _cheatModeService.startCheating();
                               },
-                              onLongPressEnd: (details) {
+                              onLongPressUp: () {
                                 _cheatModeService.stopCheating();
                               },
                               child: FilledButton(
