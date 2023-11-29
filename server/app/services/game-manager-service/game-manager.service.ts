@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { Game } from '@app/classes/game/game';
@@ -19,8 +20,12 @@ import LZString = require('lz-string');
 @Service()
 export class GameManagerService {
     games: Map<string, Game> = new Map();
-    joinableGames: Map<string, Game> = new Map();
+    limitedTimeGames: Map<string, Game> = new Map();
+    classicGames: Map<string, Game> = new Map();
+    joinableClassicGames: Map<string, Game> = new Map();
     joinableLimitedGames: Map<string, Game> = new Map();
+    observableGames: Map<string, Game> = new Map();
+
     // eslint-disable-next-line max-params
     constructor(
         private gameInfo: GameInfoService,
@@ -38,10 +43,12 @@ export class GameManagerService {
             game = new Game(playerInfo, { info: gameCard, mode });
             this.limitedTimeGame.gamesShuffled.set(game.identifier, gamesRandomized);
             this.joinableLimitedGames.set(game.identifier, game);
+            this.limitedTimeGames.set(game.identifier, game);
         } else {
             gameCard = (await this.gameInfo.getGameInfoById(gameCardId)) as PrivateGameInformation;
             game = new Game(playerInfo, { info: gameCard, mode });
-            this.joinableGames.set(game.identifier, game);
+            this.joinableClassicGames.set(game.identifier, game);
+            this.classicGames.set(game.identifier, game);
         }
         await this.timer.setTimerConstant(game.identifier);
         this.games.set(game.identifier, game);
@@ -49,7 +56,6 @@ export class GameManagerService {
         this.difference.setPlayerDifferences(game.identifier, playerInfo.player.id);
         return game.identifier;
     }
-
     getLimitedJoinableGame(roomId: string): JoinableGameCard | undefined {
         const game = this.joinableLimitedGames.get(roomId);
         if (!game) {
@@ -59,6 +65,7 @@ export class GameManagerService {
         const nbDifferences = game.information.differences.length;
 
         const players = this.getPlayers(roomId) || [];
+        const observers = this.getObservers(roomId) || [];
         const gameCardInfo = {
             id: game.information.id,
             name: game.information.name,
@@ -70,10 +77,19 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
+        return {
+            players,
+            nbDifferences,
+            thumbnail,
+            roomId,
+            gameInformation: gameCardInfo,
+            isObservable: game.isObservable,
+            gameMode: GameMode.LimitedTime,
+            observers,
+        };
     }
     getJoinableGames(): JoinableGameCard[] {
-        return Array.from(this.joinableGames.keys())
+        return Array.from(this.joinableClassicGames.keys())
             .map((roomId) => this.getJoinableGame(roomId))
             .filter((game) => game !== undefined) as JoinableGameCard[];
     }
@@ -84,13 +100,14 @@ export class GameManagerService {
     }
 
     getJoinableGame(roomId: string): JoinableGameCard | undefined {
-        const game = this.joinableGames.get(roomId);
+        const game = this.games.get(roomId);
         if (!game) {
             return;
         }
         const thumbnail = BASE_64_HEADER + LZString.decompressFromUTF16(game.information.thumbnail);
         const nbDifferences = game.information.differences.length;
         const players = this.getPlayers(roomId) || [];
+        const observers = this.getObservers(roomId) || [];
         const gameCardInfo = {
             id: game.information.id,
             name: game.information.name,
@@ -102,9 +119,29 @@ export class GameManagerService {
             soloScore: game.information.soloScore,
             isMulti: false,
         };
-        return { players, nbDifferences, thumbnail, roomId, gameInformation: gameCardInfo };
+
+        return {
+            players,
+            nbDifferences,
+            thumbnail,
+            roomId,
+            gameInformation: gameCardInfo,
+            isObservable: game.isObservable,
+            gameMode: GameMode.Classic,
+            observers,
+        };
     }
 
+    addJoinableGame(roomId: string) {
+        const game = this.games.get(roomId);
+        if (game) {
+            if (game.isLimitedTime()) {
+                this.joinableLimitedGames.set(roomId, game);
+            } else {
+                this.joinableClassicGames.set(roomId, game);
+            }
+        }
+    }
     getGameInfo(gameId: string) {
         return this.findGame(gameId)?.information;
     }
@@ -196,7 +233,7 @@ export class GameManagerService {
     }
 
     isCheatMode(gameId: string) {
-        return this.isGameFound(gameId) ? (this.findGame(gameId) as Game).isCheatMode : null;
+        return (this.findGame(gameId) as Game).isCheatMode;
     }
     setCheatMode(gameId: string, cheatMode: boolean) {
         const game = this.findGame(gameId);
@@ -258,16 +295,31 @@ export class GameManagerService {
         return !game ? undefined : this.difference.getAllDifferencesNotFound(game.information.differences, gameId);
     }
 
-    // hasSameName(roomId: string, playersName: string) {
-    //     const game = this.findGame(roomId);
-    //     return !game ? false : Array.from(game.players.values()).includes(playersName);
-    // }
+    isLastPlayer(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : game.isLastPlayer();
+    }
+
+    onePlayerLeft(gameId: string) {
+        const game = this.findGame(gameId);
+        return !game ? undefined : game.hasOnePlayer();
+    }
 
     isGameMultiplayer(gameId: string) {
         const game = this.findGame(gameId);
         return game?.multi;
     }
 
+    setWasLastPlayer(gameId: string, b: boolean) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.wasLastPlayer = b;
+        }
+    }
+    wasLastPlayer(gameId: string) {
+        const game = this.findGame(gameId);
+        return game?.wasLastPlayer;
+    }
     leaveGame(playerId: string, gameId: string) {
         const game = this.findGame(gameId);
         game?.leaveGame(playerId);
@@ -318,10 +370,42 @@ export class GameManagerService {
         return this.findGame(gameId)?.findPlayer(playerId);
     }
 
+    addDifferenceFoundToPlayer(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.addDifferenceFoundToPlayer(playerId);
+        }
+    }
+    addObservableGame(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game) {
+            this.observableGames.set(gameId, game);
+        }
+    }
+    getObservableGames() {
+        return Array.from(this.observableGames.keys());
+    }
+    addDifferenceFound(gameId: string, difference: Coordinate[]) {
+        const game = this.games.get(gameId);
+        if (game) {
+            game.addDifferenceFound(difference);
+        }
+    }
     removeJoinableGame(gameId: string) {
-        this.joinableGames.delete(gameId);
+        this.joinableClassicGames.delete(gameId);
+    }
+    removeJoinableLimitedGame(gameId: string) {
+        this.joinableLimitedGames.delete(gameId);
     }
     removeGame(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game?.isClassic) {
+            this.joinableClassicGames.delete(gameId);
+            this.classicGames.delete(gameId);
+        } else {
+            this.joinableLimitedGames.delete(gameId);
+            this.limitedTimeGames.delete(gameId);
+        }
         this.games.delete(gameId);
     }
 
@@ -335,5 +419,35 @@ export class GameManagerService {
 
     getGame(gameId: string) {
         return this.games.get(gameId);
+    }
+    updateObservableGameState(gameId: string) {
+        const game = this.games.get(gameId);
+        if (game) {
+            return game.getDifferenceFound();
+        }
+        return;
+    }
+    getLimitedTimeGames() {
+        return Array.from(this.limitedTimeGames.keys());
+    }
+    addObserver(gameId: string, player: User) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.addObserver(player);
+        }
+    }
+    getObservers(gameId: string) {
+        const game = this.findGame(gameId);
+        return game?.observers;
+    }
+    removeObserver(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        if (game) {
+            game.removeObserver(playerId);
+        }
+    }
+    isObserver(gameId: string, playerId: string) {
+        const game = this.findGame(gameId);
+        return game?.isObserver(playerId);
     }
 }

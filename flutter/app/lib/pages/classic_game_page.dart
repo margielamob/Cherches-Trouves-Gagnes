@@ -95,16 +95,20 @@ class _ClassicState extends State<Classic> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GameVignetteModified(images, widget.gameId),
-                          SizedBox(width: 50),
-                          GameVignetteOriginal(images, widget.gameId),
-                        ],
+                      AbsorbPointer(
+                        absorbing: gameManagerService.isObservable,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GameVignetteModified(images, widget.gameId),
+                            SizedBox(width: 50),
+                            GameVignetteOriginal(images, widget.gameId),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 5),
-                      gameManagerService.gameMode!.value == "Classique"
+                      (gameManagerService.gameMode!.value == "Classique" &&
+                              gameManagerService.isObservable)
                           ? VideoPlayer()
                           : SizedBox(height: 0),
                       SizedBox(height: 5),

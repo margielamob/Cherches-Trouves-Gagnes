@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Voulez-vous créer ou joindre une partie?</h1>
 <div mat-dialog-actions align="end">
     <button mat-flat-button color="primary" (click)="onCreateClick()" [mat-dialog-close]="{ action: 'create' }">Créer</button>
-    <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" routerLink="/join-game">Joindre</button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" (click)="onJoinClick()">Joindre</button>
 </div>

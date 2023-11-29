@@ -3,6 +3,7 @@ import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { EmailService } from '@app/services/email-service/email.service';
+import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { ReplayService } from '@app/services/replay-service/replay.service';
 import { TimeFormatterService } from '@app/services/time-formatter/time-formatter.service';
 import { UserService } from '@app/services/user-service/user.service';
@@ -29,6 +30,7 @@ export class DialogGameOverComponent {
         public dialog: MatDialog,
         private chatManager: ChatManagerService,
         private replayService: ReplayService,
+        public gameInformationHandler: GameInformationHandlerService,
         private emailService: EmailService,
     ) {
         this.isWin = data.win;

@@ -5,10 +5,8 @@ class UserModel {
   final String name;
   final String? avatar;
   List<Vec2> nbDifferenceFound;
-
   UserModel({required this.id, required this.name, this.avatar})
       : nbDifferenceFound = [];
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,

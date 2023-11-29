@@ -7,6 +7,7 @@ import { GamesWaitingInfo } from '@common/games-waiting-info';
 import { JoinableGameCard } from '@common/joinable-game-card';
 import { Score } from '@common/score';
 import { SocketEvent } from '@common/socket-event';
+import { User } from '@common/user';
 
 @Component({
     selector: 'app-game-card',
@@ -17,6 +18,8 @@ export class GameCardComponent implements OnInit {
     @Input() gameCard: GameCard;
     @Input() isJoining: boolean = false;
     @Input() joinableGameCard: JoinableGameCard;
+    isObservable: boolean = false;
+    observers: User[] = [];
     imageSrc: string;
     constructor(
         private readonly communicationSocket: CommunicationSocketService,
@@ -41,6 +44,13 @@ export class GameCardComponent implements OnInit {
                 }
             }
         });
+
+        // this.communicationSocket.on(SocketEvent.NewObserver, (observers: User[]) => {
+        //     this.isJoining = false;
+        //     this.observers = observers;
+        //     if (this.observers.length > 0) this.isObservable = true;
+        //     console.log(this.observers + ' ' + this.isObservable);
+        // });
     }
 
     setImagesSrc(): void {

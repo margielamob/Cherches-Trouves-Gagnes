@@ -8,9 +8,10 @@ import 'package:provider/provider.dart';
 
 class ReachableGamesCarrousel extends StatelessWidget {
   final ReachableGameManager reachableGamesManager = Get.find();
+  final bool isClassicGame;
 
-  ReachableGamesCarrousel() {
-    reachableGamesManager.getReachableGames();
+  ReachableGamesCarrousel({required this.isClassicGame}) {
+    reachableGamesManager.getReachableGames(isClassicGame);
   }
 
   @override

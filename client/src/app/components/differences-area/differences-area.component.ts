@@ -30,13 +30,11 @@ export class DifferencesAreaComponent {
     }
 
     setPlayersInfo() {
-        this.mainPlayer = this.gameInformationHandlerService.getPlayer();
-        this.opponentPlayers = this.gameInformationHandlerService.getOpponents();
-        if (!this.isLimited()) {
-            this.setPlayerInfosClassic();
-            return;
+        if (!this.gameInformationHandlerService.isObserver) {
+            this.mainPlayer = this.gameInformationHandlerService.getPlayer();
         }
-        // this.setPlayerLimitedTime();
+        this.opponentPlayers = this.gameInformationHandlerService.getOpponents();
+        this.setPlayerInfosClassic();
     }
 
     setPlayerInfosClassic() {
@@ -60,20 +58,22 @@ export class DifferencesAreaComponent {
     }
 
     // setPlayerLimitedTime() {
-    //     this.players = !this.opponentPlayer
-    //         ? [{ name: this.mainPlayer.name, nbDifference: this.setNbDifferencesFoundLimited() as string }]
-    //         : [
-    //               {
-    //                   name: this.mainPlayer.name + ' & ' + this.opponentPlayer.name,
-    //                   nbDifference: this.setNbDifferencesFoundLimited() as string,
-    //               },
-    //           ];
-    //     this.gameInformationHandlerService.$playerLeft.subscribe(() => {
-    //         this.players = [{ name: this.mainPlayer.name, nbDifference: this.setNbDifferencesFoundLimited() as string }];
-    //     });
+    //     const opponents = this.opponentPlayers.map((opponent) => ({
+    //         name: opponent.name,
+    //         nbDifference: this.setNbDifferencesFound(opponent.name) as string,
+    //     }));
 
-    //     this.gameInformationHandlerService.$differenceFound.subscribe(() => {
-    //         this.players[0].nbDifference = this.setNbDifferencesFoundLimited();
+    //     this.players = [...opponents];
+
+    //     this.removeDuplicate();
+
+    //     this.gameInformationHandlerService.$differenceFound.subscribe((playerName: string) => {
+    //         const notFindIndex = -1;
+    //         if (this.getPlayerIndex(playerName) === notFindIndex) {
+    //             return;
+    //         }
+
+    //         this.players[this.getPlayerIndex(playerName)].nbDifference = this.setNbDifferencesFound(playerName);
     //     });
     // }
 
@@ -100,8 +100,8 @@ export class DifferencesAreaComponent {
     // setNbDifferencesFoundLimited() {
     //     const nbPlayerDifference = this.gameInformationHandlerService.getNbDifferences(this.mainPlayer.name) as number;
 
-    //     if (this.opponentPlayer) {
-    //         const nbOpponentDifference = this.gameInformationHandlerService.getNbDifferences(this.opponentPlayer.name) as number;
+    //     if (this.opponentPlayers) {
+    //         const nbOpponentDifference = this.gameInformationHandlerService.getNbDifferences(this.opponentPlayers.name) as number;
     //         return (nbPlayerDifference + nbOpponentDifference).toString();
     //     }
 
