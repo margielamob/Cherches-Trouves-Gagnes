@@ -59,7 +59,7 @@ export class GameInformationHandlerService {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 if ((this.isObserver && infos.data!.players) || this.isLimitedTime()) {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    infos.data!.players!.forEach((player: User) => this.setPlayerName(player.name));
+                    infos.data!.players!.forEach((player: User) => this.setPlayerName(player.name, player.nbDifferenceFound));
                 }
             }
             this.roomId = infos.gameId;
@@ -107,8 +107,8 @@ export class GameInformationHandlerService {
         this.players = [];
     }
 
-    setPlayerName(name: string): void {
-        this.players.push({ name, nbDifferences: 0 });
+    setPlayerName(name: string, nbDifferenceFound?: number): void {
+        this.players.push({ name, nbDifferences: nbDifferenceFound ? nbDifferenceFound : 0 });
     }
 
     getOriginalBmpId(): string {
