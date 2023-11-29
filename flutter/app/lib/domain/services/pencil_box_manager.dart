@@ -1,12 +1,10 @@
 import 'package:app/domain/services/pencil_service.dart';
+import 'package:app/domain/utils/numeric_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PencilSizeSlider {
-  double minimum = 0;
-  double maximum = 1;
-  double currentProgression = 0;
-
+class PencilSizeSlider extends NumericSlider {
+  @override
   void updateProgression(double progression) {
     if (progression < 0.25) {
       currentProgression = 0;
@@ -21,7 +19,8 @@ class PencilSizeSlider {
     }
   }
 
-  double getStrokeWidth() {
+  @override
+  double getValue() {
     if (currentProgression == 0.0) return 2.0;
     if (currentProgression == 0.25) return 2.5;
     if (currentProgression == 0.5) return 3.0;
@@ -78,7 +77,7 @@ class PencilBoxManager extends ChangeNotifier {
   }
 
   void updateStrokeWidth() {
-    double sliderValue = pencilSizeSlider.getStrokeWidth();
+    double sliderValue = pencilSizeSlider.getValue();
     if (pencilService.currentTool == DrawingTool.eraser) {
       pencilService.currentStrokeWidth = sliderValue * 2;
     } else {

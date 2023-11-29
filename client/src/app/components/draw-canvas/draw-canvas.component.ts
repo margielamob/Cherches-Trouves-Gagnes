@@ -17,6 +17,13 @@ export class DrawCanvasComponent implements AfterViewInit, OnDestroy {
     @ViewChild('foreground', { static: false }) private foreground!: ElementRef<HTMLCanvasElement>;
     @ViewChild('noContentCanvas', { static: false }) private noContentCanvas!: ElementRef<HTMLCanvasElement>;
 
+    rectangleProperties = {
+        width: 0,
+        height: 0,
+        startX: 0,
+        startY: 0,
+    };
+
     constructor(private toolBoxService: ToolBoxService, private drawService: DrawService, private canvasStateService: CanvasStateService) {}
 
     get width() {
@@ -62,6 +69,15 @@ export class DrawCanvasComponent implements AfterViewInit, OnDestroy {
 
     startDrawing(event: MouseEvent) {
         this.canvasStateService.setFocusedCanvas(this.canvasType);
+        if (this.isPipette()) {
+            this.drawService.updatePencilColor(event);
+            return;
+        }
+
+        if (this.isBucket()) {
+            this.drawService.updateBackgroundColor();
+            return;
+        }
         this.drawService.startDrawing(event);
     }
 
@@ -70,6 +86,23 @@ export class DrawCanvasComponent implements AfterViewInit, OnDestroy {
     }
 
     draw(event: MouseEvent) {
+        if (this.drawService.isPipette || this.drawService.isBucket) return;
         this.drawService.draw(event);
+    }
+
+    isBucket() {
+        return this.drawService.isBucket;
+    }
+
+    isPipette() {
+        return this.drawService.isPipette;
+    }
+
+    isDrawingRectangle() {
+        return this.drawService.isDrawingRectangle;
+    }
+
+    getRectangleSpecs() {
+        return this.drawService.getRectangleProps();
     }
 }

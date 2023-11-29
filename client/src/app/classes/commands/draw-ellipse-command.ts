@@ -12,6 +12,5 @@ export class DrawEllipseCommand implements DrawingCommand {
 
     execute(): void {
         this.drawService.redrawEllipse(this.baseCommand, this.canvas);
-        console.log('reexecuting ellipse');
     }
 }

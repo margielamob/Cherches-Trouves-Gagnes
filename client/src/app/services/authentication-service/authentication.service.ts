@@ -14,20 +14,30 @@ export class AuthenticationService {
     constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private afs: AngularFirestore) {}
 
     login(email: string, password: string) {
+        const MAX_ATTEMPTS = 3;
+        const attemptsKey = `login_attempts_${email}`;
+        const userAttempts = parseInt(localStorage.getItem(attemptsKey) || '0', 10);
+        if (userAttempts >= MAX_ATTEMPTS) {
+            return throwError(() => new Error('Compte bloqué après 3 tentatives infructueuses.'));
+        }
+
         return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
             switchMap((response) => {
                 const user = response.user;
                 if (!user) {
                     throw new Error('Echec de la connexion.');
                 }
+
+                // Réinitialiser les tentatives à 0 dans le localStorage après une connexion réussie
+                localStorage.setItem(attemptsKey, '0');
+
                 return this.afs
-                    .collection('activeUser')
+                    .collection('activeUsers')
                     .doc(user.uid)
                     .get()
                     .pipe(
-                        switchMap(() => {
-                            // eslint-disable-next-line no-constant-condition
-                            if (false) {
+                        switchMap((doc) => {
+                            if (doc.exists) {
                                 return this.afAuth.signOut().then(() => {
                                     throw new Error('Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter');
                                 });
@@ -41,18 +51,21 @@ export class AuthenticationService {
             }),
             catchError((error: FirebaseError | Error) => {
                 let errorMessage = 'Une erreur est survenue lors de la connexion. Merci de revenir plus tard.';
-                if (error instanceof Error && error.message.includes('Vous avez déjà une session ouverte')) {
-                    errorMessage = error.message;
-                } else if (error instanceof FirebaseError) {
-                    switch (error.code) {
-                        case 'auth/user-not-found':
-                            errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
-                            break;
-                        case 'auth/wrong-password':
-                            errorMessage = 'Votre mot de passe est incorrect.';
-                            break;
+
+                if (error instanceof FirebaseError && error.code === 'auth/wrong-password') {
+                    let attempts = parseInt(localStorage.getItem(attemptsKey) || '0', 10);
+                    attempts++;
+                    localStorage.setItem(attemptsKey, attempts.toString());
+
+                    if (attempts >= MAX_ATTEMPTS) {
+                        errorMessage = 'Compte bloqué après 3 tentatives infructueuses.';
+                    } else {
+                        errorMessage = 'Votre mot de passe est incorrect.';
                     }
+                } else if (error instanceof FirebaseError && error.code === 'auth/user-not-found') {
+                    errorMessage = "Votre compte n'existe pas. Veuillez vous inscrire ou vérifier vos informations.";
                 }
+
                 return throwError(() => new Error(errorMessage));
             }),
         );

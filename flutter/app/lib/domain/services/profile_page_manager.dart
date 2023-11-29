@@ -11,14 +11,35 @@ class ProfilePageManager extends ChangeNotifier {
   UserData? currentUser;
   String? avatar;
   ThemeData themeData;
+  String imagePath = 'assets/quote_d.png';
 
   ProfilePageManager() : themeData = DefaultTheme;
+
+  void updateImagePath() {
+    String languageCode = Get.locale?.languageCode ?? 'en';
+
+    String themeKey = themeData == DefaultTheme ? 'Default' : 'Alternative';
+
+    if (themeKey == 'Alternative' && languageCode == 'fr') {
+      imagePath = 'assets/quote.png';
+    } else if (themeKey == 'Alternative' && languageCode == 'en') {
+      imagePath = 'assets/search_find_win_prp.jpg';
+    } else if (themeKey == 'Default' && languageCode == 'fr') {
+      imagePath = 'assets/quote_d.png';
+    } else if (themeKey == 'Default' && languageCode == 'en') {
+      imagePath = 'assets/search_find_win_blue.jpg';
+    } else {
+      imagePath = 'assets/quote_d.png';
+    }
+    notifyListeners();
+  }
 
   void setTheme(String themeValue) {
     ThemeData newTheme = getThemeFromValue(themeValue);
     if (newTheme != themeData) {
       themeData = newTheme;
     }
+    updateImagePath();
     notifyListeners();
   }
 
@@ -53,5 +74,8 @@ class ProfilePageManager extends ChangeNotifier {
     String languageCode = language == 'English' ? 'en' : 'fr';
     Locale newLocale = Locale(languageCode, '');
     Get.updateLocale(newLocale);
+    updateImagePath();
   }
+
+  String getImagePath() => imagePath;
 }

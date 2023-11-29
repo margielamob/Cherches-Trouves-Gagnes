@@ -44,6 +44,7 @@ export class TimerStopwatchComponent implements OnInit, OnDestroy {
         this.socketService.on(SocketEvent.Clock, (time: number) => {
             this.time = time;
             this.timerDisplay = this.timeFormatter.formatTime(time);
+            this.gameInfoService.emailTimer = time;
         });
 
         this.socketService.once(SocketEvent.Win || SocketEvent.Lose, () => {
