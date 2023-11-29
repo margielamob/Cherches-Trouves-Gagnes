@@ -20,6 +20,7 @@ class PlayerModel {
 
 class JoinableGamesModel {
   final List<PlayerModel> players;
+  final List<PlayerModel> observers;
   final int nbDifferences;
   final Uint8List thumbnail;
   final String roomId;
@@ -28,6 +29,7 @@ class JoinableGamesModel {
 
   JoinableGamesModel(
       {required this.players,
+      required this.observers,
       required this.nbDifferences,
       required this.thumbnail,
       required this.roomId,
@@ -36,12 +38,16 @@ class JoinableGamesModel {
 
   factory JoinableGamesModel.fromJson(Map<String, dynamic> json) {
     final playersList = json['players'] as List<dynamic>;
+    final observersList = json['observers'] as List<dynamic>;
     final gameInformation = json['gameInformation'];
 
     if (json['isObservable'] == null) {
       return JoinableGamesModel(
         players:
             playersList.map((player) => PlayerModel.fromJson(player)).toList(),
+        observers: observersList
+            .map((player) => PlayerModel.fromJson(player))
+            .toList(),
         nbDifferences: json['nbDifferences'],
         thumbnail: base64Decode(json['thumbnail'].split(',').last),
         roomId: json['roomId'],
@@ -51,6 +57,9 @@ class JoinableGamesModel {
       return JoinableGamesModel(
         players:
             playersList.map((player) => PlayerModel.fromJson(player)).toList(),
+        observers: observersList
+            .map((player) => PlayerModel.fromJson(player))
+            .toList(),
         nbDifferences: json['nbDifferences'],
         thumbnail: base64Decode(json['thumbnail'].split(',').last),
         roomId: json['roomId'],
