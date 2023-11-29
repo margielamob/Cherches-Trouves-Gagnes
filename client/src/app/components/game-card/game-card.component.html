@@ -12,18 +12,22 @@
         </div>
     </mat-card-content>
     <mat-card-content *ngIf="isJoining">
+        <span> Joueurs : </span>
         <span *ngFor="let player of joinableGameCard.players">
             <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
             {{ player.name }} <br />
         </span>
-        <ng-template *ngIf="joinableGameCard.observers">
-            <span *ngFor="let observers of joinableGameCard.observers">
-                <img [src]="observers.avatar" alt="{{ observers.name }}'s avatar" width="16px" height="16px" />
-                {{ observers.name }} <br />
+        <span *ngIf="joinableGameCard.observers">
+            <span> observateur : </span>
+            <span *ngFor="let observer of joinableGameCard.observers">
+                <img [src]="observer.avatar" alt="{{ observer.name }}'s avatar" width="16px" height="16px" />
+                {{ observer.name }} <br />
             </span>
-        </ng-template>
+        </span>
+
         <div>{{ joinableGameCard.nbDifferences }}</div>
     </mat-card-content>
+
     <ng-container *ngIf="isJoining; then joiningTemplate; else notJoiningTemplate"></ng-container>
 
     <ng-template #joiningTemplate>

@@ -80,4 +80,5 @@ export enum SocketEvent {
     SendingJoinableLimitedGames = 'SendingJoinableLimitedGames',
     GetLimitedTimeGames = 'GetLimitedTimeGames',
     LobbyFull = 'LobbyFull',
+    NewObserver = 'NewObserver',
 }

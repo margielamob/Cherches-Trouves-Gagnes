@@ -86,10 +86,10 @@ export class GameStateManager {
             if (!this.gameManager.isGameOver(gameId)) {
                 this.gameManager.removePlayer(gameId, socket.id);
                 if (this.gameManager.onePlayerLeft(gameId)) {
-                    this.gameManager.leaveGame(socket.id, gameId);
                     socket.broadcast.to(gameId).emit(this.gameManager.isClassic(gameId) ? SocketEvent.Win : SocketEvent.PlayerLeft);
                     socket.leave(gameId);
                     if (this.gameManager.isClassic(gameId)) {
+                        this.gameManager.leaveGame(socket.id, gameId);
                         this.gameManager.deleteTimer(gameId);
                         this.gameManager.removeGame(gameId);
                         const games = this.gameManager.getJoinableGames();
@@ -97,13 +97,15 @@ export class GameStateManager {
                         this.sio.in(gameId).socketsLeave(gameId);
                     }
                 }
-            } else {
+            } else if (this.gameManager.isGameOver(gameId)) {
+                this.gameManager.leaveGame(socket.id, gameId);
                 this.gameManager.deleteTimer(gameId);
                 this.gameManager.removeGame(gameId);
-                const games = this.gameManager.getJoinableLimitedGames();
-                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+                const games = this.gameManager.getJoinableGames();
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
                 this.sio.in(gameId).socketsLeave(gameId);
-                this.sio.in(gameId).socketsLeave(gameId);
+            } else {
+                socket.leave(gameId);
             }
         });
     }
