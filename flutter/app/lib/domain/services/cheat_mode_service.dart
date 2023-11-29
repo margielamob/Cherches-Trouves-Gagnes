@@ -31,7 +31,7 @@ class CheatModeService {
     });
   }
 
-  Future<void> startCheating() async {
+  void startCheating() {
     try {
       print("start cheating");
 
@@ -39,7 +39,8 @@ class CheatModeService {
           FetchDifferenceRequest(gameId: gameManagerService.currentRoomId!);
 
       _socket.send(SocketEvent.fetchDifferences, data.toJson());
-      await diffService.cheat(lastDifferencesToFind);
+      diffService.showDifferences(lastDifferencesToFind);
+      isCheating = true;
     } catch (error) {
       print("error");
     }
@@ -47,6 +48,8 @@ class CheatModeService {
 
   void stopCheating() {
     if (!isCheating) return;
+
+    diffService.stopShowingDifferences();
 
     // Stop the cheating
   }

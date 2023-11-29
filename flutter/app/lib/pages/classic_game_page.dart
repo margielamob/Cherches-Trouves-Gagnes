@@ -109,7 +109,9 @@ class _ClassicState extends State<Classic> {
                                 _cheatModeService.stopCheating();
                               },
                               child: FilledButton(
-                                onPressed: () => {},
+                                onPressed: () {
+                                  _cheatModeService.stopCheating();
+                                },
                                 child: Text("Cheat"),
                               ),
                             ),

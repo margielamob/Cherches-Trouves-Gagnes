@@ -64,16 +64,18 @@ class DifferenceDetectionService extends ChangeNotifier {
     blinkingDifference = path;
   }
 
+  void showDifferences(List<Vec2> coords) {
+    initDataToBlink(coords);
+    if (blinkingDifference == null) return;
+    final Path blinkingPath = blinkingDifference!;
+    setCoordinates(blinkingPath);
+  }
+
+  void stopShowingDifferences() {
+    resetBlinkingDifference();
+  }
+
   Future<void> startBlinking(List<Vec2> coords, int timeToBlinkMs) async {
-    blink(coords, timeToBlinkMs);
-  }
-
-  Future<void> cheat(List<Vec2> coords) async {
-    int timeToBlinkMs = 250;
-    blink(coords, timeToBlinkMs);
-  }
-
-  Future<void> blink(List<Vec2> coords, int timeToBlinkMs) async {
     initDataToBlink(coords);
     if (blinkingDifference == null) return;
 
@@ -91,6 +93,11 @@ class DifferenceDetectionService extends ChangeNotifier {
     blinkingDifference = difference;
     notifyListeners();
     await Future.delayed(Duration(milliseconds: waitingTimeMs));
+  }
+
+  void setCoordinates(Path difference) {
+    blinkingDifference = difference;
+    notifyListeners();
   }
 
   Future<void> hideDifference(int waitingTimeMs) async {
