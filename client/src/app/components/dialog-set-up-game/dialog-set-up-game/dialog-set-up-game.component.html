@@ -10,7 +10,7 @@
         <input matInput type="number" [(ngModel)]="bonus" name="bonus" required />
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="cheatMode" name="cheatMode">Activate Cheat Mode</mat-checkbox>
+    <mat-checkbox *ngIf="!isLimited" [(ngModel)]="cheatMode" name="cheatMode">Activate Cheat Mode</mat-checkbox>
 </mat-dialog-content>
 
 <mat-dialog-actions>

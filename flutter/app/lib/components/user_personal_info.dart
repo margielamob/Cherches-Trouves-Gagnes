@@ -273,14 +273,16 @@ class AccountStatistics extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 10),
-          Text("Account Statistics",
+          Text(AppLocalizations.of(context)!.userPersonalStatistic,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Played Games"),
+              HeavyClientTextBox(
+                  content:
+                      AppLocalizations.of(context)!.userPersonalGamePlayed),
               UserDetailContent(content: currentUserData.gamePlayed.toString())
             ],
           ),
@@ -289,7 +291,8 @@ class AccountStatistics extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Won Games"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!.userPersonalGameWin),
               UserDetailContent(content: currentUserData.gameWins.toString())
             ],
           ),
@@ -298,7 +301,9 @@ class AccountStatistics extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Average Difference"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!
+                      .userPersonalAverageDiffFound),
               currentUserData.gamePlayed != 0
                   ? UserDetailContent(
                       content: ((currentUserData.numberDifferenceFound /
@@ -313,7 +318,9 @@ class AccountStatistics extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HeavyClientTextBox(content: "Average Time per Game (seconds)"),
+              HeavyClientTextBox(
+                  content: AppLocalizations.of(context)!
+                      .userPersonalAverageTimePlayed),
               SizedBox(width: 20),
               currentUserData.gamePlayed != 0
                   ? UserDetailContent(
@@ -398,7 +405,8 @@ class UserPersonalInfo extends StatelessWidget {
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                     ),
-                    child: Text("Historique des parties et connexions")),
+                    child: Text(AppLocalizations.of(context)!
+                        .userPersonalPageHistoiry)),
               ],
             );
           },

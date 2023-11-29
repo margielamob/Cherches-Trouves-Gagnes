@@ -40,6 +40,10 @@ export class GameCreationManager {
             await this.getJoinableGames();
         });
 
+        socket.on(SocketEvent.GetLimitedTimeGames, async () => {
+            await this.getLimitedTimeGames();
+        });
+
         socket.on(SocketEvent.LeaveWaitingRoom, (roomId: string) => {
             this.leaveWaitingRoom(roomId, socket);
         });
@@ -65,8 +69,12 @@ export class GameCreationManager {
 
     // eslint-disable-next-line max-params
     async createLimitedGame(player: User, card: { id: string; timer: number; bonus: number }, isMulti: boolean, socket: Socket) {
-        const roomId = await this.gameManager.createGame({ player: { name: player.name, id: socket.id }, isMulti }, GameMode.LimitedTime, card.id);
-        socket.broadcast.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
+        const roomId = await this.gameManager.createGame(
+            { player: { name: player.name, id: socket.id, avatar: player.avatar }, isMulti },
+            GameMode.LimitedTime,
+            card.id,
+        );
+        socket.broadcast.emit(SocketEvent.LimitedGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
         const players = this.gameManager.getLimitedTimeGamePlayers(roomId) || [];
         const data: WaitingRoomInfo = { roomId, players, cheatMode: false };
         socket.emit(SocketEvent.WaitPlayer, data);
@@ -90,31 +98,63 @@ export class GameCreationManager {
         this.gameManager.addPlayer({ name: player.name, id: socket.id, avatar: player.avatar }, roomId);
         socket.join(roomId);
         const players = this.gameManager.getPlayers(roomId) || [];
-        const cheatMode = this.gameManager.isCheatMode(roomId) == null ? false : true;
+        const cheatMode = this.gameManager.isCheatMode(roomId);
         const data: WaitingRoomInfo = { roomId, players, cheatMode };
         socket.emit(SocketEvent.WaitPlayer, data);
         socket.broadcast.emit(SocketEvent.UpdatePlayers, data);
+        if (this.gameManager.isLastPlayer(roomId)) {
+            this.gameManager.setWasLastPlayer(roomId, true);
+            if (this.gameManager.isClassic(roomId)) {
+                this.gameManager.removeJoinableGame(roomId);
+                const games = this.gameManager.getJoinableGames();
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
+            } else {
+                this.gameManager.removeJoinableLimitedGame(roomId);
+                const games = this.gameManager.getJoinableLimitedGames();
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+            }
+        }
     }
 
     async leaveWaitingRoom(roomId: string, socket: Socket) {
         if (this.gameManager.isGameCreator(roomId, socket.id)) {
             const gameCreator = this.gameManager.findPlayer(roomId, socket.id);
-            socket.broadcast.emit(SocketEvent.CreatorLeft, { player: gameCreator });
-            this.gameManager.removeJoinableGame(roomId);
-            this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            socket.broadcast.to(roomId).emit(SocketEvent.CreatorLeft, { player: gameCreator });
+            if (this.gameManager.isClassic(roomId)) {
+                this.gameManager.removeJoinableGame(roomId);
+                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games: this.gameManager.getJoinableGames() });
+            } else {
+                this.gameManager.removeJoinableLimitedGame(roomId);
+                this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games: this.gameManager.getJoinableLimitedGames() });
+            }
+            this.gameManager.discardGame(roomId);
             this.sio.in(roomId).socketsLeave(roomId);
         } else {
             this.gameManager.removePlayer(roomId, socket.id);
             socket.leave(roomId);
             const players = this.gameManager.getPlayers(roomId) || [];
+            if (this.gameManager.wasLastPlayer(roomId)) {
+                this.gameManager.setWasLastPlayer(roomId, false);
+                const game = this.gameManager.getGame(roomId);
+                if (game) {
+                    this.gameManager.addJoinableGame(roomId);
+                    if (this.gameManager.isClassic(roomId)) {
+                        this.sio.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getJoinableGame(roomId), roomId });
+                    } else {
+                        this.sio.emit(SocketEvent.ClassicGameCreated, { ...this.gameManager.getLimitedJoinableGame(roomId), roomId });
+                    }
+                }
+            }
             socket.broadcast.emit(SocketEvent.UpdatePlayers, { roomId, players });
         }
     }
 
+    async getLimitedTimeGames() {
+        const games = this.gameManager.getJoinableLimitedGames();
+        this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+    }
     async getJoinableGames() {
-        let games = this.gameManager.getJoinableGames();
-        const limitedGames = this.gameManager.getJoinableLimitedGames();
-        games = [...games, ...limitedGames];
+        const games = this.gameManager.getJoinableGames();
         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
     }
 }

@@ -110,6 +110,9 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
                 await this.resetCanvases();
             }
         });
+        if (this.gameInfoHandlerService.isObserver) {
+            this.differencesDetectionHandlerService.mouseIsDisabled = true;
+        }
     }
 
     ngOnDestroy() {
@@ -226,6 +229,10 @@ export class PlayAreaComponent implements AfterViewInit, OnDestroy, OnInit {
         ])
             .then(() => {
                 if (this.gameInfoHandlerService.isLimitedTime()) {
+                    for (const coords of this.gameInfoHandlerService.differencesToClear) {
+                        this.differencesDetectionHandlerService.differenceDetectedLimitedTime(this.getContextImgModified(), coords);
+                    }
+                } else if (this.gameInfoHandlerService.isObserver) {
                     for (const coords of this.gameInfoHandlerService.differencesToClear) {
                         this.differencesDetectionHandlerService.differenceDetectedLimitedTime(this.getContextImgModified(), coords);
                     }

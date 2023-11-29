@@ -7,13 +7,14 @@ import 'package:app/components/menu_under_canvas_right.dart';
 import 'package:app/components/pencil_box.dart';
 import 'package:app/components/submission_box_new_drawing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateGamePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Game'),
+        title: Text(AppLocalizations.of(context)!.createGamePage),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

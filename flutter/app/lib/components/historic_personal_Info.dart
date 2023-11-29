@@ -3,6 +3,7 @@ import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class HistoricPersonalInfo extends StatelessWidget {
@@ -83,7 +84,6 @@ class HistoricConnectionState extends State<HistoricConnection> {
                     width: 400,
                     height: 400,
                     child: Card(
-                      // Use a Card widget for the box appearance
                       elevation: 5,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -91,7 +91,9 @@ class HistoricConnectionState extends State<HistoricConnection> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text("Historique des connexions",
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .historicPageConnect,
                                 style: TextStyle(fontSize: 20)),
                             SizedBox(height: 10),
                             Expanded(
@@ -129,7 +131,7 @@ class HistoricConnectionState extends State<HistoricConnection> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text("Historique des déconnexions",
+                            Text(AppLocalizations.of(context)!.historicPageDeco,
                                 style: TextStyle(fontSize: 20)),
                             SizedBox(height: 10),
                             Expanded(
@@ -167,7 +169,9 @@ class HistoricConnectionState extends State<HistoricConnection> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text("Historique des parties",
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .historicPageGameHist,
                                 style: TextStyle(fontSize: 20)),
                             SizedBox(height: 10),
                             Expanded(
