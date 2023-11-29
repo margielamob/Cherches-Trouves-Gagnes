@@ -1,6 +1,7 @@
 import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class WaitingPage extends StatelessWidget {
@@ -8,13 +9,16 @@ class WaitingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
     return Scaffold(
-      appBar: CustomAppBar.buildWaitingRoomBar(context, 'Waiting Room'),
+      appBar: CustomAppBar.buildWaitingRoomBar(
+        context,
+        AppLocalizations.of(context)!.waitingPageTitle,
+      ),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Les joueurs suivants sont dans la salle d'attente :",
+            AppLocalizations.of(context)!.waitingPagePlayers,
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 20),
@@ -59,7 +63,9 @@ class WaitingPage extends StatelessWidget {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                 ),
-                child: Text("Quitter la partie"),
+                child: Text(
+                  AppLocalizations.of(context)!.waitingPageQuit,
+                ),
               ),
               SizedBox(width: 10),
               gameManagerService.doesPlayerLaunchGame()
@@ -77,7 +83,8 @@ class WaitingPage extends StatelessWidget {
                         foregroundColor:
                             MaterialStateProperty.all<Color>(Colors.white),
                       ),
-                      child: Text("Lancer la partie"),
+                      child:
+                          Text(AppLocalizations.of(context)!.waitingPageLaunch),
                     )
                   : Text(""),
             ],

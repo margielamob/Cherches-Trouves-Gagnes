@@ -6,6 +6,7 @@ import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,9 @@ class CarouselBottomClassic extends CarouselBottom {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[Text("Joindre")],
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context)!.joinButton)
+                    ],
                   ),
                 )
               : FilledButton(
@@ -51,7 +54,7 @@ class CarouselBottomClassic extends CarouselBottom {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Créer"),
+                      Text(AppLocalizations.of(context)!.createButton),
                     ],
                   ),
                 )
