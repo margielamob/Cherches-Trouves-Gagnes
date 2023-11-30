@@ -1,3 +1,4 @@
+import 'package:app/components/game_avatar.dart';
 import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class _PlayersCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FlutterLogo(size: 30.0),
+                  GameAvatar(
+                    photoURL: player.avatar,
+                  ),
                   SizedBox(width: 10),
                   Text(player.name, style: TextStyle(fontSize: 16))
                 ],

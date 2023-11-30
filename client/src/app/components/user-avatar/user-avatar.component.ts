@@ -20,6 +20,7 @@ export class UserAvatarComponent implements OnInit {
     }
 
     setUserAvatar(photoURL: string | undefined) {
+        this.userAvatar = 'assets/default-user-icon.jpg';
         if (photoURL?.startsWith('avatars/')) {
             this.userService.getImageOfSignedUser(photoURL).subscribe((url) => {
                 this.userAvatar = url ? url : 'assets/default-user-icon.jpg';
