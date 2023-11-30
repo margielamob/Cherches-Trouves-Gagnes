@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserData } from '@app/interfaces/user';
 import { UserService } from '@app/services/user-service/user.service';
 import { Observable } from 'rxjs';
@@ -9,26 +9,20 @@ import { Observable } from 'rxjs';
     styleUrls: ['./user-avatar.component.scss'],
 })
 export class UserAvatarComponent implements OnInit {
+    @Input() userAvatar: string | undefined;
     currentUserId: string | undefined;
-    userAvatar: string | undefined;
     user$: Observable<UserData | undefined>;
 
     constructor(private userService: UserService) {}
 
     ngOnInit(): void {
-        this.user$ = this.userService.getCurrentUser();
-        this.user$.subscribe((user) => {
-            this.currentUserId = user?.uid;
-            this.setUserAvatar(user);
-        });
+        console.log(this.userAvatar);
+        this.setUserAvatar(this.userAvatar);
     }
 
-    setUserAvatar(user: UserData | undefined) {
-        if (this.currentUserId === undefined) return;
-        if (user?.photoURL === '') {
-            this.userAvatar = 'assets/default-user-icon.jpg';
-        } else if (user?.photoURL?.startsWith('avatars/')) {
-            this.userService.getImageOfSignedUser(user?.photoURL).subscribe((url) => {
+    setUserAvatar(photoURL: string | undefined) {
+        if (photoURL?.startsWith('avatars/')) {
+            this.userService.getImageOfSignedUser(photoURL).subscribe((url) => {
                 if (url) {
                     this.userAvatar = url;
                 } else {
@@ -36,7 +30,7 @@ export class UserAvatarComponent implements OnInit {
                 }
             });
         } else {
-            this.userAvatar = user?.photoURL ?? 'assets/default-user-icon.jpg';
+            this.userAvatar = photoURL ?? 'assets/default-user-icon.jpg';
         }
     }
 }

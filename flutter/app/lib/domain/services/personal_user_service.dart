@@ -187,13 +187,13 @@ class PersonalUserService {
   }
 
   Future<String> initUser(UserData currentUser) async {
-    if (currentUser.photoURL == '') {
-      avatar = 'assets/default-user-icon.jpg';
+    if (currentUser.photoURL!.startsWith('avatars/')) {
+      avatar = await getPhotoURL(currentUser.uid);
     }
     if (currentUser.photoURL!.startsWith('assets/')) {
       avatar = currentUser.photoURL;
     } else {
-      avatar = await getPhotoURL(currentUser.uid);
+      avatar = 'assets/default-user-icon.jpg';
     }
     return avatar!;
   }
