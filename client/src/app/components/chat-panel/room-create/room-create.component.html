@@ -1,10 +1,17 @@
 <mat-expansion-panel>
     <mat-expansion-panel-header>
-        <mat-panel-title> Create a new chat room </mat-panel-title>
+        <mat-panel-title>{{ 'CHAT.CREATE' | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <mat-form-field appearance="outline" class="input-area">
-        <input matInput placeholder="Room Name" (keydown.enter)="createRoom()" [(ngModel)]="newRoom" [formControl]="formControl" autofocus />
+        <input
+            matInput
+            placeholder="{{ 'CHAT.NAME' | translate }}"
+            (keydown.enter)="createRoom()"
+            [(ngModel)]="newRoom"
+            [formControl]="formControl"
+            autofocus
+        />
         <button mat-icon-button matSuffix (click)="createRoom()">
             <mat-icon>send</mat-icon>
         </button>
