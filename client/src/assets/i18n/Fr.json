@@ -225,10 +225,13 @@
     "HEADER": {
         "GAME_SELECTION": "Sélectionnez votre jeu",
         "SETTINGS": "Paramètres",
+        "REPLAY": "Reprise video",
+        "EMAIL": "Envoyer resumé par courriel",
         "WAITING_ROOM": "Salle d'attente",
         "HOME": "Accueil",
         "LOGOUT": "Déconnexion",
-        "ADMIN": "Configurez les jeux"
+        "ADMIN": "Configurez les jeux",
+        "CHAT": "Messagerie"
     },
 
     "SERVER": {
@@ -282,5 +285,17 @@
         "QUESTION": "Voulez-vous créer ou joindre une partie ?",
         "CREATE": "Créer",
         "JOIN": "Joindre"
+    },
+
+    "CHAT": {
+        "TITLE": "Messagerie",
+        "SEARCH": "Rechercher",
+        "JOIN": "Joindre",
+        "LEAVE": "Quitter",
+        "DELETE": "Supprimer",
+        "CREATE": "Créer un salon de messagerie",
+        "ROOM": "Nouveau salon de messagerie",
+        "QUIT": "Quitter",
+        "NAME": "Nom du salon de messagerie"
     }
 }
