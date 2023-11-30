@@ -30,9 +30,9 @@ export class RoomAddComponent implements OnInit {
     ngOnInit(): void {
         this.chatManager.allRoomsList.subscribe((rooms) => {
             const userRoomNames: string[] = this.chatManager.userRoomList.value.map((e) => e.room);
-            console.log(userRoomNames);
+            // console.log(userRoomNames);
             this.unjoinedRooms = rooms.filter((room) => room !== 'all' && !userRoomNames.includes(room));
-            console.log(this.unjoinedRooms);
+            // console.log(this.unjoinedRooms);
         });
     }
 

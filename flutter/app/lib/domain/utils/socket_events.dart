@@ -69,4 +69,6 @@ class SocketEvent {
   static String newGameBoard = 'newGameBoard';
   static String timerBonus = 'TimerBonus';
   static String observeGame = 'ObserveGame';
+
+  static String Login = 'Login';
 }

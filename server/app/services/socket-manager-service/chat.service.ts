@@ -280,6 +280,11 @@ export class ChatSocketManager {
             });
             this.server.sio.emit(SocketEvent.RoomDeleted);
         });
+
+        socket.on(SocketEvent.UpdateMessagesUsername, (oldName: string, newName: string) => {
+            console.log('updateMessagesUsername : ' + oldName + ' ' + newName);
+            this.updateMessageUsernames(oldName, newName);
+        });
     }
 
     initializeRooms(socket: Socket): void {

@@ -21,10 +21,10 @@ export class ChatDisplayService {
         this.isSearchSelected.next(false);
     }
     toggleChat() {
-        console.log(this.isChatVisible.value);
+        // console.log(this.isChatVisible.value);
         this.isChatVisible.next(!this.isChatVisible.value);
-        console.log('toggle chat');
-        console.log(this.isChatVisible.value);
+        // console.log('toggle chat');
+        // console.log(this.isChatVisible.value);
     }
 
     hideChat() {

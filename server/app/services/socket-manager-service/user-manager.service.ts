@@ -16,6 +16,7 @@ export class UserManager {
 
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         socket.on(SocketEvent.Login, (user: User) => {
+            console.log('login' + user);
             this.login(user, socket);
         });
 

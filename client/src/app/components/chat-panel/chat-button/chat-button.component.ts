@@ -16,9 +16,7 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
         private chatDisplay: ChatDisplayService,
         private renderer: Renderer2,
         private chatManager: ChatManagerService, // private applicationRef: ApplicationRef,
-    ) {
-        console.log('chat button constructor');
-    }
+    ) {}
     ngAfterViewInit(): void {
         this.addClickOutsideListener();
     }
@@ -30,7 +28,6 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
     }
 
     toggleChat() {
-        console.log('toggle chat');
         if (this.chatManager.detached) {
             const ipcRenderer = window.require('electron').ipcRenderer;
             ipcRenderer.send('focus-chat');
@@ -52,7 +49,6 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
     private addClickOutsideListener(): void {
         this.renderer.listen('document', 'click', (event: MouseEvent) => {
             if (this.button && this.overlay && this.isChatVisible) {
-                console.log(this.overlay.nativeElement);
                 const buttonBounds = this.button.nativeElement.getBoundingClientRect();
                 const overlayBounds = this.overlay.nativeElement.getBoundingClientRect();
 
@@ -70,12 +66,7 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
                     event.clientY <= overlayBounds.bottom
                 );
 
-                if (isClickOutsideButton) {
-                    console.log('click outside button');
-                }
-
                 if (isClickOutsideButton && isClickOutsideOverlay) {
-                    console.log('click outside');
                     this.chatDisplay.hideChat();
                 }
             }

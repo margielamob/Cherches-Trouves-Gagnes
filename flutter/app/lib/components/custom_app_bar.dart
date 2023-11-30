@@ -1,4 +1,5 @@
 import 'package:app/components/logout_dialog.dart';
+import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -8,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomAppBar {
-  final ChatDisplayService chatDisplayService = Get.find();
-
-  static AppBar buildDefaultBar(BuildContext context, String pageName, int unreadMessages) {
+  static AppBar buildDefaultBar(
+      BuildContext context, String pageName, int unreadMessages) {
+    final ChatDisplayService chatDisplayService = Get.find();
     return AppBar(
       title: Text(pageName),
       actions: [
@@ -53,7 +54,8 @@ class CustomAppBar {
     );
   }
 
-  static AppBar buildWaitingRoomBar(context, String pageName, int unreadMessages) {
+  static AppBar buildWaitingRoomBar(
+      context, String pageName, int unreadMessages) {
     final GameManagerService gameManagerService = Get.find();
     final ChatDisplayService chatDisplayService = Get.find();
 
@@ -86,7 +88,8 @@ class CustomAppBar {
     );
   }
 
-  static AppBar buildGameNavigationBar(context, String pageName, int unreadMessages) {
+  static AppBar buildGameNavigationBar(
+      context, String pageName, int unreadMessages) {
     final DifferenceDetectionService differenceDetectionService = Get.find();
     final GameReplayService gameReplayService = Get.find();
     final EndGameService endGameService = Get.find();
@@ -125,10 +128,24 @@ class CustomAppBar {
     );
   }
 
-  static AppBar buildLogoutOnly(BuildContext context, String pageName, int unreadMessages) {
+  static AppBar buildLogoutOnly(
+      BuildContext context, String pageName, int unreadMessages) {
+    final ChatDisplayService chatDisplayService = Get.find();
     return AppBar(
       title: Text(pageName),
       actions: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Badge(
+            isLabelVisible: unreadMessages > 0,
+            label: Text(unreadMessages.toString()),
+            backgroundColor: Colors.red,
+            child: IconButton(
+              icon: Icon(Icons.chat_bubble),
+              onPressed: () => chatDisplayService.toggleChat(),
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
@@ -141,18 +158,6 @@ class CustomAppBar {
                 },
               );
             },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Badge(
-            isLabelVisible: unreadMessages > 0,
-            label: Text(unreadMessages.toString()),
-            backgroundColor: Colors.red,
-            child: IconButton(
-              icon: Icon(Icons.chat_bubble),
-              onPressed: () => chatDisplayService.toggleChat(),
-            ),
           ),
         ),
       ],

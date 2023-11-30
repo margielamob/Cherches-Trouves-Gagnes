@@ -50,27 +50,31 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
                       color: Colors.transparent,
                     )
                   : Icon(Icons.circle),
-              Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align text to the left
-                children: [
-                  Text(
-                    widget.room.room,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the left
+                  children: [
+                    Text(
+                      widget.room.room,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  widget.room.lastMessage != null
-                      ? Text(
-                          "${widget.room.lastMessage!.user}: ${widget.room.lastMessage!.message}",
-                          style: TextStyle(
-                            fontSize: 12,
+                    widget.room.lastMessage != null
+                        ? Text(
+                            "${widget.room.lastMessage!.user}: ${widget.room.lastMessage!.message}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                      : Text(''),
-                ],
+                          )
+                        : Text(''),
+                  ],
+                ),
               ),
               Spacer(),
               if (widget.room != 'all' && !widget.room.room.startsWith('Game'))

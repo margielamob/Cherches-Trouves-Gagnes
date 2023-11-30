@@ -1,5 +1,7 @@
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/chat_service.dart';
+import 'package:app/domain/services/socket_service.dart';
+import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +22,7 @@ class LoginPageState extends State<LoginPage> {
   bool isEmail = false;
   final ChatManagerService chatManager = Get.find();
   final AuthService authService = Get.find<AuthService>();
+  final SocketService socket = Get.find<SocketService>();
 
   @override
   void initState() {
@@ -96,6 +99,8 @@ class LoginPageState extends State<LoginPage> {
                                     .then((value) {
                                   _formKey.currentState!.reset();
                                   Get.offAll(MainPage());
+                                  socket.send(
+                                      SocketEvent.Login, {'user': credential});
                                   chatManager.initChat();
                                 });
                               } catch (error) {

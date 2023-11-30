@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
-
 import 'package:app/components/chat/chat_panel.dart';
 import 'package:app/components/classic_game_dialog.dart';
-import 'package:app/components/logout_dialog.dart';
+import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
@@ -13,6 +8,10 @@ import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/utils/game_mode.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -52,8 +51,8 @@ class _MainPageState extends State<MainPage> {
     return Stack(
       children: [
         Scaffold(
-          appBar: CustomAppBar.buildDefaultBar(
-              context, AppLocalizations.of(context)!.mainPageTitle, unreadMessages),
+          appBar: CustomAppBar.buildDefaultBar(context,
+              AppLocalizations.of(context)!.mainPageTitle, unreadMessages),
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +98,8 @@ class _MainPageState extends State<MainPage> {
                               },
                             );
                           },
-                          child: Text(AppLocalizations.of(context)!.mainPageClassic),
+                          child: Text(
+                              AppLocalizations.of(context)!.mainPageClassic),
                         ),
                         SizedBox(height: 30),
                         ElevatedButton(
@@ -117,7 +117,8 @@ class _MainPageState extends State<MainPage> {
                               },
                             );
                           },
-                          child: Text(AppLocalizations.of(context)!.mainPageLimited),
+                          child: Text(
+                              AppLocalizations.of(context)!.mainPageLimited),
                         ),
                         SizedBox(height: 30),
                         ElevatedButton(
@@ -139,7 +140,8 @@ class _MainPageState extends State<MainPage> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/ProfilePage');
                           },
-                          child: Text(AppLocalizations.of(context)!.mainPageSettings),
+                          child: Text(
+                              AppLocalizations.of(context)!.mainPageSettings),
                         ),
                         SizedBox(height: 30),
                         ElevatedButton(

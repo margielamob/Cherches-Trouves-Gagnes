@@ -4,6 +4,7 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { UserService } from '@app/services/user-service/user.service';
 import { SocketEvent } from '@common/socket-event';
 
 @Component({
@@ -22,6 +23,7 @@ export class ExitGameButtonComponent {
         public gameInfoHandlerService: GameInformationHandlerService,
         private socket: CommunicationSocketService,
         private chatManager: ChatManagerService,
+        private user: UserService,
     ) {}
 
     onExit(): void {
@@ -29,6 +31,7 @@ export class ExitGameButtonComponent {
     }
 
     onLeaveWaiting() {
+        console.log('onLeaveWaiting' + this.user.activeUser);
         this.chatManager.leaveGameChat();
         this.socket.send(SocketEvent.LeaveWaitingRoom, {
             roomId: this.gameInfoHandlerService.roomId,

@@ -39,7 +39,7 @@ export class ChatManagerService {
             this.sync();
         });
         this.messages.subscribe(() => {
-            console.log('messages changed');
+            // console.log('messages changed');
             this.sync();
         });
         this.activeRoom.subscribe(() => {
@@ -71,7 +71,7 @@ export class ChatManagerService {
     }
 
     sendMessage(message: string) {
-        console.log('sending message');
+        // console.log('sending message');
         const newMessage: ChatMessage = { message, user: this.userService.activeUser.displayName, room: this.activeRoom.value };
         this.socket.send(SocketEvent.Message, { message: newMessage });
     }
@@ -149,8 +149,10 @@ export class ChatManagerService {
         });
     }
 
-    initChat() {
-        this.socket.send(SocketEvent.InitChat, { userName: this.userService.activeUser.displayName });
+    initChat(userName: string) {
+        console.log('init chat');
+        console.log(this.userService.activeUser);
+        this.socket.send(SocketEvent.InitChat, { userName });
     }
     getCurrentRoom() {
         return this.activeRoom.value;
@@ -198,6 +200,8 @@ export class ChatManagerService {
         }
         const gameChat = this.userRoomList.value.find((room) => room.room.startsWith('Game'))?.room;
         console.log(gameChat);
+        // console.log(this.userService.activeUser.displayName);
+        console.log(this.userService);
         this.socket.send(SocketEvent.LeaveRoom, { roomName: gameChat, userName: this.userService.activeUser.displayName });
     }
 
@@ -299,5 +303,6 @@ export class ChatManagerService {
             return message;
         });
         this.messages.next(newMessages);
+        this.socket.send(SocketEvent.UpdateMessagesUsername, { oldName, newName });
     }
 }

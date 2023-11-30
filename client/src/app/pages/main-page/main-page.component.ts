@@ -53,7 +53,9 @@ export class MainPageComponent implements OnInit {
             this.routerService.navigateTo('waiting');
         });
         this.user$ = this.userService.getCurrentUser();
-        this.chatManager.initChat();
+        // console.log(this.user$);
+        // console.log(this.userService.activeUser);
+        this.chatManager.initChat(this.userService.activeUser.displayName);
     }
 
     onClickPlayClassic(): void {

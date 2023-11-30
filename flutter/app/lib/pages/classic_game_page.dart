@@ -90,6 +90,7 @@ class _ClassicState extends State<Classic> {
               onPressed: () {
                 _differenceDetectionService.resetForNextGame();
                 gameReplayService.resetForNextGame();
+                chatManagerService.leaveGameChat();
                 Get.offAll(MainPage(), transition: Transition.leftToRight);
               },
             ),

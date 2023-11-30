@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -5,7 +6,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
 import { Observable, catchError, forkJoin, from, map, of, switchMap, take, throwError } from 'rxjs';
-import { ChatManagerService } from '../chat-service/chat-manager.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,8 +16,7 @@ export class UserService {
     constructor(
         private afs: AngularFirestore,
         private storage: AngularFireStorage,
-        private afAuth: AngularFireAuth,
-        private chatManager: ChatManagerService,
+        private afAuth: AngularFireAuth, // private chatManager: ChatManagerService,
     ) {
         this.user$ = this.afAuth.authState.pipe(
             switchMap((user) => {
@@ -30,7 +29,9 @@ export class UserService {
         );
         this.user$.subscribe((user) => {
             if (user) {
+                console.log('user', user);
                 this.activeUser = user;
+                console.log('activeUser', this.activeUser);
             }
         });
     }
@@ -360,7 +361,6 @@ export class UserService {
                 if (!user || !user.uid) {
                     throw new Error('Aucun utilisateur connecté ou UID non disponible');
                 }
-                this.chatManager.updateMessagesUsername(user.displayName, newDisplayName);
                 return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
             }),
         );

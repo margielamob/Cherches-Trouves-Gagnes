@@ -84,4 +84,5 @@ export enum SocketEvent {
     GetLimitedTimeGames = 'GetLimitedTimeGames',
     LobbyFull = 'LobbyFull',
     NewObserver = 'NewObserver',
+    UpdateMessagesUsername = 'UpdateMessagesUsername',
 }
