@@ -34,7 +34,9 @@
             </button>
         </div>
         <div mat-dialog-actions align="end">
-            <button mat-raised-button routerLink="/home" color="primary" (click)="sendEmail()" mat-primary>Envoyer resumé par mail</button>
+            <button mat-raised-button routerLink="/home" color="primary" (click)="sendEmail()" mat-primary>
+                {{ 'GAME_OVER_DIALOG.EMAIL' | translate }}
+            </button>
         </div>
     </div>
 </div>
