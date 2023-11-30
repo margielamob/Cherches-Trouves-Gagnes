@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { UserData } from '@app/interfaces/user';
 import { Observable, catchError, forkJoin, from, map, of, switchMap, take, throwError } from 'rxjs';
+import { ChatManagerService } from '../chat-service/chat-manager.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +13,12 @@ import { Observable, catchError, forkJoin, from, map, of, switchMap, take, throw
 export class UserService {
     activeUser: UserData;
     user$: Observable<UserData | undefined>;
-    constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
+    constructor(
+        private afs: AngularFirestore,
+        private storage: AngularFireStorage,
+        private afAuth: AngularFireAuth,
+        private chatManager: ChatManagerService,
+    ) {
         this.user$ = this.afAuth.authState.pipe(
             switchMap((user) => {
                 if (user) {
@@ -351,6 +357,7 @@ export class UserService {
                 if (!user || !user.uid) {
                     throw new Error('Aucun utilisateur connecté ou UID non disponible');
                 }
+                this.chatManager.updateMessagesUsername(user.displayName, newDisplayName);
                 return from(this.afs.collection('users').doc(user.uid).update({ displayName: newDisplayName }));
             }),
         );

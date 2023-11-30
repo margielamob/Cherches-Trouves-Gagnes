@@ -12,46 +12,71 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
     @ViewChild('button', { static: false, read: ElementRef }) button: ElementRef<HTMLElement> | undefined;
 
     isChatVisible: boolean = this.chatDisplay.isChatVisible.value;
-    constructor(private chatDisplay: ChatDisplayService, private renderer: Renderer2, private chatManager: ChatManagerService) {}
+    constructor(
+        private chatDisplay: ChatDisplayService,
+        private renderer: Renderer2,
+        private chatManager: ChatManagerService, // private applicationRef: ApplicationRef,
+    ) {
+        console.log('chat button constructor');
+    }
     ngAfterViewInit(): void {
         this.addClickOutsideListener();
     }
     ngOnInit(): void {
         this.chatDisplay.isChatVisible.subscribe((value) => {
             this.isChatVisible = value;
+            // this.applicationRef.tick();
         });
     }
 
     toggleChat() {
+        console.log('toggle chat');
         if (this.chatManager.detached) {
             const ipcRenderer = window.require('electron').ipcRenderer;
             ipcRenderer.send('focus-chat');
             return;
         }
+        // this.chatDisplay.toggleChat();
+        // if (!this.chatDisplay.isChatVisible.value) {
+        //     console.log('1');
+        //     this.chatDisplay.isChatVisible.next(true);
+        // } else {
+        //     console.log('2');
+        //     this.chatDisplay.isChatVisible.next(false);
+        // }
         this.chatDisplay.toggleChat();
         this.chatDisplay.deselectRoom();
+        // this.applicationRef.tick();
     }
 
     private addClickOutsideListener(): void {
         this.renderer.listen('document', 'click', (event: MouseEvent) => {
-            if (this.button && this.overlay) {
+            if (this.button && this.overlay && this.isChatVisible) {
+                console.log(this.overlay.nativeElement);
                 const buttonBounds = this.button.nativeElement.getBoundingClientRect();
                 const overlayBounds = this.overlay.nativeElement.getBoundingClientRect();
 
-                const isClickInsideButton =
+                const isClickOutsideButton = !(
                     event.clientX >= buttonBounds.left &&
                     event.clientX <= buttonBounds.right &&
                     event.clientY >= buttonBounds.top &&
-                    event.clientY <= buttonBounds.bottom;
+                    event.clientY <= buttonBounds.bottom
+                );
 
-                const isClickInsideOverlay =
+                const isClickOutsideOverlay = !(
                     event.clientX >= overlayBounds.left &&
                     event.clientX <= overlayBounds.right &&
                     event.clientY >= overlayBounds.top &&
-                    event.clientY <= overlayBounds.bottom;
+                    event.clientY <= overlayBounds.bottom
+                );
 
-                if (!isClickInsideButton && !isClickInsideOverlay) {
-                    this.toggleChat();
+                if (isClickOutsideButton) {
+                    console.log('click outside button');
+                }
+
+                if (isClickOutsideButton && isClickOutsideOverlay) {
+                    console.log('click outside');
+                    this.chatDisplay.hideChat();
                 }
             }
         });

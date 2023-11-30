@@ -75,4 +75,5 @@ export enum SocketEvent {
     StartLimitedClock = 'StartLimitedClock',
     EndedTime = 'EndedTime',
     TimerBonus = 'TimerBonus',
+    ChangeUsername = 'ChangeUsername',
 }

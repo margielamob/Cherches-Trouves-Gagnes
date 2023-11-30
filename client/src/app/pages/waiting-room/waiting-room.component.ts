@@ -24,7 +24,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         private readonly routerService: RouterService,
         private readonly gameInformationHandlerService: GameInformationHandlerService,
-        private chatManager: ChatManagerService,
+        private chatManager: ChatManagerService, // private chatDisplay: ChatDisplayService,
     ) {
         this.exitButton.setWaitingRoom();
     }
@@ -73,12 +73,14 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.socketService.send(SocketEvent.Ready, { roomId: this.gameInformationHandlerService.roomId });
     }
     quit() {
-        this.chatManager.leaveGameChat();
-        this.socketService.send(SocketEvent.LeaveWaitingRoom, {
-            roomId: this.gameInformationHandlerService.roomId,
-            name: this.gameInformationHandlerService.getPlayer().name,
-        });
-        this.routerService.navigateTo('home');
+        setTimeout(() => {
+            this.chatManager.leaveGameChat();
+            this.socketService.send(SocketEvent.LeaveWaitingRoom, {
+                roomId: this.gameInformationHandlerService.roomId,
+                name: this.gameInformationHandlerService.getPlayer().name,
+            });
+            this.routerService.navigateTo('home');
+        }, 0);
     }
 
     ngOnDestroy() {

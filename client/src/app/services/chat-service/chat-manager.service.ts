@@ -196,7 +196,8 @@ export class ChatManagerService {
         if (this.activeRoom.value.startsWith('Game')) {
             this.display.deselectRoom();
         }
-        const gameChat = this.userRoomList.value.find((room) => room.room.startsWith('Game'));
+        const gameChat = this.userRoomList.value.find((room) => room.room.startsWith('Game'))?.room;
+        console.log(gameChat);
         this.socket.send(SocketEvent.LeaveRoom, { roomName: gameChat, userName: this.userService.activeUser.displayName });
     }
 
@@ -285,5 +286,18 @@ export class ChatManagerService {
         // ipcRenderer.on('leaveGameChat', () => {
         //     this.leaveGameChat();
         // });
+    }
+
+    updateMessagesUsername(oldName: string, newName: string) {
+        if (this.messages.value.length === 0) {
+            return;
+        }
+        const newMessages = this.messages.value.map((message) => {
+            if (message.user === oldName) {
+                return { ...message, user: newName };
+            }
+            return message;
+        });
+        this.messages.next(newMessages);
     }
 }

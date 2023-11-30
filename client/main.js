@@ -2,6 +2,12 @@
 // main.js
 const { app, BrowserWindow, ipcMain } = require('electron');
 
+const path = require('path');
+
+require('electron-reload')(__dirname, {
+    electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
+});
+
 let windows = [];
 
 const createWindow = () => {
@@ -147,9 +153,7 @@ ipcMain.on('close-chat', (_event, _arg) => {
 });
 
 ipcMain.on('attach', (_event, arg) => {
-    console.log('attach1');
     if (windows.length === 2) {
-        console.log('attach');
         windows[0].webContents.send('attach', arg);
         windows[1].close();
     }

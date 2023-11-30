@@ -22,6 +22,10 @@ export class UserManager {
         socket.on(SocketEvent.Disconnect, () => {
             this.logout(socket);
         });
+
+        socket.on(SocketEvent.ChangeUsername, (newUsername: string) => {
+            this.changeUsername(newUsername, socket);
+        });
     }
 
     login(user: User, socket: Socket) {
@@ -31,5 +35,13 @@ export class UserManager {
     logout(socket: Socket) {
         this.chat.leaveGameChat(this.users.get(socket.id)?.name || '');
         this.users.delete(socket.id);
+    }
+
+    changeUsername(newUsername: string, socket: Socket) {
+        const user = this.users.get(socket.id);
+        if (user) {
+            user.name = newUsername;
+            this.users.set(socket.id, user);
+        }
     }
 }

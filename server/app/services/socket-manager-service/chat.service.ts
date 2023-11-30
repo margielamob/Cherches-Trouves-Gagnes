@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -357,5 +358,22 @@ export class ChatSocketManager {
             console.log(this.userRooms.get(user));
         });
         this.server.sio.emit(SocketEvent.RoomDeleted);
+    }
+
+    updateMessageUsernames(oldName: string, newName: string) {
+        this.allRooms.forEach((room) => {
+            room.messages.forEach((message) => {
+                if (message.user === oldName) {
+                    message.user = newName;
+                }
+            });
+        });
+        this.gameRooms.forEach((game) => {
+            game.chatRoom.messages.forEach((message) => {
+                if (message.user === oldName) {
+                    message.user = newName;
+                }
+            });
+        });
     }
 }
