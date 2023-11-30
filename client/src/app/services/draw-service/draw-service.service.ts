@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-params */
 import { ElementRef, Injectable } from '@angular/core';
+import { ChangeBackgroundCommand } from '@app/classes/commands/change-background-command';
 import { ClearForegroundCommand } from '@app/classes/commands/clear-foreground-command';
 import { DrawCommand } from '@app/classes/commands/draw-command';
 import { DrawEllipseCommand } from '@app/classes/commands/draw-ellipse-command';
@@ -66,10 +67,6 @@ export class DrawService {
 
     constructor(private canvasStateService: CanvasStateService, private pencil: PencilService, private drawTools: DrawingToolsService) {
         this.$drawingImage = new Map();
-    }
-
-    changeBackgroundColor(color: string, canvas: ElementRef<HTMLCanvasElement>) {
-        this.drawTools.setBackgroundColor(color, canvas);
     }
 
     initialize() {
@@ -144,6 +141,18 @@ export class DrawService {
 
         ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
         this.drawTools.setBackgroundColor(this.pencil.color, canvas);
+
+        this.currentCommand.backGroundColor = this.pencil.color;
+        this.currentCommand.name = 'changeBackground';
+        this.addCurrentCommand(new ChangeBackgroundCommand(this.currentCommand, canvas, this), false);
+        this.removeCommandsPastIndex();
+    }
+
+    redoBackgroundChange(command: Command, canvas: ElementRef<HTMLCanvasElement>) {
+        console.log(canvas);
+        const ctx = canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
+        this.drawTools.setBackgroundColor(command.backGroundColor as string, canvas);
     }
 
     saveEllipse(saveCanvas: ElementRef<HTMLCanvasElement>) {
