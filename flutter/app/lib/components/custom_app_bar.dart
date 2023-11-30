@@ -8,83 +8,152 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomAppBar {
-  static AppBar buildDefaultBar(context, String pageName) {
+  final ChatDisplayService chatDisplayService = Get.find();
+
+  static AppBar buildDefaultBar(BuildContext context, String pageName, int unreadMessages) {
     return AppBar(
       title: Text(pageName),
       actions: [
-        IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            Get.offAll(MainPage(), transition: Transition.leftToRight);
-          },
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              Get.offAll(MainPage(), transition: Transition.leftToRight);
+            },
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            showDialog(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Badge(
+            isLabelVisible: unreadMessages > 0,
+            label: Text(unreadMessages.toString()),
+            backgroundColor: Colors.red,
+            child: IconButton(
+              icon: Icon(Icons.chat_bubble),
+              onPressed: () => chatDisplayService.toggleChat(),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return LogoutDialog();
-                });
-          },
+                },
+              );
+            },
+          ),
         ),
       ],
     );
   }
 
-  static AppBar buildWaitingRoomBar(context, String pageName) {
+  static AppBar buildWaitingRoomBar(context, String pageName, int unreadMessages) {
     final GameManagerService gameManagerService = Get.find();
+    final ChatDisplayService chatDisplayService = Get.find();
 
     return AppBar(
       title: Text(pageName),
       actions: [
-        IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            gameManagerService.leaveWaitingRoom();
-            Get.offAll(MainPage(), transition: Transition.leftToRight);
-          },
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              gameManagerService.leaveWaitingRoom();
+              Get.offAll(MainPage(), transition: Transition.leftToRight);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Badge(
+            isLabelVisible: unreadMessages > 0,
+            label: Text(unreadMessages.toString()),
+            backgroundColor: Colors.red,
+            child: IconButton(
+              icon: Icon(Icons.chat_bubble),
+              onPressed: () => chatDisplayService.toggleChat(),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  static AppBar buildGameNavigationBar(context, String pageName) {
-    DifferenceDetectionService differenceDetectionService = Get.find();
-    GameReplayService gameReplayService = Get.find();
+  static AppBar buildGameNavigationBar(context, String pageName, int unreadMessages) {
+    final DifferenceDetectionService differenceDetectionService = Get.find();
+    final GameReplayService gameReplayService = Get.find();
     final EndGameService endGameService = Get.find();
     final GameManagerService gameManagerService = Get.find();
+    final ChatDisplayService chatDisplayService = Get.find();
 
     return AppBar(
       title: Text(pageName),
       actions: [
-        IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            gameManagerService.leaveGame();
-            differenceDetectionService.resetForNextGame();
-            gameReplayService.resetForNextGame();
-            endGameService.resetForNextGame();
-            Get.offAll(MainPage(), transition: Transition.leftToRight);
-          },
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              gameManagerService.leaveGame();
+              differenceDetectionService.resetForNextGame();
+              gameReplayService.resetForNextGame();
+              endGameService.resetForNextGame();
+              Get.offAll(MainPage(), transition: Transition.leftToRight);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Badge(
+            isLabelVisible: unreadMessages > 0,
+            label: Text(unreadMessages.toString()),
+            backgroundColor: Colors.red,
+            child: IconButton(
+              icon: Icon(Icons.chat_bubble),
+              onPressed: () => chatDisplayService.toggleChat(),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  static AppBar buildLogoutOnly(context, String pageName) {
+  static AppBar buildLogoutOnly(BuildContext context, String pageName, int unreadMessages) {
     return AppBar(
       title: Text(pageName),
       actions: [
-        IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            showDialog(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return LogoutDialog();
-                });
-          },
+                },
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Badge(
+            isLabelVisible: unreadMessages > 0,
+            label: Text(unreadMessages.toString()),
+            backgroundColor: Colors.red,
+            child: IconButton(
+              icon: Icon(Icons.chat_bubble),
+              onPressed: () => chatDisplayService.toggleChat(),
+            ),
+          ),
         ),
       ],
     );
