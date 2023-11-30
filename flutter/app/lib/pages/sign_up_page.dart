@@ -160,7 +160,7 @@ class SignUpPageState extends State<SignUpPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'assets/quote.png',
+                  'assets/quote_d.png',
                   width: 600,
                 ),
               ),

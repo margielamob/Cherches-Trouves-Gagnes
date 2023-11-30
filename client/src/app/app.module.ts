@@ -75,6 +75,7 @@ import { LoadingScreenComponent } from './components/loading-screen/loading-scre
 import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
+import { RectangleOutlineComponent } from './components/rectangle-outline/rectangle-outline.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
@@ -184,6 +185,7 @@ import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.componen
         RoomCreateDetachedComponent,
         RoomSearchDetachedComponent,
         ChatOverlayDetachedComponent,
+        RectangleOutlineComponent,
     ],
     imports: [
         ImageCropperModule,

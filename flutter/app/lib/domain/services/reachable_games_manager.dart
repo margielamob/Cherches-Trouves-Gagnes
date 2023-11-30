@@ -7,13 +7,16 @@ import 'package:get/get.dart';
 class ReachableGameManager extends ChangeNotifier {
   final SocketService _socket = Get.find();
   JoinableGamesRequest? joinableGames;
+  // JoinableGamesRequest? joinableLimitedGames;
 
   ReachableGameManager() {
     handleSockets();
   }
 
-  void getReachableGames() {
-    _socket.send(SocketEvent.getJoinableGames);
+  void getReachableGames(bool isClassicGame) {
+    isClassicGame
+        ? _socket.send(SocketEvent.getJoinableGames)
+        : _socket.send(SocketEvent.getLimitedTimeGames);
   }
 
   void handleSockets() {
@@ -29,8 +32,28 @@ class ReachableGameManager extends ChangeNotifier {
       notifyListeners();
     });
 
+    _socket.on(SocketEvent.limitedGameCreated, (dynamic message) {
+      JoinableGamesModel request = JoinableGamesModel.fromJson(message);
+      if (joinableGames == null) {
+        final List<JoinableGamesModel> games = [];
+        games.add(request);
+        joinableGames = JoinableGamesRequest(games: games);
+      } else {
+        joinableGames!.games.add(request);
+      }
+      notifyListeners();
+    });
+
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
       JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      request.games = request.filterGamesByObservable(false);
+      joinableGames = request;
+      notifyListeners();
+    });
+
+    _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
+      JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+      request.games = request.filterGamesByObservable(false);
       joinableGames = request;
       notifyListeners();
     });

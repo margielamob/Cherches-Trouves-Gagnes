@@ -11,7 +11,7 @@ class _CanvasPainterLeft extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    drawingService.showDrawing(canvas, false);
+    drawingService.showDrawing(canvas, size, false, false);
   }
 
   @override

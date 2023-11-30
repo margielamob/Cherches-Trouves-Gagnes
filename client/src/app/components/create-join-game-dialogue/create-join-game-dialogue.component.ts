@@ -8,7 +8,9 @@ import { GameCarouselService } from '@app/services/carousel/game-carousel.servic
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { CommunicationService } from '@app/services/communication/communication.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
+import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
@@ -20,6 +22,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class CreateJoinGameDialogueComponent {
     isLimited: boolean = false;
+    theme: string;
     // eslint-disable-next-line max-params
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { type: string },
@@ -30,9 +33,12 @@ export class CreateJoinGameDialogueComponent {
         private readonly carouselService: GameCarouselService,
         private gameInformationHandlerService: GameInformationHandlerService,
         private communicationSocketService: CommunicationSocketService,
+        private themeService: ThemeService,
+        private joinableGameService: JoinableGameService,
         private userService: UserService,
     ) {
         this.isLimited = data.type === 'limited';
+        this.theme = this.themeService.getAppTheme();
     }
 
     onCreateClick(): void {
@@ -61,17 +67,30 @@ export class CreateJoinGameDialogueComponent {
                     this.gameInformationHandlerService.gameMode = GameMode.LimitedTime;
                     this.communicationSocketService.send(SocketEvent.CreateLimitedGame, {
                         player: {
-                            displayName: this.userService.activeUser.displayName,
+                            name: this.userService.activeUser.displayName,
                             avatar: this.userService.activeUser.photoURL,
+                            id: this.userService.activeUser.uid,
                         },
                         card: { id: undefined, timer: result.duration, bonus: result.bonus },
                         isMulti: true,
                     });
+
+                    this.gameInformationHandlerService.setPlayerName(this.userService.activeUser.displayName);
                     this.gameInformationHandlerService.handleSocketEvent();
                 }
             });
         } else {
             this.router.navigate(['/select']);
+        }
+    }
+
+    onJoinClick(): void {
+        if (this.isLimited) {
+            this.joinableGameService.isClassic = false;
+            this.router.navigate(['/join-game']);
+        } else {
+            this.joinableGameService.isClassic = true;
+            this.router.navigate(['/join-game']);
         }
     }
 }

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:app/domain/services/radius_slider_service.dart';
 import 'package:app/domain/utils/base_url.dart';
+import 'package:get/get.dart';
 
 class SendNewVignetteRequest {
+  final RadiusSliderService radiusManager = Get.find();
   List<int> leftImage;
   List<int> rightImage;
   Uri url = Uri.parse('${BaseURL.httpServer}/game/flutter/card/validation');
@@ -24,7 +27,7 @@ class SendNewVignetteRequest {
         'height': 480,
         'data': rightImage,
       },
-      'differenceRadius': 3,
+      'differenceRadius': radiusManager.radiusSlider.getValue(),
       'name': 'newTest',
     };
   }

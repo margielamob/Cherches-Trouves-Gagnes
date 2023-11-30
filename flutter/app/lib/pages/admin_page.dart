@@ -4,6 +4,7 @@ import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/services/carousel_service.dart';
 import 'package:app/pages/create_game_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,7 @@ class AdminPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Créer un jeux"),
+                      Text(AppLocalizations.of(context)!.adminPageCreation),
                       SizedBox(width: 2.0),
                       Icon(Icons.create),
                     ],
@@ -43,8 +44,8 @@ class AdminPage extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return CarouselModal(
-                                verification:
-                                    "Voulez-vous vraiment supprimer tous les jeux?",
+                                verification: AppLocalizations.of(context)!
+                                    .adminPageSuppGames,
                                 isAllGames: true,
                               );
                             },
@@ -54,7 +55,7 @@ class AdminPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Supprimer tous les jeux"),
+                      Text(AppLocalizations.of(context)!.adminPageSuppAllGame),
                       SizedBox(width: 2.0),
                       Icon(Icons.delete),
                     ],

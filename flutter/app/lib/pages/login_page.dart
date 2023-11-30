@@ -18,8 +18,14 @@ class LoginPageState extends State<LoginPage> {
   String? credential = "";
   String? password = "";
   bool isEmail = false;
-  final AuthService authService = Get.find();
   final ChatManagerService chatManager = Get.find();
+  final AuthService authService = Get.find<AuthService>();
+
+  @override
+  void initState() {
+    super.initState();
+    authService.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +133,7 @@ class LoginPageState extends State<LoginPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'assets/quote.png',
+                  'assets/quote_d.png',
                   height: 600,
                 ),
               ),

@@ -36,17 +36,18 @@ export class BmpSubtractorService {
         return new Bmp({ width: modifiedImage.getWidth(), height: modifiedImage.getHeight() }, [], pixels);
     }
 
-    private async applyEnlargement(originalImage: Bmp, radius: number): Promise<Bmp> {
+    private async applyEnlargement(modifiedImage: Bmp, radius: number): Promise<Bmp> {
         if (radius < 0) throw new Error('radius should be greater or equal to zero');
-        if (radius === 0) return originalImage;
+        if (radius === 0) return modifiedImage;
 
-        const blackPixels: BmpCoordinate[] = await this.getContour(originalImage);
+        const blackPixels: BmpCoordinate[] = await this.getContour(modifiedImage);
         const resultCoordinates: BmpCoordinate[] = await this.getCoordinatesAfterEnlargement(blackPixels, radius);
-        const pixelResult: Pixel[][] = originalImage.getPixels();
+
+        const pixelResult: Pixel[][] = modifiedImage.getPixels();
         resultCoordinates.forEach((coord) => {
-            if (this.isBmpCoordinateValid(coord, originalImage)) pixelResult[coord.toCoordinate().x][coord.toCoordinate().y].setBlack();
+            if (this.isBmpCoordinateValid(coord, modifiedImage)) pixelResult[coord.toCoordinate().x][coord.toCoordinate().y].setBlack();
         });
-        return new Bmp({ width: originalImage.getWidth(), height: originalImage.getHeight() }, Pixel.convertPixelsToARGB(pixelResult));
+        return new Bmp({ width: modifiedImage.getWidth(), height: modifiedImage.getHeight() }, Pixel.convertPixelsToARGB(pixelResult));
     }
 
     private isBmpCoordinateValid(coordinate: BmpCoordinate, image: Bmp) {

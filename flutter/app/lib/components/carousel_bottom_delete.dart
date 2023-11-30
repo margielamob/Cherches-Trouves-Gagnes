@@ -2,6 +2,7 @@ import 'package:app/components/carousel_bottom.dart';
 import 'package:app/components/carousel_modal.dart';
 import 'package:app/domain/models/game_card_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CarouselBottomDelete extends CarouselBottom {
   CarouselBottomDelete(GameCardModel data) : super(data: data);
@@ -18,7 +19,7 @@ class CarouselBottomDelete extends CarouselBottom {
                 context: context,
                 builder: (BuildContext context) {
                   return CarouselModal(
-                      verification: "Voulez-vous vraiment supprimer ce jeux?",
+                      verification: AppLocalizations.of(context)!.deleteConfirm,
                       gameId: data.id);
                 },
               );
@@ -26,7 +27,7 @@ class CarouselBottomDelete extends CarouselBottom {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Supprimer "),
+                Text(AppLocalizations.of(context)!.deleteBoutton),
                 Icon(Icons.delete),
               ],
             ),

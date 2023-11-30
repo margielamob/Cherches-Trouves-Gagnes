@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSliderChange } from '@angular/material/slider';
 import { DialogUploadFormComponent } from '@app/components/dialog-upload-form/dialog-upload-form.component';
@@ -13,12 +14,18 @@ import { ToolBoxService } from '@app/services/tool-box/tool-box.service';
     templateUrl: './common-tool-box.component.html',
     styleUrls: ['./common-tool-box.component.scss'],
 })
-export class CommonToolBoxComponent implements OnInit {
+export class CommonToolBoxComponent implements OnInit, AfterViewInit {
+    @ViewChild('colorSelector') colorSelector: ElementRef<HTMLInputElement>;
+
     @Input() canvasType: CanvasType;
     tool: typeof Tool = Tool;
     colorButton: { pencil: string; eraser: string };
     isRectangleSelected: boolean = false;
     isEllipseSelected: boolean = false;
+    isPencilSelected: boolean = true;
+    isEraserSelected: boolean = false;
+    isPipette: boolean = false;
+    isPaintBucket: boolean = false;
 
     /* Michel prefers to have more services uncoupled than tighly bounded components and services*/
     // eslint-disable-next-line max-params
@@ -30,10 +37,38 @@ export class CommonToolBoxComponent implements OnInit {
     ngOnInit(): void {
         this.toolService.addCanvasType(this.canvasType);
     }
+    ngAfterViewInit(): void {
+        this.drawService.inputColorChanged$.subscribe((color) => {
+            this.colorSelector.nativeElement.value = this.rgbaToHex(color);
+        });
+    }
+
+    rgbaToHex(rgba: string): string {
+        const matches = rgba.match(/(\d+)/g);
+
+        if (!matches || matches.length < 3) {
+            return '#000000';
+        }
+
+        const hexArray = matches.slice(0, 3).map((num) => {
+            const hex = parseInt(num, 10).toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        });
+
+        return '#' + hexArray.join('');
+    }
 
     changePencilState(tool: Tool): void {
         this.changeButtonColor(tool);
         this.pencil.state = tool;
+        this.isPencilSelected = tool === Tool.Pencil;
+        this.isEraserSelected = tool === Tool.Eraser;
+        this.isRectangleSelected = tool === Tool.Rectangle;
+        this.isEllipseSelected = tool === Tool.Ellipse;
+        this.isPipette = tool === Tool.Pipette;
+        this.isPaintBucket = tool === Tool.Bucket;
+        this.drawService.isBucket = this.isPaintBucket;
+        this.drawService.isPipette = this.isPipette;
     }
 
     formatLabel(value: number | null) {
@@ -64,26 +99,5 @@ export class CommonToolBoxComponent implements OnInit {
 
     openUploadDialog(): void {
         this.dialog.open(DialogUploadFormComponent, { data: { canvas: this.canvasType } });
-    }
-
-    onClickRectangle() {
-        if (this.isEllipseSelected) return;
-        this.isRectangleSelected = !this.isRectangleSelected;
-        if (this.isRectangleSelected) {
-            this.drawService.selectedShape = 'Rectangle';
-        } else {
-            this.drawService.selectedShape = null;
-        }
-    }
-
-    onClickEllipse() {
-        if (this.isRectangleSelected) return;
-        this.isEllipseSelected = !this.isEllipseSelected;
-
-        if (this.isEllipseSelected) {
-            this.drawService.selectedShape = 'Ellipse';
-        } else {
-            this.drawService.selectedShape = null;
-        }
     }
 }

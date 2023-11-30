@@ -4,8 +4,8 @@
             <mat-icon>home</mat-icon>
         </button>
         <span class="toolbar-spacer"></span>
-        <button mat-button routerLink="./list" routerLinkActive="active-link">Liste d'amis</button>
-        <button mat-button routerLink="./requests" routerLinkActive="active-link">Demandes d'amis</button>
+        <button mat-button routerLink="./list" routerLinkActive="active-link">{{ 'FRIENDS.FRIENDS_LIST' | translate }}</button>
+        <button mat-button routerLink="./requests" routerLinkActive="active-link">{{ 'FRIENDS.FRIENDS_REQUEST' | translate }}</button>
     </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>

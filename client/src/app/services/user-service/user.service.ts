@@ -335,6 +335,9 @@ export class UserService {
     }
 
     updateTotalTimePlayed(timePlayed: number) {
+        if (timePlayed === undefined) {
+            return;
+        }
         this.getTotalTimePlayed()
             .pipe(take(1))
             .subscribe((totalTimePlayed) => {
@@ -364,7 +367,7 @@ export class UserService {
     }
 
     addToActiveUser(userId: string): Observable<void> {
-        return from(this.afs.collection('activeUser').doc(userId).set({ userId })).pipe(
+        return from(this.afs.collection('activeUsers').doc(userId).set({ userId })).pipe(
             catchError(() => {
                 return throwError(() => new Error("Erreur lors de l'ajout de l'utilisateur aux utilisateurs actifs"));
             }),
@@ -376,7 +379,7 @@ export class UserService {
             take(1),
             switchMap((user) => {
                 if (user && user.uid) {
-                    return from(this.afs.collection('activeUser').doc(user.uid).delete());
+                    return from(this.afs.collection('activeUsers').doc(user.uid).delete());
                 } else {
                     return throwError(() => new Error('No user logged in or UID not available'));
                 }

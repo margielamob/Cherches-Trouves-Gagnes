@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
+
 @Component({
     selector: 'app-join-game-selection',
     templateUrl: './join-game-selection.component.html',
@@ -7,11 +8,14 @@ import { JoinableGameService } from '@app/services/joinable-game/joinable-game.s
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinGameSelectionComponent implements OnInit {
-    joinableGames$ = this.joinableGameService.joinableGames$;
+    joinableClassicGames$ = this.joinableGameService.joinableClassicGames$;
+    joinableLimitedGames$ = this.joinableGameService.joinableLimitedGames$;
 
-    constructor(private joinableGameService: JoinableGameService) {}
+    isClassic: boolean;
+    constructor(public joinableGameService: JoinableGameService) {}
 
     ngOnInit(): void {
+        this.isClassic = this.joinableGameService.isClassic;
         this.joinableGameService.fetchJoinableGames();
     }
 }

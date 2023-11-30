@@ -6,16 +6,23 @@ import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
+import 'package:app/domain/services/difference_generator_service.dart';
 import 'package:app/domain/services/drawing_service_left.dart';
 import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
+import 'package:app/domain/services/generate_difference_slider_service.dart';
 import 'package:app/domain/services/global_variables.dart';
 import 'package:app/domain/services/http_service.dart';
 import 'package:app/domain/services/image_decoder_service.dart';
+import 'package:app/domain/services/image_selection_service.dart';
+import 'package:app/domain/services/observable_game_manager.dart';
+import 'package:app/domain/services/pencil_box_manager.dart';
+import 'package:app/domain/services/pencil_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
+import 'package:app/domain/services/radius_slider_service.dart';
 import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
@@ -27,8 +34,10 @@ import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/chat_page.dart';
 import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/game_selection_page.dart';
+import 'package:app/pages/historic_page.dart';
 import 'package:app/pages/login_page.dart';
 import 'package:app/pages/main_page.dart';
+import 'package:app/pages/observableGamePage.dart';
 import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/reset_password_page.dart';
@@ -44,14 +53,19 @@ import 'package:provider/provider.dart';
 
 void registerDependencies() {
   Get.put(GlobalVariables());
+  Get.put(ImageSelectionService());
   Get.put(SoundService());
   Get.put(SocketService());
   Get.put(TimeFormatterService());
   Get.put(ClockService());
   Get.put(PersonalUserService());
   Get.put(AuthService());
+  Get.put(RadiusSliderService());
+  Get.put(GenerateDifferenceSliderService());
+  Get.put(PencilService());
   Get.put(DrawingServiceLeft());
   Get.put(DrawingServiceRight());
+  Get.put(DifferenceGeneratorService());
   Get.put(HttpService());
   Get.put(ClassicGameService());
   Get.put(CarouselService());
@@ -63,10 +77,12 @@ void registerDependencies() {
   Get.put(GameReplayService());
   Get.put(EndGameService());
   Get.put(ReachableGameManager());
+  Get.put(ObservableGameManager());
   Get.put(ProfilePageManager());
   Get.put(ChatManagerService());
   Get.put(ChatDisplayService());
   Get.put(VignetteSubmissionService());
+  Get.put(PencilBoxManager());
 }
 
 late List<CameraDescription> cameras;
@@ -124,6 +140,12 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) {
+            ObservableGameManager observableGameManager = Get.find();
+            return observableGameManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
             ProfilePageManager profilePageManager = Get.find();
             return profilePageManager;
           },
@@ -150,6 +172,25 @@ void main() async {
           create: (context) {
             VignetteSubmissionService vignetteSubmissionService = Get.find();
             return vignetteSubmissionService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            PencilBoxManager pencilBoxManager = Get.find();
+            return pencilBoxManager;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            RadiusSliderService radiusSliderService = Get.find();
+            return radiusSliderService;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            GenerateDifferenceSliderService generateDifferenceSliderService =
+                Get.find();
+            return generateDifferenceSliderService;
           },
         ),
       ],
@@ -199,15 +240,17 @@ class MyApp extends StatelessWidget {
         '/create': (context) => CreateGamePage(),
         '/MainPage': (context) => MainPage(),
         '/loginPage': (context) => LoginPage(),
-        '/sign  Page': (context) => SignUpPage(),
+        '/signUpPage': (context) => SignUpPage(),
         '/adminPage': (context) => AdminPage(),
         '/ProfilePage': (context) => ProfilePage(),
         '/WaitingPage': (context) => WaitingPage(),
         '/ReachableGamePage': (context) => ReachableGamePage(),
+        '/ObservableGamePage': (context) => ObservableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
         '/chatPage': (context) => ChatPage(),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
+        '/HistoricPage': (context) => HistoricPage(),
       },
     );
   }

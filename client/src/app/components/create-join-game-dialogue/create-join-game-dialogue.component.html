@@ -1,5 +1,11 @@
-<h1 mat-dialog-title>Voulez-vous créer ou joindre une partie?</h1>
-<div mat-dialog-actions align="end">
-    <button mat-flat-button color="primary" (click)="onCreateClick()" [mat-dialog-close]="{ action: 'create' }">Créer</button>
-    <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" routerLink="/join-game">Joindre</button>
+<div [ngClass]="{ 'indigo-pink-theme': theme === 'Default', 'deeppurple-amber-theme': theme === 'Alternative' }">
+    <h1 mat-dialog-title>{{ 'CREAT_JOIN.QUESTION' | translate }}</h1>
+    <div mat-dialog-actions align="end">
+        <button mat-flat-button color="primary" (click)="onCreateClick()" [mat-dialog-close]="{ action: 'create' }">
+            {{ 'CREAT_JOIN.CREATE' | translate }}
+        </button>
+        <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" (click)="onJoinClick()">
+            {{ 'CREAT_JOIN.JOIN' | translate }}
+        </button>
+    </div>
 </div>

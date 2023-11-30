@@ -1,54 +1,21 @@
-import 'package:app/domain/services/drawing_service_left.dart';
+import 'package:app/components/clear_stroke_button.dart';
+import 'package:app/components/copy_strokes_button.dart';
+import 'package:app/components/remove_background_button.dart';
+import 'package:app/components/select_background_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MenuUnderCanvasLeft extends StatelessWidget {
-  final DrawingServiceLeft drawingServiceLeft = Get.find();
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        FilledButton(
-          onPressed: () {
-            drawingServiceLeft.clearStrokes();
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.layers_clear),
-            ],
-          ),
-        ),
+        ClearStrokeButton(shouldRemoveRight: false, shouldRemoveLeft: true),
         SizedBox(width: 50),
-        FilledButton(
-          onPressed: () {
-            drawingServiceLeft.setBackgroundImage();
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.image),
-            ],
-          ),
-        ),
+        CopyStrokesButton(shouldCopyLeft: false, shouldCopyRight: true),
         SizedBox(width: 50),
-        FilledButton(
-          onPressed: () {
-            drawingServiceLeft.removeBackgroundImage();
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset(
-                'assets/image_not_working.png',
-                width: 22.0,
-                height: 22.0,
-              ),
-              SizedBox(width: 8.0),
-            ],
-          ),
-        ),
+        SelectBackGroundButton(shouldDrawRight: false, shouldDrawLeft: true),
+        SizedBox(width: 50),
+        RemoveBackgroundButton(shouldRemoveRight: false, shouldRemoveLeft: true)
       ],
     );
   }

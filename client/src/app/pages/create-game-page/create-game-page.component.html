@@ -26,8 +26,6 @@
                     <select matNativeControl id="expansionRadius" formControlName="expansionRadius">
                         <option value="0">{{ 'CREATE_GAME_PAGE.RADIUS.VALUE0' | translate }}</option>
                         <option value="3" selected>{{ 'CREATE_GAME_PAGE.RADIUS.VALUE3' | translate }}</option>
-                        <option value="9">{{ 'CREATE_GAME_PAGE.RADIUS.VALUE9' | translate }}</option>
-                        <option value="15">{{ 'CREATE_GAME_PAGE.RADIUS.VALUE15' | translate }}</option>
                     </select>
                 </mat-form-field>
                 <button mat-flat-button color="primary" (click)="this.isGameValid()" #onSubmit type="button">

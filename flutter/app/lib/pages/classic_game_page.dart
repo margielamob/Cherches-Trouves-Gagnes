@@ -175,6 +175,37 @@ class _ClassicState extends State<Classic> {
                       ],
                     );
                   }
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Clock(),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      AbsorbPointer(
+                        absorbing: gameManagerService.isObservable,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GameVignetteModified(images, widget.gameId),
+                            SizedBox(width: 50),
+                            GameVignetteOriginal(images, widget.gameId),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      (gameManagerService.gameMode!.value == "Classique" &&
+                              !gameManagerService.isObservable)
+                          ? VideoPlayer()
+                          : SizedBox(height: 0),
+                      SizedBox(height: 5),
+                      CurrentPlayers(),
+                      SizedBox(height: 30),
+                    ],
+                  );
                 }
                 return CircularProgressIndicator();
               },

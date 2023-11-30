@@ -6,10 +6,12 @@ import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:app/domain/utils/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -44,6 +46,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final profilePageManager = Provider.of<ProfilePageManager>(context);
+    final imagePath = profilePageManager.getImagePath();
     gameManagerService.setCurrentUser();
     return Stack(children: [
       Scaffold(
@@ -188,32 +192,24 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Text(
-                              'Thierry, Ahmed El, Sulayman, Ahmed Ben, Skander, Samy',
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w400),
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/quote.png',
-                        height: 600,
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ],
-          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      imagePath,
+                      height: 600,
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
         ),
       ),
       showChat

@@ -6,13 +6,14 @@ import 'package:app/domain/models/requests/bonus_request.dart';
 import 'package:app/domain/models/requests/create_classic_game_request.dart';
 import 'package:app/domain/models/requests/create_limited_game_request.dart';
 import 'package:app/domain/models/requests/difference_found_message.dart';
-import 'package:app/domain/models/requests/game_mode_request.dart';
 import 'package:app/domain/models/requests/join_classic_game_request.dart';
 import 'package:app/domain/models/requests/join_game_request.dart';
 import 'package:app/domain/models/requests/join_game_send_request.dart';
 import 'package:app/domain/models/requests/leave_arena_request.dart';
 import 'package:app/domain/models/requests/leave_waiting_room_request.dart';
 import 'package:app/domain/models/requests/new_game_request.dart';
+import 'package:app/domain/models/requests/observe_game_request.dart';
+import 'package:app/domain/models/requests/observe_game_reuqest.dart';
 import 'package:app/domain/models/requests/play_limited_request.dart';
 import 'package:app/domain/models/requests/ready_game_request.dart';
 import 'package:app/domain/models/requests/start_clock_request.dart';
@@ -59,6 +60,7 @@ class GameManagerService extends ChangeNotifier {
   GameModeModel? gameMode;
   List<Vec2> limitedCoords = [];
   VoidCallback? onGameCardsChanged;
+  bool isObservable = false;
 
   GameManagerService() {
     handleSockets();
@@ -72,7 +74,16 @@ class GameManagerService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.play, (dynamic message) {
       if (gameMode!.value == "Classique") {
-        currentRoomId = message;
+        if (isObservable) {
+          ObserveGameReceiveRequest request =
+              ObserveGameReceiveRequest.fromJson(message);
+          print(request);
+          currentRoomId = request.gameId;
+          gameCards = request.gameCard;
+          limitedCoords = request.data.coords;
+        } else {
+          currentRoomId = message;
+        }
         Get.offAll(Classic(gameId: currentRoomId!));
       } else if (gameMode!.value == "Temps Limité") {
         PlayLimitedRequest data = PlayLimitedRequest.fromJson(message);
@@ -92,9 +103,7 @@ class GameManagerService extends ChangeNotifier {
       players = waitingRoomInfoRequest!.players;
       notifyListeners();
     });
-    _socket.on(SocketEvent.gameStarted, (dynamic message) {
-      print("SocketEvent.gameStarted : $message");
-    });
+    _socket.on(SocketEvent.gameStarted, (dynamic message) {});
     _socket.on(SocketEvent.error, (dynamic message) {
       print("SocketEvent.error : $message");
     });
@@ -108,10 +117,10 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.leaveWaiting, (dynamic message) {});
     _socket.on(SocketEvent.creatorLeft, (dynamic message) {});
     _socket.on(SocketEvent.win, (dynamic message) {
-      resetAllPlayersNbDifference();
+      resetAllPlayerData();
     });
     _socket.on(SocketEvent.lose, (dynamic message) {
-      resetAllPlayersNbDifference();
+      resetAllPlayerData();
     });
     _socket.on(SocketEvent.startClock, (dynamic message) {
       TimerRequest request = TimerRequest.fromJson(message);
@@ -131,6 +140,7 @@ class GameManagerService extends ChangeNotifier {
       BonusRequest request = BonusRequest.fromJson(message);
       limitedTimerBonus += request.bonus;
     });
+    _socket.on(SocketEvent.observeGame, (dynamic message) {});
   }
 
   void gameCardsUpdated(GameCardModel? value) {
@@ -146,9 +156,9 @@ class GameManagerService extends ChangeNotifier {
 
   void sendGameRequest() {
     try {
-      GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
-      _socket.send(SocketEvent.getGamesWaiting, data.toJson());
-      print(gameMode);
+      // GameModeRequest data = GameModeRequest(gameModeModel: gameMode!);
+      // _socket.send(SocketEvent.getGamesWaiting, data.toJson());
+      // print(gameMode);
     } catch (error) {
       print('Error while sending the request: $error');
     }
@@ -201,6 +211,13 @@ class GameManagerService extends ChangeNotifier {
     print("leavingArena");
   }
 
+  void leaveGame() {
+    LeaveArenaRequest data = LeaveArenaRequest(gameId: currentRoomId!);
+    _socket.send(SocketEvent.leaveGame, data.toJson());
+    resetAllPlayerData();
+    Get.offAll(MainPage(), transition: Transition.leftToRight);
+  }
+
   void leaveWaitingRoom() {
     LeaveWaitingRoomRequest data = LeaveWaitingRoomRequest(
         roomId: waitingRoomInfoRequest!.roomId, name: currentUser!.name);
@@ -227,6 +244,15 @@ class GameManagerService extends ChangeNotifier {
     });
   }
 
+  // void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
+  //   for (var player in players) {
+  //     if (player.name == differenceFound.playerName) {
+  //       player.nbDifferenceFound = player.nbDifferenceFound! + 1;
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
+
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
       if (player.name == differenceFound.playerName) {
@@ -245,9 +271,16 @@ class GameManagerService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetAllPlayerData() {
+    isObservable = false;
+    limitedCoords = [];
+    resetAllPlayersNbDifference();
+  }
+
   void resetAllPlayersNbDifference() {
     for (var player in players) {
       player.nbDifferenceFound = [];
+      // player.nbDifferenceFound = 0;
     }
     notifyListeners();
   }
@@ -256,6 +289,7 @@ class GameManagerService extends ChangeNotifier {
     for (var player in players) {
       if (player.name == playerName) {
         player.nbDifferenceFound = [];
+        // player.nbDifferenceFound = 0;
       }
     }
   }
@@ -293,5 +327,12 @@ class GameManagerService extends ChangeNotifier {
       _userService.updateUserTotalTimePlayed(
           currentUser!.id, startingTimerReceived - _clockService.time!);
     }
+  }
+
+  void observeGame(String roomId) {
+    isObservable = true;
+    ObserveGameRequest data =
+        ObserveGameRequest(player: currentUser!, roomId: roomId);
+    _socket.send(SocketEvent.observeGame, data.toJson());
   }
 }

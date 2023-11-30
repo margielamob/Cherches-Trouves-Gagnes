@@ -139,7 +139,8 @@
         "CANCEL": "Annuler"
     },
     "GAME_CARD": {
-        "BEST_SCORE": "Meilleur score"
+        "BEST_SCORE": "Meilleur score",
+        "DIFFERENCE": "nombre de différences : {{ difference }}"
     },
 
     "GAME_CARD_BTN": {
@@ -226,7 +227,8 @@
         "SETTINGS": "Paramètres",
         "WAITING_ROOM": "Salle d'attente",
         "HOME": "Accueil",
-        "LOGOUT": "Déconnexion"
+        "LOGOUT": "Déconnexion",
+        "ADMIN": "Configurez les jeux"
     },
 
     "SERVER": {
@@ -256,6 +258,29 @@
         "CHANGE": "Changer",
         "ERROR_EMPTY": "Le nom d'utilisateur est requis.",
         "ERROR_INVALID": "Le nom d'utilisateur peut contenir des lettres, des chiffres et des tirets bas, et doit contenir au moins une lettre",
-        "ERROR_TAKEN": "Ce nom d'utilisateur est déjà pris."
+        "ERROR_TAKEN": "Ce nom d'utilisateur est déjà pris.",
+        "SAVE": "Enregistrer"
+    },
+
+    "FRIENDS": {
+        "SEARCH": "Rechercher un utilisateur...",
+        "ADD": "Ajouter un ami",
+        "REMOVE": "Supprimer un ami",
+        "ACCEPTE_REQUEST": "Accepter la demande",
+        "REFUSE_REQUEST": "Refuser la demande",
+        "DELETE_REQUEST": "Supprimer la demande",
+        "FRIENDS_LIST": "Liste d'amis",
+        "FRIENDS_REQUEST": "Demandes d'amis",
+        "FRIEND": "Ami(e)",
+        "EMPTY": "Vous n'avez pas d'amis.",
+        "MESSAGE": "Vous pouvez ajouter des amis en recherchant leur nom d'utilisateur.",
+        "EMPTY_REQUEST": "Vous n'avez pas de demandes d'amis.",
+        "BTN": "Amis"
+    },
+
+    "CREAT_JOIN": {
+        "QUESTION": "Voulez-vous créer ou joindre une partie ?",
+        "CREATE": "Créer",
+        "JOIN": "Joindre"
     }
 }

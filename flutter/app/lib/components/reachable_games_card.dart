@@ -2,6 +2,7 @@ import 'package:app/components/image_border.dart';
 import 'package:app/domain/models/requests/joinable_games_request.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class Players extends StatelessWidget {
@@ -79,7 +80,7 @@ class ReachableGamesCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Nombre de différences : ${game.nbDifferences}",
+                    "${AppLocalizations.of(context)!.diffNumber} : ${game.nbDifferences}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -89,17 +90,21 @@ class ReachableGamesCard extends StatelessWidget {
                     players: game.players,
                   ),
                   SizedBox(height: 10),
-                  FilledButton(
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    FilledButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(100.0, 40.0)),
+                      ),
+                      onPressed: () {
+                        gameManagerService.gameCards =
+                            game.gameInformation.toGameCardModel();
+                        gameManagerService.joinGame(game.roomId);
+                      },
+                      child: Text(AppLocalizations.of(context)!.joinButton),
                     ),
-                    onPressed: () {
-                      gameManagerService.gameCards =
-                          game.gameInformation.toGameCardModel();
-                      gameManagerService.joinGame(game.roomId);
-                    },
-                    child: Text("Joindre"),
-                  ),
+                    SizedBox(width: 20),
+                  ]),
                 ],
               ),
             ),
