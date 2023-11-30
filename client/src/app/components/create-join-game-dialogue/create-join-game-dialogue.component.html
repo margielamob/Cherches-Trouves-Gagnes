@@ -4,7 +4,7 @@
         <button mat-flat-button color="primary" (click)="onCreateClick()" [mat-dialog-close]="{ action: 'create' }">
             {{ 'CREAT_JOIN.CREATE' | translate }}
         </button>
-        <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" routerLink="/join-game">
+        <button mat-flat-button color="primary" [mat-dialog-close]="{ action: 'join' }" (click)="onJoinClick()">
             {{ 'CREAT_JOIN.JOIN' | translate }}
         </button>
     </div>
