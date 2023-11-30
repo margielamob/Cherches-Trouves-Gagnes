@@ -20,7 +20,7 @@ export interface ChatReplay {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-export const REPLAY_SPEEDS = [0.5, 1, 2, 3];
+export const REPLAY_SPEEDS = [1, 2, 4];
 
 export interface ReplayEvent {
     action: ReplayActions;
