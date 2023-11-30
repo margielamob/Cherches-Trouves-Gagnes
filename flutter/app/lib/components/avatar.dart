@@ -16,10 +16,15 @@ class Avatar extends StatelessWidget {
                 radius: 25.0,
                 child: Icon(Icons.photo_camera),
               )
-            : CircleAvatar(
-                radius: 25.0,
-                backgroundImage: NetworkImage(photoURL!),
-              ),
+            : photoURL!.startsWith('assets')
+                ? CircleAvatar(
+                    radius: 25.0,
+                    backgroundImage: AssetImage(photoURL!),
+                  )
+                : CircleAvatar(
+                    radius: 25.0,
+                    backgroundImage: NetworkImage(photoURL!),
+                  ),
       ),
     );
   }
