@@ -16,18 +16,15 @@ export class UserAvatarComponent implements OnInit {
     constructor(private userService: UserService) {}
 
     ngOnInit(): void {
-        console.log(this.userAvatar);
         this.setUserAvatar(this.userAvatar);
     }
 
     setUserAvatar(photoURL: string | undefined) {
+        this.userAvatar = 'assets/default-user-icon.jpg';
+
         if (photoURL?.startsWith('avatars/')) {
             this.userService.getImageOfSignedUser(photoURL).subscribe((url) => {
-                if (url) {
-                    this.userAvatar = url;
-                } else {
-                    this.userAvatar = 'assets/default-user-icon.jpg';
-                }
+                this.userAvatar = url ? url : 'assets/default-user-icon.jpg';
             });
         } else {
             this.userAvatar = photoURL ?? 'assets/default-user-icon.jpg';
