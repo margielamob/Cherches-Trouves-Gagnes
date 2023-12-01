@@ -15,7 +15,6 @@ class CarouselService extends ChangeNotifier {
 
   CarouselService() : _httpService = Get.find() {
     handleSockets();
-    getCurrentPageCards();
   }
 
   void handleSockets() {
@@ -26,15 +25,9 @@ class CarouselService extends ChangeNotifier {
   }
 
   Future<List<GameCardModel>> getCurrentPageCards() async {
-    try {
-      final carouselRequest =
-          await _httpService.fetchCarouselByPage(currentPage);
-      carouselState = carouselRequest;
-      return carouselRequest.gameCardData;
-    } catch (error) {
-      print(error);
-      throw Exception('Error fetching cards');
-    }
+    final carouselRequest = await _httpService.fetchCarouselByPage(currentPage);
+    carouselState = carouselRequest;
+    return carouselRequest.gameCardData;
   }
 
   void getNextPageCards() {
