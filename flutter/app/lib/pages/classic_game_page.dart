@@ -50,7 +50,6 @@ class _ClassicState extends State<Classic> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     chatDisplaySubscription?.cancel();
     unreadMessagesSubscription?.cancel();
