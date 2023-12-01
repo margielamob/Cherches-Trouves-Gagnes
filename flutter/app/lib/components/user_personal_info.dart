@@ -56,22 +56,21 @@ class HeavyClientTextBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        width: 130.0,
-        height: 35.0,
-        decoration: BoxDecoration(
-          color: Colors.deepPurple,
-          borderRadius: BorderRadius.all(
-            Radius.circular(3.0), // Set the border radius
+      child: FilledButton(
+        onPressed: () {},
+        style: TextButton.styleFrom(
+          minimumSize: Size(130.0, 35.0),
+          maximumSize: Size(130.0, 35.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(3.0),
+            ),
           ),
         ),
-        child: Center(
-          child: Text(
-            content,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-            ),
+        child: Text(
+          content,
+          style: TextStyle(
+            fontSize: 14.0,
           ),
         ),
       ),
