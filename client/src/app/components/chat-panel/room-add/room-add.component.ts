@@ -12,9 +12,7 @@ const time = 200;
     styleUrls: ['./room-add.component.scss'],
 })
 export class RoomAddComponent implements OnInit {
-    unjoinedRooms: string[] = this.chatManager.allRoomsList.value.filter(
-        (room: string) => room !== 'all' || !this.chatManager.userRoomList.value.includes(room),
-    );
+    unjoinedRooms: string[] = [];
     selectedRooms: string[] = [];
     search = new FormControl();
     $search = this.search.valueChanges.pipe(
@@ -31,10 +29,20 @@ export class RoomAddComponent implements OnInit {
 
     ngOnInit(): void {
         this.chatManager.allRoomsList.subscribe((rooms) => {
-            this.unjoinedRooms = rooms.filter((room) => !this.chatManager.userRoomList.value.includes(room));
+            const userRoomNames: string[] = this.chatManager.userRoomList.value.map((e) => e.room);
+            // console.log(userRoomNames);
+            this.unjoinedRooms = rooms.filter((room) => room !== 'all' && !userRoomNames.includes(room));
+            // console.log(this.unjoinedRooms);
         });
     }
 
+    selectRoom(room: string) {
+        if (this.selectedRooms.includes(room)) {
+            this.selectedRooms = this.selectedRooms.filter((x) => x !== room);
+        } else {
+            this.selectedRooms.push(room);
+        }
+    }
     joinRooms() {
         this.chatManager.joinRooms(this.selectedRooms);
         this.chatDisplay.deselectSearch();

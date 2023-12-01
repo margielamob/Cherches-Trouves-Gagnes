@@ -1,6 +1,8 @@
 import 'package:app/domain/models/replay_bar_model.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/carousel_service.dart';
+import 'package:app/domain/services/chat_display_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/classic_game_service.dart';
 import 'package:app/domain/services/clock_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
@@ -31,6 +33,7 @@ import 'package:app/domain/services/vignette_submission_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
+import 'package:app/pages/chat_page.dart';
 import 'package:app/pages/create_game_page.dart';
 import 'package:app/pages/friend-req.dart';
 import 'package:app/pages/friendsListPage.dart';
@@ -81,6 +84,8 @@ void registerDependencies() {
   Get.put(ReachableGameManager());
   Get.put(ObservableGameManager());
   Get.put(ProfilePageManager());
+  Get.put(ChatManagerService());
+  Get.put(ChatDisplayService());
   Get.put(VignetteSubmissionService());
   Get.put(PencilBoxManager());
   Get.put(FriendRequestService());
@@ -249,6 +254,7 @@ class MyApp extends StatelessWidget {
         '/ObservableGamePage': (context) => ObservableGamePage(),
         '/TakePictureScreen': (context) =>
             TakePictureScreen(camera: firstCamera),
+        '/chatPage': (context) => ChatPage(),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
         '/HistoricPage': (context) => HistoricPage(),
         '/social': (context) => SocialPage(),

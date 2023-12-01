@@ -1,0 +1,22 @@
+<div class="content" (click)="selectRoom(room.room)">
+    <mat-icon class="unread-icon" *ngIf="!room.read">circle</mat-icon>
+    <mat-icon class="read-icon" *ngIf="room.read">check_circle</mat-icon>
+    <div class="card-text">
+        <span class="room-name">{{ room.room }}</span>
+        <span *ngIf="!room.lastMessage" class="spacer"></span>
+        <span class="last-message" *ngIf="room.lastMessage" class="last-message">{{ room.lastMessage.user + ': ' + room.lastMessage.message }}</span>
+    </div>
+</div>
+<button class="more" *ngIf="room.room !== 'all' && !room.room.startsWith('Game')" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options">
+    <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="leaveRoom()">
+        <mat-icon>logout</mat-icon>
+        <span>Quitter</span>
+    </button>
+    <button mat-menu-item (click)="deleteRoom()">
+        <mat-icon>delete</mat-icon>
+        <span>Supprimer</span>
+    </button>
+</mat-menu>

@@ -16,11 +16,16 @@ export class UserManager {
 
     handleSockets(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
         socket.on(SocketEvent.Login, (user: User) => {
+            console.log('login' + user);
             this.login(user, socket);
         });
 
         socket.on(SocketEvent.Disconnect, () => {
             this.logout(socket);
+        });
+
+        socket.on(SocketEvent.ChangeUsername, (newUsername: string) => {
+            this.changeUsername(newUsername, socket);
         });
     }
 
@@ -31,5 +36,13 @@ export class UserManager {
     logout(socket: Socket) {
         this.chat.leaveGameChat(this.users.get(socket.id)?.name || '');
         this.users.delete(socket.id);
+    }
+
+    changeUsername(newUsername: string, socket: Socket) {
+        const user = this.users.get(socket.id);
+        if (user) {
+            user.name = newUsername;
+            this.users.set(socket.id, user);
+        }
     }
 }

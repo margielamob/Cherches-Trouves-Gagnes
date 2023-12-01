@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -12,7 +13,11 @@ import { Observable, catchError, forkJoin, from, map, of, switchMap, take, throw
 export class UserService {
     activeUser: UserData;
     user$: Observable<UserData | undefined>;
-    constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private afAuth: AngularFireAuth) {
+    constructor(
+        private afs: AngularFirestore,
+        private storage: AngularFireStorage,
+        private afAuth: AngularFireAuth, // private chatManager: ChatManagerService,
+    ) {
         this.user$ = this.afAuth.authState.pipe(
             switchMap((user) => {
                 if (user) {

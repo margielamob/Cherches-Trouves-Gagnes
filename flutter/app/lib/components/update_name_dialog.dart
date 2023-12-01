@@ -1,5 +1,9 @@
+import 'package:app/domain/models/user_data.dart';
+import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class UsernameDialog extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -7,13 +11,24 @@ class UsernameDialog extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final String userId;
 
+  final ChatManagerService chatManagerService = Get.find();
+  final AuthService authService = Get.find();
+
   UsernameDialog({required this.userId});
 
   void _saveNewUsername(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       String newUsername = usernameController.text.trim();
       try {
+        String oldName = authService.currentUser!.displayName;
         await userService.updateUserName(userId, newUsername);
+        print('oldName: $oldName');
+        chatManagerService.updateMessagesUsername(oldName, newUsername);
+        authService.userSubject.add(UserData(
+            uid: authService.currentUser!.uid,
+            displayName: newUsername,
+            email: authService.currentUser!.email,
+            photoURL: authService.currentUser!.photoURL));
         Navigator.of(context).pop();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

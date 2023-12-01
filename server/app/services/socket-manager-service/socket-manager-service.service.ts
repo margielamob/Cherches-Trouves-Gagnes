@@ -46,13 +46,18 @@ export class SocketManagerService {
             this.gameStateManager.handleSockets(socket);
             this.gamePlayManager.handleSockets(socket);
             this.userManager.handleSockets(socket);
+            // eslint-disable-next-line no-console
+            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
 
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            socket.on(SocketEvent.Disconnect, () => {});
-
-            socket.on(SocketEvent.Message, (message: string, roomId: string) => {
-                socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
+            socket.on(SocketEvent.Disconnect, () => {
+                // eslint-disable-next-line no-console
+                console.log(`Deconnexion de l'utilisateur avec id : ${socket.id}`);
             });
+
+            // socket.on(SocketEvent.Message, (message: string, roomId: string) => {
+            //     socket.broadcast.to(roomId).emit(SocketEvent.Message, message);
+            // });
 
             socket.on(SocketEvent.GetGamesWaiting, (mode: GameMode) => {
                 const result = { mode, gamesWaiting: this.multiplayerGameManager.getGamesWaiting(mode) };

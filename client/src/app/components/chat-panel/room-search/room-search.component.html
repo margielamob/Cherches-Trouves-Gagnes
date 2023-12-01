@@ -1,10 +1,14 @@
-<mat-toolbar class="toolbar">
-    <mat-toolbar-row>
-        <button mat-icon-button (click)="goToList()">
-            <mat-icon>arrow_back_ios</mat-icon>
-        </button>
-        <span>{{ 'CHAT.ROOM' | translate }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-<app-room-create></app-room-create>
-<app-room-add></app-room-add>
+<div class="room-search">
+    <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+            <button mat-icon-button (click)="goToList()">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </button>
+            <span>{{ 'CHAT.ROOM' | translate }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <div class="content">
+        <app-room-create></app-room-create>
+        <app-room-add></app-room-add>
+    </div>
+</div>

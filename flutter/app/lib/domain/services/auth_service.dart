@@ -1,15 +1,18 @@
 import 'package:app/domain/models/user_data.dart';
-import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AuthService {
   PersonalUserService userService = Get.find();
+  // ChatManagerService chatService = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
-  UserModel? currentUser;
+  UserData? currentUser;
+
+  BehaviorSubject<UserData?> userSubject = BehaviorSubject<UserData?>();
 
   Future<UserCredential> signIn(String email, String password) async {
     try {
@@ -29,6 +32,9 @@ class AuthService {
         email: email,
         password: password,
       );
+      currentUser = await getCurrentUser();
+      userSubject.add(currentUser);
+      // chatService.initChat();
 
       await userService.db
           .collection('activeUsers')

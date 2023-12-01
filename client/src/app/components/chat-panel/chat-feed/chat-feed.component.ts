@@ -2,9 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 // import { ChatMessage } from '@app/interfaces/chat-message';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
-import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
 import { ChatMessage } from '@common/chat';
-import { SocketEvent } from '@common/socket-event';
 
 @Component({
     selector: 'app-chat-feed',
@@ -19,7 +17,7 @@ export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecke
     currentRoom: string;
 
     constructor(
-        private communicationSocket: CommunicationSocketService,
+        // private communicationSocket: CommunicationSocketService,
         private chatManager: ChatManagerService,
         private chatDisplay: ChatDisplayService,
     ) {}
@@ -60,12 +58,13 @@ export class ChatFeedComponent implements AfterViewInit, OnInit, AfterViewChecke
             // this.myInputField.nativeElement.focus();
         }
 
-        this.communicationSocket.send(SocketEvent.Message, { message: this.currentMessage, roomId: this.chatManager.getCurrentRoom });
-        this.currentMessage = '';
+        // this.communicationSocket.send(SocketEvent.Message, { message: this.currentMessage, roomId: this.chatManager.getCurrentRoom });
+        // this.currentMessage = '';
     }
 
     goToList() {
         this.chatDisplay.deselectRoom();
+        this.chatManager.deselectRoom();
     }
 
     isPersonalMessage(message: ChatMessage): boolean {
