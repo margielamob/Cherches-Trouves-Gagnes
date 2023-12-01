@@ -23,7 +23,7 @@ class AuthService {
         throw ' Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter';
       }
 
-      logSessionActivity(userId, 'connect');
+      await logSessionActivity(userId, 'connect');
 
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
