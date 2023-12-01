@@ -23,16 +23,8 @@ export class DetachedChatManagerService {
     isSearchSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor() {
-        // this.addListeners();
-        // this.fetchUserRooms();
-        // this.fetchAllRooms();
-        // this.initChat();
-        console.log('DetachedChatManagerService constructor');
         this.userRoomList.subscribe((rooms) => {
             this.unreadMessages.next(rooms.filter((room) => !room.read).length);
-        });
-        this.messages.subscribe((_) => {
-            console.log('messages updated');
         });
         this.addListeners();
     }
@@ -58,7 +50,6 @@ export class DetachedChatManagerService {
     }
 
     sendMessage(message: string) {
-        console.log('DetachedChatManagerService sendMessage');
         const ipcRenderer = window.require('electron').ipcRenderer;
         ipcRenderer.send('sendMessage', { message });
     }
@@ -72,8 +63,6 @@ export class DetachedChatManagerService {
         ipcRenderer.on(
             'sync-detached',
             (_event: any, args: { allRoomsList: string[]; userRoomList: UserRoom[]; messages: ChatMessage[]; activeRoom: string; user: string }) => {
-                console.log('sync-detached');
-                console.log(args);
                 this.allRoomsList.next(args.allRoomsList);
                 this.userRoomList.next(args.userRoomList);
                 this.messages.next(args.messages);
@@ -173,7 +162,6 @@ export class DetachedChatManagerService {
     // }
 
     attach() {
-        console.log('attach');
         const ipcRenderer = window.require('electron').ipcRenderer;
         ipcRenderer.send('attach', { user: this.user, isRoomSelected: this.isRoomSelected.value, isSearchSelected: this.isSearchSelected.value });
     }

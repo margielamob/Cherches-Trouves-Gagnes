@@ -23,12 +23,10 @@ export class ChatFeedDetachedComponent implements AfterViewInit, OnInit, AfterVi
 
     ngOnInit(): void {
         this.chatManager.messages.subscribe((messages) => {
-            console.log('messages updated');
             this.messages = messages;
             this.newMessage = true;
             this.changeDetectorRef.detectChanges();
         });
-        // this.chatManager.fetchMessages();
         this.chatManager.activeRoom.subscribe((room) => {
             this.currentRoom = room;
         });

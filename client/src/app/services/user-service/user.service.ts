@@ -29,9 +29,7 @@ export class UserService {
         );
         this.user$.subscribe((user) => {
             if (user) {
-                console.log('user', user);
                 this.activeUser = user;
-                console.log('activeUser', this.activeUser);
             }
         });
     }

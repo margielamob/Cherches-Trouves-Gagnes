@@ -26,7 +26,6 @@ export class RoomCardDetachedComponent implements OnInit {
     }
 
     selectRoom(room: string) {
-        // console.log(room);
         this.chatManager.selectRoom(room);
         this.changeDetectorRef.tick();
     }

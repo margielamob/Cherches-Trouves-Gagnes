@@ -88,8 +88,6 @@ export class ChatManagerService {
         //     }
         // });
         this.socket.on(SocketEvent.Message, (message: ChatMessage) => {
-            console.log('message received');
-
             if (message.room === this.activeRoom.value && this.display.isRoomSelected.value) {
                 // AND CHAT DISPLAY IS ACTIVE
                 const newMessages: ChatMessage[] = [...this.messages.value, message];
@@ -130,10 +128,6 @@ export class ChatManagerService {
             this.sync();
         });
         this.socket.on(SocketEvent.UpdateUserRooms, (rooms: UserRoom[]) => {
-            console.log('update user rooms : ' + rooms);
-            rooms.forEach((room) => {
-                console.log(room.lastMessage);
-            });
             this.userRoomList.next(rooms);
             this.sync();
             // this.userRoomList.next(rooms.map((room) => room.room));
@@ -150,8 +144,6 @@ export class ChatManagerService {
     }
 
     initChat(userName: string) {
-        console.log('init chat');
-        console.log(this.userService.activeUser);
         this.socket.send(SocketEvent.InitChat, { userName });
     }
     getCurrentRoom() {
@@ -199,9 +191,6 @@ export class ChatManagerService {
             this.display.deselectRoom();
         }
         const gameChat = this.userRoomList.value.find((room) => room.room.startsWith('Game'))?.room;
-        console.log(gameChat);
-        // console.log(this.userService.activeUser.displayName);
-        console.log(this.userService);
         this.socket.send(SocketEvent.LeaveRoom, { roomName: gameChat, userName: this.userService.activeUser.displayName });
     }
 
@@ -222,7 +211,6 @@ export class ChatManagerService {
 
     sync() {
         if (this.detached) {
-            console.log('syncing');
             const data = {
                 allRoomsList: this.allRoomsList.value,
                 userRoomList: this.userRoomList.value,
@@ -230,7 +218,6 @@ export class ChatManagerService {
                 activeRoom: this.activeRoom.value,
                 user: this.userService.activeUser.displayName,
             };
-            console.log(data);
             const ipcRenderer = window.require('electron').ipcRenderer;
             ipcRenderer.send('sync-detached', data);
         }
@@ -253,7 +240,6 @@ export class ChatManagerService {
             this.display.toggleChat();
         });
         ipcRenderer.on('selectRoom', (_event: any, args: { roomName: string }) => {
-            console.log('selecting room: ' + args.roomName);
             this.selectRoom(args.roomName);
             this.sync();
         });
@@ -262,8 +248,6 @@ export class ChatManagerService {
             this.sync();
         });
         ipcRenderer.on('sendMessage', (_event: any, args: { message: string }) => {
-            console.log('sending message');
-            console.log(args.message);
             this.sendMessage(args.message);
         });
         ipcRenderer.on('fetchUserRooms', () => {
@@ -287,9 +271,6 @@ export class ChatManagerService {
         ipcRenderer.on('deleteRoom', (_event: any, args: { roomName: string }) => {
             this.deleteRoom(args.roomName);
         });
-        // ipcRenderer.on('leaveGameChat', () => {
-        //     this.leaveGameChat();
-        // });
     }
 
     updateMessagesUsername(oldName: string, newName: string) {

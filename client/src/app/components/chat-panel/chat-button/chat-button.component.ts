@@ -33,17 +33,8 @@ export class ChatButtonComponent implements OnInit, AfterViewInit {
             ipcRenderer.send('focus-chat');
             return;
         }
-        // this.chatDisplay.toggleChat();
-        // if (!this.chatDisplay.isChatVisible.value) {
-        //     console.log('1');
-        //     this.chatDisplay.isChatVisible.next(true);
-        // } else {
-        //     console.log('2');
-        //     this.chatDisplay.isChatVisible.next(false);
-        // }
         this.chatDisplay.toggleChat();
         this.chatDisplay.deselectRoom();
-        // this.applicationRef.tick();
     }
 
     private addClickOutsideListener(): void {

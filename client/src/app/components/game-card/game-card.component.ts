@@ -44,13 +44,6 @@ export class GameCardComponent implements OnInit {
                 }
             }
         });
-
-        // this.communicationSocket.on(SocketEvent.NewObserver, (observers: User[]) => {
-        //     this.isJoining = false;
-        //     this.observers = observers;
-        //     if (this.observers.length > 0) this.isObservable = true;
-        //     console.log(this.observers + ' ' + this.isObservable);
-        // });
     }
 
     setImagesSrc(): void {

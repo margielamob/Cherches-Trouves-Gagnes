@@ -22,7 +22,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         public socketService: CommunicationSocketService,
         public dialog: MatDialog,
         private readonly routerService: RouterService,
-        private readonly gameInformationHandlerService: GameInformationHandlerService, // private chatManager: ChatManagerService, // private chatDisplay: ChatDisplayService,
+        private readonly gameInformationHandlerService: GameInformationHandlerService,
     ) {
         this.exitButton.setWaitingRoom();
     }
