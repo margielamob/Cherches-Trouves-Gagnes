@@ -134,24 +134,6 @@ class MainPage extends StatelessWidget {
                           Text(AppLocalizations.of(context)!.mainPageSettings),
                     ),
                     SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Équipe 103:',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: Text(
-                            'Thierry, Ahmed El, Sulayman, Ahmed Ben, Skander, Samy',
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w400),
-                          ),
-                        )
-                      ],
-                    )
                   ],
                 ),
                 Column(
