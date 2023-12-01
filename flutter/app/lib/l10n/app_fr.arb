@@ -39,5 +39,6 @@
     "reachableGames": "Parties accessibles",
     "deleteBoutton": "Supprimer",
     "deleteConfirm": "Voulez-vous vraiment supprimer ce jeux?",
-    "diffNumber": "Nombre de différences"
+    "diffNumber": "Nombre de différences",
+    "limitedDialogTitle": "Configure les paramètres de la partie"
 }

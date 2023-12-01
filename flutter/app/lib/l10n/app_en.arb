@@ -39,5 +39,6 @@
     "reachableGames": "Games available",
     "deleteBoutton": "Delete",
     "deleteConfirm": "Are you sure you want to delete this game?",
-    "diffNumber": "Number of differences"
+    "diffNumber": "Number of differences",
+    "limitedDialogTitle": "Configures game settings"
 }
