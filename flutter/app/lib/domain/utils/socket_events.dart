@@ -71,4 +71,6 @@ class SocketEvent {
   static String observeGame = 'ObserveGame';
 
   static String Login = 'Login';
+
+  static String UpdateMessagesUsername = 'UpdateMessagesUsername';
 }

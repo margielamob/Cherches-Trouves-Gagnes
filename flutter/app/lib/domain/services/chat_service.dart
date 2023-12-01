@@ -77,7 +77,7 @@ class ChatManagerService {
   void sendMessage(String message) {
     final newMessage = ChatMessage(
       message: message,
-      user: authService.currentUser!.displayName,
+      user: activeUser.name,
       room: activeRoom.value,
     );
     socket.send(SocketEvent.message, {'message': newMessage.toJson()});
@@ -269,5 +269,32 @@ class ChatManagerService {
   void deselectRoom() {
     activeRoom.add('');
     messages.add([]);
+  }
+
+  void updateMessagesUsername(String oldName, String newName) {
+    if (messages.value.isEmpty) {
+      return;
+    }
+
+    List<ChatMessage> newMessages = messages.value.map((message) {
+      if (message.user == oldName) {
+        return ChatMessage(
+            message: message.message, user: newName, room: message.room);
+      }
+      return message;
+    }).toList();
+
+    messages.add(newMessages);
+    socket.send(SocketEvent.UpdateMessagesUsername,
+        {'oldName': oldName, 'newName': newName});
+  }
+
+  void dispose() {
+    activeRoom.close();
+    userRoomList.close();
+    allRoomsList.close();
+    unJoinedRooms.close();
+    messages.close();
+    unreadMessages.close();
   }
 }
