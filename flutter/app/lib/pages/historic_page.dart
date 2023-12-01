@@ -9,10 +9,7 @@ class HistoricPage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(
           context, AppLocalizations.of(context)!.historicPageTitle),
-      body: WillPopScope(
-        onWillPop: () async => false,
-        child: HistoricPersonalInfo(),
-      ),
+      body: HistoricPersonalInfo(),
     );
   }
 }
