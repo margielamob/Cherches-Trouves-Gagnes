@@ -1,5 +1,5 @@
 <main>
-    <app-page-header [headerMessage]="'Sélectionnez votre partie'"></app-page-header>
+    <app-page-header [isSignOutButtonEnabled]="false" [headerMessage]="'Sélectionnez votre partie'"></app-page-header>
     <div>
         <div class="cards-container" *ngIf="this.isClassic">
             <app-game-card *ngFor="let game of joinableClassicGames$ | async" [joinableGameCard]="game" [isJoining]="true"></app-game-card>

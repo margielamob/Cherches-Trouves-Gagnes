@@ -117,6 +117,17 @@ class MainPage extends StatelessWidget {
                             MaterialStateProperty.all(Size(180.0, 60.0)),
                       ),
                       onPressed: () {
+                        Navigator.pushNamed(context, '/social');
+                      },
+                      child: Text('Social'),
+                    ),
+                    SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(Size(180.0, 60.0)),
+                      ),
+                      onPressed: () {
                         Navigator.pushNamed(context, '/ProfilePage');
                       },
                       child:
