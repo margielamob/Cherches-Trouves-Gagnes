@@ -32,13 +32,15 @@ const createChatWindow = (arg) => {
             enableRemoteModule: true,
             contextIsolation: false,
         },
-        isMenuBarVisible: false,
+        fullscreenable: false,
+        fullscreen: false,
+        autoHideMenuBar: true,
         resizable: false,
         width: 500,
         height: 700,
     });
 
-    chatWindow.setMenuBarVisibility(false);
+    chatWindow.removeMenu();
 
     chatWindow.on('closed', () => {
         windows.pop();
