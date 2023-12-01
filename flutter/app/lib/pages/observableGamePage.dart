@@ -14,16 +14,13 @@ class ObservableGamePage extends StatelessWidget {
     return Scaffold(
       appBar:
           CustomAppBar.buildLogoutOnly(context, 'Observables Games available'),
-      body: WillPopScope(
-        onWillPop: () async => false,
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: ObservableGamesCarrousel(
-              isClassicGame: gameManagerService.gameMode?.value ==
-                      AvailableGameMode.classic
-                  ? true
-                  : false),
-        ),
+      body: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: ObservableGamesCarrousel(
+            isClassicGame:
+                gameManagerService.gameMode?.value == AvailableGameMode.classic
+                    ? true
+                    : false),
       ),
     );
   }
