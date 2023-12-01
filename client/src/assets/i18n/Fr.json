@@ -92,6 +92,8 @@
         "TITLE": "Partie terminée",
         "WON": "Vous avez gagné",
         "LOST": "Vous avez perdu",
+        "REPLAY": "Reprise video",
+        "EMAIL": "Envoyer resumé par courriel",
         "LEAVE": "Quitter",
         "RANK": " Vous avez gagné en <b>{{ time }}</b>, vous êtes maintenant à la position <b>{{ index }}</b>.",
         "NOT_CLASSIC": {
@@ -297,5 +299,14 @@
         "ROOM": "Nouveau salon de messagerie",
         "QUIT": "Quitter",
         "NAME": "Nom du salon de messagerie"
+    },
+
+    "GAME_SETUP": {
+        "TITLE": "Configuration du jeu",
+        "DURATION": "Durée de la partie",
+        "BONUS": "Temps bonus",
+        "CHEATMODE": "Mode triche",
+        "CONFIRME": "Confirmer",
+        "CANCEL": "Annuler"
     }
 }
