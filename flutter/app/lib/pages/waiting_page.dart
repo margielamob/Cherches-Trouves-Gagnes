@@ -70,91 +70,95 @@ class _WaitingPageState extends State<WaitingPage> {
       Scaffold(
         appBar: CustomAppBar.buildWaitingRoomBar(context,
             AppLocalizations.of(context)!.waitingPageTitle, unreadMessages),
-        body: Center(
+        body: WillPopScope(
+          onWillPop: () async => false,
+          child: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.waitingPagePlayers,
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(height: 20),
-            CircularProgressIndicator(),
-            SizedBox(height: 20),
-            SizedBox(
-              height: 300,
-              width: 300,
-              child: Center(
-                child: ListView.builder(
-                  itemCount:
-                      gameManagerService.waitingRoomInfoRequest?.players.length,
-                  itemBuilder: (context, index) {
-                    final playerName = gameManagerService
-                        .waitingRoomInfoRequest?.players[index].name;
-                    avatar = gameManagerService
-                        .waitingRoomInfoRequest?.players[index].avatar;
-                    if (avatar!.startsWith('avatars/')) {
-                      avatar = 'assets/default-user-icon.jpg';
-                    }
-                    return ListTile(
-                      title: Text(playerName!),
-                      leading: CircleAvatar(
-                        radius: 30,
-                        child: Avatar(
-                          photoURL: avatar,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  onPressed: () {
-                    gameManagerService.leaveWaitingRoom();
-                    chatManagerService.leaveGameChat();
-                  },
-                  style: ButtonStyle(
-                    alignment: Alignment.center,
-                    minimumSize: MaterialStateProperty.all<Size>(Size(200, 50)),
-                  ).copyWith(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).primaryColor),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.waitingPageQuit,
+                Text(
+                  AppLocalizations.of(context)!.waitingPagePlayers,
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 20),
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: Center(
+                    child: ListView.builder(
+                      itemCount: gameManagerService
+                          .waitingRoomInfoRequest?.players.length,
+                      itemBuilder: (context, index) {
+                        final playerName = gameManagerService
+                            .waitingRoomInfoRequest?.players[index].name;
+                        avatar = gameManagerService
+                            .waitingRoomInfoRequest?.players[index].avatar;
+                        if (avatar!.startsWith('avatars/')) {
+                          avatar = 'assets/default-user-icon.jpg';
+                        }
+                        return ListTile(
+                          title: Text(playerName!),
+                          leading: CircleAvatar(
+                            radius: 30,
+                            child: Avatar(
+                              photoURL: avatar,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-                SizedBox(width: 10),
-                gameManagerService.doesPlayerLaunchGame()
-                    ? TextButton(
-                        onPressed: () {
-                          gameManagerService.startGame();
-                        },
-                        style: ButtonStyle(
-                          alignment: Alignment.center,
-                          minimumSize:
-                              MaterialStateProperty.all<Size>(Size(200, 50)),
-                        ).copyWith(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              Theme.of(context).primaryColor),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        child: Text(
-                            AppLocalizations.of(context)!.waitingPageLaunch),
-                      )
-                    : Text(""),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        gameManagerService.leaveWaitingRoom();
+                      },
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                        minimumSize:
+                            MaterialStateProperty.all<Size>(Size(200, 50)),
+                      ).copyWith(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).primaryColor),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.waitingPageQuit,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    gameManagerService.doesPlayerLaunchGame()
+                        ? TextButton(
+                            onPressed: () {
+                              gameManagerService.startGame();
+                            },
+                            style: ButtonStyle(
+                              alignment: Alignment.center,
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(200, 50)),
+                            ).copyWith(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).primaryColor),
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white),
+                            ),
+                            child: Text(AppLocalizations.of(context)!
+                                .waitingPageLaunch),
+                          )
+                        : Text(""),
+                  ],
+                ),
               ],
             ),
-          ],
-        )),
+          ),
+        ),
       ),
       showChat
           ? Positioned(

@@ -68,117 +68,125 @@ class _MainPageState extends State<MainPage> {
         Scaffold(
           appBar: CustomAppBar.buildDefaultBar(context,
               AppLocalizations.of(context)!.mainPageTitle, unreadMessages),
-          body: Center(
+          body: WillPopScope(
+            onWillPop: () async => false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 25, 60, 0),
-                          child: Row(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.mainPageTitle,
-                                style: TextStyle(
-                                    fontSize: 35, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(width: 20),
-                              Image.asset(
-                                'assets/logoJdD.png',
-                                width: 100,
-                                height: 100,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 70),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(Size(180.0, 60.0)),
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                gameManagerService.gameMode =
-                                    GameModeModel(GameMode.classic);
-                                return ClassicGameDialog();
-                              },
-                            );
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.mainPageClassic),
-                        ),
-                        SizedBox(height: 30),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(Size(180.0, 60.0)),
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                gameManagerService.gameMode =
-                                    GameModeModel(GameMode.limited);
-                                return ClassicGameDialog();
-                              },
-                            );
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.mainPageLimited),
-                        ),
-                        SizedBox(height: 30),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(Size(180.0, 60.0)),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/adminPage');
-                          },
-                          child: Text('Administration'),
-                        ),
-                        SizedBox(height: 30),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(Size(180.0, 60.0)),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/social');
-                          },
-                          child: Text('Social'),
-                        ),
-                        SizedBox(height: 30),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(Size(180.0, 60.0)),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/ProfilePage');
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.mainPageSettings),
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                    ),
-                    Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          imagePath,
-                          height: 600,
+                        Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 25, 60, 0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.mainPageTitle,
+                                    style: TextStyle(
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(width: 20),
+                                  Image.asset(
+                                    'assets/logoJdD.png',
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 70),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(180.0, 60.0)),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    gameManagerService.gameMode =
+                                        GameModeModel(GameMode.classic);
+                                    return ClassicGameDialog();
+                                  },
+                                );
+                              },
+                              child: Text(AppLocalizations.of(context)!
+                                  .mainPageClassic),
+                            ),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(180.0, 60.0)),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    gameManagerService.gameMode =
+                                        GameModeModel(GameMode.limited);
+                                    return ClassicGameDialog();
+                                  },
+                                );
+                              },
+                              child: Text(AppLocalizations.of(context)!
+                                  .mainPageLimited),
+                            ),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(180.0, 60.0)),
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/adminPage');
+                              },
+                              child: Text('Administration'),
+                            ),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(180.0, 60.0)),
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/social');
+                              },
+                              child: Text('Social'),
+                            ),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(180.0, 60.0)),
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/ProfilePage');
+                              },
+                              child: Text(AppLocalizations.of(context)!
+                                  .mainPageSettings),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              imagePath,
+                              height: 600,
+                            ),
+                          ],
                         ),
                       ],
                     ),
