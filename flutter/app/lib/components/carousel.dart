@@ -14,12 +14,16 @@ class Carousel extends StatelessWidget {
     gameManagerService.sendGameRequest();
   }
 
+  Future<List<GameCardModel>> getCards(CarouselService carouselService) async {
+    return carouselService.getCurrentPageCards();
+  }
+
   @override
   Widget build(BuildContext context) {
     final carouselService = Provider.of<CarouselService>(context);
 
     return FutureBuilder<List<GameCardModel>>(
-      future: carouselService.getCurrentPageCards(),
+      future: getCards(carouselService),
       builder:
           (BuildContext context, AsyncSnapshot<List<GameCardModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -27,7 +31,13 @@ class Carousel extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Center(
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text('Error: ${snapshot.error}'),
+              SizedBox(width: 10),
+              Icon(Icons.signal_wifi_off),
+            ]),
+          );
         } else if (!snapshot.hasData) {
           return Text('No data available');
         } else {
