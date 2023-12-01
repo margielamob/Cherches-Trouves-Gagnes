@@ -8,6 +8,7 @@ import 'package:app/domain/services/difference_generator_service.dart';
 import 'package:app/domain/services/drawing_service_left.dart';
 import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/end_game_service.dart';
+import 'package:app/domain/services/friends_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/game_replay_service.dart';
 import 'package:app/domain/services/generate_difference_slider_service.dart';
@@ -25,11 +26,14 @@ import 'package:app/domain/services/reachable_games_manager.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/services/sound_service.dart';
 import 'package:app/domain/services/time_formatter_service.dart';
+import 'package:app/domain/services/userListe.dart';
 import 'package:app/domain/services/vignette_submission_service.dart';
 import 'package:app/domain/themes/theme_constantes.dart';
 import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/camera_visualiser_page.dart';
 import 'package:app/pages/create_game_page.dart';
+import 'package:app/pages/friend-req.dart';
+import 'package:app/pages/friendsListPage.dart';
 import 'package:app/pages/game_selection_page.dart';
 import 'package:app/pages/historic_page.dart';
 import 'package:app/pages/login_page.dart';
@@ -39,6 +43,7 @@ import 'package:app/pages/profile_page.dart';
 import 'package:app/pages/reachable_game_page.dart';
 import 'package:app/pages/reset_password_page.dart';
 import 'package:app/pages/sign_up_page.dart';
+import 'package:app/pages/social_page.dart';
 import 'package:app/pages/waiting_page.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,6 +83,7 @@ void registerDependencies() {
   Get.put(ProfilePageManager());
   Get.put(VignetteSubmissionService());
   Get.put(PencilBoxManager());
+  Get.put(FriendRequestService());
 }
 
 late List<CameraDescription> cameras;
@@ -245,6 +251,10 @@ class MyApp extends StatelessWidget {
             TakePictureScreen(camera: firstCamera),
         '/ReserPasswordPage': (context) => ResetPasswordPage(),
         '/HistoricPage': (context) => HistoricPage(),
+        '/social': (context) => SocialPage(),
+        '/users': (context) => AllUsersPage(),
+        '/friendReq': (context) => FriendRequestsPage(),
+        '/friendList': (context) => FriendsListPage(),
       },
     );
   }

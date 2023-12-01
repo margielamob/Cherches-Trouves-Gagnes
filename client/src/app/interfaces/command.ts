@@ -17,4 +17,5 @@ export interface Command {
     radiusY?: number;
     ellipseHeight?: number;
     ellipseWidth?: number;
+    backGroundColor?: string;
 }
