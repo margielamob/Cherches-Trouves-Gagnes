@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GameConstantsSettingsComponent } from '@app/components/game-constants-settings/game-constants-settings.component';
-import { CommunicationService } from '@app/services/communication/communication.service';
-import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
-import { SocketEvent } from '@common/socket-event';
 import { GameCarouselService } from '@app/services/carousel/game-carousel.service';
+import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { CommunicationService } from '@app/services/communication/communication.service';
 import { RouterService } from '@app/services/router-service/router.service';
+import { SocketEvent } from '@common/socket-event';
 
 @Injectable({
     providedIn: 'root',
@@ -51,7 +51,7 @@ export class AdminService {
         this.communicationService.deleteGame(gameId).subscribe({
             next: () => {
                 this.socketService.send(SocketEvent.GameDeleted, { gameId });
-                this.router.reloadPage('admin');
+                this.router.navigateTo('admin');
             },
             error: () => {
                 this.router.redirectToErrorPage();

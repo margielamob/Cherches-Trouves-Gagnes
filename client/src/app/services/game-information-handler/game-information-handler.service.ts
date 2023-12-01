@@ -223,5 +223,7 @@ export class GameInformationHandlerService {
         this.isMulti = false;
         this.cheatMode = false;
         this.timer = 0;
+        this.isObserver = false;
+        this.isCreator = false;
     }
 }

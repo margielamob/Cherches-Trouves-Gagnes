@@ -8,7 +8,6 @@ import { CommunicationSocketService } from '@app/services/communication-socket/c
 import { DifferencesDetectionHandlerService } from '@app/services/differences-detection-handler/differences-detection-handler.service';
 import { ExitButtonHandlerService } from '@app/services/exit-button-handler/exit-button-handler.service';
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
-import { GameRecord } from '@common/game-record';
 import { SocketEvent } from '@common/socket-event';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -45,14 +44,14 @@ export class GamePageComponent implements OnDestroy {
     }
 
     handleSocket() {
-        this.socket.once(SocketEvent.Win, (record?: GameRecord) => {
-            this.openGameOverDialog(true, record);
+        this.socket.once(SocketEvent.Win, (name: string) => {
+            this.openGameOverDialog(true, name);
             this.clueHandlerService.resetNbClue();
             this.differenceHandler.mouseIsDisabled = true;
             this.gameInfoHandlerService.isGameDone = true;
         });
-        this.socket.once(SocketEvent.Lose, () => {
-            this.openGameOverDialog(false);
+        this.socket.once(SocketEvent.Lose, (name: string) => {
+            this.openGameOverDialog(false, name);
             this.clueHandlerService.resetNbClue();
             this.differenceHandler.mouseIsDisabled = true;
             this.gameInfoHandlerService.isGameDone = true;
@@ -86,7 +85,7 @@ export class GamePageComponent implements OnDestroy {
         this.snackBar.openFromComponent(PlayerLeftSnackbarComponent, { duration: 5000 });
     }
 
-    openGameOverDialog(isWin: boolean, record?: GameRecord): void {
+    openGameOverDialog(isWin: boolean, name: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.minWidth = '50%';
@@ -94,9 +93,8 @@ export class GamePageComponent implements OnDestroy {
         if (this.gameInfoHandlerService.isClassic()) {
             dialogConfig.data = {
                 win: isWin,
-                winner: isWin ? this.gameInfoHandlerService.getPlayer().name : this.gameInfoHandlerService.getOpponent()[0].name,
+                winner: name,
                 isClassic: true,
-                record,
             };
         } else {
             dialogConfig.data = {

@@ -75,9 +75,7 @@ export class DifferenceService {
             return game.isGameOver();
         }
 
-        return game.multi
-            ? player.size === this.getNbDifferencesThreshold(game.information.differences)
-            : player.size === game.information.differences.length;
+        return player.size === this.getNbDifferencesThreshold(game.information.differences);
     }
 
     getNbDifferencesThreshold(differencesRef: Coordinate[][]): number {

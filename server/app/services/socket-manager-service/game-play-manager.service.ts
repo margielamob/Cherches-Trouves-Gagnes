@@ -204,12 +204,12 @@ export class GamePlayManager {
                     this.gameManager.leaveGame(socket.id, gameId);
 
                     if (isMulti) {
-                        socket.broadcast.to(gameId).emit(SocketEvent.Lose);
+                        socket.broadcast.to(gameId).emit(SocketEvent.Lose, playerName);
                     }
 
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- index is -1 when not added to the list
                     if (index !== -1) {
-                        socket.emit(SocketEvent.Win, { index, time });
+                        socket.emit(SocketEvent.Win, playerName);
                         this.sio.sockets.emit(
                             SocketEvent.EventMessage,
                             this.eventMessageService.sendNewHighScoreMessage({
@@ -222,17 +222,17 @@ export class GamePlayManager {
                         return;
                     }
 
-                    socket.emit(SocketEvent.Win);
+                    socket.emit(SocketEvent.Win, playerName);
                     return;
                 });
         } else {
             this.gameManager.leaveGame(socket.id, gameId);
 
             if (isMulti) {
-                socket.broadcast.to(gameId).emit(SocketEvent.Lose);
+                socket.broadcast.to(gameId).emit(SocketEvent.Lose, playerName);
             }
 
-            socket.emit(SocketEvent.Win);
+            socket.emit(SocketEvent.Win, playerName);
             return;
         }
     }
