@@ -88,6 +88,8 @@
     "GAME_OVER_DIALOG": {
         "TITLE": "Game Over",
         "WON": "You won",
+        "REPLAY": "Replay",
+        "EMAIL": "Send resume by email",
         "LOST": "You lost",
         "LEAVE": "Leave",
         "RANK": " You Won in <b>{{ time }}</b>, your currunt rank is  <b>{{ index }}</b>.",
@@ -228,7 +230,8 @@
         "WAITING_ROOM": "Waiting room",
         "HOME": "Home page",
         "LOGOUT": "Logout",
-        "ADMIN": "Configure games"
+        "ADMIN": "Configure games",
+        "CHAT": "Chat"
     },
 
     "SERVER": {
@@ -282,5 +285,26 @@
         "QUESTION": "What do you want to do ?",
         "CREATE": "Create a game",
         "JOIN": "Join a game"
+    },
+
+    "CHAT": {
+        "TITLE": "Chat",
+        "SEARCH": "Search",
+        "JOIN": "Join",
+        "LEAVE": "Leave",
+        "DELETE": "Delete",
+        "QUIT": "Quit",
+        "CREATE": "Create new room",
+        "ROOM": "new room",
+        "NAME": "Room name"
+    },
+
+    "GAME_SETUP": {
+        "TITLE": "Game setup",
+        "DURATION": "Duration",
+        "BONUS": "Bonus",
+        "CHEATMODE": "Cheat mode",
+        "CONFIRME": "Confirm",
+        "CANCEL": "Cancel"
     }
 }

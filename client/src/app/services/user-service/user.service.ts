@@ -336,7 +336,7 @@ export class UserService {
     }
 
     updateTotalTimePlayed(timePlayed: number) {
-        if (timePlayed === undefined) {
+        if (isNaN(timePlayed)) {
             return;
         }
         this.getTotalTimePlayed()

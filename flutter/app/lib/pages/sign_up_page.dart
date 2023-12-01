@@ -1,6 +1,7 @@
 import 'package:app/domain/models/user_data.dart';
 import 'package:app/domain/services/auth_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
+import 'package:app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -117,7 +118,7 @@ class SignUpPageState extends State<SignUpPage> {
                                     uid: firebaseCredential.user!.uid,
                                     displayName: userName as String,
                                     email: email as String,
-                                    photoURL: '',
+                                    photoURL: 'assets/default-user-icon.jpg',
                                     phoneNumber: '',
                                     theme: 'Default',
                                     language: 'Fr',
@@ -129,7 +130,7 @@ class SignUpPageState extends State<SignUpPage> {
 
                                   await userService.addUser(user);
                                   _formKey.currentState!.reset();
-                                  Navigator.pushNamed(context, '/loginPage');
+                                  Get.offAll(LoginPage());
                                 } catch (error) {
                                   print(error);
                                   ScaffoldMessenger.of(context).showSnackBar(

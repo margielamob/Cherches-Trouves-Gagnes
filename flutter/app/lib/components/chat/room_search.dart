@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +18,21 @@ class _RoomSearchState extends State<RoomSearch> {
   List<String> searchedRooms = [];
   TextEditingController searchController = TextEditingController();
 
+  StreamSubscription<List<String>>? unjoinedRoomsSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    unjoinedRoomsSubscription?.cancel();
+  }
+
   @override
   void initState() {
     print('initState');
     super.initState();
     // Assuming the equivalent logic for fetching initial unjoined rooms is in a function named fetchUnjoinedRooms()
-    chatManager.allRoomsList.stream.listen((rooms) {
+    unjoinedRoomsSubscription = chatManager.allRoomsList.stream.listen((rooms) {
       setState(() {
         List<String> userRoomNames =
             chatManager.userRoomList.value.map((e) => e.room).toList();

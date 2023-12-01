@@ -37,6 +37,7 @@ export class ExitGameButtonComponent {
             roomId: this.gameInfoHandlerService.roomId,
             name: this.gameInfoHandlerService.getPlayer().name,
         });
+        this.gameInfoHandlerService.resetGameVariables();
     }
 
     onQuiteGame() {

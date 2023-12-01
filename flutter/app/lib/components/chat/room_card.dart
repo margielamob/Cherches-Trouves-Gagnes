@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/domain/models/chat_model.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +19,19 @@ class _RoomCardWidgetState extends State<RoomCardWidget> {
 
   String activeRoom = '';
 
+  StreamSubscription<String>? activeRoomSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    activeRoomSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatManager.activeRoom.listen((value) {
+    activeRoomSubscription = chatManager.activeRoom.stream.listen((value) {
       setState(() {
         activeRoom = value;
       });

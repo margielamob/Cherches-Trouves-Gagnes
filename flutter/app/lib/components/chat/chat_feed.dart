@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/chat_message.dart';
 import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/socket_service.dart';
@@ -27,16 +29,19 @@ class _ChatFeedState extends State<ChatFeed> {
 
   _ChatFeedState() {}
 
+  StreamSubscription<List<ChatMessage>>? messageSubscription;
+  StreamSubscription<String>? activeRoomSubscription;
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    chatManager.messages.stream.listen((message) {
+    messageSubscription = chatManager.messages.stream.listen((message) {
       setState(() {
         messages = message;
       });
     });
-    chatManager.activeRoom.listen((value) {
+    activeRoomSubscription = chatManager.activeRoom.stream.listen((value) {
       setState(() {
         activeRoom = value;
       });
@@ -169,5 +174,13 @@ class _ChatFeedState extends State<ChatFeed> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    messageSubscription?.cancel();
+    activeRoomSubscription?.cancel();
   }
 }

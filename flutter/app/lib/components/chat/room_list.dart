@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/room_card.dart';
 import 'package:app/domain/models/chat_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
@@ -15,10 +17,19 @@ class _RoomListState extends State<RoomList> {
   ChatDisplayService chatDisplayService = Get.find();
   List<UserRoom> rooms = []; // Replace with your data
 
+  StreamSubscription<List<UserRoom>>? roomSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    roomSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatManager.userRoomList.stream.listen((rooms) {
+    roomSubscription = chatManager.userRoomList.stream.listen((rooms) {
       setState(() {
         this.rooms = rooms;
       });

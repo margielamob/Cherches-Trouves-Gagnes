@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/room_add.dart';
 import 'package:app/components/chat/room_list.dart';
 import 'package:app/domain/services/chat_display_service.dart';
@@ -16,10 +18,20 @@ class _ChatLeftPanelState extends State<ChatLeftPanel> {
 
   bool isSearchSelected = false;
 
+  StreamSubscription<bool>? chatDisplaySubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    chatDisplaySubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatDisplayService.isSearchSelected.listen((value) {
+    chatDisplaySubscription =
+        chatDisplayService.isSearchSelected.stream.listen((value) {
       setState(() {
         isSearchSelected = value;
       });

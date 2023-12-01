@@ -19,6 +19,6 @@
     >
         <mat-icon>exit_to_app</mat-icon>
     </button>
-    <app-user-avatar matTooltip="{{ 'HEADER.SETTINGS' | translate }}"></app-user-avatar>
+    <app-user-avatar *ngIf="isAvatarEnabled" matTooltip="{{ 'HEADER.SETTINGS' | translate }}"></app-user-avatar>
     <app-exit-game-button *ngIf="isExitButtonEnabled"></app-exit-game-button>
 </mat-toolbar>

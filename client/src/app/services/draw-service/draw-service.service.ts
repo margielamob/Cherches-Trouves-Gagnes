@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-params */
 import { ElementRef, Injectable } from '@angular/core';
+import { ChangeBackgroundCommand } from '@app/classes/commands/change-background-command';
 import { ClearForegroundCommand } from '@app/classes/commands/clear-foreground-command';
 import { DrawCommand } from '@app/classes/commands/draw-command';
 import { DrawEllipseCommand } from '@app/classes/commands/draw-ellipse-command';
@@ -66,10 +67,6 @@ export class DrawService {
 
     constructor(private canvasStateService: CanvasStateService, private pencil: PencilService, private drawTools: DrawingToolsService) {
         this.$drawingImage = new Map();
-    }
-
-    changeBackgroundColor(color: string, canvas: ElementRef<HTMLCanvasElement>) {
-        this.drawTools.setBackgroundColor(color, canvas);
     }
 
     initialize() {
@@ -140,15 +137,29 @@ export class DrawService {
 
     updateBackgroundColor() {
         const canvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef<HTMLCanvasElement>;
-        const ctx = canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
 
-        ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
-        this.drawTools.setBackgroundColor(this.pencil.color, canvas);
+        const color = this.pencil.color;
+
+        this.drawTools.setBackgroundColor(color, canvas);
+
+        const command = {
+            backGroundColor: color,
+            name: 'background' + this.indexOfCommand,
+        } as Command;
+
+        this.addCurrentCommand(new ChangeBackgroundCommand(command, canvas, this), false);
+        this.removeCommandsPastIndex();
+        this.updateImages();
+    }
+
+    redoBackgroundChange(command: Command, canvas: ElementRef<HTMLCanvasElement>) {
+        this.drawTools.setBackgroundColor(command.backGroundColor as string, canvas);
     }
 
     saveEllipse(saveCanvas: ElementRef<HTMLCanvasElement>) {
         const ctx = saveCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = this.pencil.color;
+        ctx.strokeStyle = this.pencil.color;
 
         this.currentCommand.centerX = this.centerX;
         this.currentCommand.centerY = this.centerY;
@@ -175,7 +186,6 @@ export class DrawService {
         ctxTemp.fillStyle = this.pencil.color;
         ctxTemp.strokeStyle = this.pencil.color;
 
-        // Calculate ellipse parameters
         this.centerX = startX + width / 2;
         this.centerY = startY + height / 2;
         this.radiusX = Math.abs(width) / 2;
@@ -239,11 +249,6 @@ export class DrawService {
     }
 
     getRectangleProps() {
-        // const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground.nativeElement;
-        // // if (focusedCanvas) {
-        // //     this.rectangleProperties.startX;
-        // //     this.rectangleProperties.startY;
-        // // }
         return this.rectangleProperties;
     }
 
@@ -269,9 +274,10 @@ export class DrawService {
     redrawEllipse(command: Command, focusedCanvas: ElementRef<HTMLCanvasElement>) {
         const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = command.style.color;
+        ctx.strokeStyle = command.style.color;
 
         ctx.beginPath();
-        ctx.ellipse(command.centerX as number, command.centerY as number, command.radiusX as number, this.radiusY, 0, 0, 2 * Math.PI);
+        ctx.ellipse(command.centerX as number, command.centerY as number, command.radiusX as number, command.radiusY as number, 0, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
@@ -309,6 +315,10 @@ export class DrawService {
 
         if (this.pencil.state === Tool.Ellipse) {
             this.stopDrawingEllipse();
+            return;
+        }
+
+        if (this.isBucket) {
             return;
         }
 
@@ -540,6 +550,7 @@ export class DrawService {
 
     private executeAllCommand() {
         this.clearAllForegrounds();
+        this.clearAllBackground();
         // this.clearAllBackgrounds();
         for (let i = 0; i < this.indexOfCommand + 1; i++) {
             this.commands[i].execute();

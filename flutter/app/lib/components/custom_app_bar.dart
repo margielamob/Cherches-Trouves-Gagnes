@@ -1,5 +1,6 @@
 import 'package:app/components/logout_dialog.dart';
 import 'package:app/domain/services/chat_display_service.dart';
+import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/difference_detection_service.dart';
 import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -58,6 +59,7 @@ class CustomAppBar {
       context, String pageName, int unreadMessages) {
     final GameManagerService gameManagerService = Get.find();
     final ChatDisplayService chatDisplayService = Get.find();
+    final ChatManagerService chatManagerService = Get.find();
 
     return AppBar(
       title: Text(pageName),
@@ -68,6 +70,7 @@ class CustomAppBar {
             icon: Icon(Icons.home),
             onPressed: () {
               gameManagerService.leaveWaitingRoom();
+              chatManagerService.leaveGameChat();
               Get.offAll(MainPage(), transition: Transition.leftToRight);
             },
           ),

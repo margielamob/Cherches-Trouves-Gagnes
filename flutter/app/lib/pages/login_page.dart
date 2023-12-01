@@ -3,6 +3,7 @@ import 'package:app/domain/services/chat_service.dart';
 import 'package:app/domain/services/socket_service.dart';
 import 'package:app/domain/utils/socket_events.dart';
 import 'package:app/pages/main_page.dart';
+import 'package:app/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -118,7 +119,7 @@ class LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/signUpPage');
+                            Get.offAll(SignUpPage());
                           },
                           child: Text("Pas de compte? Inscrivez-vous"),
                         ),

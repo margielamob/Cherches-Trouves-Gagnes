@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/chat_panel.dart';
 import 'package:app/components/classic_game_dialog.dart';
 import 'package:app/components/custom_app_bar.dart';
@@ -27,15 +29,28 @@ class _MainPageState extends State<MainPage> {
   bool showChat = false;
   int unreadMessages = 0;
 
+  StreamSubscription<bool>? chatDisplaySubscription;
+  StreamSubscription<int>? unreadMessagesSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    chatDisplaySubscription?.cancel();
+    unreadMessagesSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatDisplayService.isChatVisible.listen((value) {
+    chatDisplaySubscription =
+        chatDisplayService.isChatVisible.stream.listen((value) {
       setState(() {
         showChat = value;
       });
     });
-    chatManagerService.unreadMessages.listen((value) {
+    unreadMessagesSubscription =
+        chatManagerService.unreadMessages.stream.listen((value) {
       setState(() {
         unreadMessages = value;
       });
@@ -138,33 +153,23 @@ class _MainPageState extends State<MainPage> {
                                 MaterialStateProperty.all(Size(180.0, 60.0)),
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/ProfilePage');
+                            Navigator.pushNamed(context, '/social');
                           },
-                          child: Text(
-                              AppLocalizations.of(context)!.mainPageSettings),
+                          child: Text('Social'),
                         ),
                         SizedBox(height: 30),
                         ElevatedButton(
                           style: ButtonStyle(
                             minimumSize:
-                                MaterialStateProperty.all(Size(160.0, 60.0)),
+                                MaterialStateProperty.all(Size(180.0, 60.0)),
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/chatPage');
+                            Navigator.pushNamed(context, '/ProfilePage');
                           },
-                          child: Text('Go to chat'),
+                          child: Text(
+                              AppLocalizations.of(context)!.mainPageSettings),
                         ),
                         SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Équipe 103:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                     Column(

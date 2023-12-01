@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/carousel.dart';
 import 'package:app/components/carousel_modal.dart';
 import 'package:app/components/chat/chat_panel.dart';
@@ -25,18 +27,33 @@ class _AdminPageState extends State<AdminPage> {
   bool showChat = false;
   int unreadMessages = 0;
 
+  StreamSubscription<bool>? chatDisplaySubscription;
+  StreamSubscription<int>? unreadMessagesSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    chatDisplaySubscription?.cancel();
+    unreadMessagesSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatDisplayService.isChatVisible.listen((value) {
-      setState(() {
-        showChat = value;
-      });
+    chatDisplayService.isChatVisible.stream.listen((value) {
+      if (mounted) {
+        setState(() {
+          showChat = value;
+        });
+      }
     });
-    chatManagerService.unreadMessages.listen((value) {
-      setState(() {
-        unreadMessages = value;
-      });
+    chatManagerService.unreadMessages.stream.listen((value) {
+      if (mounted) {
+        setState(() {
+          unreadMessages = value;
+        });
+      }
     });
   }
 

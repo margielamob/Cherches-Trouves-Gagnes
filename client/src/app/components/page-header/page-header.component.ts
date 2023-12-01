@@ -15,6 +15,7 @@ export class PageHeaderComponent {
     @Input() isHomeButtonEnabled: boolean = true;
     @Input() isExitButtonEnabled: boolean = false;
     @Input() isSignOutButtonEnabled: boolean = true;
+    @Input() isAvatarEnabled: boolean = true;
 
     childWindow: Window | null = null;
 

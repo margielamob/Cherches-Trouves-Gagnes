@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/chat_panel.dart';
 import 'package:app/components/custom_app_bar.dart';
 import 'package:app/components/historic_personal_Info.dart';
@@ -19,15 +21,29 @@ class _HistoricPageState extends State<HistoricPage> {
   bool showChat = false;
   int unreadMessages = 0;
 
+  StreamSubscription<bool>? chatDisplaySubscription;
+
+  StreamSubscription<int>? unreadMessagesSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    chatDisplaySubscription?.cancel();
+    unreadMessagesSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
-    chatDisplayService.isChatVisible.listen((value) {
+    chatDisplaySubscription =
+        chatDisplayService.isChatVisible.stream.listen((value) {
       setState(() {
         showChat = value;
       });
     });
-    chatManagerService.unreadMessages.listen((value) {
+    unreadMessagesSubscription =
+        chatManagerService.unreadMessages.stream.listen((value) {
       setState(() {
         unreadMessages = value;
       });

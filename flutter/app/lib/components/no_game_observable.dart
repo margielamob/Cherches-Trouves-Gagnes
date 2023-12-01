@@ -16,7 +16,7 @@ class NoGameObservable extends StatelessWidget {
               padding: EdgeInsets.all(8.0),
               child: SizedBox(
                 width: 400,
-                height: 70,
+                height: 90,
                 child: Column(
                   children: [
                     Text(

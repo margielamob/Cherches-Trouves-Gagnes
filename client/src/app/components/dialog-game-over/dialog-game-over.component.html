@@ -10,7 +10,7 @@
     </div>
     <div *ngIf="!this.isWin && this.isClassic">
         <h1 mat-dialog-title>{{ 'GAME_OVER_DIALOG.TITLE' | translate }}</h1>
-        <div mat-dialog-content>{{ 'GAME_OVER_DIALOG.LOST' | translate }}</div>
+        <div mat-dialog-content *ngIf="!this.gameInformationHandler.isObserver">{{ 'GAME_OVER_DIALOG.LOST' | translate }}</div>
         <div [innerHTML]="'GAME_OVER_DIALOG.CLASSIC.LOOSER' | translate: { winner: winner }" *ngIf="isClassic" mat-dialog-content></div>
     </div>
     <div *ngIf="this.index && this.time">
@@ -34,7 +34,9 @@
             </button>
         </div>
         <div mat-dialog-actions align="end">
-            <button mat-raised-button routerLink="/home" color="primary" (click)="sendEmail()" mat-primary>Envoyer resumé par mail</button>
+            <button mat-raised-button routerLink="/home" color="primary" (click)="sendEmail()" mat-primary>
+                {{ 'GAME_OVER_DIALOG.EMAIL' | translate }}
+            </button>
         </div>
     </div>
 </div>

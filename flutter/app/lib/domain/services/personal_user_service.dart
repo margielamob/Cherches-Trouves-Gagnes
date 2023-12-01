@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:app/domain/models/user_data.dart';
+import 'package:app/domain/models/user_model.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -167,6 +168,9 @@ class PersonalUserService {
   }
 
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
+    if (timePlayed.isNaN) {
+      return;
+    }
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({
@@ -187,14 +191,20 @@ class PersonalUserService {
   }
 
   Future<String> initUser(UserData currentUser) async {
-    if (currentUser.photoURL == '') {
-      avatar = 'assets/default-user-icon.jpg';
+    if (currentUser.photoURL!.startsWith('avatars/')) {
+      avatar = await getPhotoURL(currentUser.uid);
+      return avatar!;
     }
     if (currentUser.photoURL!.startsWith('assets/')) {
       avatar = currentUser.photoURL;
     } else {
-      avatar = await getPhotoURL(currentUser.uid);
+      avatar = 'assets/default-user-icon.jpg';
     }
+    return avatar!;
+  }
+
+  Future<String> initUserAvatar(UserModel user) async {
+    avatar = await getPhotoURL(user.id);
     return avatar!;
   }
 

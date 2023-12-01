@@ -89,77 +89,108 @@ class ChatManagerService {
 
   void addListeners() {
     socket.on(SocketEvent.message, (dynamic data) {
-      print('message received');
-      print(ChatMessage.fromJson(data));
-      final message = ChatMessage.fromJson(data);
-      if (message.room == activeRoom.value) {
-        // AND CHAT DISPLAY IS ACTIVE
-        addMessage(message);
-        socket.send(SocketEvent.ReadMessages, {
-          'roomName': message.room,
-          'userName': activeUser.name,
-        });
-        List<UserRoom> newUserRooms = userRoomList.value;
-
-        int index =
-            newUserRooms.indexWhere((element) => element.room == message.room);
-
-        if (index != -1) {
-          newUserRooms[index].read = true;
-          newUserRooms[index].lastMessage = message;
-
-          userRoomList.add(newUserRooms);
-        }
-      } else {
-        List<UserRoom> newUserRooms = userRoomList.value;
-
-        int index =
-            newUserRooms.indexWhere((element) => element.room == message.room);
-        if (index != -1) {
-          newUserRooms[index].read = false;
-          newUserRooms[index].lastMessage = message;
-
-          userRoomList.add(newUserRooms);
-
-          socket.send(SocketEvent.UnreadMessage, {
+      try {
+        print('message received');
+        print(ChatMessage.fromJson(data));
+        final message = ChatMessage.fromJson(data);
+        if (message.room == activeRoom.value) {
+          // AND CHAT DISPLAY IS ACTIVE
+          addMessage(message);
+          socket.send(SocketEvent.ReadMessages, {
             'roomName': message.room,
             'userName': activeUser.name,
           });
+          List<UserRoom> newUserRooms = userRoomList.value;
+
+          int index = newUserRooms
+              .indexWhere((element) => element.room == message.room);
+
+          if (index != -1) {
+            newUserRooms[index].read = true;
+            newUserRooms[index].lastMessage = message;
+
+            userRoomList.add(newUserRooms);
+          }
+        } else {
+          List<UserRoom> newUserRooms = userRoomList.value;
+
+          int index = newUserRooms
+              .indexWhere((element) => element.room == message.room);
+          if (index != -1) {
+            newUserRooms[index].read = false;
+            newUserRooms[index].lastMessage = message;
+
+            userRoomList.add(newUserRooms);
+
+            socket.send(SocketEvent.UnreadMessage, {
+              'roomName': message.room,
+              'userName': activeUser.name,
+            });
+          }
         }
-      }
-      if (message.user != activeUser.name) {
-        FlutterRingtonePlayer.playNotification();
+        if (message.user != activeUser.name) {
+          FlutterRingtonePlayer.playNotification();
+        }
+      } catch (e) {
+        print('error in message');
+        print(e);
       }
     });
 
     socket.on(SocketEvent.updateAllRooms, (dynamic data) {
-      final rooms = List<String>.from(data);
-      allRoomsList.add(rooms);
+      try {
+        final rooms = List<String>.from(data);
+        allRoomsList.add(rooms);
+      } catch (e) {
+        print('error in update all rooms');
+        print(e);
+      }
     });
     socket.on(SocketEvent.updateUserRooms, (dynamic data) {
-      List<UserRoom> rooms = [];
-      data.forEach((element) {
-        rooms.add(UserRoom.fromJson(element as Map<String, dynamic>));
-      });
-      userRoomList.add(rooms);
+      try {
+        List<UserRoom> rooms = [];
+        data.forEach((element) {
+          rooms.add(UserRoom.fromJson(element as Map<String, dynamic>));
+        });
+        userRoomList.add(rooms);
+      } catch (e) {
+        print('error in update user rooms');
+        print(e);
+      }
     });
     socket.on(SocketEvent.roomCreated, (dynamic data) {
-      final rooms = data as Map<String, dynamic>;
-      userRoomList.add(List<UserRoom>.from(rooms['user']));
-      allRoomsList.add(List<String>.from(rooms['all']));
+      try {
+        final rooms = data as Map<String, dynamic>;
+        userRoomList.add(List<UserRoom>.from(rooms['user']));
+        allRoomsList.add(List<String>.from(rooms['all']));
+      } catch (e) {
+        print('error in room created');
+        print(e);
+      }
     });
     socket.on(SocketEvent.roomDeleted, (dynamic data) {
-      fetchUserRooms();
-      fetchAllRooms();
+      try {
+        fetchUserRooms();
+        fetchAllRooms();
+      } catch (e) {
+        print('error in room deleted');
+        print(e);
+      }
     });
     socket.on(SocketEvent.getMessages, (dynamic data) {
-      final List<ChatMessage> newMessages = [];
+      try {
+        final List<ChatMessage> newMessages = [];
 
-      data.forEach((message) {
-        newMessages.add(ChatMessage.fromJson(message as Map<String, dynamic>));
-      });
+        data.forEach((message) {
+          newMessages
+              .add(ChatMessage.fromJson(message as Map<String, dynamic>));
+        });
 
-      messages.add(newMessages);
+        messages.add(newMessages);
+      } catch (e) {
+        print('error in get messages');
+        print(e);
+      }
     });
   }
 
@@ -221,13 +252,18 @@ class ChatManagerService {
   }
 
   void leaveGameChat() {
-    if (activeRoom.value.startsWith('Game')) {
-      deselectRoom();
+    print('leaving game chat');
+    print(userRoomList.value);
+    try {
+      final gameChat =
+          userRoomList.value.firstWhere((room) => room.room.startsWith('Game'));
+      print('leaving game chat2');
+      print(gameChat);
+      socket.send(SocketEvent.leaveRoom,
+          {'roomName': gameChat.room, 'userName': activeUser.name});
+    } catch (e) {
+      print('no game chat');
     }
-    final gameChat =
-        userRoomList.value.firstWhere((room) => room.startsWith('Game'));
-    socket.send(SocketEvent.leaveRoom,
-        {'roomName': gameChat, 'userName': activeUser.name});
   }
 
   void deselectRoom() {

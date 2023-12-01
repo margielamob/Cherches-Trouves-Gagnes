@@ -1,5 +1,12 @@
 <main>
-    <app-page-header [headerMessage]="this.title" [isHomeButtonEnabled]="false" [isExitButtonEnabled]="true"> </app-page-header>
+    <app-page-header
+        [headerMessage]="this.title"
+        [isAvatarEnabled]="false"
+        [isHomeButtonEnabled]="false"
+        [isSignOutButtonEnabled]="false"
+        [isExitButtonEnabled]="true"
+    >
+    </app-page-header>
     <div class="main-wrapper">
         <div class="game-section">
             <app-sidebar></app-sidebar>

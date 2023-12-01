@@ -1,3 +1,4 @@
+import 'package:app/components/avatar.dart';
 import 'package:app/components/image_border.dart';
 import 'package:app/domain/models/requests/joinable_games_request.dart';
 import 'package:app/domain/services/game_manager_service.dart';
@@ -23,10 +24,13 @@ class Players extends StatelessWidget {
             itemCount: players.length,
             itemBuilder: (BuildContext context, int index) {
               final playerName = players[index].name;
+              final playerAvatar = players[index].avatar;
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FlutterLogo(size: 30.0),
+                  Avatar(
+                    photoURL: playerAvatar,
+                  ),
                   SizedBox(width: 10),
                   Text(playerName, style: TextStyle(fontSize: 16))
                 ],

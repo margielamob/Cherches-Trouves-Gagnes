@@ -264,6 +264,7 @@ export class ChatSocketManager {
                     this.userRooms.get(userName)!.filter((r) => r.room !== roomName),
                 );
             }
+            console.log(this.userRooms.get(userName));
             socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(userName)!);
         });
 
@@ -322,6 +323,7 @@ export class ChatSocketManager {
             this.userRooms.set(user.name, [...this.userRooms.get(user.name)!, { room: roomName, read: false, lastMessage: undefined }]);
             socket.join(roomName);
         }
+        console.log(this.userRooms.get(user.name));
         socket.emit(SocketEvent.UpdateUserRooms, this.userRooms.get(user.name)!);
     }
 

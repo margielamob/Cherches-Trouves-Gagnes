@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/components/chat/chat_panel.dart';
 import 'package:app/components/clock.dart';
 import 'package:app/components/current_players.dart';
@@ -44,6 +46,17 @@ class _ClassicState extends State<Classic> {
   bool showChat = false;
   int unreadMessages = 0;
 
+  StreamSubscription<bool>? chatDisplaySubscription;
+  StreamSubscription<int>? unreadMessagesSubscription;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    chatDisplaySubscription?.cancel();
+    unreadMessagesSubscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,12 +74,14 @@ class _ClassicState extends State<Classic> {
     _differenceDetectionService.handleDifferences();
     _socket.send(SocketEvent.gameStarted,
         {widget.gameId: gameManagerService.currentRoomId});
-    chatDisplayService.isChatVisible.listen((value) {
+    chatDisplaySubscription =
+        chatDisplayService.isChatVisible.stream.listen((value) {
       setState(() {
         showChat = value;
       });
     });
-    chatManagerService.unreadMessages.listen((value) {
+    unreadMessagesSubscription =
+        chatManagerService.unreadMessages.stream.listen((value) {
       setState(() {
         unreadMessages = value;
       });
