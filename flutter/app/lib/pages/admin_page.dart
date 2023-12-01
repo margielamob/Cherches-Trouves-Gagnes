@@ -16,62 +16,58 @@ class AdminPage extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(context, 'Administration'),
-      body: WillPopScope(
-        onWillPop: () async => false,
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      Get.to(CreateGamePage());
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(AppLocalizations.of(context)!.adminPageCreation),
-                        SizedBox(width: 2.0),
-                        Icon(Icons.create),
-                      ],
-                    ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FilledButton(
+                  onPressed: () {
+                    Get.to(CreateGamePage());
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context)!.adminPageCreation),
+                      SizedBox(width: 2.0),
+                      Icon(Icons.create),
+                    ],
                   ),
-                  SizedBox(width: 10.0),
-                  FilledButton(
-                    onPressed: carouselService.areGamesAvailable()
-                        ? () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CarouselModal(
-                                  verification: AppLocalizations.of(context)!
-                                      .adminPageSuppGames,
-                                  isAllGames: true,
-                                );
-                              },
-                            );
-                          }
-                        : null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                            AppLocalizations.of(context)!.adminPageSuppAllGame),
-                        SizedBox(width: 2.0),
-                        Icon(Icons.delete),
-                      ],
-                    ),
+                ),
+                SizedBox(width: 10.0),
+                FilledButton(
+                  onPressed: carouselService.areGamesAvailable()
+                      ? () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CarouselModal(
+                                verification: AppLocalizations.of(context)!
+                                    .adminPageSuppGames,
+                                isAllGames: true,
+                              );
+                            },
+                          );
+                        }
+                      : null,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context)!.adminPageSuppAllGame),
+                      SizedBox(width: 2.0),
+                      Icon(Icons.delete),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
-              child: Carousel(isCarouselForAdminPage: true),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Carousel(isCarouselForAdminPage: true),
+          ),
+        ],
       ),
     );
   }
