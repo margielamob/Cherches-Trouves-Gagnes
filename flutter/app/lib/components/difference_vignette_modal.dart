@@ -8,7 +8,6 @@ import 'package:app/domain/services/drawing_service_right.dart';
 import 'package:app/domain/services/pencil_box_manager.dart';
 import 'package:app/domain/services/radius_slider_service.dart';
 import 'package:app/domain/services/vignette_submission_service.dart';
-import 'package:app/pages/admin_page.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -263,7 +262,7 @@ class SubmissionConfirmationModalContent extends StatelessWidget {
             pencilBox.resetForNewDrawing();
             drawingServiceLeft.resetForNewDrawing();
             drawingServiceRight.resetForNewDrawing();
-            Get.off(AdminPage());
+            Get.offAll(MainPage());
           },
           child: const Text('Done'),
         ),

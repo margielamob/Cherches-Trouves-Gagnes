@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class ObservableGameManager extends ChangeNotifier {
   final SocketService _socket = Get.find();
   JoinableGamesRequest? observableGames;
+  bool? isClassicGameObserve;
 
   ObservableGameManager() {
     handleSockets();
@@ -20,45 +21,53 @@ class ObservableGameManager extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.classicGameCreated, (dynamic message) {
-      JoinableGamesModel request = JoinableGamesModel.fromJson(message);
-      if (observableGames == null) {
-        final List<JoinableGamesModel> games = [];
-        games.add(request);
-        observableGames = JoinableGamesRequest(games: games);
-      } else {
-        observableGames!.games.add(request);
-        observableGames!.games = observableGames!.removeDoubloons();
+      if (isClassicGameObserve!) {
+        JoinableGamesModel request = JoinableGamesModel.fromJson(message);
+        if (observableGames == null) {
+          final List<JoinableGamesModel> games = [];
+          games.add(request);
+          observableGames = JoinableGamesRequest(games: games);
+        } else {
+          observableGames!.games.add(request);
+          observableGames!.games = observableGames!.removeDoubloons();
+        }
+        observableGames!.games = observableGames!.filterGamesByObservable(true);
+        notifyListeners();
       }
-      observableGames!.games = observableGames!.filterGamesByObservable(true);
-      notifyListeners();
     });
 
     _socket.on(SocketEvent.limitedGameCreated, (dynamic message) {
-      JoinableGamesModel request = JoinableGamesModel.fromJson(message);
-      if (observableGames == null) {
-        final List<JoinableGamesModel> games = [];
-        games.add(request);
-        observableGames = JoinableGamesRequest(games: games);
-      } else {
-        observableGames!.games.add(request);
-        observableGames!.games = observableGames!.removeDoubloons();
+      if (!isClassicGameObserve!) {
+        JoinableGamesModel request = JoinableGamesModel.fromJson(message);
+        if (observableGames == null) {
+          final List<JoinableGamesModel> games = [];
+          games.add(request);
+          observableGames = JoinableGamesRequest(games: games);
+        } else {
+          observableGames!.games.add(request);
+          observableGames!.games = observableGames!.removeDoubloons();
+        }
+        observableGames!.games = observableGames!.filterGamesByObservable(true);
+        notifyListeners();
       }
-      observableGames!.games = observableGames!.filterGamesByObservable(true);
-      notifyListeners();
     });
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
-      JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
-      request.games = request.filterGamesByObservable(true);
-      observableGames = request;
-      notifyListeners();
+      if (isClassicGameObserve!) {
+        JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+        request.games = request.filterGamesByObservable(true);
+        observableGames = request;
+        notifyListeners();
+      }
     });
 
     _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
-      JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
-      request.games = request.filterGamesByObservable(true);
-      observableGames = request;
-      notifyListeners();
+      if (!isClassicGameObserve!) {
+        JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
+        request.games = request.filterGamesByObservable(true);
+        observableGames = request;
+        notifyListeners();
+      }
     });
 
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {});

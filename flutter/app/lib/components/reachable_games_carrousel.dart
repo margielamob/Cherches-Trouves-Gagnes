@@ -11,6 +11,7 @@ class ReachableGamesCarrousel extends StatelessWidget {
   final bool isClassicGame;
 
   ReachableGamesCarrousel({required this.isClassicGame}) {
+    reachableGamesManager.isClassicGame = isClassicGame;
     reachableGamesManager.getReachableGames(isClassicGame);
   }
 

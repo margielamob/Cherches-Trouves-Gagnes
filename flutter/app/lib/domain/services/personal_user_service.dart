@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class PersonalUserService {
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -168,6 +169,9 @@ class PersonalUserService {
   }
 
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
+    if (timePlayed.isNaN) {
+      return;
+    }
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({
@@ -241,6 +245,13 @@ class PersonalUserService {
       gamesHistoric.add(game);
     });
     return gamesHistoric;
+  }
+
+  String formatFirestoreTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+
+    return formattedDate;
   }
 }
 
