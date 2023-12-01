@@ -297,5 +297,14 @@
         "CREATE": "Create new room",
         "ROOM": "new room",
         "NAME": "Room name"
+    },
+
+    "GAME_SETUP": {
+        "TITLE": "Game setup",
+        "DURATION": "Duration",
+        "BONUS": "Bonus",
+        "CHEATMODE": "Cheat mode",
+        "CONFIRME": "Confirm",
+        "CANCEL": "Cancel"
     }
 }

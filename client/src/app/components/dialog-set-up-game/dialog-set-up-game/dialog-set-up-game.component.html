@@ -1,19 +1,19 @@
-<h2 mat-dialog-title>Configure Game</h2>
+<h2 mat-dialog-title>{{ 'GAME_SETUP.TITLE' | translate }}</h2>
 
 <mat-dialog-content>
     <mat-form-field>
-        <mat-label>Game Duration (seconds)</mat-label>
+        <mat-label>{{ 'GAME_SETUP.DURATION' | translate }}</mat-label>
         <input matInput type="number" [(ngModel)]="duration" name="duration" min="0" max="3600" />
     </mat-form-field>
     <mat-form-field *ngIf="isLimited">
-        <mat-label>Time Bonus (seconds)</mat-label>
+        <mat-label>{{ 'GAME_SETUP.BONUS' | translate }}</mat-label>
         <input matInput type="number" [(ngModel)]="bonus" name="bonus" required />
     </mat-form-field>
 
-    <mat-checkbox *ngIf="!isLimited" [(ngModel)]="cheatMode" name="cheatMode">Activate Cheat Mode</mat-checkbox>
+    <mat-checkbox *ngIf="!isLimited" [(ngModel)]="cheatMode" name="cheatMode">{{ 'GAME_SETUP.CHEATMODE' | translate }}</mat-checkbox>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-button cdkFocusInitial (click)="onConfirm()">Confirm</button>
+    <button mat-button (click)="onCancel()">{{ 'GAME_SETUP.CANCEL' | translate }}</button>
+    <button mat-button cdkFocusInitial (click)="onConfirm()">{{ 'GAME_SETUP.CONFIRME' | translate }}</button>
 </mat-dialog-actions>
