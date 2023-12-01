@@ -1,24 +1,29 @@
 .search {
     width: 100%;
     color: black;
-    flex: 0 1 auto;
+    position: sticky;
 }
 
 .search-lsbel {
     color: black;
 }
 
+.room:hover {
+    cursor: pointer;
+}
+
 .search-input {
     color: black;
 }
-
 .selected {
-    background-color: #f9cdcd;
+    //background color a little darker grey
+    background-color: #e0e0e0;
 }
 
-button {
-    align-self: flex-end;
-    flex: 0 1 auto;
+.join-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
 }
 
 // .room-list {
@@ -34,9 +39,11 @@ button {
 .wrapper {
     display: flex;
     flex-flow: column;
+    height: 100%;
 }
 
-mat-list {
-    flex: 1 1 auto;
-    overflow: auto;
+.list-container {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
 }

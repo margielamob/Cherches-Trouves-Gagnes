@@ -7,14 +7,22 @@
     // padding: 3%;
 }
 
+.toolbar {
+    position: sticky;
+    top: 0;
+}
+
 .spacer {
     flex: 1 1 auto;
 }
 
 .list-wrapper {
-    flex-grow: 1;
+    //height 100% minus toolbar height
+    height: calc(100% - 64px);
+    // flex-grow: 1;
     justify-content: center;
     display: block;
+    overflow: auto;
 }
 
 .plus-button {
@@ -31,4 +39,5 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    position: relative;
 }
