@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-console */
 import { Injectable } from '@angular/core';
+import { LanguageService } from '@app/services/language-service/languag.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { ChatMessage, UserRoom } from '@common/chat';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
@@ -22,7 +24,7 @@ export class DetachedChatManagerService {
     isRoomSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isSearchSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-    constructor() {
+    constructor(private languageService: LanguageService, private themeService: ThemeService) {
         this.userRoomList.subscribe((rooms) => {
             this.unreadMessages.next(rooms.filter((room) => !room.read).length);
         });
@@ -82,6 +84,8 @@ export class DetachedChatManagerService {
                     activeRoom: string;
                     isRoomSelected: boolean;
                     isSearchSelected: boolean;
+                    language: string;
+                    theme: string;
                 },
             ) => {
                 console.log(data.userRoomList);
@@ -92,8 +96,18 @@ export class DetachedChatManagerService {
                 this.activeRoom.next(data.activeRoom);
                 this.isRoomSelected.next(data.isRoomSelected);
                 this.isSearchSelected.next(data.isSearchSelected);
+                this.languageService.setAppLanguage(data.language);
+                this.themeService.setAppTheme(data.theme);
             },
         );
+
+        ipcRenderer.on('language', (_event: any, language: string) => {
+            this.languageService.setAppLanguage(language);
+        });
+
+        ipcRenderer.on('theme', (_event: any, theme: string) => {
+            this.themeService.setAppTheme(theme);
+        });
     }
 
     initDetachedChat(user: string) {

@@ -10,6 +10,7 @@ import { LanguageService } from '@app/services/language-service/languag.service'
 import { UserService } from '@app/services/user-service/user.service';
 
 import { DialogChangeNameComponent } from '@app/components/dialog-change-name/dialog-change-name.component';
+import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
 import { ThemeService } from '@app/services/theme-service/theme.service';
 import { Observable, switchMap, take } from 'rxjs';
 
@@ -35,6 +36,7 @@ export class UserProfilInformationComponent implements OnInit {
         private dialog: MatDialog,
         private langService: LanguageService,
         private themeService: ThemeService,
+        private chatManager: ChatManagerService,
     ) {
         this.settingsForm = new FormGroup({
             theme: new FormControl('', [Validators.required]),
@@ -115,6 +117,7 @@ export class UserProfilInformationComponent implements OnInit {
                 if (userLang) {
                     this.curruntLanguage = userLang;
                     this.langService.setAppLanguage(userLang as string);
+                    this.chatManager.updateDetachedLanguage(userLang as string);
                 }
             });
     }
@@ -130,6 +133,7 @@ export class UserProfilInformationComponent implements OnInit {
                     this.curruntTheme = userTheme;
                 }
                 this.themeService.setAppTheme(userTheme as string);
+                this.chatManager.updateDetachedTheme(userTheme as string);
             });
     }
 }

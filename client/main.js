@@ -32,10 +32,13 @@ const createChatWindow = (arg) => {
             enableRemoteModule: true,
             contextIsolation: false,
         },
+        isMenuBarVisible: false,
         resizable: false,
         width: 500,
         height: 700,
     });
+
+    chatWindow.setMenuBarVisibility(false);
 
     chatWindow.on('closed', () => {
         windows.pop();
@@ -163,5 +166,17 @@ ipcMain.on('detach', (_event, arg) => {
 ipcMain.on('sync-detached', (_event, arg) => {
     if (windows.length === 2) {
         windows[1].webContents.send('sync-detached', arg);
+    }
+});
+
+ipcMain.on('language', (_event, arg) => {
+    if (windows.length === 2) {
+        windows[1].webContents.send('language', arg);
+    }
+});
+
+ipcMain.on('theme', (_event, arg) => {
+    if (windows.length === 2) {
+        windows[1].webContents.send('theme', arg);
     }
 });
