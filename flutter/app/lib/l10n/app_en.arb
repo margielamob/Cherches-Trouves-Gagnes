@@ -43,7 +43,7 @@
     "limitedDialogTitle": "Configures game settings",
     "limitedDialogTime": "Game duration (seconds):",
     "limitedDialogBonus": "Bonus time (seconds) :",
-    "limitedDialogCheat": "Activer le cheat mode :",
-    "limitedDialogCheatYes": "Confimer",
-    "limitedDialogCheatNo": "Annuler"
+    "limitedDialogCheat": "Activate cheat mode :",
+    "limitedDialogCheatYes": "Yes",
+    "limitedDialogCheatNo": "No"
 }
