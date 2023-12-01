@@ -21,6 +21,9 @@ class ObservableGameManager extends ChangeNotifier {
 
   void handleSockets() {
     _socket.on(SocketEvent.classicGameCreated, (dynamic message) {
+      if (isClassicGameObserve == null) {
+        return;
+      }
       if (isClassicGameObserve!) {
         JoinableGamesModel request = JoinableGamesModel.fromJson(message);
         if (observableGames == null) {
@@ -37,6 +40,9 @@ class ObservableGameManager extends ChangeNotifier {
     });
 
     _socket.on(SocketEvent.limitedGameCreated, (dynamic message) {
+      if (isClassicGameObserve == null) {
+        return;
+      }
       if (!isClassicGameObserve!) {
         JoinableGamesModel request = JoinableGamesModel.fromJson(message);
         if (observableGames == null) {
@@ -53,6 +59,9 @@ class ObservableGameManager extends ChangeNotifier {
     });
 
     _socket.on(SocketEvent.sendingJoinableClassicGames, (dynamic message) {
+      if (isClassicGameObserve == null) {
+        return;
+      }
       if (isClassicGameObserve!) {
         JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
         request.games = request.filterGamesByObservable(true);
@@ -62,6 +71,9 @@ class ObservableGameManager extends ChangeNotifier {
     });
 
     _socket.on(SocketEvent.sendingJoinableLimitedGames, (dynamic message) {
+      if (isClassicGameObserve == null) {
+        return;
+      }
       if (!isClassicGameObserve!) {
         JoinableGamesRequest request = JoinableGamesRequest.fromJson(message);
         request.games = request.filterGamesByObservable(true);

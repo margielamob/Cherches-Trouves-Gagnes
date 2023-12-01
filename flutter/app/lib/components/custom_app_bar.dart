@@ -33,19 +33,9 @@ class CustomAppBar {
   }
 
   static AppBar buildWaitingRoomBar(context, String pageName) {
-    final GameManagerService gameManagerService = Get.find();
-
     return AppBar(
       title: Text(pageName),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            gameManagerService.leaveWaitingRoom();
-            Get.offAll(MainPage(), transition: Transition.leftToRight);
-          },
-        ),
-      ],
+      actions: [],
     );
   }
 
