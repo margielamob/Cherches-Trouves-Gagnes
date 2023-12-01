@@ -108,7 +108,8 @@ class HistoricConnectionState extends State<HistoricConnection> {
                                     itemCount: listLog![0].length,
                                     itemBuilder: (context, index) {
                                       return Text(
-                                          '${listLog![0][index].toDate()}');
+                                          userService.formatFirestoreTimestamp(
+                                              listLog![0][index]));
                                     },
                                   ),
                                 ),
@@ -146,7 +147,8 @@ class HistoricConnectionState extends State<HistoricConnection> {
                                     itemCount: listLog![1].length,
                                     itemBuilder: (context, index) {
                                       return Text(
-                                          '${listLog![1][index].toDate()}');
+                                          userService.formatFirestoreTimestamp(
+                                              listLog![1][index]));
                                     },
                                   ),
                                 ),
@@ -189,8 +191,10 @@ class HistoricConnectionState extends State<HistoricConnection> {
                                           listGamesHistoric![index].isGameWin;
                                       return Row(
                                         children: [
-                                          Text(
-                                              '${listGamesHistoric![index].timestamp.toDate()}'),
+                                          Text(userService
+                                              .formatFirestoreTimestamp(
+                                                  listGamesHistoric![index]
+                                                      .timestamp)),
                                           SizedBox(width: 10),
                                           isGameWin
                                               ? Icon(
