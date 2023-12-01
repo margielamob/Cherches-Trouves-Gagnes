@@ -1,6 +1,7 @@
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
 
 class LimitedConstantsDialog extends StatefulWidget {
@@ -18,12 +19,12 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Configure les paramètres de la partie"),
+      title: Text(AppLocalizations.of(context)!.limitedDialogTitle),
       actions: <Widget>[
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Durée de la partie (secondes) :"),
+            Text(AppLocalizations.of(context)!.limitedDialogTime),
             SizedBox(
               width: 50,
               child: TextField(
@@ -46,7 +47,7 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
               ),
             ),
             SizedBox(height: 10),
-            Text("Temps bonus (secondes) :"),
+            Text(AppLocalizations.of(context)!.limitedDialogTime),
             SizedBox(
               width: 50,
               child: TextField(
@@ -72,7 +73,7 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Activer le cheat mode :"),
+                Text(AppLocalizations.of(context)!.limitedDialogCheat),
                 Checkbox(
                   value: cheatModeActivated,
                   onChanged: (value) {
@@ -94,7 +95,8 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                   ),
-                  child: Text("Annuler"),
+                  child:
+                      Text(AppLocalizations.of(context)!.limitedDialogCheatNo),
                 ),
                 SizedBox(width: 20),
                 FilledButton(
@@ -105,7 +107,8 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                   ),
-                  child: Text("Confirmer"),
+                  child:
+                      Text(AppLocalizations.of(context)!.limitedDialogCheatYes),
                 ),
               ],
             ),
