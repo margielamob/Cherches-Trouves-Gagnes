@@ -159,6 +159,7 @@ export class DrawService {
     saveEllipse(saveCanvas: ElementRef<HTMLCanvasElement>) {
         const ctx = saveCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = this.pencil.color;
+        ctx.strokeStyle = this.pencil.color;
 
         this.currentCommand.centerX = this.centerX;
         this.currentCommand.centerY = this.centerY;
@@ -185,7 +186,6 @@ export class DrawService {
         ctxTemp.fillStyle = this.pencil.color;
         ctxTemp.strokeStyle = this.pencil.color;
 
-        // Calculate ellipse parameters
         this.centerX = startX + width / 2;
         this.centerY = startY + height / 2;
         this.radiusX = Math.abs(width) / 2;
@@ -274,9 +274,10 @@ export class DrawService {
     redrawEllipse(command: Command, focusedCanvas: ElementRef<HTMLCanvasElement>) {
         const ctx = focusedCanvas?.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         ctx.fillStyle = command.style.color;
+        ctx.strokeStyle = command.style.color;
 
         ctx.beginPath();
-        ctx.ellipse(command.centerX as number, command.centerY as number, command.radiusX as number, this.radiusY, 0, 0, 2 * Math.PI);
+        ctx.ellipse(command.centerX as number, command.centerY as number, command.radiusX as number, command.radiusY as number, 0, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
