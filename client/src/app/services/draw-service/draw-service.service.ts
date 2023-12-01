@@ -137,21 +137,22 @@ export class DrawService {
 
     updateBackgroundColor() {
         const canvas = this.canvasStateService.getFocusedCanvas()?.background as ElementRef<HTMLCanvasElement>;
-        const ctx = canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
 
-        ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
-        this.drawTools.setBackgroundColor(this.pencil.color, canvas);
+        const color = this.pencil.color;
 
-        this.currentCommand.backGroundColor = this.pencil.color;
-        this.currentCommand.name = 'changeBackground';
-        this.addCurrentCommand(new ChangeBackgroundCommand(this.currentCommand, canvas, this), false);
+        this.drawTools.setBackgroundColor(color, canvas);
+
+        const command = {
+            backGroundColor: color,
+            name: 'background' + this.indexOfCommand,
+        } as Command;
+
+        this.addCurrentCommand(new ChangeBackgroundCommand(command, canvas, this), false);
         this.removeCommandsPastIndex();
+        this.updateImages();
     }
 
     redoBackgroundChange(command: Command, canvas: ElementRef<HTMLCanvasElement>) {
-        console.log(canvas);
-        const ctx = canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        ctx.clearRect(0, 0, canvas.nativeElement.width, canvas.nativeElement.height);
         this.drawTools.setBackgroundColor(command.backGroundColor as string, canvas);
     }
 
@@ -248,11 +249,6 @@ export class DrawService {
     }
 
     getRectangleProps() {
-        // const focusedCanvas = this.canvasStateService.getFocusedCanvas()?.foreground.nativeElement;
-        // // if (focusedCanvas) {
-        // //     this.rectangleProperties.startX;
-        // //     this.rectangleProperties.startY;
-        // // }
         return this.rectangleProperties;
     }
 
@@ -318,6 +314,10 @@ export class DrawService {
 
         if (this.pencil.state === Tool.Ellipse) {
             this.stopDrawingEllipse();
+            return;
+        }
+
+        if (this.isBucket) {
             return;
         }
 
@@ -549,6 +549,7 @@ export class DrawService {
 
     private executeAllCommand() {
         this.clearAllForegrounds();
+        this.clearAllBackground();
         // this.clearAllBackgrounds();
         for (let i = 0; i < this.indexOfCommand + 1; i++) {
             this.commands[i].execute();
