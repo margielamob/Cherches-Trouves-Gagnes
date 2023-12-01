@@ -1,13 +1,38 @@
+import 'package:app/components/avatar.dart';
 import 'package:app/components/custom_app_bar.dart';
+import 'package:app/domain/models/user_model.dart';
 import 'package:app/domain/services/game_manager_service.dart';
+import 'package:app/domain/services/personal_user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class WaitingPage extends StatelessWidget {
+class WaitingPage extends StatefulWidget {
+  @override
+  _WaitingPageState createState() => _WaitingPageState();
+}
+
+class _WaitingPageState extends State<WaitingPage> {
+  final PersonalUserService userService = Get.find();
+  String? avatar;
+
+  Future<void> initAvatar(String photoURL, UserModel user) async {
+    String? newAvatar = await userService.initUserAvatar(user);
+    setState(() {
+      avatar = newAvatar;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameManagerService = Provider.of<GameManagerService>(context);
+
     return Scaffold(
       appBar: CustomAppBar.buildWaitingRoomBar(
         context,
@@ -34,13 +59,23 @@ class WaitingPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final playerName = gameManagerService
                       .waitingRoomInfoRequest?.players[index].name;
-                  // final playerPhotoURL = gameManagerService
-                  //     .waitingRoomInfoRequest?.players[index].avatar;
+                  avatar = gameManagerService
+                      .waitingRoomInfoRequest?.players[index].avatar;
+                  if (avatar!.startsWith('avatars/')) {
+                    avatar = 'assets/default-user-icon.jpg';
+                    // initAvatar(
+                    //     avatar!,
+                    //     gameManagerService
+                    //         .waitingRoomInfoRequest!.players[index]);
+                  }
                   return ListTile(
                     title: Text(playerName!),
-                    // leading: Avatar(
-                    //   photoURL: avatarUrl,
-                    // ),
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Avatar(
+                        photoURL: avatar,
+                      ),
+                    ),
                   );
                 },
               ),

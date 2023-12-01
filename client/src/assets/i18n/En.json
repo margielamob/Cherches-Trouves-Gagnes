@@ -88,6 +88,8 @@
     "GAME_OVER_DIALOG": {
         "TITLE": "Game Over",
         "WON": "You won",
+        "REPLAY": "Replay",
+        "EMAIL": "Send resume by email",
         "LOST": "You lost",
         "LEAVE": "Leave",
         "RANK": " You Won in <b>{{ time }}</b>, your currunt rank is  <b>{{ index }}</b>.",
@@ -136,7 +138,8 @@
         "CANCEL": "Cancel"
     },
     "GAME_CARD": {
-        "BEST_SCORE": "Best score"
+        "BEST_SCORE": "Best score",
+        "DIFFERENCE": "Number of differences : {{ difference }}"
     },
 
     "GAME_CARD_BTN": {
@@ -226,7 +229,9 @@
         "SETTINGS": "Settings",
         "WAITING_ROOM": "Waiting room",
         "HOME": "Home page",
-        "LOGOUT": "Logout"
+        "LOGOUT": "Logout",
+        "ADMIN": "Configure games",
+        "CHAT": "Chat"
     },
 
     "SERVER": {
@@ -256,6 +261,50 @@
         "CHANGE": "Change",
         "ERROR_EMPTY": "Username cannot be empty",
         "ERROR_INVALID": "Username is not valid",
-        "ERROR_TAKEN": "Username is already taken"
+        "ERROR_TAKEN": "Username is already taken",
+        "SAVE": "Save"
+    },
+
+    "FRIENDS": {
+        "SEARCH": "Search for a user...",
+        "ADD": "Add friend",
+        "REMOVE": "Remove friend",
+        "ACCEPTE_REQUEST": "Accept request",
+        "REFUSE_REQUEST": "Refuse request",
+        "DELETE_REQUEST": "Delete request",
+        "FRIENDS_LIST": "Friends list",
+        "FRIENDS_REQUEST": "Friends request",
+        "FRIEND": "Friend",
+        "EMPTY": "No friend found",
+        "MESSAGE": "You can add friends by searching for their username.",
+        "EMPTY_REQUEST": "No friend request found",
+        "BTN": "Friends"
+    },
+
+    "CREAT_JOIN": {
+        "QUESTION": "What do you want to do ?",
+        "CREATE": "Create a game",
+        "JOIN": "Join a game"
+    },
+
+    "CHAT": {
+        "TITLE": "Chat",
+        "SEARCH": "Search",
+        "JOIN": "Join",
+        "LEAVE": "Leave",
+        "DELETE": "Delete",
+        "QUIT": "Quit",
+        "CREATE": "Create new room",
+        "ROOM": "new room",
+        "NAME": "Room name"
+    },
+
+    "GAME_SETUP": {
+        "TITLE": "Game setup",
+        "DURATION": "Duration",
+        "BONUS": "Bonus",
+        "CHEATMODE": "Cheat mode",
+        "CONFIRME": "Confirm",
+        "CANCEL": "Cancel"
     }
 }

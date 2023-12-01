@@ -7,14 +7,14 @@
             <b>{{ 'GAME_CARD.BEST_SCORE' | translate }}</b>
         </h3>
         <div class="scores">
-            <span> Nombre de différences : {{ getNbDifferences() }}</span>
+            <span [innerHTML]="'GAME_CARD.DIFFERENCE' | translate: { difference: getNbDifferences() }"></span>
             <!-- <app-game-score [title]="'1 vs 1'" [scores]="getMultiplayerScores()" [isMultiplayer]="true"></app-game-score> -->
         </div>
     </mat-card-content>
     <mat-card-content *ngIf="isJoining">
         <span> Joueurs : </span>
         <span *ngFor="let player of joinableGameCard.players">
-            <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
+            <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
             {{ player.name }} <br />
         </span>
         <span *ngIf="joinableGameCard.observers">

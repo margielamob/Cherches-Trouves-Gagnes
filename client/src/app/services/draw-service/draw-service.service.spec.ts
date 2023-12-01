@@ -558,11 +558,14 @@ describe('DrawServiceService', () => {
         const spyExecute = spyOn(newCommand, 'execute').and.callFake(() => {});
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         const spyClearAllForegrounds = spyOn(service, 'clearAllForegrounds').and.callFake(() => {});
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        const spyClearAllBckgrounds = spyOn(service, 'clearAllBackground').and.callFake(() => {});
         service.commands = [newCommand];
         service['indexOfCommand'] = 0;
         service['executeAllCommand']();
         expect(spyExecute).toHaveBeenCalled();
         expect(spyClearAllForegrounds).toHaveBeenCalled();
+        expect(spyClearAllBckgrounds).toHaveBeenCalled();
     });
 
     it('removeCommandsPastIndex(...) should remove all elements past certain index', () => {

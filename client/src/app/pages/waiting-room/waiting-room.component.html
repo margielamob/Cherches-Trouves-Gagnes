@@ -13,7 +13,7 @@
         <h2>List of players:</h2>
         <ul *ngIf="players.length; else noPlayers">
             <li *ngFor="let player of players">
-                <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="50" height="50" />
+                <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
                 {{ player.name }}
             </li>
         </ul>

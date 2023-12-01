@@ -117,7 +117,7 @@ class SignUpPageState extends State<SignUpPage> {
                                     uid: firebaseCredential.user!.uid,
                                     displayName: userName as String,
                                     email: email as String,
-                                    photoURL: '',
+                                    photoURL: 'assets/default-user-icon.jpg',
                                     phoneNumber: '',
                                     theme: 'Default',
                                     language: 'Fr',
@@ -160,7 +160,7 @@ class SignUpPageState extends State<SignUpPage> {
               Expanded(
                 flex: 4,
                 child: Image.asset(
-                  'assets/quote.png',
+                  'assets/quote_d.png',
                   width: 600,
                 ),
               ),

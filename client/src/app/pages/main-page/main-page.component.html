@@ -7,7 +7,7 @@
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
         </h1>
         <ul>
-            <button class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">Classique</button>
+            <button class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">{{ 'MAINPAGE.CLASSIC' | translate }}</button>
             <li>
                 <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">
                     {{ 'MAINPAGE.LIMITED_TIME' | translate }}
@@ -20,12 +20,12 @@
                 <button mat-flat-button class="optionsButton" color="primary" routerLink="/settings">{{ 'MAINPAGE.SETTINGS' | translate }}</button>
             </li>
             <li>
-                <button mat-flat-button class="optionsButton" color="primary" routerLink="/friends">Liste d'amis</button>
+                <button mat-flat-button class="optionsButton" color="primary" routerLink="/friends">{{ 'FRIENDS.BTN' | translate }}</button>
             </li>
         </ul>
         <h2 class="team-number">{{ 'MAINPAGE.TEAM' | translate }}</h2>
-        <p><span>Jacob Taylor, </span> <span>Karim El Hosni, </span> <span>Thierry Beaulieu,</span></p>
-        <p><span>Laurie Bédard-Côté, </span> <span>Xavier Jouslin.</span></p>
+        <p><span>Thierry, </span> <span>Ahmed El, </span> <span>Sulayman,</span></p>
+        <p><span>Ahmed Ben, </span> <span>Skander</span> <span>Samy</span></p>
     </div>
     <app-game-logo></app-game-logo>
 </div>

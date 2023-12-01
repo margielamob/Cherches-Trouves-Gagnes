@@ -10,6 +10,7 @@ import { CommunicationService } from '@app/services/communication/communication.
 import { GameInformationHandlerService } from '@app/services/game-information-handler/game-information-handler.service';
 import { JoinableGameService } from '@app/services/joinable-game/joinable-game.service';
 import { MainPageService } from '@app/services/main-page/main-page.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { GameMode } from '@common/game-mode';
 import { SocketEvent } from '@common/socket-event';
@@ -21,6 +22,7 @@ import { SocketEvent } from '@common/socket-event';
 })
 export class CreateJoinGameDialogueComponent {
     isLimited: boolean = false;
+    theme: string;
     // eslint-disable-next-line max-params
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { type: string },
@@ -31,10 +33,12 @@ export class CreateJoinGameDialogueComponent {
         private readonly carouselService: GameCarouselService,
         private gameInformationHandlerService: GameInformationHandlerService,
         private communicationSocketService: CommunicationSocketService,
+        private themeService: ThemeService,
         private joinableGameService: JoinableGameService,
         private userService: UserService,
     ) {
         this.isLimited = data.type === 'limited';
+        this.theme = this.themeService.getAppTheme();
     }
 
     onCreateClick(): void {

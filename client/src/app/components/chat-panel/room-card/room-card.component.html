@@ -8,10 +8,10 @@
 <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="leaveRoom()">
         <mat-icon>logout</mat-icon>
-        <span>Quitter</span>
+        <span>{{ 'CHAT.QUIT' | translate }}</span>
     </button>
     <button mat-menu-item (click)="deleteRoom()">
         <mat-icon>delete</mat-icon>
-        <span>Supprimer</span>
+        <span>{{ 'CHAT.DELETE' | translate }}</span>
     </button>
 </mat-menu>

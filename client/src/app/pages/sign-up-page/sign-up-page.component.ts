@@ -59,7 +59,7 @@ export class SignUpPageComponent {
                     const user: UserData = {
                         displayName: username as string,
                         email: credential.user?.email as string,
-                        photoURL: '',
+                        photoURL: 'assets/default-user-icon.jpg',
                         uid: credential.user?.uid as string,
                         phoneNumber: '',
                         // Set default user configurations
