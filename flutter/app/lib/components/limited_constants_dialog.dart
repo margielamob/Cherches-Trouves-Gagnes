@@ -47,7 +47,7 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
               ),
             ),
             SizedBox(height: 10),
-            Text("Temps bonus (secondes) :"),
+            Text(AppLocalizations.of(context)!.limitedDialogTime),
             SizedBox(
               width: 50,
               child: TextField(
@@ -73,7 +73,7 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Activer le cheat mode :"),
+                Text(AppLocalizations.of(context)!.limitedDialogCheat),
                 Checkbox(
                   value: cheatModeActivated,
                   onChanged: (value) {
@@ -95,7 +95,8 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                   ),
-                  child: Text("Annuler"),
+                  child:
+                      Text(AppLocalizations.of(context)!.limitedDialogCheatNo),
                 ),
                 SizedBox(width: 20),
                 FilledButton(
@@ -106,7 +107,8 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(Size(100.0, 40.0)),
                   ),
-                  child: Text("Confirmer"),
+                  child:
+                      Text(AppLocalizations.of(context)!.limitedDialogCheatYes),
                 ),
               ],
             ),

@@ -40,5 +40,10 @@
     "deleteBoutton": "Delete",
     "deleteConfirm": "Are you sure you want to delete this game?",
     "diffNumber": "Number of differences",
-    "limitedDialogTitle": "Configures game settings"
+    "limitedDialogTitle": "Configures game settings",
+    "limitedDialogTime": "Game duration (seconds):",
+    "limitedDialogBonus": "Bonus time (seconds) :",
+    "limitedDialogCheat": "Activer le cheat mode :",
+    "limitedDialogCheatYes": "Confimer",
+    "limitedDialogCheatNo": "Annuler"
 }
