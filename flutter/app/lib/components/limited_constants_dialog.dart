@@ -24,7 +24,7 @@ class _LimitedConstantsDialogState extends State<LimitedConstantsDialog> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Durée de la partie (secondes) :"),
+            Text(AppLocalizations.of(context)!.limitedDialogTime),
             SizedBox(
               width: 50,
               child: TextField(
