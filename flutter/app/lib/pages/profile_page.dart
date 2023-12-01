@@ -9,7 +9,10 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(
           context, AppLocalizations.of(context)!.profilePageTitle),
-      body: UserPersonalInfo(),
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: UserPersonalInfo(),
+      ),
     );
   }
 }

@@ -16,56 +16,59 @@ class CreateGamePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.createGamePage),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GenerateDifferencesButton(),
-              SizedBox(
-                width: 75,
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  DrawingCanvasLeft(),
-                  MenuUnderCanvasLeft(),
-                ],
-              ),
-              SizedBox(width: 20),
-              MenuBetweenCanvas(),
-              SizedBox(width: 20),
-              Column(
-                children: [
-                  DrawingCanvasRight(),
-                  MenuUnderCanvasRight(),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 230),
-                  child: PencilBox(),
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GenerateDifferencesButton(),
+                SizedBox(
+                  width: 75,
                 ),
-              ),
-              SubmissionBoxNewDrawing(),
-              SizedBox(width: 25),
-            ],
-          ),
-          SizedBox(height: 40),
-        ],
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    DrawingCanvasLeft(),
+                    MenuUnderCanvasLeft(),
+                  ],
+                ),
+                SizedBox(width: 20),
+                MenuBetweenCanvas(),
+                SizedBox(width: 20),
+                Column(
+                  children: [
+                    DrawingCanvasRight(),
+                    MenuUnderCanvasRight(),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 230),
+                    child: PencilBox(),
+                  ),
+                ),
+                SubmissionBoxNewDrawing(),
+                SizedBox(width: 25),
+              ],
+            ),
+            SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }

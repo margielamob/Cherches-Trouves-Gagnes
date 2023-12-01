@@ -58,47 +58,50 @@ class _FriendsListPageState extends State<FriendsListPage> {
       appBar: AppBar(
         title: Text('Liste d\'amis'),
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: firestore.collection('users').doc(currentUserUid).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: StreamBuilder<DocumentSnapshot>(
+          stream: firestore.collection('users').doc(currentUserUid).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError || !snapshot.hasData) {
-            return Center(child: Text('Erreur ou aucune donnée'));
-          }
+            if (snapshot.hasError || !snapshot.hasData) {
+              return Center(child: Text('Erreur ou aucune donnée'));
+            }
 
-          UserData currentUser = UserData.fromSnapshot(snapshot.data!);
-          List<String> friendsList = currentUser.friends ?? [];
+            UserData currentUser = UserData.fromSnapshot(snapshot.data!);
+            List<String> friendsList = currentUser.friends ?? [];
 
-          if (friendsList.isEmpty) {
-            return Center(child: Text('Aucun ami'));
-          }
+            if (friendsList.isEmpty) {
+              return Center(child: Text('Aucun ami'));
+            }
 
-          return ListView.builder(
-            itemCount: friendsList.length,
-            itemBuilder: (context, index) {
-              String friendUid = friendsList[index];
-              return FutureBuilder<String>(
-                future: _getFriendName(friendUid),
-                builder: (context, friendSnapshot) {
-                  if (friendSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return ListTile(title: Text('Chargement...'));
-                  }
-                  return ListTile(
-                    title: Text(friendSnapshot.data ?? 'Utilisateur inconnu'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _removeFriend(friendUid),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
+            return ListView.builder(
+              itemCount: friendsList.length,
+              itemBuilder: (context, index) {
+                String friendUid = friendsList[index];
+                return FutureBuilder<String>(
+                  future: _getFriendName(friendUid),
+                  builder: (context, friendSnapshot) {
+                    if (friendSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return ListTile(title: Text('Chargement...'));
+                    }
+                    return ListTile(
+                      title: Text(friendSnapshot.data ?? 'Utilisateur inconnu'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _removeFriend(friendUid),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

@@ -15,13 +15,16 @@ class ReachableGamePage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(
           context, AppLocalizations.of(context)!.reachableGames),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: ReachableGamesCarrousel(
-            isClassicGame:
-                gameManagerService.gameMode?.value == AvailableGameMode.classic
-                    ? true
-                    : false),
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: ReachableGamesCarrousel(
+              isClassicGame: gameManagerService.gameMode?.value ==
+                      AvailableGameMode.classic
+                  ? true
+                  : false),
+        ),
       ),
     );
   }

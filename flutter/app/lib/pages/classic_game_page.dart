@@ -61,67 +61,70 @@ class _ClassicState extends State<Classic> {
     }
     return Scaffold(
       appBar: CustomAppBar.buildGameNavigationBar(context, title),
-      body: Center(
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          FutureBuilder<VignettesModel>(
-            future: _classicGameService.getImagesFromIds(
-                gameManagerService.gameCards!.idOriginalBmp,
-                gameManagerService.gameCards!.idEditedBmp),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                final images = snapshot.data;
-                if (images != null) {
-                  if (endGameService.isGameFinished) {
-                    _userService.updateUserGamePlayer(
-                        gameManagerService.currentUser!.id);
-                    gameManagerService.updateTotalTimePlayed();
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return EndGameDialog();
-                        },
-                      );
-                    });
-                  }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Clock(),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      AbsorbPointer(
-                        absorbing: gameManagerService.isObservable,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Center(
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            FutureBuilder<VignettesModel>(
+              future: _classicGameService.getImagesFromIds(
+                  gameManagerService.gameCards!.idOriginalBmp,
+                  gameManagerService.gameCards!.idEditedBmp),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final images = snapshot.data;
+                  if (images != null) {
+                    if (endGameService.isGameFinished) {
+                      _userService.updateUserGamePlayer(
+                          gameManagerService.currentUser!.id);
+                      gameManagerService.updateTotalTimePlayed();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return EndGameDialog();
+                          },
+                        );
+                      });
+                    }
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20),
+                        Row(
                           children: [
-                            GameVignetteModified(images, widget.gameId),
-                            SizedBox(width: 50),
-                            GameVignetteOriginal(images, widget.gameId),
+                            Clock(),
                           ],
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      (gameManagerService.gameMode!.value == "Classique" &&
-                              !gameManagerService.isObservable)
-                          ? VideoPlayer()
-                          : SizedBox(height: 0),
-                      SizedBox(height: 5),
-                      CurrentPlayers(),
-                      SizedBox(height: 30),
-                    ],
-                  );
+                        SizedBox(height: 10),
+                        AbsorbPointer(
+                          absorbing: gameManagerService.isObservable,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GameVignetteModified(images, widget.gameId),
+                              SizedBox(width: 50),
+                              GameVignetteOriginal(images, widget.gameId),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        (gameManagerService.gameMode!.value == "Classique" &&
+                                !gameManagerService.isObservable)
+                            ? VideoPlayer()
+                            : SizedBox(height: 0),
+                        SizedBox(height: 5),
+                        CurrentPlayers(),
+                        SizedBox(height: 30),
+                      ],
+                    );
+                  }
                 }
-              }
-              return CircularProgressIndicator();
-            },
-          ),
-        ]),
+                return CircularProgressIndicator();
+              },
+            ),
+          ]),
+        ),
       ),
     );
   }

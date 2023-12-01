@@ -14,13 +14,16 @@ class GameSelectionPage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar.buildLogoutOnly(
           context, AppLocalizations.of(context)!.selectPageTitle),
-      body: Column(
-        children: [
-          SizedBox(height: 30),
-          Expanded(
-            child: Carousel(isCarouselForAdminPage: false),
-          ),
-        ],
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Column(
+          children: [
+            SizedBox(height: 30),
+            Expanded(
+              child: Carousel(isCarouselForAdminPage: false),
+            ),
+          ],
+        ),
       ),
     );
   }

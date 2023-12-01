@@ -66,49 +66,53 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
       appBar: AppBar(
         title: Text('Demandes d\'amis'),
       ),
-      body: StreamBuilder<List<FriendRequest>>(
-        stream: friendRequestService
-            .listenForReceivedFriendRequests(currentUserUid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: StreamBuilder<List<FriendRequest>>(
+          stream: friendRequestService
+              .listenForReceivedFriendRequests(currentUserUid),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError || !snapshot.hasData) {
-            return Center(child: Text('Erreur ou aucune donnée'));
-          }
+            if (snapshot.hasError || !snapshot.hasData) {
+              return Center(child: Text('Erreur ou aucune donnée'));
+            }
 
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              FriendRequest request = snapshot.data![index];
-              return FutureBuilder<String>(
-                future: _getUserName(request.from),
-                builder: (context, userSnapshot) {
-                  if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return ListTile(title: Text('Chargement...'));
-                  }
-                  return ListTile(
-                    title: Text('Demande de : ${userSnapshot.data}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.check, color: Colors.green),
-                          onPressed: () => _acceptRequest(request),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close, color: Colors.red),
-                          onPressed: () => _rejectRequest(request),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                FriendRequest request = snapshot.data![index];
+                return FutureBuilder<String>(
+                  future: _getUserName(request.from),
+                  builder: (context, userSnapshot) {
+                    if (userSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return ListTile(title: Text('Chargement...'));
+                    }
+                    return ListTile(
+                      title: Text('Demande de : ${userSnapshot.data}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.check, color: Colors.green),
+                            onPressed: () => _acceptRequest(request),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close, color: Colors.red),
+                            onPressed: () => _rejectRequest(request),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

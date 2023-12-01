@@ -32,7 +32,8 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
+      body: WillPopScope(
+        onWillPop: () async => false,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
