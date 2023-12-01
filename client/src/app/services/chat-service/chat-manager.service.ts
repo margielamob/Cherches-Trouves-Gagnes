@@ -4,6 +4,8 @@
 import { Injectable } from '@angular/core';
 import { UserData } from '@app/interfaces/user';
 import { CommunicationSocketService } from '@app/services/communication-socket/communication-socket.service';
+import { LanguageService } from '@app/services/language-service/languag.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { UserService } from '@app/services/user-service/user.service';
 import { ChatMessage, UserRoom } from '@common/chat';
 import { SocketEvent } from '@common/socket-event';
@@ -24,7 +26,13 @@ export class ChatManagerService {
 
     detached: boolean = false;
 
-    constructor(private socket: CommunicationSocketService, private userService: UserService, private display: ChatDisplayService) {
+    constructor(
+        private socket: CommunicationSocketService,
+        private userService: UserService,
+        private display: ChatDisplayService,
+        private languageService: LanguageService,
+        private themeService: ThemeService,
+    ) {
         // this.addListeners();
         // this.fetchUserRooms();
         // this.fetchAllRooms();
@@ -205,6 +213,8 @@ export class ChatManagerService {
             activeRoom: this.activeRoom.value,
             isRoomSelected: this.display.isRoomSelected.value,
             isSearchSelected: this.display.isSearchSelected.value,
+            language: this.languageService.getCurrentLanguage(),
+            theme: this.themeService.getAppTheme(),
         });
         this.sync();
     }
@@ -285,5 +295,21 @@ export class ChatManagerService {
         });
         this.messages.next(newMessages);
         this.socket.send(SocketEvent.UpdateMessagesUsername, { oldName, newName });
+    }
+
+    updateDetachedLanguage(language: string) {
+        if (!this.detached) {
+            return;
+        }
+        const ipcRenderer = window.require('electron').ipcRenderer;
+        ipcRenderer.send('language', { language });
+    }
+
+    updateDetachedTheme(theme: string) {
+        if (!this.detached) {
+            return;
+        }
+        const ipcRenderer = window.require('electron').ipcRenderer;
+        ipcRenderer.send('theme', { theme });
     }
 }

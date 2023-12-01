@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { ThemeService } from '@app/services/theme-service/theme.service';
 import { debounceTime, of, startWith, switchMap } from 'rxjs';
 
 const time = 200;
@@ -25,7 +26,7 @@ export class RoomAddComponent implements OnInit {
         }),
     );
 
-    constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
+    constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService, public themeService: ThemeService) {}
 
     ngOnInit(): void {
         this.chatManager.allRoomsList.subscribe((rooms) => {

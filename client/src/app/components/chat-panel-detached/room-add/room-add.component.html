@@ -1,6 +1,12 @@
-<div class="wrapper">
+<div
+    class="wrapper"
+    [ngClass]="{
+        'indigo-pink-theme': this.themeService.appTheme === 'Default',
+        'deeppurple-amber-theme': this.themeService.appTheme === 'Alternative'
+    }"
+>
     <mat-form-field class="search">
-        <mat-label class="search-label">Search</mat-label>
+        <mat-label class="search-label">{{ 'CHAT.SEARCH' | translate }}</mat-label>
         <input matInput [formControl]="search" class="search-input" />
     </mat-form-field>
 

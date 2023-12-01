@@ -4,8 +4,16 @@
     </mat-expansion-panel-header> -->
 <div class="wrapper">
     <mat-form-field class="create">
-        <mat-label class="create-label">Create room</mat-label>
-        <input matInput class="create-input" (keydown.enter)="createRoom()" [(ngModel)]="newRoom" [formControl]="formControl" autofocus />
+        <mat-label class="create-label">{{ 'CHAT.CREATE' | translate }}</mat-label>
+        <input
+            matInput
+            placeholder="{{ 'CHAT.NAME' | translate }}"
+            class="create-input"
+            (keydown.enter)="createRoom()"
+            [(ngModel)]="newRoom"
+            [formControl]="formControl"
+            autofocus
+        />
         <mat-error *ngIf="formControl.hasError('roomError') || isInputEmpty || isRoomCreated"> {{ errorMessage }} </mat-error>
     </mat-form-field>
 </div>
