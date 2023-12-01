@@ -36,7 +36,12 @@ class DifferenceVignetteModal extends StatelessWidget {
                 case ConnectionState.active:
                 case ConnectionState.none:
                 case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: WillPopScope(
+                      onWillPop: () async => false,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 case ConnectionState.done:
                   if (snapshot.hasError || snapshot.data == null) {
                     return ErrorNewVignetteCreation();
@@ -73,22 +78,26 @@ class EnlargementRadiusSelection extends StatelessWidget {
             final radiusService = Provider.of<RadiusSliderService>(context);
             return AlertDialog(
               title: Text('Select an enlargement radius'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Radius : ${radiusService.radiusSlider.getValue()} px'),
-                  SizedBox(
-                    width: 300,
-                    child: Slider(
-                      min: radiusService.radiusSlider.minimum,
-                      max: radiusService.radiusSlider.maximum,
-                      value: radiusService.radiusSlider.currentProgression,
-                      onChanged: (double progression) {
-                        radiusService.updateProgression(progression);
-                      },
+              content: WillPopScope(
+                onWillPop: () async => false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'Radius : ${radiusService.radiusSlider.getValue()} px'),
+                    SizedBox(
+                      width: 300,
+                      child: Slider(
+                        min: radiusService.radiusSlider.minimum,
+                        max: radiusService.radiusSlider.maximum,
+                        value: radiusService.radiusSlider.currentProgression,
+                        onChanged: (double progression) {
+                          radiusService.updateProgression(progression);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               actions: <Widget>[
                 FilledButton(
@@ -117,7 +126,10 @@ class RejectionModalDifferenceVignette extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Error message'),
-      content: const Text("You need between 3 and 9 differences"),
+      content: WillPopScope(
+        onWillPop: () async => false,
+        child: const Text("You need between 3 and 9 differences"),
+      ),
       actions: <Widget>[
         FilledButton(
           onPressed: () => Navigator.pop(context, 'OK'),
@@ -143,45 +155,48 @@ class DifferenceVignetteModalContent extends StatelessWidget {
     return AlertDialog(
       title: const Text('Differences produced'),
       content: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [Text("There are $nbDifference differences")],
-            ),
-            ImageBorder.forSizeBox(
-              color: Colors.black,
-              width: 1.0,
-              sizeBoxChild: SizedBox(
-                width: 533,
-                height: 400,
-                child: Image.memory(
-                  image,
-                  fit: BoxFit.cover,
+        child: WillPopScope(
+          onWillPop: () async => false,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [Text("There are $nbDifference differences")],
+              ),
+              ImageBorder.forSizeBox(
+                color: Colors.black,
+                width: 1.0,
+                sizeBoxChild: SizedBox(
+                  width: 533,
+                  height: 400,
+                  child: Image.memory(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            Row(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(height: 15),
-                    Text("Give your new game a new!"),
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        maxLength: 20,
-                        onChanged: ((value) {
-                          vignetteSubmissionService.changeGameName(value);
-                        }),
-                        decoration: InputDecoration(labelText: 'Name'),
+              Row(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(height: 15),
+                      Text("Give your new game a new!"),
+                      SizedBox(
+                        width: 200,
+                        child: TextField(
+                          maxLength: 20,
+                          onChanged: ((value) {
+                            vignetteSubmissionService.changeGameName(value);
+                          }),
+                          decoration: InputDecoration(labelText: 'Name'),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          ],
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
       actions: <Widget>[
@@ -225,7 +240,12 @@ class FeedBackFromVignetteSubmission extends StatelessWidget {
                       case ConnectionState.active:
                       case ConnectionState.none:
                       case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: WillPopScope(
+                            onWillPop: () async => false,
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
                       case ConnectionState.done:
                         if (snapshot.hasError ||
                             snapshot.data == null ||
@@ -255,7 +275,10 @@ class SubmissionConfirmationModalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Congrats! A new game was created!'),
+      title: WillPopScope(
+        onWillPop: () async => false,
+        child: const Text('Congrats! A new game was created!'),
+      ),
       actions: <Widget>[
         FilledButton(
           onPressed: () {
