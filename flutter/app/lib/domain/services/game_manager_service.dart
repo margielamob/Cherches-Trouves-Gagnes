@@ -49,7 +49,6 @@ class GameManagerService extends ChangeNotifier {
   GameCardModel? gameCards;
   UserRequest? userRequest;
   List<UserModel> players = [];
-  List<String> avatars = [];
   UserModel? currentUser;
   String? currentGameId;
   String? currentRoomId;
@@ -97,13 +96,11 @@ class GameManagerService extends ChangeNotifier {
     _socket.on(SocketEvent.waitPlayer, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       players = waitingRoomInfoRequest!.players;
-      avatars = players.map((e) => e.avatar!).toList().cast<String>();
       Get.offAll(WaitingPage());
     });
     _socket.on(SocketEvent.updatePlayers, (dynamic message) {
       waitingRoomInfoRequest = WaitingRoomInfoRequest.fromJson(message);
       players = waitingRoomInfoRequest!.players;
-      avatars = players.map((e) => e.avatar!).toList().cast<String>();
       notifyListeners();
     });
     _socket.on(SocketEvent.gameStarted, (dynamic message) {});
@@ -246,15 +243,6 @@ class GameManagerService extends ChangeNotifier {
       );
     });
   }
-
-  // void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
-  //   for (var player in players) {
-  //     if (player.name == differenceFound.playerName) {
-  //       player.nbDifferenceFound = player.nbDifferenceFound! + 1;
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
 
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
