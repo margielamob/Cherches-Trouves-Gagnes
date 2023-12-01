@@ -14,7 +14,7 @@
     <mat-card-content *ngIf="isJoining">
         <span> Joueurs : </span>
         <span *ngFor="let player of joinableGameCard.players">
-            <img [src]="player.avatar" alt="{{ player.name }}'s avatar" width="16px" height="16px" />
+            <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
             {{ player.name }} <br />
         </span>
         <span *ngIf="joinableGameCard.observers">

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Avatar extends StatelessWidget {
+class GameAvatar extends StatelessWidget {
   final String? photoURL;
   final VoidCallback? onTap;
 
-  const Avatar({this.photoURL, this.onTap});
+  const GameAvatar({this.photoURL, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +13,16 @@ class Avatar extends StatelessWidget {
       child: Center(
         child: photoURL == null
             ? CircleAvatar(
-                radius: 25.0,
+                radius: 10.0,
                 child: Icon(Icons.photo_camera),
               )
             : photoURL!.startsWith('assets')
                 ? CircleAvatar(
-                    radius: 25.0,
+                    radius: 10.0,
                     backgroundImage: AssetImage(photoURL!),
                   )
                 : CircleAvatar(
-                    radius: 25.0,
+                    radius: 10.0,
                     backgroundImage: NetworkImage(photoURL!),
                   ),
       ),

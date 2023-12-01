@@ -244,15 +244,6 @@ class GameManagerService extends ChangeNotifier {
     });
   }
 
-  // void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
-  //   for (var player in players) {
-  //     if (player.name == differenceFound.playerName) {
-  //       player.nbDifferenceFound = player.nbDifferenceFound! + 1;
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
-
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
       if (player.name == differenceFound.playerName) {
@@ -334,5 +325,9 @@ class GameManagerService extends ChangeNotifier {
     ObserveGameRequest data =
         ObserveGameRequest(player: currentUser!, roomId: roomId);
     _socket.send(SocketEvent.observeGame, data.toJson());
+  }
+
+  Future<String> setUserAvatar(UserModel user) {
+    return _userService.initUserAvatar(user);
   }
 }

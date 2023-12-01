@@ -26,17 +26,16 @@ class AvatarDialogState extends State<AvatarDialog> {
   Future<void> initUser() async {
     currentUser = await authService.getCurrentUser();
     if (currentUser != null) {
-      if (currentUser!.photoURL == '') {
-        avatar = 'assets/default-user-icon.jpg';
-        selectedAvatar = 'assets/default-user-icon.jpg';
-        return;
-      }
       if (currentUser!.photoURL!.startsWith('assets/')) {
         avatar = currentUser!.photoURL;
         selectedAvatar = currentUser!.photoURL;
+        return;
       } else {
         avatar = await userService.getPhotoURL(currentUser!.uid);
       }
+    } else {
+      avatar = 'assets/default-user-icon.jpg';
+      selectedAvatar = 'assets/default-user-icon.jpg';
     }
   }
 
@@ -45,7 +44,7 @@ class AvatarDialogState extends State<AvatarDialog> {
     super.initState();
     initUser();
   }
-
+  @override
   Widget build(BuildContext context) {
     return Dialog(
         child: Padding(
