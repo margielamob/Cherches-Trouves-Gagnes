@@ -59,24 +59,21 @@ class _WaitingPageState extends State<WaitingPage> {
                 itemBuilder: (context, index) {
                   final playerName = gameManagerService
                       .waitingRoomInfoRequest?.players[index].name;
-                  var playerPhotoURL = gameManagerService
+                  avatar = gameManagerService
                       .waitingRoomInfoRequest?.players[index].avatar;
-                  if (playerPhotoURL!.startsWith('avatars/')) {
-                    print(gameManagerService
-                        .waitingRoomInfoRequest?.players[index].id);
+                  if (avatar!.startsWith('avatars/')) {
+                    avatar = 'assets/default-user-icon.jpg';
                     // initAvatar(
-                    //     playerPhotoURL,
+                    //     avatar!,
                     //     gameManagerService
                     //         .waitingRoomInfoRequest!.players[index]);
-                    // playerPhotoURL = avatar!;
                   }
-                  print(playerPhotoURL);
                   return ListTile(
                     title: Text(playerName!),
                     leading: CircleAvatar(
                       radius: 30,
                       child: Avatar(
-                        photoURL: playerPhotoURL,
+                        photoURL: avatar,
                       ),
                     ),
                   );
