@@ -82,36 +82,33 @@ class _WaitingPageState extends State<WaitingPage> {
             CircularProgressIndicator(),
             SizedBox(height: 20),
             SizedBox(
-                height: 300,
-                width: 300,
-                child: Center(
-                  child: ListView.builder(
-                    itemCount: gameManagerService
-                        .waitingRoomInfoRequest?.players.length,
-                    itemBuilder: (context, index) {
-                      final playerName = gameManagerService
-                          .waitingRoomInfoRequest?.players[index].name;
-                      avatar = gameManagerService
-                          .waitingRoomInfoRequest?.players[index].avatar;
-                      if (avatar!.startsWith('avatars/')) {
-                        avatar = 'assets/default-user-icon.jpg';
-                        // initAvatar(
-                        //     avatar!,
-                        //     gameManagerService
-                        //         .waitingRoomInfoRequest!.players[index]);
-                      }
-                      return ListTile(
-                        title: Text(playerName!),
-                        leading: CircleAvatar(
-                          radius: 30,
-                          child: Avatar(
-                            photoURL: avatar,
-                          ),
+              height: 300,
+              width: 300,
+              child: Center(
+                child: ListView.builder(
+                  itemCount:
+                      gameManagerService.waitingRoomInfoRequest?.players.length,
+                  itemBuilder: (context, index) {
+                    final playerName = gameManagerService
+                        .waitingRoomInfoRequest?.players[index].name;
+                    avatar = gameManagerService
+                        .waitingRoomInfoRequest?.players[index].avatar;
+                    if (avatar!.startsWith('avatars/')) {
+                      avatar = 'assets/default-user-icon.jpg';
+                    }
+                    return ListTile(
+                      title: Text(playerName!),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        child: Avatar(
+                          photoURL: avatar,
                         ),
-                      );
-                    },
-                  ),
-                )),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

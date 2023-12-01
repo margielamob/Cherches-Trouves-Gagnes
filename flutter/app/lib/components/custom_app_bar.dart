@@ -66,17 +66,6 @@ class CustomAppBar {
       actions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: IconButton(
-            icon: Icon(Icons.home),
-            onPressed: () {
-              gameManagerService.leaveWaitingRoom();
-              chatManagerService.leaveGameChat();
-              Get.offAll(MainPage(), transition: Transition.leftToRight);
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
           child: Badge(
             isLabelVisible: unreadMessages > 0,
             label: Text(unreadMessages.toString()),
