@@ -168,6 +168,9 @@ class PersonalUserService {
   }
 
   Future<void> updateUserTotalTimePlayed(String uid, int timePlayed) async {
+    if (timePlayed.isNaN) {
+      return;
+    }
     int currentTotalTimePlayed = await getUserTotalTimePlayed(uid);
     CollectionReference users = db.collection('users');
     return users.doc(uid).update({
