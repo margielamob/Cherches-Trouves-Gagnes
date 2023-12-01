@@ -101,6 +101,7 @@ class LoginPageState extends State<LoginPage> {
                                       isEmail);
                                   _formKey.currentState!.reset();
                                   Get.offAll(MainPage());
+                                  chatManager.initChat();
                                 } catch (error) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
