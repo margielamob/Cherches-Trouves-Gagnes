@@ -1,11 +1,11 @@
+import 'package:app/domain/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:app/domain/services/auth_service.dart'; 
 
 class ResetPasswordPage extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>(); 
-  final _emailController = TextEditingController(); 
-  final AuthService _authService = Get.find<AuthService>(); 
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final AuthService _authService = Get.find<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class ResetPasswordPage extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(20.0),
             child: Form(
-              key: _formKey, 
+              key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -30,7 +30,7 @@ class ResetPasswordPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   TextFormField(
-                    controller: _emailController, 
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: "Adresse e-mail",
                       border: OutlineInputBorder(),
@@ -49,26 +49,25 @@ class ResetPasswordPage extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     child: Text("Réinitialiser le mot de passe"),
-                    onPressed: () async { 
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         try {
-                          await _authService.resetPassword(_emailController.text);
+                          await _authService
+                              .resetPassword(_emailController.text);
                           Get.snackbar(
                             'Succès',
                             "Un e-mail de réinitialisation a été envoyé à ${_emailController.text}.",
                             snackPosition: SnackPosition.BOTTOM,
-                             backgroundColor: Colors.green, 
-                              colorText: Colors.white, 
-
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
                           );
                         } catch (error) {
-                            Get.snackbar(
+                          Get.snackbar(
                             'Erreur',
                             error.toString(),
                             snackPosition: SnackPosition.BOTTOM,
-                             backgroundColor: Colors.red, 
-                              colorText: Colors.white, 
-
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
                           );
                         }
                       }
@@ -83,6 +82,3 @@ class ResetPasswordPage extends StatelessWidget {
     );
   }
 }
-
-
-
