@@ -50,7 +50,7 @@ export class AuthenticationService {
                     );
             }),
             catchError((error: FirebaseError | Error) => {
-                let errorMessage = 'Une erreur est survenue lors de la connexion. Merci de revenir plus tard.';
+                let errorMessage = 'Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter';
 
                 if (error instanceof FirebaseError && error.code === 'auth/wrong-password') {
                     let attempts = parseInt(localStorage.getItem(attemptsKey) || '0', 10);
