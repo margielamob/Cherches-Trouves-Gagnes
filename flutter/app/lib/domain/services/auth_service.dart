@@ -23,6 +23,8 @@ class AuthService {
         throw ' Vous avez déjà une session ouverte sur un autre client, veuillez vous déconnecter';
       }
 
+      logSessionActivity(userId, 'connect');
+
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -127,6 +129,7 @@ class AuthService {
     String userId = auth.currentUser?.uid ?? '';
 
     if (userId.isNotEmpty) {
+      await logSessionActivity(userId, 'disconnect');
       await userService.db.collection('activeUsers').doc(userId).delete();
     }
 
@@ -201,5 +204,17 @@ class AuthService {
     DocumentSnapshot activeUserDoc =
         await userService.db.collection('activeUsers').doc(userId).get();
     return activeUserDoc.exists;
+  }
+
+  Future<void> logSessionActivity(String userID, String activity) async {
+    userService.db
+        .collection('users')
+        .doc(userID)
+        .collection('activityLogs')
+        .add({
+      'activity': activity,
+      'client': 'leger',
+      'timestamp': DateTime.now(),
+    });
   }
 }
