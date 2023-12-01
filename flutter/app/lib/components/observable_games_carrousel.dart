@@ -11,6 +11,7 @@ class ObservableGamesCarrousel extends StatelessWidget {
   final bool isClassicGame;
 
   ObservableGamesCarrousel({required this.isClassicGame}) {
+    observableGameManager.isClassicGameObserve = isClassicGame;
     observableGameManager.getReachableGames(isClassicGame);
   }
 
