@@ -1,7 +1,12 @@
-<mat-expansion-panel>
+<!-- <mat-expansion-panel>
     <mat-expansion-panel-header>
-        <mat-panel-title>{{ 'CHAT.CREATE' | translate }}</mat-panel-title>
-    </mat-expansion-panel-header>
+        <mat-panel-title> Create a new chat room </mat-panel-title>
+    </mat-expansion-panel-header> -->
+<div class="wrapper">
+    <mat-form-field class="create">
+        <mat-label class="create-label">{{ 'CHAT.CREATE' | translate }}</mat-label>
+        <input matInput class="create-input" (keydown.enter)="createRoom()" [(ngModel)]="newRoom" [formControl]="formControl" autofocus />
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="input-area">
         <input
@@ -17,4 +22,10 @@
         </button>
         <mat-error *ngIf="formControl.hasError('roomError') || isInputEmpty || isRoomCreated"> {{ errorMessage }} </mat-error>
     </mat-form-field>
-</mat-expansion-panel>
+</div>
+
+<!-- <mat-form-field class="search">
+    <mat-label class="search-label">Search</mat-label>
+    <input matInput [formControl]="search" class="search-input" />
+</mat-form-field> -->
+<!-- </mat-expansion-panel> -->

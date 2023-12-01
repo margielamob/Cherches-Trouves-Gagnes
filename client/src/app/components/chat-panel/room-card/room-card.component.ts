@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ChatDisplayService } from '@app/services/chat-service/chat-display.service';
 import { ChatManagerService } from '@app/services/chat-service/chat-manager.service';
+import { UserRoom } from '@common/chat';
 
 @Component({
     selector: 'app-room-card',
@@ -9,7 +10,7 @@ import { ChatManagerService } from '@app/services/chat-service/chat-manager.serv
     styleUrls: ['./room-card.component.scss'],
 })
 export class RoomCardComponent implements OnInit {
-    @Input() room: string;
+    @Input() room: UserRoom;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
     constructor(private chatManager: ChatManagerService, private chatDisplay: ChatDisplayService) {}
 
@@ -18,11 +19,11 @@ export class RoomCardComponent implements OnInit {
     }
 
     leaveRoom() {
-        this.chatManager.leaveRoom(this.room);
+        this.chatManager.leaveRoom(this.room.room);
     }
 
     deleteRoom() {
-        this.chatManager.deleteRoom(this.room);
+        this.chatManager.deleteRoom(this.room.room);
     }
 
     selectRoom(room: string) {

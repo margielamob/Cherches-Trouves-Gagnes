@@ -1,4 +1,6 @@
 import 'package:app/domain/services/auth_service.dart';
+import 'package:app/domain/services/chat_service.dart';
+import 'package:app/domain/services/socket_service.dart';
 import 'package:app/pages/main_page.dart';
 import 'package:app/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,9 @@ class LoginPageState extends State<LoginPage> {
   String? credential = "";
   String? password = "";
   bool isEmail = false;
+  final ChatManagerService chatManager = Get.find();
   final AuthService authService = Get.find<AuthService>();
+  final SocketService socket = Get.find<SocketService>();
 
   @override
   void initState() {

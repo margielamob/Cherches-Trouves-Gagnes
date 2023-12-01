@@ -22,6 +22,7 @@ import { CreateGamePageComponent } from '@app/pages/create-game-page/create-game
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+// import { NgxElectronModule } from 'ngx-electron';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { environment } from 'src/environments/environment';
 import { AdminCommandsComponent } from './components/admin-commands/admin-commands.component';
@@ -29,6 +30,14 @@ import { AppLogoComponent } from './components/app-logo/app-logo.component';
 import { ApprovalDialogComponent } from './components/approval-dialog/approval-dialog.component';
 import { CentralBoxComponent } from './components/central-tool-box/central-tool-box.component';
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
+import { ChatFeedDetachedComponent } from './components/chat-panel-detached/chat-feed/chat-feed.component';
+import { ChatListDetachedComponent } from './components/chat-panel-detached/chat-list/chat-list.component';
+import { ChatOverlayDetachedComponent } from './components/chat-panel-detached/chat-overlay/chat-overlay.component';
+import { ChatPanelDetachedComponent } from './components/chat-panel-detached/chat-panel/chat-panel.component';
+import { RoomAddDetachedComponent } from './components/chat-panel-detached/room-add/room-add.component';
+import { RoomCardDetachedComponent } from './components/chat-panel-detached/room-card/room-card.component';
+import { RoomCreateDetachedComponent } from './components/chat-panel-detached/room-create/room-create.component';
+import { RoomSearchDetachedComponent } from './components/chat-panel-detached/room-search/room-search.component';
 import { ChatButtonComponent } from './components/chat-panel/chat-button/chat-button.component';
 import { ChatFeedComponent } from './components/chat-panel/chat-feed/chat-feed.component';
 import { ChatListComponent } from './components/chat-panel/chat-list/chat-list.component';
@@ -66,6 +75,7 @@ import { LoadingScreenComponent } from './components/loading-screen/loading-scre
 import { NoGameSnackbarComponent } from './components/no-game-snackbar/no-game-snackbar.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { PlayerLeftSnackbarComponent } from './components/player-left-snackbar/player-left-snackbar.component';
+import { RectangleOutlineComponent } from './components/rectangle-outline/rectangle-outline.component';
 import { RefreshSnackbarComponent } from './components/refresh-snackbar/refresh-snackbar.component';
 import { RejectedDialogComponent } from './components/rejected-dialog/rejected-dialog.component';
 import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
@@ -86,7 +96,6 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page.component';
 import { WaitingRoomComponent } from './pages/waiting-room/waiting-room.component';
-import { RectangleOutlineComponent } from './components/rectangle-outline/rectangle-outline.component';
 
 /**
  * Main module that is used in main.ts.
@@ -168,6 +177,14 @@ import { RectangleOutlineComponent } from './components/rectangle-outline/rectan
         FriendsListComponent,
         FriendsPageComponent,
         CropperDialogComponent,
+        ChatFeedDetachedComponent,
+        ChatListDetachedComponent,
+        ChatPanelDetachedComponent,
+        RoomAddDetachedComponent,
+        RoomCardDetachedComponent,
+        RoomCreateDetachedComponent,
+        RoomSearchDetachedComponent,
+        ChatOverlayDetachedComponent,
         RectangleOutlineComponent,
     ],
     imports: [
@@ -185,6 +202,7 @@ import { RectangleOutlineComponent } from './components/rectangle-outline/rectan
         AngularFireDatabaseModule,
         AngularFireStorageModule,
         HttpClientModule,
+        // NgxElectronModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

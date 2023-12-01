@@ -34,6 +34,33 @@ class SocketEvent {
   static String getLimitedTimeGames = 'GetLimitedTimeGames';
   static String joinClassicGame = 'JoinClassicGame';
   static String creatorLeft = 'CreatorLeft';
+  static String updateAllRooms = "UpdateAllRooms";
+
+  static String updateUserRooms = "UpdateUserRooms";
+
+  static String roomCreated = "RoomCreated";
+
+  static String roomDeleted = "RoomDeleted";
+
+  static String getMessages = "GetMessages";
+
+  static String initChat = "InitChat";
+
+  static String getUserRooms = "GetUserRooms";
+
+  static String getAllRooms = "GetAllRooms";
+
+  static String createRoom = "CreateRoom";
+
+  static String joinRooms = "JoinRooms";
+
+  static String leaveRoom = "LeaveRoom";
+
+  static String deleteRoom = "DeleteRoom";
+
+  static String ReadMessages = "ReadMessages";
+
+  static String UnreadMessage = "UnreadMessage";
   static String clock = 'clock';
   static String cheat = 'cheat';
   static String timer = 'Timer';
@@ -42,4 +69,8 @@ class SocketEvent {
   static String newGameBoard = 'newGameBoard';
   static String timerBonus = 'TimerBonus';
   static String observeGame = 'ObserveGame';
+
+  static String Login = 'Login';
+
+  static String UpdateMessagesUsername = 'UpdateMessagesUsername';
 }

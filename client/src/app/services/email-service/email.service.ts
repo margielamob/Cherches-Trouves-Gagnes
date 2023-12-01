@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 /* eslint-disable import/no-named-as-default-member */
 import { Injectable } from '@angular/core';
@@ -60,10 +61,10 @@ export class EmailService {
         };
 
         emailjs.send('service_c44otwe', 'template_aj84b6z', emailInfo, 'm8gKT-fbTUbiKG8XF').then(
-            (response) => {
+            (response: { status: any; text: any }) => {
                 console.log('SUCCESS!', response.status, response.text);
             },
-            (err) => {
+            (err: any) => {
                 console.log('FAILED...', err);
             },
         );

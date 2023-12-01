@@ -1,0 +1,20 @@
+<div class="main-wrapper">
+    <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+            <span> Chat </span>
+            <span class="spacer"></span>
+            <button mat-icon-button color="primary" (click)="goToSearch()" class="plus-button">
+                <mat-icon>add</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" (click)="attach()" class="plus-button">
+                <mat-icon>close_fullscreen</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-list class="list-wrapper">
+        <!-- <div class="room" *ngFor="let room of rooms" (click)="selectRoom(room)"> -->
+        <app-detached-room-card class="room" *ngFor="let room of rooms" [room]="room"></app-detached-room-card>
+        <!-- </div> -->
+    </mat-list>
+</div>

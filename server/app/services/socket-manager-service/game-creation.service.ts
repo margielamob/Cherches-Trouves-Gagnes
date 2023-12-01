@@ -27,6 +27,7 @@ export class GameCreationManager {
         });
 
         socket.on(SocketEvent.CreateLimitedGame, async (player: User, card: { id: string; timer: number; bonus: number }) => {
+            console.log(player.name);
             const roomId = await this.createLimitedGame(player, card, true, socket);
             this.chat.createGameChat(roomId, player, socket);
         });

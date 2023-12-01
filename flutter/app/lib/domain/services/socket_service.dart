@@ -8,6 +8,7 @@ class SocketService {
     socket = IO.io(serverUrl, <String, dynamic>{
       'transports': ['websocket'],
     });
+    // connect();
   }
 
   void connect() {
