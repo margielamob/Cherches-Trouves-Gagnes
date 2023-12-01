@@ -63,10 +63,6 @@ class _WaitingPageState extends State<WaitingPage> {
                       .waitingRoomInfoRequest?.players[index].avatar;
                   if (avatar!.startsWith('avatars/')) {
                     avatar = 'assets/default-user-icon.jpg';
-                    // initAvatar(
-                    //     avatar!,
-                    //     gameManagerService
-                    //         .waitingRoomInfoRequest!.players[index]);
                   }
                   return ListTile(
                     title: Text(playerName!),
