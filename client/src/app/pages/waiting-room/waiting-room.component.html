@@ -6,19 +6,25 @@
         [isAvatarEnabled]="false"
         [headerMessage]="'HEADER.WAITING_ROOM' | translate"
     ></app-page-header>
+    <div style="padding-top: 20px"></div>
     <div class="waiting-room-container">
         <div class="dot-pulse"></div>
         <h1 class="waiting-text pulsate">{{ 'SERVER.WAITING_MESSAGE' | translate }}</h1>
     </div>
     <div class="player-list">
-        <h2>List of players:</h2>
-        <ul *ngIf="players.length; else noPlayers">
-            <li *ngFor="let player of players">
-                <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
-                {{ player.name }}
-            </li>
-        </ul>
+        <div class="players">
+            <h2>List of players:</h2>
+            <ul *ngIf="players.length; else noPlayers">
+                <li *ngFor="let player of players">
+                    <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
+                    {{ player.name }}
+                </li>
+            </ul>
+        </div>
+
         <ng-template #noPlayers><p>No players in the waiting room.</p></ng-template>
     </div>
-    <button *ngIf="isCreator" (click)="play()" [disabled]="!canStartGame">play</button>
+    <div class="play-button">
+        <button mat-flat-button color="primary" *ngIf="isCreator" (click)="play()" [disabled]="!canStartGame">play</button>
+    </div>
 </main>

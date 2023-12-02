@@ -1,6 +1,6 @@
 <mat-card class="card-container">
     <mat-card-title *ngIf="!isJoining" class="game-name-title">{{ getGameName() }}</mat-card-title>
-    <img mat-card-lg-image [src]="imageSrc" />
+    <img style="width: 266px; height: 200px" mat-card-lg-image [src]="imageSrc" />
 
     <mat-card-content class="highscores-content" *ngIf="!isJoining">
         <h3 class="highscore-title">
@@ -13,19 +13,22 @@
     </mat-card-content>
     <mat-card-content *ngIf="isJoining">
         <span> Joueurs : </span>
-        <span *ngFor="let player of joinableGameCard.players">
-            <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
-            {{ player.name }} <br />
-        </span>
+        <ul>
+            <li *ngFor="let player of joinableGameCard.players">
+                <app-user-avatar class="inline-avatar" [userAvatar]="player.avatar"></app-user-avatar>
+                {{ player.name }} <br />
+            </li>
+        </ul>
+
         <span *ngIf="joinableGameCard.observers">
-            <span> observateur : </span>
+            <span> Observateur : </span>
             <span *ngFor="let observer of joinableGameCard.observers">
                 <img [src]="observer.avatar" alt="{{ observer.name }}'s avatar" width="16px" height="16px" />
                 {{ observer.name }} <br />
             </span>
         </span>
 
-        <div>{{ joinableGameCard.nbDifferences }}</div>
+        <div><span>Differences: </span>{{ joinableGameCard.nbDifferences }}</div>
     </mat-card-content>
 
     <ng-container *ngIf="isJoining; then joiningTemplate; else notJoiningTemplate"></ng-container>

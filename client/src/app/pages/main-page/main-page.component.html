@@ -1,12 +1,14 @@
 <app-page-header></app-page-header>
 <div class="grid-container">
     <div class="grid-item">
-        <div *ngIf="user$ | async as user">Bienvenue, {{ user.displayName }}!</div>
-        <h1 class="game-title">
+        <h3 class="game-title">
             {{ 'MAINPAGE.TITLE' | translate }}
             <img src="assets/logoJdD.png" class="game-logo" alt="logo pour le jeux de différences" />
-        </h1>
-        <ul>
+        </h3>
+
+        <div class="user-name" *ngIf="user$ | async as user">Bienvenue, {{ user.displayName }}!</div>
+
+        <ul class="container-buttons">
             <button class="optionsButton" mat-flat-button color="primary" (click)="toggleGameOptions()">{{ 'MAINPAGE.CLASSIC' | translate }}</button>
             <li>
                 <button mat-flat-button class="optionsButton" color="primary" (click)="onClickPlayLimited()">
@@ -23,9 +25,6 @@
                 <button mat-flat-button class="optionsButton" color="primary" routerLink="/friends">{{ 'FRIENDS.BTN' | translate }}</button>
             </li>
         </ul>
-        <h2 class="team-number">{{ 'MAINPAGE.TEAM' | translate }}</h2>
-        <p><span>Thierry, </span> <span>Ahmed El, </span> <span>Sulayman,</span></p>
-        <p><span>Ahmed Ben, </span> <span>Skander</span> <span>Samy</span></p>
     </div>
     <app-game-logo></app-game-logo>
 </div>
