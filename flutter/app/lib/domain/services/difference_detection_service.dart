@@ -13,6 +13,10 @@ class DifferenceDetectionService extends ChangeNotifier {
   final SoundService _soundService = Get.find();
   final GameManagerService _gameManagerService = Get.find();
 
+  DifferenceDetectionService() {
+    handleDifferences();
+  }
+
   List<Vec2> coordinates = [];
   Path? blinkingDifference;
   Paint defaultBlinkingColor = Paint()
@@ -25,7 +29,6 @@ class DifferenceDetectionService extends ChangeNotifier {
     });
     _socket.on(SocketEvent.differenceFound, (dynamic message) {
       DifferenceFoundMessage data = DifferenceFoundMessage.fromJson(message);
-      print(data);
       showDifferenceFound(data);
     });
     _socket.on(SocketEvent.error, (dynamic message) {

@@ -6,6 +6,7 @@ import 'package:app/components/custom_app_bar.dart';
 import 'package:app/domain/models/game_mode_model.dart';
 import 'package:app/domain/services/chat_display_service.dart';
 import 'package:app/domain/services/chat_service.dart';
+import 'package:app/domain/services/end_game_service.dart';
 import 'package:app/domain/services/game_manager_service.dart';
 import 'package:app/domain/services/personal_user_service.dart';
 import 'package:app/domain/services/profile_page_manager.dart';
@@ -25,6 +26,7 @@ class _MainPageState extends State<MainPage> {
   final PersonalUserService userService = Get.find();
   final ChatManagerService chatManagerService = Get.find();
   final ChatDisplayService chatDisplayService = Get.find();
+  final EndGameService endGameService = Get.find();
 
   bool showChat = false;
   int unreadMessages = 0;
@@ -34,7 +36,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     chatDisplaySubscription?.cancel();
     unreadMessagesSubscription?.cancel();
@@ -43,6 +44,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    endGameService.resetForNextGame();
     chatDisplaySubscription =
         chatDisplayService.isChatVisible.stream.listen((value) {
       setState(() {
