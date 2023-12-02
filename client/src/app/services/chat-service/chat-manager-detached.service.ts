@@ -177,7 +177,7 @@ export class DetachedChatManagerService {
 
     attach() {
         const ipcRenderer = window.require('electron').ipcRenderer;
-        ipcRenderer.send('attach', { user: this.user, isRoomSelected: this.isRoomSelected.value, isSearchSelected: this.isSearchSelected.value });
+        ipcRenderer.send('attach', { isRoomSelected: this.isRoomSelected.value, isSearchSelected: this.isSearchSelected.value });
     }
 
     sync() {

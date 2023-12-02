@@ -43,6 +43,7 @@ const createChatWindow = (arg) => {
     chatWindow.removeMenu();
 
     chatWindow.on('closed', () => {
+        windows[0].webContents.send('attach', { isRoomSelected: false, isSearchSelected: false });
         windows.pop();
     });
 
