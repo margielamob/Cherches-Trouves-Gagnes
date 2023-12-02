@@ -5,9 +5,21 @@
     align-items: center;
 }
 
-* {
-    background-color: aliceblue;
+.player-list{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.play-button{
+    display:flex;
+    justify-content: center;
+}
+
+.players{
+    width: 50%;
+}
+
 
 .pulsate {
     animation: pulsate 1.5s ease-out;
