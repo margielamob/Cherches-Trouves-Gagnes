@@ -77,10 +77,10 @@ class GameManagerService extends ChangeNotifier {
         if (isObservable) {
           ObserveGameReceiveRequest request =
               ObserveGameReceiveRequest.fromJson(message);
-          print(request);
           currentRoomId = request.gameId;
           gameCards = request.gameCard;
           limitedCoords = request.data.coords;
+          players = request.players!;
         } else {
           currentRoomId = message;
         }
