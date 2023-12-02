@@ -1,33 +1,25 @@
 import 'package:app/domain/models/game_card_model.dart';
-import 'package:app/domain/models/limited_data_model.dart';
-import 'package:app/domain/models/user_model.dart';
+import 'package:app/domain/models/observe_game_data_request.dart';
 
 class ObserveGameReceiveRequest {
   String gameId;
   GameCardModel gameCard;
-  LimitedDataModel data;
-  List<UserModel>? players;
+  ObserveGameDataModel data;
 
-  ObserveGameReceiveRequest(
-      {required this.gameId,
-      required this.gameCard,
-      required this.data,
-      this.players});
+  ObserveGameReceiveRequest({
+    required this.gameId,
+    required this.gameCard,
+    required this.data,
+  });
 
   factory ObserveGameReceiveRequest.fromJson(Map<String, dynamic> json) {
     GameCardModel gameCard = GameCardModel.fromJson(json['gameCard']);
-    LimitedDataModel data = LimitedDataModel.fromJson(json['data']);
-    List<UserModel>? players;
-    if (json.containsKey('players') && json['players'] != null) {
-      players = List<UserModel>.from(
-          json['players'].map((playerJson) => UserModel.fromMap(playerJson)));
-    }
+    ObserveGameDataModel data = ObserveGameDataModel.fromJson(json['data']);
 
     return ObserveGameReceiveRequest(
       gameId: json['gameId'],
       gameCard: gameCard,
       data: data,
-      players: players,
     );
   }
 
@@ -45,8 +37,8 @@ class ObserveGameReceiveRequest {
       'data': {
         'coords': data.coords,
         'nbDifferencesLeft': data.nbDifferencesLeft,
+        'players': data.players,
       },
-      'players': players,
     };
   }
 }

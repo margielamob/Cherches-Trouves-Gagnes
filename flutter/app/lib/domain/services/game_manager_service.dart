@@ -80,7 +80,7 @@ class GameManagerService extends ChangeNotifier {
           currentRoomId = request.gameId;
           gameCards = request.gameCard;
           limitedCoords = request.data.coords;
-          players = request.players!;
+          players = request.data.players;
         } else {
           currentRoomId = message;
         }
@@ -90,6 +90,11 @@ class GameManagerService extends ChangeNotifier {
         currentRoomId = data.gameId;
         gameCards = data.gameCard;
         limitedCoords = data.data.coords;
+        if (isObservable) {
+          ObserveGameReceiveRequest request =
+              ObserveGameReceiveRequest.fromJson(message);
+          players = request.data.players;
+        } 
         Get.offAll(Classic(gameId: currentRoomId!));
       }
     });
@@ -247,16 +252,7 @@ class GameManagerService extends ChangeNotifier {
   void updatePlayersNbDifference(DifferenceFoundMessage differenceFound) {
     for (var player in players) {
       if (player.name == differenceFound.playerName) {
-        for (var diff in player.nbDifferenceFound) {
-          if (diff.x == differenceFound.differenceCoord.x &&
-              diff.y == differenceFound.differenceCoord.y) {
-            return;
-          }
-        }
-        if (player.name == currentUser!.name && !global.isModeReplayActivated) {
-          _userService.updateUserNbDiffFound(currentUser!.id);
-        }
-        player.nbDifferenceFound.add(differenceFound.differenceCoord);
+        player.nbDifferenceFound++;
       }
     }
     notifyListeners();
@@ -270,8 +266,7 @@ class GameManagerService extends ChangeNotifier {
 
   void resetAllPlayersNbDifference() {
     for (var player in players) {
-      player.nbDifferenceFound = [];
-      // player.nbDifferenceFound = 0;
+      player.nbDifferenceFound = 0;
     }
     notifyListeners();
   }
@@ -279,8 +274,7 @@ class GameManagerService extends ChangeNotifier {
   void resetPlayerNbDifference(String playerName) {
     for (var player in players) {
       if (player.name == playerName) {
-        player.nbDifferenceFound = [];
-        // player.nbDifferenceFound = 0;
+        player.nbDifferenceFound = 0;
       }
     }
   }
