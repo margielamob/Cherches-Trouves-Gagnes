@@ -118,6 +118,7 @@ class _WaitingPageState extends State<WaitingPage> {
                     TextButton(
                       onPressed: () {
                         gameManagerService.leaveWaitingRoom();
+                        chatManagerService.leaveGameChat();
                       },
                       style: ButtonStyle(
                         alignment: Alignment.center,

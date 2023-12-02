@@ -35,7 +35,7 @@ const routes: Routes = [
     { path: 'error', component: MongodbErrorPageComponent, canActivate: [AuthGuard] },
     { path: 'settings', component: SettingsPageComponent, canActivate: [AuthGuard] },
     { path: 'verify-email', component: EmailVerificationComponent },
-    { path: 'join-game', component: JoinGameSelectionComponent, canActivate: [AuthGuard] },
+    { path: 'join-game', component: JoinGameSelectionComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'detached', component: ChatOverlayDetachedComponent },
     {
