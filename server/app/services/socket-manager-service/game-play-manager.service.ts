@@ -15,6 +15,7 @@ import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Service } from 'typedi';
+import { ChatSocketManager } from './chat.service';
 import { SocketServer } from './server-socket-manager.service';
 
 @Service()
@@ -26,6 +27,7 @@ export class GamePlayManager {
         private eventMessageService: EventMessageService,
         private readonly scoresHandlerService: ScoresHandlerService,
         private cluesService: CluesService,
+        private chatManager: ChatSocketManager,
     ) {}
 
     private get sio(): io.Server {
@@ -137,6 +139,7 @@ export class GamePlayManager {
             const pastPlayerDiffs = this.gameManager.updateObservableGameState(gameId);
             const gameCard = this.gameManager.getGameInfo(gameId);
             this.gameManager.addObserver(gameId, { name: player.name, id: socket.id, avatar: player.avatar });
+            this.chatManager.joinGameChat(gameId, { name: player.name, id: socket.id }, socket);
             let gameCardInfo: PublicGameInformation;
             if (gameCard) {
                 gameCardInfo = {
