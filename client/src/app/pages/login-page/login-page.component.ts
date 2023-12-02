@@ -41,7 +41,7 @@ export class LoginPageComponent implements OnInit {
         this.userService.user$.pipe(take(1)).subscribe({
             next: (user) => {
                 if (user) {
-                    this.auth.signOut();
+                    // this.auth.signOut();
                 }
             },
         });
