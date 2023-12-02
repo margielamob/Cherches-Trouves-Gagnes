@@ -243,7 +243,7 @@ export class ChatManagerService {
         ipcRenderer.on('detach', () => {
             this.detached = true;
         });
-        ipcRenderer.on('attach', (args: { user: string; isRoomSelected: boolean; isSearchSelected: boolean }) => {
+        ipcRenderer.on('attach', (args: { isRoomSelected: boolean; isSearchSelected: boolean }) => {
             this.detached = false;
             this.display.isRoomSelected.next(args.isRoomSelected);
             this.display.isSearchSelected.next(args.isSearchSelected);
