@@ -69,7 +69,7 @@ class _ClassicState extends State<Classic> {
       _differenceDetectionService
           .addNewCoords(gameManagerService.limitedCoords);
     }
-    _differenceDetectionService.handleDifferences();
+    
     _socket.send(SocketEvent.gameStarted,
         {widget.gameId: gameManagerService.currentRoomId});
     chatDisplaySubscription =
