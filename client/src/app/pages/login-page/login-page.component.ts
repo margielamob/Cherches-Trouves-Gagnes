@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-params */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -41,7 +42,7 @@ export class LoginPageComponent implements OnInit {
         this.userService.user$.pipe(take(1)).subscribe({
             next: (user) => {
                 if (user) {
-                    // this.auth.signOut();
+                    console.log('toz');
                 }
             },
         });

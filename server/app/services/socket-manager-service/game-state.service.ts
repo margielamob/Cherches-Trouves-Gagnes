@@ -86,23 +86,35 @@ export class GameStateManager {
             if (!this.gameManager.isGameOver(gameId)) {
                 this.gameManager.removePlayer(gameId, socket.id);
                 if (this.gameManager.onePlayerLeft(gameId)) {
-                    socket.broadcast.to(gameId).emit(this.gameManager.isClassic(gameId) ? SocketEvent.Win : SocketEvent.PlayerLeft);
+                    socket.broadcast.to(gameId).emit(SocketEvent.Win);
                     socket.leave(gameId);
+                    this.gameManager.leaveGame(socket.id, gameId);
+                    this.gameManager.deleteTimer(gameId);
+                    this.gameManager.removeGame(gameId);
                     if (this.gameManager.isClassic(gameId)) {
-                        this.gameManager.leaveGame(socket.id, gameId);
-                        this.gameManager.deleteTimer(gameId);
-                        this.gameManager.removeGame(gameId);
+                        this.gameManager.removeJoinableGame(gameId);
                         const games = this.gameManager.getJoinableGames();
                         this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
-                        this.sio.in(gameId).socketsLeave(gameId);
+                    } else {
+                        this.gameManager.removeJoinableLimitedGame(gameId);
+                        const games = this.gameManager.getJoinableLimitedGames();
+                        this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
                     }
+                    this.sio.in(gameId).socketsLeave(gameId);
                 }
             } else if (this.gameManager.isGameOver(gameId)) {
                 this.gameManager.leaveGame(socket.id, gameId);
                 this.gameManager.deleteTimer(gameId);
                 this.gameManager.removeGame(gameId);
-                const games = this.gameManager.getJoinableGames();
-                this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
+                if (this.gameManager.isClassic(gameId)) {
+                    this.gameManager.removeJoinableGame(gameId);
+                    const games = this.gameManager.getJoinableGames();
+                    this.sio.emit(SocketEvent.SendingJoinableClassicGames, { games });
+                } else {
+                    this.gameManager.removeJoinableLimitedGame(gameId);
+                    const games = this.gameManager.getJoinableLimitedGames();
+                    this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
+                }
                 this.sio.in(gameId).socketsLeave(gameId);
             } else {
                 socket.leave(gameId);

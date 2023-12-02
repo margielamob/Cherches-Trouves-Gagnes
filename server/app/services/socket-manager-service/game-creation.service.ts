@@ -151,6 +151,7 @@ export class GameCreationManager {
 
     async getLimitedTimeGames() {
         const games = this.gameManager.getJoinableLimitedGames();
+        console.log(games);
         this.sio.emit(SocketEvent.SendingJoinableLimitedGames, { games });
     }
     async getJoinableGames() {
