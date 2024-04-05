@@ -1,3 +1,5 @@
+**THIS WAS MIGRATED FFROM GITLAB**
+
 # LOG2990 - Code de base
 
 Code de base à utiliser pour démarrer le développement de votre projet.
